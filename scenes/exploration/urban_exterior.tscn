@@ -1,0 +1,78 @@
+[gd_scene load_steps=8 format=3]
+
+[ext_resource type="Script" path="res://scripts/exploration/urban_exterior.gd" id="1"]
+[ext_resource type="Script" path="res://scripts/exploration/exploration_player.gd" id="2"]
+[ext_resource type="Script" path="res://scripts/exploration/scene_portal.gd" id="3"]
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_Player"]
+radius = 10.0
+height = 20.0
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_Portal"]
+size = Vector2(120, 140)
+
+[node name="UrbanExterior" type="Node2D"]
+script = ExtResource("1")
+
+[node name="Decor" type="Node2D" parent="."]
+unique_name_in_owner = true
+
+[node name="Player" type="CharacterBody2D" parent="."]
+unique_name_in_owner = true
+script = ExtResource("2")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Player"]
+shape = SubResource("CapsuleShape2D_Player")
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="Player"]
+unique_name_in_owner = true
+position = Vector2(0, -8)
+
+[node name="Camera2D" type="Camera2D" parent="Player"]
+position_smoothing_enabled = true
+position_smoothing_speed = 6.0
+zoom = Vector2(1.1, 1.1)
+current = true
+
+[node name="Portal" type="Area2D" parent="."]
+unique_name_in_owner = true
+script = ExtResource("3")
+monitoring = true
+monitorable = true
+position = Vector2(998, 250)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Portal"]
+shape = SubResource("RectangleShape2D_Portal")
+
+[node name="HUD" type="CanvasLayer" parent="."]
+
+[node name="FadeOverlay" type="ColorRect" parent="HUD"]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+color = Color(0, 0, 0, 1)
+visible = false
+
+[node name="MapTitle" type="Label" parent="HUD"]
+unique_name_in_owner = true
+offset_left = 20.0
+offset_top = 18.0
+text = "Urban Block"
+
+[node name="MapHint" type="Label" parent="HUD"]
+unique_name_in_owner = true
+offset_left = 20.0
+offset_top = 46.0
+text = "Move with WASD or arrow keys. Press Enter at the office door."
+
+[node name="PortalLabel" type="Label" parent="HUD"]
+unique_name_in_owner = true
+offset_left = 20.0
+offset_top = 74.0
+visible = false
+text = "Enter the office"

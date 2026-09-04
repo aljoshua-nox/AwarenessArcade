@@ -77,7 +77,8 @@ func _build_ui() -> void:
 	root.add_child(header)
 
 	case_icon = TextureRect.new()
-	case_icon.texture = load("res://assets/art/ui/user-shield-solid-full.svg")
+	case_icon.texture = load("res://assets/art/icons/user-shield-solid-full.svg")
+	case_icon.modulate = Color(0.98, 0.99, 1, 1)
 	case_icon.custom_minimum_size = Vector2(40, 40)
 	case_icon.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 	case_icon.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
@@ -269,6 +270,7 @@ func _build_ui() -> void:
 
 	var alert_icon: TextureRect = TextureRect.new()
 	alert_icon.texture = load("res://assets/art/icons/triangle-exclamation-solid-full.svg")
+	alert_icon.modulate = Color(0.98, 0.99, 1, 1)
 	alert_icon.custom_minimum_size = Vector2(24, 24)
 	alert_icon.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 	alert_icon.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED

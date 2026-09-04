@@ -12,6 +12,107 @@ var current_case: Dictionary = {}
 var last_result: Dictionary = {}
 var resolution_history: Array = []
 
+# Prologue (scam-call sim) state
+var calls_made: int = 0
+var victims_affected: int = 0
+var reports_filed: int = 0
+var profit: int = 0
+var trust: int = 35
+var suspicion: int = 10
+var reputation: int = 75
+var time_left: float = 240.0
+var alerts: String = "No active alerts"
+var community_alert_active: bool = false
+var bank_security_active: bool = false
+var investigation_notice_active: bool = false
+var reflection_milestones: Array[Dictionary] = []
+var prologue_end_reason: String = ""
+var prologue_end_note: String = ""
+
+# Investigation state (evidence inventory carried between interviews)
+var investigation_inventory: Array[Dictionary] = []
+var investigation_case_title: String = ""
+var investigation_person_name: String = ""
+var investigation_outcome: String = ""
+var investigation_outcome_note: String = ""
+var investigation_cooperation: int = 0
+var detective_credibility: int = 50
+var interviewed_people: Array[String] = []
+var pending_case_path: String = ""
+var urban_return_spawn: Vector2 = Vector2.ZERO
+var has_urban_return_spawn: bool = false
+var suspect_flipped: bool = false
+
+
+func record_interview_outcome(person_id: String, outcome: String) -> void:
+	if not interviewed_people.has(person_id):
+		interviewed_people.append(person_id)
+	if outcome == "success" or outcome == "whistleblower":
+		detective_credibility = clampi(detective_credibility + 15, 0, 100)
+	elif outcome == "partial":
+		detective_credibility = clampi(detective_credibility + 5, 0, 100)
+	elif outcome == "failure":
+		detective_credibility = clampi(detective_credibility - 10, 0, 100)
+
+
+func add_evidence(item: Dictionary) -> void:
+	var item_id := str(item.get("id", ""))
+	if item_id.is_empty() or has_evidence(item_id):
+		return
+	investigation_inventory.append(item)
+
+
+func has_evidence(item_id: String) -> bool:
+	for item in investigation_inventory:
+		if str(item.get("id", "")) == item_id:
+			return true
+	return false
+
+
+func reset_prologue() -> void:
+	calls_made = 0
+	victims_affected = 0
+	reports_filed = 0
+	profit = 0
+	trust = 35
+	suspicion = 10
+	reputation = 75
+	time_left = 240.0
+	alerts = "No active alerts"
+	community_alert_active = false
+	bank_security_active = false
+	investigation_notice_active = false
+	reflection_milestones.clear()
+	prologue_end_reason = ""
+	prologue_end_note = ""
+
+
+func start_prologue() -> void:
+	reset_prologue()
+	go_to_scene("res://scenes/prologue/prologue_call.tscn")
+
+
+func go_to_prologue_end(reason: String, note: String = "") -> void:
+	prologue_end_reason = reason
+	prologue_end_note = note
+	go_to_scene("res://scenes/prologue/prologue_end.tscn")
+
+
+func record_reflection_milestone(milestone: String, detail: String = "") -> void:
+	if milestone.is_empty():
+		return
+	for entry in reflection_milestones:
+		if entry.get("title", "") == milestone:
+			return
+	reflection_milestones.append({
+		"title": milestone,
+		"detail": detail,
+	})
+
+
+func go_to_menu() -> void:
+	go_to_scene("res://scenes/main_menu/main_menu.tscn")
+
 
 func reset_session() -> void:
 	cases_reviewed = 0
@@ -22,6 +123,17 @@ func reset_session() -> void:
 	current_case = {}
 	last_result = {}
 	resolution_history.clear()
+	has_urban_return_spawn = false
+	suspect_flipped = false
+	investigation_inventory.clear()
+	investigation_case_title = ""
+	investigation_person_name = ""
+	investigation_outcome = ""
+	investigation_outcome_note = ""
+	investigation_cooperation = 0
+	detective_credibility = 50
+	interviewed_people.clear()
+	pending_case_path = ""
 	session_reset.emit()
 
 

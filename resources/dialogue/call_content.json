@@ -1,0 +1,1255 @@
+{
+  "victims": [
+    {
+      "name": "Maria S.",
+      "age": 67,
+      "occupation": "Retired clerk",
+      "traits": "Relies on formal-sounding callers and worries about savings.",
+      "portrait": "res://assets/art/portraits/lady 1.png",
+      "start_node": "bank_intro",
+      "preferred_tactic": "bank",
+      "payout_model": "fixed",
+      "base_payout": 2200,
+      "payout_floor": 0,
+      "success_trust": 38,
+      "success_suspicion": 78,
+      "tactic_trust_bonus": 12,
+      "tactic_suspicion_bonus": -2,
+      "tactic_profit_bonus": 12,
+      "best_tactic_hint": "Bank fraud: responds to urgent account warnings and security wording.",
+      "patience_seconds": 75,
+      "intro_variants": [
+        "She answers quickly, but her tone is guarded.",
+        "She sounds anxious and keeps asking who is calling."
+      ],
+      "perspective_variants": {
+        "success": [
+          "I trusted the caller because they sounded like bank staff. Now I am trying to figure out how to cover medicine and groceries.",
+          "I thought I was protecting my account, but the transfer took my savings instead."
+        ],
+        "partial": [
+          "The money I sent was only part of what I had, but it still came from my living expenses.",
+          "I kept hoping the request would stop before any more money left my account."
+        ],
+        "failure": [
+          "I almost gave the code away, and that thought makes it hard to trust phone calls now.",
+          "I hung up, but I still feel embarrassed that I came so close to losing the money."
+        ]
+      }
+    },
+    {
+      "name": "Kevin D.",
+      "age": 24,
+      "occupation": "Office worker",
+      "traits": "Busy, distracted, and likely to rush through a call.",
+      "portrait": "res://assets/art/portraits/fella 1.png",
+      "start_node": "tech_intro",
+      "preferred_tactic": "tech",
+      "payout_model": "fixed",
+      "base_payout": 1600,
+      "payout_floor": 0,
+      "success_trust": 40,
+      "success_suspicion": 78,
+      "tactic_trust_bonus": 11,
+      "tactic_suspicion_bonus": -2,
+      "tactic_profit_bonus": 10,
+      "best_tactic_hint": "Tech support: reacts to device warnings and fast repair language.",
+      "patience_seconds": 85,
+      "intro_variants": [
+        "He is between tasks and keeps glancing away from the phone.",
+        "He sounds hurried and only half focused on the call."
+      ],
+      "perspective_variants": {
+        "success": [
+          "I let remote access in because the warning looked real. Now I do not know what was copied from my laptop.",
+          "I thought I was fixing a problem at work, and instead I handed control away."
+        ],
+        "partial": [
+          "I paid the fee because I wanted the warning gone. It was still money I needed for the week.",
+          "I backed out late, but not before the caller got enough out of me to make the scare feel real."
+        ],
+        "failure": [
+          "I almost installed the tool, and that is enough to make me nervous about every pop-up now.",
+          "I shut it down before they got in, but I still feel shaken."
+        ]
+      }
+    },
+    {
+      "name": "Lina R.",
+      "age": 41,
+      "occupation": "Small business owner",
+      "traits": "Under financial pressure and trying to keep operations moving.",
+      "portrait": "res://assets/art/portraits/lady 2.png",
+      "start_node": "lottery_intro",
+      "preferred_tactic": "lottery",
+      "payout_model": "lottery",
+      "base_payout": 5000,
+      "payout_floor": 2500,
+      "success_trust": 38,
+      "success_suspicion": 78,
+      "tactic_trust_bonus": 13,
+      "tactic_suspicion_bonus": -2,
+      "tactic_profit_bonus": 14,
+      "best_tactic_hint": "Lottery claim: responds to prize language and fee reductions.",
+      "patience_seconds": 65,
+      "intro_variants": [
+        "She is tired, but still paying attention to details.",
+        "She pauses before speaking, like she is already dealing with too much."
+      ],
+      "perspective_variants": {
+        "success": [
+          "I believed the prize claim because the money would have helped the business. Now I have a bill-shaped hole in the budget.",
+          "I sent the fee and got nothing back except stress."
+        ],
+        "partial": [
+          "I lost less than the full amount, but it still came out of the money set aside for bills.",
+          "I wanted to believe the prize was real, and that made the smaller payment hurt more."
+        ],
+        "failure": [
+          "I hung up before paying, but the offer still felt aimed right at my pressure points.",
+          "The call made me doubt any message that promises easy money."
+        ]
+      }
+    },
+    {
+      "name": "Ramon T.",
+      "age": 52,
+      "occupation": "Delivery dispatcher",
+      "traits": "Stays on the line but questions details.",
+      "portrait": "res://assets/art/portraits/fella 2.png",
+      "start_node": "bank_intro",
+      "preferred_tactic": "bank",
+      "payout_model": "fixed",
+      "base_payout": 2000,
+      "payout_floor": 0,
+      "success_trust": 39,
+      "success_suspicion": 78,
+      "tactic_trust_bonus": 12,
+      "tactic_suspicion_bonus": -2,
+      "tactic_profit_bonus": 12,
+      "best_tactic_hint": "Bank fraud: careful, but easier to steer with account urgency.",
+      "patience_seconds": 45,
+      "intro_variants": [
+        "He does not hang up easily, but every claim gets checked.",
+        "He is polite, cautious, and already suspicious."
+      ],
+      "perspective_variants": {
+        "success": [
+          "I kept hearing a bank tone in the caller's voice, and that is what made me hand over the code.",
+          "I thought I was being careful, but the transfer still went through."
+        ],
+        "partial": [
+          "I should have stopped before any money moved, but I only realized that after the first transfer.",
+          "The call felt like a test of patience, and I failed part of it."
+        ],
+        "failure": [
+          "I was close to trusting them, and that makes the hang-up feel like a narrow escape.",
+          "The pressure made me want to check every bank message twice."
+        ]
+      }
+    },
+    {
+      "name": "Noah P.",
+      "age": 33,
+      "occupation": "Night-shift nurse",
+      "traits": "Sleep-deprived and trying to finish the call quickly.",
+      "portrait": "res://assets/art/portraits/fella 1.png",
+      "start_node": "tech_intro",
+      "preferred_tactic": "tech",
+      "payout_model": "fixed",
+      "base_payout": 1500,
+      "payout_floor": 0,
+      "success_trust": 39,
+      "success_suspicion": 78,
+      "tactic_trust_bonus": 12,
+      "tactic_suspicion_bonus": -2,
+      "tactic_profit_bonus": 11,
+      "best_tactic_hint": "Tech support: tired and likely to accept a quick fix if it sounds practical.",
+      "patience_seconds": 60,
+      "intro_variants": [
+        "He sounds exhausted and wants the issue resolved fast.",
+        "He answers in a low voice, clearly interrupted at work."
+      ],
+      "perspective_variants": {
+        "success": [
+          "I was exhausted and wanted the warning to disappear. That is how they got me to hand over the laptop.",
+          "I thought I was dealing with a real support issue, and now the device feels unsafe."
+        ],
+        "partial": [
+          "I paid a small fee just to keep the call moving, and it still came from money I needed.",
+          "I should not have given anything, even if it was only a little."
+        ],
+        "failure": [
+          "I nearly gave the code away, and that is enough to make me distrust every support message now.",
+          "I shut the call down before they got into the device, but it still left me uneasy."
+        ]
+      }
+    },
+    {
+      "name": "Evelyn M.",
+      "age": 74,
+      "occupation": "Retired seamstress",
+      "traits": "Careful with money and likely to verify details twice.",
+      "portrait": "res://assets/art/portraits/lady 1.png",
+      "start_node": "lottery_intro",
+      "preferred_tactic": "lottery",
+      "payout_model": "lottery",
+      "base_payout": 4800,
+      "payout_floor": 2200,
+      "success_trust": 37,
+      "success_suspicion": 78,
+      "tactic_trust_bonus": 14,
+      "tactic_suspicion_bonus": -2,
+      "tactic_profit_bonus": 14,
+      "best_tactic_hint": "Lottery claim: careful with money, but prize pressure can still work.",
+      "patience_seconds": 40,
+      "intro_variants": [
+        "She speaks slowly and makes you repeat the opening line.",
+        "She sounds polite, but she is already checking the caller ID."
+      ],
+      "perspective_variants": {
+        "success": [
+          "I wanted to believe the prize because the money would have helped with real expenses. Now I am short on money and trust.",
+          "The fee sounded small until it was gone from my account."
+        ],
+        "partial": [
+          "Even the reduced fee was money I could not spare, and now I have to adjust my budget.",
+          "I thought I was being careful, but I still paid out before I should have."
+        ],
+        "failure": [
+          "I ended the call before sending anything, but the whole thing still felt predatory.",
+          "I am glad I stopped, although I still feel embarrassed that I almost paid."
+        ]
+      }
+    }
+  ],
+  "dialogue_nodes": {
+    "bank_intro": {
+      "reaction_variants": [
+        "Victim: That sounds official, but I am still cautious.",
+        "Victim: I need a moment before I agree to anything.",
+        "Victim: I am not handing over details yet.",
+        "Victim: My budget is tight, so I need to be careful."
+      ],
+      "prompt_variants": [
+        "Victim: I got a message saying my account was flagged. I do not want to lose access.",
+        "Victim: Something about my bank account looks wrong and I need answers.",
+        "Victim: The notice on my account sounded urgent, but I am not sure who sent it."
+      ],
+      "prompt": "Victim: I got a message saying my account was flagged. I do not want to lose access.",
+      "choices": [
+        {
+          "text": "Claim a security hold",
+          "player_line_variants": [
+            "You: This is a temporary hold while we verify the account.",
+            "You: Your account is under review while we confirm the alert."
+          ],
+          "victim_line_variants": [
+            "Victim: That sounds official. What do you need?",
+            "Victim: I want to help, but I need you to slow down."
+            ,"Victim: I am trying to follow, but this is a lot."
+          ],
+          "tactic": "bank",
+          "trust": 10,
+          "suspicion": 1,
+          "profit": 25,
+          "reputation": -4,
+          "alert": "Bank security notices increase",
+            "next_node": "bank_hesitation"
+        },
+        {
+          "text": "Mention suspicious login activity",
+          "player_line_variants": [
+            "You: We noticed a suspicious login and need to verify the account now.",
+            "You: There was an unusual access attempt, so we need confirmation."
+          ],
+          "victim_line_variants": [
+            "Victim: I am not comfortable doing that.",
+            "Victim: That sounds urgent, but I still need proof.",
+            "Victim: I am hearing a lot of pressure and not enough detail.",
+            "Victim: My medicine money is not something I can move quickly."
+          ],
+          "tactic": "bank",
+          "trust": 8,
+          "suspicion": 3,
+          "profit": 40,
+          "reputation": -6,
+          "alert": "Victim concern escalates",
+            "next_node": "bank_hesitation"
+        },
+        {
+          "text": "Offer a security desk callback",
+          "player_line_variants": [
+            "You: I can give you a callback number for the security desk.",
+            "You: I will stay on the line while the security desk verifies this."
+          ],
+          "victim_line_variants": [
+            "Victim: I will write it down, but I am checking it first.",
+            "Victim: I am not calling back until I know this is real.",
+            "Victim: If this is official, you will not mind waiting.",
+            "Victim: I need to confirm this before any money leaves."
+          ],
+          "tactic": "bank",
+          "trust": 5,
+          "suspicion": 1,
+          "profit": 12,
+          "reputation": -1,
+          "alert": "Low-level monitoring begins",
+            "next_node": "bank_hesitation"
+        }
+      ]
+    },
+    "tech_intro": {
+      "reaction_variants": [
+        "Victim: Keep it simple. I do not have time for a long explanation.",
+        "Victim: If this is real, I should be able to verify it another way.",
+        "Victim: I am listening, but I am not convinced.",
+        "Victim: I do not want to hand over access by mistake."
+      ],
+      "prompt_variants": [
+        "Victim: A pop-up said my laptop is infected. It locked up for a second.",
+        "Victim: My screen froze and now there is a warning window I do not trust.",
+        "Victim: Something flashed on the screen and I am not sure what to do."
+      ],
+      "prompt": "Victim: A pop-up said my laptop is infected. It locked up for a second.",
+      "choices": [
+        {
+          "text": "Warn of device compromise",
+          "player_line_variants": [
+            "You: This is remote support. The device needs immediate attention.",
+            "You: We detected a device compromise and need to walk you through it."
+          ],
+          "victim_line_variants": [
+            "Victim: I was already worried when the screen froze.",
+            "Victim: You are not the first person to call me about a warning like this."
+            ,"Victim: The warning looked serious, but that does not mean I trust you."
+          ],
+          "tactic": "tech",
+          "trust": 8,
+          "suspicion": 2,
+          "profit": 20,
+          "reputation": -4,
+          "alert": "Support scam warnings rise",
+            "next_node": "tech_hesitation"
+        },
+        {
+          "text": "Offer remote cleanup",
+          "player_line_variants": [
+            "You: I need screen access so I can check the issue directly.",
+            "You: I can clean this up remotely if you let me in."
+          ],
+          "victim_line_variants": [
+            "Victim: That feels invasive, but I am listening.",
+            "Victim: I do not like this, but I want the warning gone.",
+            "Victim: If this is real, you should be able to explain it clearly.",
+            "Victim: I am not giving remote access for free."
+          ],
+          "tactic": "tech",
+          "trust": 7,
+          "suspicion": 3,
+          "profit": 30,
+          "reputation": -6,
+          "alert": "Remote access alerts flagged",
+            "next_node": "tech_hesitation"
+        },
+        {
+          "text": "Mention a cleanup fee",
+          "player_line_variants": [
+            "You: There is a cleanup fee to remove the warning safely.",
+            "You: The cleanup service requires a fee before the warning clears."
+          ],
+          "victim_line_variants": [
+            "Victim: I need to think before paying anything.",
+            "Victim: That sounds like something I should verify first.",
+            "Victim: I am not paying a fee without a clear explanation.",
+            "Victim: That money is for my bills, so I need certainty."
+          ],
+          "tactic": "tech",
+          "trust": 5,
+          "suspicion": 2,
+          "profit": 15,
+          "reputation": -2,
+          "alert": "Complaint risk rising",
+            "next_node": "tech_hesitation"
+        }
+      ]
+    },
+    "lottery_intro": {
+      "reaction_variants": [
+        "Victim: Prize or not, I am still checking this carefully.",
+        "Victim: That sounds tempting, but I need a real reference.",
+        "Victim: I have heard this kind of pitch before.",
+        "Victim: If there is a prize, why does it need my money?"
+      ],
+      "prompt_variants": [
+        "Victim: I got a message saying I won something, but I do not remember entering a contest.",
+        "Victim: The caller said I won a prize, and I am trying to understand the catch.",
+        "Victim: A prize notice came through and it feels too good to be true."
+      ],
+      "prompt": "Victim: I got a message saying I won something, but I do not remember entering a contest.",
+      "choices": [
+        {
+          "text": "Announce a prize claim",
+          "player_line_variants": [
+            "You: This is the prize desk. We need to confirm your winning entry.",
+            "You: You have a confirmed payout waiting, and I am here to release it."
+          ],
+          "victim_line_variants": [
+            "Victim: If it is real, there should be a reference number.",
+            "Victim: That sounds exciting, but I still need proof.",
+            "Victim: I am listening, but I am not sharing anything yet.",
+            "Victim: My household budget is already spoken for."
+          ],
+          "tactic": "lottery",
+          "trust": 9,
+          "suspicion": 1,
+          "profit": 22,
+          "reputation": -3,
+          "alert": "Prize claim rumors circulate",
+            "next_node": "lottery_hesitation"
+        },
+        {
+          "text": "Say taxes must be cleared",
+          "player_line_variants": [
+            "You: The prize cannot be released until the tax line is cleared.",
+            "You: There is a required tax payment before the winnings can move."
+          ],
+          "victim_line_variants": [
+            "Victim: That would hurt my business.",
+            "Victim: I was not expecting any payment like that.",
+            "Victim: If there is a tax, I need to see it in writing.",
+            "Victim: I cannot move rent or tuition money without proof."
+          ],
+          "tactic": "lottery",
+          "trust": 8,
+          "suspicion": 3,
+          "profit": 35,
+          "reputation": -5,
+          "alert": "Prize scam warnings spread",
+            "next_node": "lottery_hesitation"
+        },
+        {
+          "text": "Offer a claim registration",
+          "player_line_variants": [
+            "You: We can register your claim now and release the payout afterward.",
+            "You: I just need your details to complete the prize registration."
+          ],
+          "victim_line_variants": [
+            "Victim: I am still not sure this is real.",
+            "Victim: I want to check the message before I share anything.",
+            "Victim: I need more than a promise before I give details.",
+            "Victim: I am careful with savings for a reason."
+          ],
+          "tactic": "lottery",
+          "trust": 5,
+          "suspicion": 2,
+          "profit": 16,
+          "reputation": -2,
+          "alert": "Follow-up review triggered",
+            "next_node": "lottery_hesitation"
+        }
+      ]
+    },
+      "bank_followup": {
+        "reaction_variants": [
+          "Victim: I understand the concern, but I still want a clear explanation.",
+          "Victim: That is a lot to process. Why is this happening now?",
+          "Victim: I am not ready to act until I am sure.",
+          "Victim: I need time before any money moves."
+        ],
+      "prompt_variants": [
+        "Victim: I am not giving account details to someone I just met on the phone.",
+        "Victim: You are still asking for more than I expected from a bank call.",
+        "Victim: If this is real, it should be easier to verify."
+      ],
+      "prompt": "Victim: I am not giving account details to someone I just met on the phone.",
+      "choices": [
+        {
+          "text": "Push verification urgency",
+          "player_line_variants": [
+            "You: The account will be restricted unless we clear this now.",
+            "You: I need you to act quickly before the flag locks the account."
+          ],
+          "victim_line_variants": [
+            "Victim: I hear the urgency, but that still sounds suspicious.",
+            "Victim: You are asking me to move faster than I am comfortable with."
+            ,"Victim: I have rent and medicines to think about before anything else."
+          ],
+          "tactic": "bank",
+          "trust": 7,
+          "suspicion": 2,
+          "profit": 18,
+          "reputation": -3,
+          "alert": "Bank concern rising",
+          "next_node": "bank_final"
+        },
+        {
+          "text": "Offer a secure transfer line",
+          "player_line_variants": [
+            "You: I can connect you to a secure transfer line to settle this.",
+            "You: The safest option is to move the funds to a protected line."
+          ],
+          "victim_line_variants": [
+            "Victim: A secure line would help, but I still want proof.",
+            "Victim: I am not moving anything until I know this is legitimate."
+            ,"Victim: I am not sending my money into a mystery account."
+          ],
+          "tactic": "bank",
+          "trust": 8,
+          "suspicion": 2,
+          "profit": 20,
+          "reputation": -4,
+          "alert": "Transfer concern growing",
+          "next_node": "bank_final"
+        },
+        {
+          "text": "Slow the pace",
+          "player_line_variants": [
+            "You: Let me walk through the account note one step at a time.",
+            "You: I will explain the review in simpler terms."
+          ],
+          "victim_line_variants": [
+            "Victim: That is better, but I still need the details in writing.",
+            "Victim: I can listen longer if you stop rushing me."
+            ,"Victim: Slowing down makes this feel less like a trap."
+          ],
+          "tactic": "bank",
+          "trust": 6,
+          "suspicion": 1,
+          "profit": 10,
+          "reputation": -1,
+          "alert": "Review remains open",
+          "next_node": "bank_final"
+          }
+        ]
+      },
+      "bank_hesitation": {
+        "reaction_variants": [
+          "Victim: I heard about scams like this on the news.",
+          "Victim: Why are you pressuring me?",
+          "Victim: Can I call the bank directly instead?",
+          "Victim: Something feels suspicious."
+        ],
+        "prompt_variants": [
+          "Victim: Wait... are you really from the bank?",
+          "Victim: I was not expecting a call like this.",
+          "Victim: I did receive a text message earlier...",
+          "Victim: Will my account really be locked?"
+        ],
+        "prompt": "Victim: Wait... are you really from the bank?",
+        "choices": [
+          {
+            "text": "Reassure about the hold",
+            "player_line_variants": [
+              "You: I understand your concern, but this issue is time-sensitive.",
+              "You: Please stay calm, we are trying to protect your savings."
+            ],
+            "victim_line_variants": [
+              "Victim: I need to call someone I trust before I move anything.",
+              "Victim: My account matters too much to rush."
+            ],
+            "tactic": "bank",
+            "trust": 4,
+            "suspicion": 1,
+            "profit": 8,
+            "reputation": -2,
+            "alert": "Customer hesitation grows",
+            "next_node": "bank_followup"
+          },
+          {
+            "text": "Press urgency",
+            "player_line_variants": [
+              "You: If you delay, the transaction may push through.",
+              "You: Your account may already be compromised."
+            ],
+            "victim_line_variants": [
+              "Victim: Why are you pressuring me?",
+              "Victim: That makes me want to verify this first."
+            ],
+            "tactic": "bank",
+            "trust": 3,
+            "suspicion": 2,
+            "profit": 10,
+            "reputation": -3,
+            "alert": "Urgency escalates",
+            "next_node": "bank_followup"
+          },
+          {
+            "text": "Ask for the OTP",
+            "player_line_variants": [
+              "You: For verification purposes, please confirm the OTP sent to your phone.",
+              "You: We just need the code to secure the account."
+            ],
+            "victim_line_variants": [
+              "Victim: Why do you need my OTP?",
+              "Victim: I think I should ask someone first."
+            ],
+            "tactic": "bank",
+            "trust": 2,
+            "suspicion": 2,
+            "profit": 6,
+            "reputation": -1,
+            "alert": "Verification request flagged",
+            "next_node": "bank_followup"
+          }
+        ]
+      },
+      "tech_followup": {
+        "reaction_variants": [
+          "Victim: I have seen warnings like this before, so I am being careful.",
+          "Victim: The explanation matters more than the warning message.",
+          "Victim: If I let you proceed, I want to know exactly why.",
+        "Victim: I am not opening anything until the terms are clear."
+      ],
+      "prompt_variants": [
+        "Victim: You still have not explained why this needs remote access.",
+        "Victim: I need more than a warning before I open anything.",
+        "Victim: The screen message is not enough for me to hand over control."
+      ],
+      "prompt": "Victim: You still have not explained why this needs remote access.",
+      "choices": [
+        {
+          "text": "Describe a critical error",
+          "player_line_variants": [
+            "You: The system has a critical error, so we need to isolate it now.",
+            "You: There is a serious fault in the device and we need immediate access."
+          ],
+          "victim_line_variants": [
+            "Victim: That sounds serious, but I need a better explanation.",
+            "Victim: I am not convinced by the urgency alone."
+            ,"Victim: Explain it plainly, or I am done with this."
+          ],
+          "tactic": "tech",
+          "trust": 7,
+          "suspicion": 2,
+          "profit": 16,
+          "reputation": -3,
+          "alert": "Support concern rising",
+          "next_node": "tech_final"
+        },
+        {
+          "text": "Offer a guided cleanup",
+          "player_line_variants": [
+            "You: I can guide you through a cleanup if you let me see the screen.",
+            "You: We can fix it together if you share the screen for a minute."
+          ],
+          "victim_line_variants": [
+            "Victim: I am not comfortable with that, but I am still listening.",
+            "Victim: If you want access, give me a reason I can verify."
+            ,"Victim: The screen share is starting to feel like the real risk."
+          ],
+          "tactic": "tech",
+          "trust": 8,
+          "suspicion": 2,
+          "profit": 18,
+          "reputation": -4,
+          "alert": "Remote session concern growing",
+          "next_node": "tech_final"
+        },
+        {
+          "text": "Ask for confirmation code",
+          "player_line_variants": [
+            "You: I need the confirmation code the warning provided.",
+            "You: The code will let me validate the support session."
+          ],
+          "victim_line_variants": [
+            "Victim: A code does not make this any less strange.",
+            "Victim: I need to think before I share anything else."
+            ,"Victim: You will have to convince me before I type anything."
+          ],
+          "tactic": "tech",
+          "trust": 6,
+          "suspicion": 1,
+          "profit": 12,
+          "reputation": -2,
+          "alert": "Verification step in progress",
+          "next_node": "tech_final"
+          }
+        ]
+      },
+      "tech_hesitation": {
+        "reaction_variants": [
+          "Victim: My laptop has been acting strange lately.",
+          "Victim: I only use this for online classes.",
+          "Victim: Can you explain that again?",
+          "Victim: I am not very good with computers."
+        ],
+        "prompt_variants": [
+          "Victim: My laptop has been acting strange lately.",
+          "Victim: I only use this for online classes.",
+          "Victim: Will my files be deleted?",
+          "Victim: This feels suspicious."
+        ],
+        "prompt": "Victim: My laptop has been acting strange lately.",
+        "choices": [
+          {
+            "text": "Describe malware",
+            "player_line_variants": [
+              "You: Your computer has been infected with malicious software.",
+              "You: We detected suspicious activity from your IP address."
+            ],
+            "victim_line_variants": [
+              "Victim: Can you explain that again?",
+              "Victim: I do not understand what that means."
+            ],
+            "tactic": "tech",
+            "trust": 4,
+            "suspicion": 1,
+            "profit": 8,
+            "reputation": -2,
+            "alert": "Malware warning escalates",
+            "next_node": "tech_followup"
+          },
+          {
+            "text": "Request a remote tool",
+            "player_line_variants": [
+              "You: Please install this remote support tool so we can secure your device.",
+              "You: We need the remote tool to stop the compromise."
+            ],
+            "victim_line_variants": [
+              "Victim: I am not very good with computers.",
+              "Victim: Will my files be deleted?"
+            ],
+            "tactic": "tech",
+            "trust": 3,
+            "suspicion": 2,
+            "profit": 10,
+            "reputation": -3,
+            "alert": "Remote tool request noticed",
+            "next_node": "tech_followup"
+          },
+          {
+            "text": "Keep the warning urgent",
+            "player_line_variants": [
+              "You: If we do not fix this immediately, your files may be compromised.",
+              "You: This is an urgent security issue."
+            ],
+            "victim_line_variants": [
+              "Victim: That is not helping me feel calmer.",
+              "Victim: I need you to explain it clearly before I do anything."
+            ],
+            "tactic": "tech",
+            "trust": 2,
+            "suspicion": 2,
+            "profit": 6,
+            "reputation": -1,
+            "alert": "Urgency warning escalates",
+            "next_node": "tech_followup"
+          }
+        ]
+      },
+      "lottery_followup": {
+        "reaction_variants": [
+          "Victim: Winning sounds nice, but I am still waiting for proof.",
+          "Victim: I am not moving forward until this makes sense.",
+          "Victim: There are too many steps for something that was supposed to be a prize.",
+        "Victim: I do not want to lose school money or bill money to this."
+      ],
+      "prompt_variants": [
+        "Victim: I do not remember entering anything, so why am I being asked for more?",
+        "Victim: The prize claim still feels too sudden for me.",
+        "Victim: I need to know where this offer came from."
+      ],
+      "prompt": "Victim: I do not remember entering anything, so why am I being asked for more?",
+      "choices": [
+        {
+          "text": "Add a deadline",
+          "player_line_variants": [
+            "You: The claim expires soon, so we need to finish registration now.",
+            "You: This prize can only be held for a short time before it is closed."
+          ],
+          "victim_line_variants": [
+            "Victim: A deadline does not make it real.",
+            "Victim: I am still checking the source before I move ahead."
+            ,"Victim: Hurry is not helping your case."
+          ],
+          "tactic": "lottery",
+          "trust": 7,
+          "suspicion": 2,
+          "profit": 18,
+          "reputation": -3,
+          "alert": "Prize deadline warning rises",
+          "next_node": "lottery_final"
+        },
+        {
+          "text": "Explain claim paperwork",
+          "player_line_variants": [
+            "You: The claim paperwork is standard, I just need to read it to you.",
+            "You: I can walk you through the prize forms if you are ready."
+          ],
+          "victim_line_variants": [
+            "Victim: Forms would help if I could verify them first.",
+            "Victim: I am not signing anything until I know who sent it."
+            ,"Victim: Paperwork without proof is still a problem."
+          ],
+          "tactic": "lottery",
+          "trust": 8,
+          "suspicion": 2,
+          "profit": 20,
+          "reputation": -4,
+          "alert": "Claim forms under review",
+          "next_node": "lottery_final"
+        },
+        {
+          "text": "Offer a small release fee",
+          "player_line_variants": [
+            "You: A small release fee is the last step before the payout can move.",
+            "You: The prize desk only needs a small processing fee now."
+          ],
+          "victim_line_variants": [
+            "Victim: That sounds like a payment I should never make.",
+            "Victim: I am not paying before I know the prize exists."
+            ,"Victim: I have too many real expenses to risk this."
+          ],
+          "tactic": "lottery",
+          "trust": 6,
+          "suspicion": 1,
+          "profit": 14,
+          "reputation": -2,
+          "alert": "Prize release concern rises",
+          "next_node": "lottery_final"
+          }
+        ]
+      },
+      "lottery_hesitation": {
+        "reaction_variants": [
+          "Victim: I do not remember joining any raffle.",
+          "Victim: Is this really legitimate?",
+          "Victim: I have never won anything before.",
+          "Victim: Are there hidden charges?"
+        ],
+        "prompt_variants": [
+          "Victim: I do not remember joining any raffle.",
+          "Victim: Is this really legitimate?",
+          "Victim: That amount would really help my family.",
+          "Victim: Are there hidden charges?"
+        ],
+        "prompt": "Victim: I do not remember joining any raffle.",
+        "choices": [
+          {
+            "text": "Announce the raffle win",
+            "player_line_variants": [
+              "You: Congratulations! Your number was selected in our promotional raffle.",
+              "You: You have won P150,000 and a brand-new smartphone."
+            ],
+            "victim_line_variants": [
+              "Victim: Is this really legitimate?",
+              "Victim: I have never won anything before."
+            ],
+            "tactic": "lottery",
+            "trust": 4,
+            "suspicion": 1,
+            "profit": 8,
+            "reputation": -2,
+            "alert": "Prize claim intensifies",
+            "next_node": "lottery_followup"
+          },
+          {
+            "text": "Ask for confidentiality",
+            "player_line_variants": [
+              "You: Please keep this confidential while verification is ongoing.",
+              "You: Your claim expires within the hour, so do not tell anyone yet."
+            ],
+            "victim_line_variants": [
+              "Victim: Why does this need to be secret?",
+              "Victim: Hidden charges usually mean trouble."
+            ],
+            "tactic": "lottery",
+            "trust": 3,
+            "suspicion": 2,
+            "profit": 10,
+            "reputation": -3,
+            "alert": "Confidentiality pressure rises",
+            "next_node": "lottery_followup"
+          },
+          {
+            "text": "Mention the fee",
+            "player_line_variants": [
+              "You: You only need to pay a small processing fee to claim your reward.",
+              "You: The prize can only be released once the fee is settled."
+            ],
+            "victim_line_variants": [
+              "Victim: That amount would really help my family.",
+              "Victim: Are there hidden charges?"
+            ],
+            "tactic": "lottery",
+            "trust": 2,
+            "suspicion": 2,
+            "profit": 6,
+            "reputation": -1,
+            "alert": "Fee pressure increases",
+            "next_node": "lottery_followup"
+          }
+        ]
+      },
+      "pressure_followup": {
+        "reaction_variants": [
+          "Victim: You are pressing too hard for that to feel normal.",
+          "Victim: The more you explain it, the less I trust it.",
+        "Victim: I want proof before I go any further.",
+        "Victim: The pressure is making me think about my bills instead."
+      ],
+      "prompt_variants": [
+        "Victim: You are asking for more personal details than I expected.",
+        "Victim: Why do you need this much information just to continue?",
+        "Victim: This is starting to sound like a lot for a simple check."
+      ],
+      "prompt": "Victim: You are asking for more personal details than I expected.",
+      "choices": [
+        {
+          "text": "Repeat the verification demand",
+          "player_line": "You: I cannot proceed without the verification step.",
+          "victim_line_variants": [
+            "Victim: You keep saying that like it settles everything.",
+            "Victim: That answer does not make me less cautious."
+          ],
+          "tactic": "pressure",
+          "trust": 7,
+          "suspicion": 3,
+          "profit": 20,
+          "reputation": -4,
+          "alert": "Community warning spread",
+          "next_node": "final_push"
+        },
+        {
+          "text": "Offer to stay on the line",
+          "player_line": "You: I will stay with you while we finish this review.",
+          "victim_line_variants": [
+            "Victim: That is supposed to make me relax?",
+            "Victim: Staying on the line is not the same as earning trust."
+          ],
+          "tactic": "pressure",
+          "trust": 6,
+          "suspicion": 2,
+          "profit": 15,
+          "reputation": -2,
+          "alert": "Bank fraud filters tighten",
+          "next_node": "final_push"
+        },
+        {
+          "text": "Call it a routine review",
+          "player_line": "You: This is only a routine review, nothing more.",
+          "victim_line_variants": [
+            "Victim: Then send it in writing.",
+            "Victim: I am not acting on a verbal claim alone."
+          ],
+          "tactic": "pressure",
+          "trust": 4,
+          "suspicion": 1,
+          "profit": 8,
+          "reputation": -1,
+          "alert": "Noisy flags remain active",
+          "next_node": "final_push"
+        }
+      ]
+    },
+    "bank_final": {
+      "reaction_variants": [
+        "Victim: I need to check the bank records before I do anything.",
+        "Victim: You are asking for the part of this that matters most.",
+        "Victim: I am close to hanging up if this stays vague.",
+        "Victim: I am still trying to make sense of this before I act."
+      ],
+      "prompt_variants": [
+        "Victim: I still need a reason to trust the transfer process.",
+        "Victim: The account review is not enough on its own.",
+        "Victim: You are asking for the exact details now.",
+        "Victim: I need one more clear explanation before I move money."
+      ],
+      "prompt": "Victim: I still need a reason to trust the transfer process.",
+      "choices": [
+        {
+          "text": "Push the account code",
+          "player_line_variants": [
+            "You: I need the account code to clear the flag.",
+            "You: The code is the last step before the account unlocks."
+          ],
+          "victim_line_variants": [
+            "Victim: That is a lot to ask without proof.",
+            "Victim: I am not reading out details until I know this is real."
+          ],
+          "tactic": "bank",
+          "success": true,
+          "outcome_label": "access secured",
+          "success_aftermath_variants": [
+            "Victim Update: {victim_name} read out the account code and the bank balance dropped by P2,200. The money had been set aside for medicine and groceries.",
+            "Victim Update: {victim_name} realized too late that the caller was not from their bank. They were left shaken, embarrassed, and unable to undo the transfer."
+          ],
+          "failure_aftermath_variants": [
+            "Victim Update: {victim_name} refused to read out the account code and called the real bank after hanging up. The account stayed safe, but they felt uneasy and suspicious for the rest of the day.",
+            "Victim Update: {victim_name} ended the call before any details were shared. They said the request felt wrong and warned their family about the scam."
+          ],
+          "trust": 8,
+          "suspicion": 2,
+          "profit": 2200,
+          "reputation": -4,
+          "alert": "Account code request escalates",
+          "next_node": ""
+        },
+        {
+          "text": "Press the transfer authorization",
+          "player_line_variants": [
+            "You: Confirm the transfer authorization and I can move this forward.",
+            "You: I just need the authorization now to release the hold."
+          ],
+          "victim_line_variants": [
+            "Victim: I do not want to rush into that.",
+            "Victim: That sounds like the kind of thing people warn me about."
+          ],
+          "tactic": "bank",
+          "success": true,
+          "outcome_label": "access secured",
+          "success_aftermath_variants": [
+            "Victim Update: {victim_name} approved the transfer and lost P1,800 from savings they needed for household expenses.",
+            "Victim Update: {victim_name} realized the money was gone after the call ended. She felt distressed and ashamed that the pressure had worked."
+          ],
+          "failure_aftermath_variants": [
+            "Victim Update: {victim_name} refused the transfer authorization and ended the call. They said the pressure made the whole exchange feel like a trap.",
+            "Victim Update: {victim_name} kept their money in place, but they were left wary and upset after hearing the request for another transfer."
+          ],
+          "trust": 6,
+          "suspicion": 2,
+          "profit": 1800,
+          "reputation": -3,
+          "alert": "Transfer authorization under review",
+          "next_node": ""
+        },
+        {
+          "text": "Slow the review",
+          "partial_success": true,
+          "partial_profit": 700,
+          "player_line_variants": [
+            "You: Let me walk through the verification again.",
+            "You: We can keep this open while I explain the account note."
+          ],
+          "victim_line_variants": [
+            "Victim: I need a better explanation before I continue.",
+            "Victim: Slowing down is the only reason I am still on the line."
+          ],
+          "tactic": "bank",
+          "success": false,
+          "outcome_label": "no payout",
+          "partial_aftermath_variants": [
+            "Victim Update: {victim_name} sent a smaller transfer of P700 before finally hesitating. The rest of their savings stayed in place, but the call left them rattled.",
+            "Victim Update: {victim_name} kept questioning the caller after a partial transfer had already gone through. She was embarrassed that the scam only slowed down after money had moved."
+          ],
+          "failure_aftermath_variants": [
+            "Victim Update: {victim_name} refused to send any more money and ended the call. She was still shaken, but the remaining savings stayed untouched.",
+            "Victim Update: {victim_name} hung up after realizing the review was a pressure tactic. The call left them distrustful of future banking messages."
+          ],
+          "trust": 4,
+          "suspicion": 1,
+          "profit": 0,
+          "reputation": -1,
+          "alert": "Review stalls",
+          "next_node": ""
+        }
+      ]
+    },
+    "tech_final": {
+      "reaction_variants": [
+        "Victim: I am not giving access until I know what this does.",
+        "Victim: The remote session is the part I do not trust.",
+        "Victim: You need to be much clearer about the device control.",
+        "Victim: I do not want to be rushed into handing over my screen."
+      ],
+      "prompt_variants": [
+        "Victim: You still have not explained the remote access step.",
+        "Victim: I need to know what happens if I let you in.",
+        "Victim: This is the part that feels dangerous.",
+        "Victim: If I open the device, I need to know what you will actually do."
+      ],
+      "prompt": "Victim: You still have not explained the remote access step.",
+      "choices": [
+        {
+          "text": "Request the login code",
+          "player_line_variants": [
+            "You: I need the login code to complete the support session.",
+            "You: The code will let me verify the device and continue."
+          ],
+          "victim_line_variants": [
+            "Victim: That is a serious request.",
+            "Victim: I am not typing that without being sure."
+          ],
+          "tactic": "tech",
+          "success": true,
+          "outcome_label": "device access secured",
+          "success_aftermath_variants": [
+            "Victim Update: {victim_name} entered the login code and the remote session took control of the device. They realized the warning had been used to get inside the laptop.",
+            "Victim Update: {victim_name} felt embarrassed after handing over access. The device was left exposed, and they did not know what else had been copied."
+          ],
+          "failure_aftermath_variants": [
+            "Victim Update: {victim_name} stopped before entering the login code and shut the warning window. They felt rattled after nearly giving control of the device to a stranger.",
+            "Victim Update: {victim_name} closed the call before any access was granted. The laptop stayed safe, but the scare left them wary of future support messages."
+          ],
+          "trust": 8,
+          "suspicion": 2,
+          "profit": 1600,
+          "reputation": -4,
+          "alert": "Login code request escalates",
+          "next_node": ""
+        },
+        {
+          "text": "Install the remote tool",
+          "player_line_variants": [
+            "You: Let the remote tool run so I can resolve the issue.",
+            "You: The cleanup cannot finish until the tool is installed."
+          ],
+          "victim_line_variants": [
+            "Victim: I do not like that step at all.",
+            "Victim: Installing something feels like the risky part."
+          ],
+          "tactic": "tech",
+          "success": true,
+          "outcome_label": "device access secured",
+          "success_aftermath_variants": [
+            "Victim Update: {victim_name} installed the remote tool and handed over control of the device. The laptop was left open to the caller long after the warning should have stopped it.",
+            "Victim Update: {victim_name} felt exposed after the installation finished. He realized the scam had turned a fake repair into real device access."
+          ],
+          "failure_aftermath_variants": [
+            "Victim Update: {victim_name} refused to install the remote tool and ended the call. The warning stayed on screen, but the device remained under their control.",
+            "Victim Update: {victim_name} became suspicious after the request for remote access. They closed the session before any outside control was granted."
+          ],
+          "trust": 6,
+          "suspicion": 2,
+          "profit": 1300,
+          "reputation": -3,
+          "alert": "Remote tool approval in progress",
+          "next_node": ""
+        },
+        {
+          "text": "Keep them talking",
+          "partial_success": true,
+          "partial_profit": 350,
+          "player_line_variants": [
+            "You: Stay with me while I explain the warning again.",
+            "You: I just need one more minute to walk through the fix."
+          ],
+          "victim_line_variants": [
+            "Victim: I am still listening, but I need a clearer reason.",
+            "Victim: I am not ready to hand over control yet."
+          ],
+          "tactic": "tech",
+          "success": false,
+          "outcome_label": "no payout",
+          "partial_aftermath_variants": [
+            "Victim Update: {victim_name} stayed on the line long enough to be talked into a small diagnostic fee before backing away. They realized later that the fee was the point of the call.",
+            "Victim Update: {victim_name} lost a small amount before ending the session. The scare was enough to make the payment feel urgent, even though the warning was fake."
+          ],
+          "failure_aftermath_variants": [
+            "Victim Update: {victim_name} refused to pay and shut the session down. They were still unsettled, but the laptop stayed in their hands.",
+            "Victim Update: {victim_name} walked away before any money moved. The call left them frustrated and more cautious about pop-up warnings."
+          ],
+          "trust": 4,
+          "suspicion": 1,
+          "profit": 0,
+          "reputation": -1,
+          "alert": "Support call stalls",
+          "next_node": ""
+        }
+      ]
+    },
+    "lottery_final": {
+      "reaction_variants": [
+        "Victim: If the prize is real, I should not have to keep paying.",
+        "Victim: This is exactly the part that worries me.",
+        "Victim: I need to think about what this fee means for my budget.",
+        "Victim: I keep hoping this is real, but the fee makes me pause."
+      ],
+      "prompt_variants": [
+        "Victim: The prize still needs one more step before I believe it.",
+        "Victim: I am not convinced the claim is worth the fee yet.",
+        "Victim: You are asking for money again, and that is a problem.",
+        "Victim: I need a clearer explanation before I pay anything else."
+      ],
+      "prompt": "Victim: The prize still needs one more step before I believe it.",
+      "choices": [
+        {
+          "text": "Lower the claim fee",
+          "player_line_variants": [
+            "You: Since we have built trust, I can lower the claim fee to P3000.",
+            "You: I can reduce the processing fee if you are ready to move now."
+          ],
+          "victim_line_variants": [
+            "Victim: I still do not like it, but that is easier to consider.",
+            "Victim: Lowering it makes this feel slightly less impossible."
+          ],
+          "tactic": "lottery",
+          "success": true,
+          "outcome_label": "claim secured",
+          "success_aftermath_variants": [
+            "Victim Update: {victim_name} sent the claim fee and lost P3,000 from money set aside for school and bills.",
+            "Victim Update: {victim_name} felt embarrassed after realizing the prize was never real. The payment left them worried about covering the rest of the month."
+          ],
+          "failure_aftermath_variants": [
+            "Victim Update: {victim_name} refused to pay the lower fee and ended the call. They said the prize offer felt like a trap and decided to warn others about it.",
+            "Victim Update: {victim_name} kept their savings untouched after hanging up. The scam still left them frustrated and cautious about any future prize messages."
+          ],
+          "trust": 8,
+          "suspicion": 2,
+          "profit": 3000,
+          "reputation": -4,
+          "alert": "Claim fee lowered",
+          "next_node": ""
+        },
+        {
+          "text": "Waive part of the fee",
+          "partial_success": true,
+          "partial_profit": 1200,
+          "player_line_variants": [
+            "You: I can waive part of the fee if you complete the claim today.",
+            "You: The prize office can drop part of the charge for a quick close."
+          ],
+          "victim_line_variants": [
+            "Victim: That still takes money I need for bills.",
+            "Victim: I am not sure that makes this safe."
+          ],
+          "tactic": "lottery",
+          "success": true,
+          "outcome_label": "claim secured",
+          "success_aftermath_variants": [
+            "Victim Update: {victim_name} paid the reduced fee and still lost money they had planned for bills. The prize claim was fake, and the loss hurt immediately."
+          ],
+          "partial_aftermath_variants": [
+            "Victim Update: {victim_name} paid a smaller fee of P1,200 before the call ended. It was less than the full amount, but it still came from money they needed.",
+            "Victim Update: {victim_name} felt relief that the fee was lowered, then regret when they realized the prize was still out of reach. The partial payment still cut into their budget."
+          ],
+          "failure_aftermath_variants": [
+            "Victim Update: {victim_name} refused the reduced fee and ended the call. They said the prize pitch felt dishonest and kept their remaining money in place.",
+            "Victim Update: {victim_name} became more suspicious after the fee was waived only on the caller's terms. They hung up before any more money moved."
+          ],
+          "trust": 6,
+          "suspicion": 2,
+          "profit": 2500,
+          "reputation": -3,
+          "alert": "Claim fee reduced",
+          "next_node": ""
+        },
+        {
+          "text": "End the call",
+          "player_line_variants": [
+            "You: I will end the call here.",
+            "You: Understood. I will not continue."
+          ],
+          "victim_line_variants": [
+            "Victim: Good. Do not call again.",
+            "Victim: I am not paying anything today."
+          ],
+          "tactic": "lottery",
+          "success": false,
+          "outcome_label": "no payout",
+          "failure_aftermath_variants": [
+            "Victim Update: {victim_name} hung up before paying anything. They were still unsettled by the prize pitch, but their savings stayed untouched.",
+            "Victim Update: {victim_name} ended the call and later told someone else about the scam attempt. The pressure did not lead to money, but it still left them shaken."
+          ],
+          "trust": -2,
+          "suspicion": 2,
+          "profit": 0,
+          "reputation": 1,
+          "alert": "Prize call ends",
+          "next_node": ""
+        }
+      ]
+    }
+  }
+}

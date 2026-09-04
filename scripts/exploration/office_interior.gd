@@ -41,7 +41,7 @@ func _ready() -> void:
 
 func _unhandled_input(event: InputEvent) -> void:
 	if event.is_action_pressed("ui_cancel"):
-		SessionState.go_to_menu()
+		SessionState.go_to_scene("res://scenes/main_menu/main_menu.tscn")
 	elif event.is_action_pressed("ui_accept") and _can_enter_portal():
 		_transition_to_scene(portal.target_scene)
 

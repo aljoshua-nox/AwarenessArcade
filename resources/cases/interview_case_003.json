@@ -1,0 +1,87 @@
+{
+  "case_id": "interview_case_003",
+  "title": "The Interrogation of Marco Reyes",
+  "person": {
+    "person_id": "marco_reyes",
+    "name": "Marco Reyes",
+    "age": 29,
+    "occupation": "Call floor operator",
+    "role": "Suspect",
+    "portrait": "res://assets/art/portraits/fella 2.png",
+    "traits": "Defensive and deflects blame upward. Cracks when confronted with specific victim details."
+  },
+  "evidence": [],
+  "start_node": "intro",
+  "nodes": {
+    "intro": {
+      "prompt": "Marco leans back, arms crossed. \"I don't know what you think I did. People call in about all kinds of things.\"",
+      "choices": [
+        { "text": "Let's talk about the calls made from your floor this month.", "next": "deny_node" }
+      ]
+    },
+    "deny_node": {
+      "prompt": "\"I just work off a list. I don't write the scripts, I don't pick the targets. That's not on me.\"",
+      "evidence_prompt": true,
+      "evidence_hint": "He's minimizing his role. Confront him with what a specific victim told you.",
+      "accepts_evidence": [
+        {
+          "evidence_id": "test_maria_confirmed",
+          "next": "half_crack",
+          "response": "His jaw tightens. \"...Okay, maybe that one call. That still doesn't prove it was me running things.\"",
+          "cooperation": 20
+        },
+        {
+          "evidence_id": "test_kevin_confirmed",
+          "next": "half_crack",
+          "response": "He shifts in his seat. \"Fine. Maybe. Doesn't mean I'm the one you should be looking at.\"",
+          "cooperation": 20
+        }
+      ],
+      "choices": [
+        { "text": "You're going to need to explain the pattern eventually.", "next": "deny_partial" }
+      ]
+    },
+    "half_crack": {
+      "prompt": "\"Look, everyone on that floor made calls like that. Singling me out doesn't get you the people actually running this.\"",
+      "evidence_prompt": true,
+      "evidence_hint": "He's hiding behind 'everyone did it.' A second, independent testimony should close that door.",
+      "accepts_evidence": [
+        {
+          "evidence_id": "test_maria_confirmed",
+          "next": "full_crack",
+          "response": "\"...Two of them. Two separate people telling you the same thing.\" His arms drop.",
+          "cooperation": 25
+        },
+        {
+          "evidence_id": "test_kevin_confirmed",
+          "next": "full_crack",
+          "response": "\"...Two of them. Two separate people telling you the same thing.\" His arms drop.",
+          "cooperation": 25
+        }
+      ],
+      "choices": [
+        { "text": "Then give me a name and let's stop pretending you're just a caller.", "next": "deny_partial" }
+      ]
+    },
+    "deny_partial": {
+      "prompt": "Marco stonewalls you. Without a second, independent testimony directly connecting him to specific victims, he has nothing to fear from this conversation yet.",
+      "outcome": "partial",
+      "choices": []
+    },
+    "full_crack": {
+      "prompt": "Marco finally deflates. \"Okay - okay. It's not just me. There's a whole floor running four different scripts. I can give you names if it keeps me out of the worst of this.\"",
+      "milestone": {
+        "title": "Whistleblower Secured",
+        "detail": "Marco Reyes agreed to identify the wider call-center operation once confronted with two independent victim testimonies."
+      },
+      "choices": [
+        { "text": "Tell me everything, starting with who runs the floor.", "next": "end_whistleblower" }
+      ]
+    },
+    "end_whistleblower": {
+      "prompt": "Marco's statement, combined with Maria's and Kevin's testimonies, is enough to move on the call center itself. This is no longer circumstantial - it's a built case.",
+      "outcome": "whistleblower",
+      "choices": []
+    }
+  }
+}

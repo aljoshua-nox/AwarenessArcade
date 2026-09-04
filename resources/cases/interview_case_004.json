@@ -1,0 +1,67 @@
+{
+  "case_id": "interview_case_004",
+  "title": "The Confrontation",
+  "person": {
+    "person_id": "elena_cruz",
+    "name": "Elena Cruz",
+    "age": 44,
+    "occupation": "Floor Director",
+    "role": "Suspect",
+    "portrait": "res://assets/art/portraits/lady 2.png",
+    "traits": "Composed and calculating. Switches quickly from denial to negotiation when cornered."
+  },
+  "evidence": [],
+  "start_node": "start",
+  "nodes": {
+    "start": {
+      "prompt": "The office goes quiet as you move through the floor. A woman in a blazer steps out of a back room, phone already in her hand. \"I don't know what Marco told you, but whatever it was, it isn't the whole story.\"",
+      "choices": [
+        { "text": "It's enough to shut this operation down. Marco already gave us the details.", "next": "pressure_node" }
+      ]
+    },
+    "pressure_node": {
+      "prompt": "\"You don't want to do this,\" she says, lowering her voice. \"I can make this a very expensive mistake for you to have made.\"",
+      "choices": [
+        { "text": "Are you offering me money to walk away?", "next": "bribe_offer" },
+        { "text": "I'm not interested in whatever you're about to say. This ends today.", "next": "final_check" }
+      ]
+    },
+    "bribe_offer": {
+      "prompt": "\"Let's just call it... an inconvenience fee.\" She names a number that would change your life.",
+      "choices": [
+        { "text": "Take the money and end the investigation here.", "next": "end_bribed" },
+        { "text": "No. Put it away.", "next": "final_check" }
+      ]
+    },
+    "final_check": {
+      "evidence_check": {
+        "required_evidence": ["test_maria_confirmed", "test_kevin_confirmed"],
+        "next_if_met": "end_full_takedown",
+        "next_if_not_met": "end_partial_justice"
+      }
+    },
+    "end_bribed": {
+      "prompt": "You walk out with a number in your account and a case that quietly goes nowhere. Marco's statement sits in a drawer, unopened. Somewhere, Maria and Kevin are still waiting for a call that will never come.",
+      "outcome": "bribed",
+      "milestone": {
+        "title": "Investigation Compromised",
+        "detail": "The lead investigator accepted a bribe instead of closing the case."
+      },
+      "choices": []
+    },
+    "end_full_takedown": {
+      "prompt": "By evening, officers move through three floors of the operation. Scripts, victim lists, and payment logs are seized. Maria and Kevin's testimonies, backed by Marco's statement, are enough to name the people at the top - not just the callers underneath them.",
+      "outcome": "full_takedown",
+      "milestone": {
+        "title": "Investigation Breakthrough",
+        "detail": "Enough evidence was gathered to bring down the operation, not just the individual callers."
+      },
+      "choices": []
+    },
+    "end_partial_justice": {
+      "prompt": "The raid nets Marco and a handful of floor operators, but without a second confirmed testimony, the people who built and ran the operation slip through the paperwork. Some justice, not all of it.",
+      "outcome": "partial_justice",
+      "choices": []
+    }
+  }
+}

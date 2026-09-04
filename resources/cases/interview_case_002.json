@@ -1,0 +1,121 @@
+{
+  "case_id": "interview_case_002",
+  "title": "The Kevin D. Call",
+  "person": {
+    "person_id": "kevin_d",
+    "name": "Kevin D.",
+    "age": 24,
+    "occupation": "Office worker",
+    "role": "Victim",
+    "portrait": "res://assets/art/portraits/fella 1.png",
+    "traits": "Busy and distracted. Embarrassed he let a stranger into his laptop.",
+    "min_credibility": 60,
+    "hesitant_start": "hesitant_intro"
+  },
+  "evidence": [
+    {
+      "id": "ev_popup_screenshot",
+      "label": "Fake Tech-Support Pop-up",
+      "description": "A screenshot of a browser pop-up claiming Kevin's device was infected, with a number to call immediately.",
+      "tactic": "Manufactured fear: a fake virus warning designed to panic the victim into calling."
+    },
+    {
+      "id": "ev_remote_access_log",
+      "label": "Remote Access Log",
+      "description": "A log showing a stranger connected to Kevin's laptop for several minutes before he disconnected it.",
+      "tactic": "Posing as technical support to gain direct access to a victim's device."
+    },
+    {
+      "id": "ev_fee_receipt",
+      "label": "Removal Fee Receipt",
+      "description": "A payment receipt for a 'malware removal fee' charged during the call.",
+      "tactic": "Charging a fee to 'fix' a problem that was invented in the first place."
+    },
+    {
+      "id": "ev_distracted_note",
+      "label": "Distracted at Work Note",
+      "description": "A note that Kevin was juggling several tasks when the call came in.",
+      "tactic": ""
+    }
+  ],
+  "start_node": "intro",
+  "nodes": {
+    "hesitant_intro": {
+      "prompt": "Kevin barely looks up from his phone. \"Look, I already feel dumb enough about this. I don't really want to go over it with someone I don't know yet.\"",
+      "choices": [
+        { "text": "I understand. I'll come back once I have a stronger case.", "next": "end_partial_hesitant" }
+      ]
+    },
+    "end_partial_hesitant": {
+      "prompt": "Kevin isn't ready to open up. Building more credibility with other witnesses first might change his mind.",
+      "outcome": "partial",
+      "choices": []
+    },
+    "intro": {
+      "prompt": "Kevin rubs his eyes. \"I still don't know how I let that guy into my laptop. It's kind of embarrassing.\"",
+      "choices": [
+        { "text": "It happens to careful people too. Can you walk me through it?", "next": "ask_call" }
+      ]
+    },
+    "ask_call": {
+      "prompt": "\"A pop-up said my laptop was infected and gave me a number to call. The guy sounded like real tech support, so I let him remote in to 'fix' it.\"",
+      "evidence_prompt": true,
+      "evidence_hint": "Something about a stranger being let into his laptop needs confirmation. Do you have anything that shows what actually happened?",
+      "accepts_evidence": [
+        {
+          "evidence_id": "ev_remote_access_log",
+          "next": "confirm_access",
+          "response": "Kevin exhales. \"Right, the access log. I forgot I still had that saved.\"",
+          "cooperation": 20
+        },
+        {
+          "evidence_id": "ev_distracted_note",
+          "next": "ask_call",
+          "response": "\"I mean, sure, I was busy, but that's not really the point.\" He looks a little annoyed.",
+          "cooperation": -5,
+          "wrong": true
+        }
+      ],
+      "choices": [
+        { "text": "Did he ask you to pay for anything?", "next": "press_fee" }
+      ]
+    },
+    "press_fee": {
+      "prompt": "\"Yeah, a 'removal fee.' I paid it just to get him off the call faster.\"",
+      "cooperation": 5,
+      "choices": [
+        { "text": "Can you show me anything else that backs this up?", "next": "ask_call" },
+        { "text": "That's a good starting point, thank you.", "next": "end_partial" }
+      ]
+    },
+    "confirm_access": {
+      "prompt": "\"He was in for a few minutes before I panicked and pulled the cable.\" Kevin pushes the log across the table.",
+      "cooperation": 10,
+      "milestone": {
+        "title": "Second Witness Secured",
+        "detail": "Kevin D. confirmed the remote-access session once shown the connection log."
+      },
+      "choices": [
+        { "text": "This matches the pattern from another victim. Thank you.", "next": "end_success" }
+      ]
+    },
+    "end_success": {
+      "prompt": "Kevin's access log matches the same rushed, fear-based script used on Maria - a different angle, but the same operation.",
+      "outcome": "success",
+      "grants_evidence": [
+        {
+          "id": "test_kevin_confirmed",
+          "label": "Kevin's Confirmed Testimony",
+          "description": "Kevin confirmed a stranger remotely accessed his laptop after a fake virus warning, then charged a bogus removal fee.",
+          "tactic": "A second independent testimony confirms this is a repeatable, scripted operation."
+        }
+      ],
+      "choices": []
+    },
+    "end_partial": {
+      "prompt": "You have Kevin's account, but nothing yet that ties it to the wider operation.",
+      "outcome": "partial",
+      "choices": []
+    }
+  }
+}

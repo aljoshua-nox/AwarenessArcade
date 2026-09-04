@@ -53,14 +53,14 @@ func _build_ui() -> void:
 	column.add_child(title)
 
 	var subtitle := Label.new()
-	subtitle.text = "A small top-down exploration prototype with an urban block and office interior."
+	subtitle.text = "Play the scam, then investigate it. A prototype about fraud, harm, and accountability."
 	subtitle.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	subtitle.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	subtitle.custom_minimum_size = Vector2(560, 0)
 	column.add_child(subtitle)
 
 	var start_button := Button.new()
-	start_button.text = "Start Exploration"
+	start_button.text = "Start"
 	start_button.custom_minimum_size = Vector2(220, 44)
 	start_button.pressed.connect(_start_game)
 	column.add_child(start_button)
@@ -73,4 +73,4 @@ func _build_ui() -> void:
 
 
 func _start_game() -> void:
-	SessionState.go_to_scene("res://scenes/exploration/urban_exterior.tscn")
+	SessionState.start_prologue()

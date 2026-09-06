@@ -28,6 +28,9 @@ var investigation_notice_active: bool = false
 var reflection_milestones: Array[Dictionary] = []
 var prologue_end_reason: String = ""
 var prologue_end_note: String = ""
+# Who the player personally called while playing the scammer. Read back on the
+# call floor in the office, so the operation's own ledger names their victims.
+var prologue_call_log: Array[Dictionary] = []
 
 # Investigation state (evidence inventory carried between interviews)
 var investigation_inventory: Array[Dictionary] = []
@@ -36,6 +39,9 @@ var investigation_person_name: String = ""
 var investigation_outcome: String = ""
 var investigation_outcome_note: String = ""
 var investigation_cooperation: int = 0
+var investigation_evidence_misses: int = 0
+var tactic_reads_correct: int = 0
+var tactic_reads_total: int = 0
 var detective_credibility: int = 50
 var interviewed_people: Array[String] = []
 var pending_case_path: String = ""
@@ -53,6 +59,15 @@ func record_interview_outcome(person_id: String, outcome: String) -> void:
 		detective_credibility = clampi(detective_credibility + 5, 0, 100)
 	elif outcome == "failure":
 		detective_credibility = clampi(detective_credibility - 10, 0, 100)
+
+
+func record_tactic_read(correct: bool) -> void:
+	tactic_reads_total += 1
+	if correct:
+		tactic_reads_correct += 1
+		detective_credibility = clampi(detective_credibility + 3, 0, 100)
+	else:
+		detective_credibility = clampi(detective_credibility - 3, 0, 100)
 
 
 func add_evidence(item: Dictionary) -> void:
@@ -85,6 +100,7 @@ func reset_prologue() -> void:
 	reflection_milestones.clear()
 	prologue_end_reason = ""
 	prologue_end_note = ""
+	prologue_call_log.clear()
 
 
 func start_prologue() -> void:
@@ -96,6 +112,16 @@ func go_to_prologue_end(reason: String, note: String = "") -> void:
 	prologue_end_reason = reason
 	prologue_end_note = note
 	go_to_scene("res://scenes/prologue/prologue_end.tscn")
+
+
+func record_prologue_call(victim_name: String, outcome: String, payout: int) -> void:
+	if victim_name.is_empty():
+		return
+	prologue_call_log.append({
+		"name": victim_name,
+		"outcome": outcome,
+		"payout": payout,
+	})
 
 
 func record_reflection_milestone(milestone: String, detail: String = "") -> void:
@@ -125,12 +151,16 @@ func reset_session() -> void:
 	resolution_history.clear()
 	has_urban_return_spawn = false
 	suspect_flipped = false
+	prologue_call_log.clear()
 	investigation_inventory.clear()
 	investigation_case_title = ""
 	investigation_person_name = ""
 	investigation_outcome = ""
 	investigation_outcome_note = ""
 	investigation_cooperation = 0
+	investigation_evidence_misses = 0
+	tactic_reads_correct = 0
+	tactic_reads_total = 0
 	detective_credibility = 50
 	interviewed_people.clear()
 	pending_case_path = ""

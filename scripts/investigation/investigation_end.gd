@@ -25,6 +25,7 @@ const OUTCOME_MESSAGES := {
 var title_label: Label
 var outcome_label: Label
 var outcome_note: RichTextLabel
+var scorecard_value: RichTextLabel
 var evidence_value: RichTextLabel
 var milestones_value: RichTextLabel
 var continue_button: Button
@@ -93,6 +94,16 @@ func _build_ui() -> void:
 	outcome_note.custom_minimum_size = Vector2(0, 60)
 	column.add_child(outcome_note)
 
+	var scorecard_title := Label.new()
+	scorecard_title.text = "Awareness Scorecard"
+	column.add_child(scorecard_title)
+
+	scorecard_value = RichTextLabel.new()
+	scorecard_value.bbcode_enabled = true
+	scorecard_value.fit_content = true
+	scorecard_value.custom_minimum_size = Vector2(0, 80)
+	column.add_child(scorecard_value)
+
 	var evidence_title := Label.new()
 	evidence_title.text = "Evidence on File"
 	column.add_child(evidence_title)
@@ -142,8 +153,29 @@ func _refresh_view() -> void:
 	note_lines.append("Cooperation reached: %d / 100" % SessionState.investigation_cooperation)
 	note_lines.append("Detective credibility: %d / 100" % SessionState.detective_credibility)
 	outcome_note.text = "\n\n".join(note_lines)
+	scorecard_value.text = _build_scorecard_text()
 	evidence_value.text = _build_evidence_text()
 	milestones_value.text = _build_milestones_text()
+
+
+func _build_scorecard_text() -> String:
+	var lines: Array[String] = []
+	if SessionState.tactic_reads_total <= 0:
+		lines.append("[i]No manipulation tactics have been identified yet this session.[/i]")
+	else:
+		lines.append("[b]Tactics read correctly:[/b] %d of %d" % [SessionState.tactic_reads_correct, SessionState.tactic_reads_total])
+		if SessionState.tactic_reads_correct == SessionState.tactic_reads_total:
+			lines.append("You named the manipulation every time it was put in front of you.")
+		elif SessionState.tactic_reads_correct == 0:
+			lines.append("The tactics went unnamed. These scripts work precisely because the pressure looks like ordinary procedure.")
+		else:
+			lines.append("Some of the manipulation went unnamed. Reviewing the tactics on file is worth the time.")
+
+	var misses := SessionState.investigation_evidence_misses
+	if misses > 0:
+		lines.append("[b]Evidence misread:[/b] %d time(s) in this interview. Presenting something that doesn't prove what you claim costs you the room." % misses)
+
+	return "\n\n".join(lines)
 
 
 func _build_evidence_text() -> String:

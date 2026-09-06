@@ -1,5 +1,7 @@
 extends Control
 
+const TextStyle := preload("res://scripts/systems/text_style.gd")
+
 const CONTENT_PATH := "res://resources/dialogue/call_content.json"
 const MAX_TRUST_GAIN := 5
 const MAX_TRUST_LOSS := 6
@@ -185,7 +187,10 @@ func _build_ui() -> void:
 	left_column.add_child(profile_panel)
 	profile_value = RichTextLabel.new()
 	profile_value.bbcode_enabled = true
-	profile_value.fit_content = false
+	# Grow to fit the traits/angle lines instead of clipping them mid-word.
+	# Safe because the whole column sits inside root_scroll.
+	profile_value.fit_content = true
+	profile_value.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	profile_panel.add_child(profile_value)
 
 	var right_column := VBoxContainer.new()
@@ -248,11 +253,13 @@ func _refresh_ui() -> void:
 	calls_value.text = "Calls: %d / %d suggested" % [SessionState.calls_made, SUGGESTED_CALL_TARGET]
 	profit_value.text = "Profit: %s" % _format_currency(SessionState.profit)
 	_update_alert_display()
-	trust_value.text = "Trust: %d" % SessionState.trust
+	# The meter's own title label already names each stat - repeating it here
+	# rendered every meter twice ("Trust" above "Trust: 35").
+	trust_value.text = "%d / 100" % SessionState.trust
 	trust_bar.value = SessionState.trust
-	suspicion_value.text = "Suspicion: %d" % SessionState.suspicion
+	suspicion_value.text = "%d / 100" % SessionState.suspicion
 	suspicion_bar.value = SessionState.suspicion
-	reputation_value.text = "Reputation: %d" % SessionState.reputation
+	reputation_value.text = "%d / 100" % SessionState.reputation
 	reputation_bar.value = SessionState.reputation
 	_update_timer_display()
 	if current_node.is_empty():
@@ -401,12 +408,19 @@ func _update_dialogue_display() -> void:
 	text_parts.append_array(transcript_lines)
 	if call_active and not current_prompt_text.is_empty():
 		text_parts.append("[i]%s[/i]" % current_prompt_text)
-	elif preview_victim_index >= 0:
-		text_parts.append("Previewing victim. Click the name to begin the call.")
+	# The preview prompt is not repeated here - _preview_victim already appends
+	# "Click the name again to begin the call." to the transcript.
 	dialogue_value.text = "\n\n".join(text_parts)
 
 
 func _end_current_call(summary_line: String) -> void:
+	# Log who this was before the call state is cleared - the office call floor
+	# reads these names back to the player later.
+	if current_victim_index >= 0 and current_victim_index < victims.size():
+		SessionState.record_prologue_call(
+			str(victims[current_victim_index].get("name", "")),
+			current_call_outcome,
+			current_call_reward)
 	if current_call_reward > 0:
 		SessionState.profit += current_call_reward
 	SessionState.victims_affected += 1
@@ -618,9 +632,9 @@ func _update_timer_display() -> void:
 	var session_text := _format_time(SessionState.time_left)
 	timer_bar.value = SessionState.time_left
 	if call_active and current_call_time_limit > 0.0:
-		timer_value.text = "Session %s | Call %s" % [session_text, _format_time(current_call_time_left)]
+		timer_value.text = "%s  (call %s)" % [session_text, _format_time(current_call_time_left)]
 	else:
-		timer_value.text = "Session %s" % session_text
+		timer_value.text = session_text
 
 
 func _get_victim_patience_seconds(victim: Dictionary) -> float:
@@ -789,14 +803,16 @@ func _set_victim_context(victim: Dictionary) -> void:
 
 
 func _build_profile_text(victim: Dictionary) -> String:
+	var muted: String = TextStyle.COLOR_NARRATION
 	var text_lines: Array[String] = []
 	text_lines.append("[b]%s[/b]" % str(victim.get("name", "Unknown")))
-	text_lines.append("Age: %d" % int(victim.get("age", 0)))
-	text_lines.append("Occupation: %s" % str(victim.get("occupation", "Unknown")))
-	text_lines.append("Traits: %s" % str(victim.get("traits", "")))
+	text_lines.append("[color=#%s]Age %d - %s[/color]" % [muted, int(victim.get("age", 0)), str(victim.get("occupation", "Unknown"))])
+	var traits := str(victim.get("traits", ""))
+	if not traits.is_empty():
+		text_lines.append("[font_size=12][color=#%s]%s[/color][/font_size]" % [muted, traits])
 	var tactic_hint := str(victim.get("best_tactic_hint", ""))
 	if not tactic_hint.is_empty():
-		text_lines.append("Likely scam angle: %s" % tactic_hint)
+		text_lines.append("[font_size=12][color=#%s]Likely angle: %s[/color][/font_size]" % [TextStyle.COLOR_TACTIC, tactic_hint])
 	return "\n".join(text_lines)
 
 

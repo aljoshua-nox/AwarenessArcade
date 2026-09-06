@@ -1,121 +1,207 @@
 {
   "case_id": "interview_case_002",
-  "title": "The Kevin D. Call",
+  "title": "The Kevin Dizon Call",
   "person": {
-    "person_id": "kevin_d",
-    "name": "Kevin D.",
-    "age": 24,
-    "occupation": "Office worker",
-    "role": "Victim",
-    "portrait": "res://assets/art/portraits/fella 1.png",
-    "traits": "Busy and distracted. Embarrassed he let a stranger into his laptop.",
-    "min_credibility": 60,
-    "hesitant_start": "hesitant_intro"
+	"person_id": "kevin_d",
+	"name": "Kevin Dizon",
+	"age": 24,
+	"occupation": "Office worker",
+	"role": "Victim",
+	"portrait": "res://assets/art/portraits/fella 1.png",
+	"traits": "Busy and distracted. Embarrassed he let a stranger into his laptop.",
+	"min_credibility": 60,
+	"hesitant_start": "hesitant_intro"
   },
   "evidence": [
-    {
-      "id": "ev_popup_screenshot",
-      "label": "Fake Tech-Support Pop-up",
-      "description": "A screenshot of a browser pop-up claiming Kevin's device was infected, with a number to call immediately.",
-      "tactic": "Manufactured fear: a fake virus warning designed to panic the victim into calling."
-    },
-    {
-      "id": "ev_remote_access_log",
-      "label": "Remote Access Log",
-      "description": "A log showing a stranger connected to Kevin's laptop for several minutes before he disconnected it.",
-      "tactic": "Posing as technical support to gain direct access to a victim's device."
-    },
-    {
-      "id": "ev_fee_receipt",
-      "label": "Removal Fee Receipt",
-      "description": "A payment receipt for a 'malware removal fee' charged during the call.",
-      "tactic": "Charging a fee to 'fix' a problem that was invented in the first place."
-    },
-    {
-      "id": "ev_distracted_note",
-      "label": "Distracted at Work Note",
-      "description": "A note that Kevin was juggling several tasks when the call came in.",
-      "tactic": ""
-    }
+	{
+	  "id": "ev_popup_screenshot",
+	  "label": "Fake Tech-Support Pop-up",
+	  "description": "A screenshot of a browser pop-up claiming Kevin's device was infected, with a number to call immediately.",
+	  "tactic": "Manufactured fear: a fake virus warning designed to panic the victim into calling."
+	},
+	{
+	  "id": "ev_remote_access_log",
+	  "label": "Remote Access Log",
+	  "description": "A log showing a stranger connected to Kevin's laptop for several minutes before he disconnected it.",
+	  "tactic": "Posing as technical support to gain direct access to a victim's device."
+	},
+	{
+	  "id": "ev_fee_receipt",
+	  "label": "Removal Fee Receipt",
+	  "description": "A payment receipt for a 'malware removal fee' charged during the call.",
+	  "tactic": "Charging a fee to 'fix' a problem that was invented in the first place."
+	},
+	{
+	  "id": "ev_distracted_note",
+	  "label": "Distracted at Work Note",
+	  "description": "A note that Kevin was juggling several tasks when the call came in.",
+	  "tactic": ""
+	}
   ],
   "start_node": "intro",
+  "failure_node": "end_shutdown",
   "nodes": {
-    "hesitant_intro": {
-      "prompt": "Kevin barely looks up from his phone. \"Look, I already feel dumb enough about this. I don't really want to go over it with someone I don't know yet.\"",
-      "choices": [
-        { "text": "I understand. I'll come back once I have a stronger case.", "next": "end_partial_hesitant" }
-      ]
-    },
-    "end_partial_hesitant": {
-      "prompt": "Kevin isn't ready to open up. Building more credibility with other witnesses first might change his mind.",
-      "outcome": "partial",
-      "choices": []
-    },
-    "intro": {
-      "prompt": "Kevin rubs his eyes. \"I still don't know how I let that guy into my laptop. It's kind of embarrassing.\"",
-      "choices": [
-        { "text": "It happens to careful people too. Can you walk me through it?", "next": "ask_call" }
-      ]
-    },
-    "ask_call": {
-      "prompt": "\"A pop-up said my laptop was infected and gave me a number to call. The guy sounded like real tech support, so I let him remote in to 'fix' it.\"",
-      "evidence_prompt": true,
-      "evidence_hint": "Something about a stranger being let into his laptop needs confirmation. Do you have anything that shows what actually happened?",
-      "accepts_evidence": [
-        {
-          "evidence_id": "ev_remote_access_log",
-          "next": "confirm_access",
-          "response": "Kevin exhales. \"Right, the access log. I forgot I still had that saved.\"",
-          "cooperation": 20
-        },
-        {
-          "evidence_id": "ev_distracted_note",
-          "next": "ask_call",
-          "response": "\"I mean, sure, I was busy, but that's not really the point.\" He looks a little annoyed.",
-          "cooperation": -5,
-          "wrong": true
-        }
-      ],
-      "choices": [
-        { "text": "Did he ask you to pay for anything?", "next": "press_fee" }
-      ]
-    },
-    "press_fee": {
-      "prompt": "\"Yeah, a 'removal fee.' I paid it just to get him off the call faster.\"",
-      "cooperation": 5,
-      "choices": [
-        { "text": "Can you show me anything else that backs this up?", "next": "ask_call" },
-        { "text": "That's a good starting point, thank you.", "next": "end_partial" }
-      ]
-    },
-    "confirm_access": {
-      "prompt": "\"He was in for a few minutes before I panicked and pulled the cable.\" Kevin pushes the log across the table.",
-      "cooperation": 10,
-      "milestone": {
-        "title": "Second Witness Secured",
-        "detail": "Kevin D. confirmed the remote-access session once shown the connection log."
-      },
-      "choices": [
-        { "text": "This matches the pattern from another victim. Thank you.", "next": "end_success" }
-      ]
-    },
-    "end_success": {
-      "prompt": "Kevin's access log matches the same rushed, fear-based script used on Maria - a different angle, but the same operation.",
-      "outcome": "success",
-      "grants_evidence": [
-        {
-          "id": "test_kevin_confirmed",
-          "label": "Kevin's Confirmed Testimony",
-          "description": "Kevin confirmed a stranger remotely accessed his laptop after a fake virus warning, then charged a bogus removal fee.",
-          "tactic": "A second independent testimony confirms this is a repeatable, scripted operation."
-        }
-      ],
-      "choices": []
-    },
-    "end_partial": {
-      "prompt": "You have Kevin's account, but nothing yet that ties it to the wider operation.",
-      "outcome": "partial",
-      "choices": []
-    }
+	"hesitant_intro": {
+	  "prompt": "Kevin barely looks up from his phone. \"Look, I already feel dumb enough about this. I don't really want to go over it with someone I don't know yet.\"",
+	  "choices": [
+		{ "text": "I understand. I'll come back once I have a stronger case.", "next": "end_partial_hesitant" }
+	  ]
+	},
+	"end_partial_hesitant": {
+	  "prompt": "Kevin isn't ready to open up. Building more credibility with other witnesses first might change his mind.",
+	  "outcome": "partial",
+	  "choices": []
+	},
+	"intro": {
+	  "prompt": "Kevin rubs his eyes. \"I still don't know how I let that guy into my laptop. It's kind of embarrassing.\"",
+	  "choices": [
+		{ "text": "It happens to careful people too. Can you walk me through it?", "next": "ask_call" },
+		{ "text": "Before we start - you're not in trouble here. He is.", "next": "reassure", "cooperation": 8 },
+		{ "text": "You gave a stranger remote access to your own machine. Walk me through how that happened.", "next": "shame_him", "cooperation": -14 }
+	  ]
+	},
+	"reassure": {
+	  "prompt": "He finally puts the phone face-down. \"...Okay. Yeah. Everyone I've told so far mostly just laughed.\"",
+	  "cooperation": 4,
+	  "choices": [
+		{ "text": "It isn't funny. It's a script, and it works. Start from the pop-up.", "next": "ask_call" }
+	  ]
+	},
+	"shame_him": {
+	  "prompt": "His jaw sets. \"Right. Because you've obviously never had a bad day.\" He picks his phone back up. \"It said my laptop was infected. I called. That's the whole story.\"",
+	  "choices": [
+		{ "text": "That was out of line. These pop-ups are engineered to work on anyone.", "next": "reassure", "cooperation": 8 },
+		{ "text": "Fine. Then let's go through it faster.", "next": "ask_call_cold", "cooperation": -8 }
+	  ]
+	},
+	"ask_call": {
+	  "prompt": "\"A pop-up filled the whole screen. Said my laptop was infected, that my files were at risk, and gave a support number to call immediately. The guy who answered sounded exactly like real tech support, so I let him remote in to 'fix' it.\"",
+	  "choices": [
+		{ "text": "Hold on. Let's look at that pop-up itself.", "next": "tactic_quiz_popup" }
+	  ]
+	},
+	"ask_call_cold": {
+	  "prompt": "\"Pop-up. Support number. Guy remoted in. He charged me. I hung up.\" He shrugs. \"What else do you want?\"",
+	  "cooperation": -6,
+	  "choices": [
+		{ "text": "The pop-up. Let's start there.", "next": "tactic_quiz_popup" }
+	  ]
+	},
+	"tactic_quiz_popup": {
+	  "tactic_quiz": {
+		"setup": "You pull up the screenshot. A red banner fills the browser window: [i]\"THREAT DETECTED - 3 infected files found. Do not restart your device. Call support immediately.\"[/i]",
+		"question": "What is the single fact that proves this pop-up was fake before anyone even called the number?",
+		"milestone": {
+		  "title": "Tactic Identified: The Impossible Scan",
+		  "detail": "Recognized that a web page in a browser cannot scan a device's files - so any pop-up claiming to have found infections is fabricated by definition."
+		},
+		"options": [
+		  {
+			"text": "A web page in a browser cannot scan the files on your computer.",
+			"correct": true,
+			"cooperation": 12,
+			"feedback": "A website has no access to your file system. It cannot count your infected files because it cannot see them. Any page claiming a specific number of threats has invented that number - which makes every one of these pop-ups fake without exception."
+		  },
+		  {
+			"text": "Real antivirus software never uses red warning banners.",
+			"cooperation": -8,
+			"feedback": "Plenty of legitimate security tools use alarming colours. Judging by appearance is exactly the trap - these pages are designed to look right. What gives it away is that a browser page has no ability to scan the machine at all."
+		  },
+		  {
+			"text": "The message had a phone number instead of a support link.",
+			"cooperation": -6,
+			"feedback": "A phone number is a strong warning sign - real security software fixes things in the software, it doesn't ask you to call a stranger. But the airtight proof is simpler: the page could never have detected anything in the first place."
+		  },
+		  {
+			"text": "It told him not to restart his device.",
+			"cooperation": -6,
+			"feedback": "That line exists to stop him from closing the page and clearing his head, so you're reading the intent correctly. Still, the fact that settles it is that a web page cannot inspect his files to begin with."
+		  }
+		],
+		"next": "ask_evidence"
+	  }
+	},
+	"ask_evidence": {
+	  "prompt": "Kevin stares at the screenshot. \"...It never scanned anything. It just said it did.\"",
+	  "evidence_prompt": true,
+	  "evidence_hint": "Him believing it is one thing. You need something that proves a stranger actually got into that machine.",
+	  "accepts_evidence": [
+		{
+		  "evidence_id": "ev_remote_access_log",
+		  "next": "confirm_access",
+		  "response": "Kevin exhales. \"Right, the access log. I forgot I still had that saved.\"",
+		  "cooperation": 20
+		},
+		{
+		  "evidence_id": "ev_popup_screenshot",
+		  "next": "ask_evidence",
+		  "response": "\"That's the one.\" It documents what convinced him, but it's the bait, not proof of what the caller did next.",
+		  "cooperation": 4
+		},
+		{
+		  "evidence_id": "ev_fee_receipt",
+		  "next": "ask_evidence",
+		  "response": "He winces at the amount. \"For fixing a problem that was never there.\" He pushes the receipt back across the table.",
+		  "cooperation": 6
+		},
+		{
+		  "evidence_id": "ev_distracted_note",
+		  "next": "ask_evidence",
+		  "response": "\"I mean, sure, I was busy, but that's not really the point.\" He looks a little annoyed.",
+		  "cooperation": -8,
+		  "wrong": true
+		}
+	  ],
+	  "choices": [
+		{ "text": "Did he ask you to pay for anything?", "next": "press_fee" },
+		{ "text": "That's a good starting point, thank you.", "next": "end_partial" }
+	  ]
+	},
+	"press_fee": {
+	  "prompt": "\"A 'removal fee.' I paid it just to get him off the call faster.\" He shakes his head. \"He invented the problem, then charged me to make it go away.\"",
+	  "cooperation": 6,
+	  "choices": [
+		{ "text": "Can you show me anything that backs this up?", "next": "ask_evidence" },
+		{ "text": "That's a good starting point, thank you.", "next": "end_partial" }
+	  ]
+	},
+	"confirm_access": {
+	  "prompt": "\"He was in for about six minutes before I panicked and pulled the cable.\" Kevin pushes the log across the table. \"Six minutes is a long time to be somewhere you shouldn't be.\"",
+	  "cooperation": 10,
+	  "milestone": {
+		"title": "Second Witness Secured",
+		"detail": "Kevin Dizon confirmed the remote-access session once shown the connection log - a different opening script, the same operation."
+	  },
+	  "choices": [
+		{ "text": "This matches the pattern from another victim. Thank you.", "next": "end_success" }
+	  ]
+	},
+	"end_success": {
+	  "prompt": "Kevin's access log matches the same rushed, fear-based script used on Maria - a different angle, but the same operation.",
+	  "outcome": "success",
+	  "grants_evidence": [
+		{
+		  "id": "test_kevin_confirmed",
+		  "label": "Kevin's Confirmed Testimony",
+		  "description": "Kevin confirmed a stranger remotely accessed his laptop after a fake virus warning, then charged a bogus removal fee.",
+		  "tactic": "A second independent testimony confirms this is a repeatable, scripted operation."
+		}
+	  ],
+	  "choices": []
+	},
+	"end_partial": {
+	  "prompt": "You have Kevin's account, but nothing yet that ties it to the wider operation.",
+	  "outcome": "partial",
+	  "choices": []
+	},
+	"end_shutdown": {
+	  "prompt": "Kevin pockets his phone and stands. \"You know what, I've got work.\" He's already at the door. \"Put me down as not wanting to press it.\" The access log goes back into a folder you will not get to see again.",
+	  "outcome": "failure",
+	  "milestone": {
+		"title": "Witness Lost",
+		"detail": "Kevin Dizon disengaged. Shame is the reason most tech-support scam victims never report - and unreported cases are what let the same script keep running."
+	  },
+	  "choices": []
+	}
   }
 }

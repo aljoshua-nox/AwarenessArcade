@@ -1,4 +1,4 @@
-[gd_resource type="Theme" load_steps=15 format=3 uid="uid://dhow0dt4winn0"]
+[gd_resource type="Theme" load_steps=19 format=3 uid="uid://dhow0dt4winn0"]
 
 [ext_resource type="Texture2D" uid="uid://b14sgvfa7qwum" path="res://assets/art/ui/panel_flat.png" id="1"]
 [ext_resource type="Texture2D" uid="uid://c2fc5kvtoj0hi" path="res://assets/art/ui/button_normal.png" id="2"]
@@ -92,6 +92,41 @@ texture_margin_right = 8.0
 texture_margin_bottom = 8.0
 modulate_color = Color(0.45, 0.18, 0.18, 0.95)
 
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_no_focus"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_item_selected"]
+content_margin_left = 10.0
+content_margin_top = 4.0
+content_margin_right = 10.0
+content_margin_bottom = 4.0
+bg_color = Color(0.24, 0.27, 0.35, 1)
+border_width_left = 3
+border_color = Color(0.91, 0.71, 0.33, 1)
+corner_radius_top_left = 3
+corner_radius_top_right = 3
+corner_radius_bottom_right = 3
+corner_radius_bottom_left = 3
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_item_hovered"]
+content_margin_left = 10.0
+content_margin_top = 4.0
+content_margin_right = 10.0
+content_margin_bottom = 4.0
+bg_color = Color(1, 1, 1, 0.07)
+corner_radius_top_left = 3
+corner_radius_top_right = 3
+corner_radius_bottom_right = 3
+corner_radius_bottom_left = 3
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_item_cursor"]
+content_margin_left = 10.0
+content_margin_top = 4.0
+content_margin_right = 10.0
+content_margin_bottom = 4.0
+bg_color = Color(0, 0, 0, 0)
+border_width_left = 3
+border_color = Color(0.91, 0.71, 0.33, 0.55)
+
 [resource]
 Button/colors/font_color = Color(0.98, 0.99, 1, 1)
 Button/colors/font_disabled_color = Color(0.75, 0.77, 0.78, 0.55)
@@ -109,8 +144,15 @@ ItemList/colors/font_hovered_color = Color(1, 1, 1, 1)
 ItemList/colors/font_outline_color = Color(0, 0, 0, 0.9)
 ItemList/colors/font_selected_color = Color(1, 1, 1, 1)
 ItemList/constants/outline_size = 2
-ItemList/styles/focus = SubResource("StyleBoxTexture_button_hover")
+ItemList/styles/focus = SubResource("StyleBoxEmpty_no_focus")
 ItemList/styles/panel = SubResource("StyleBoxTexture_panel")
+ItemList/styles/selected = SubResource("StyleBoxFlat_item_selected")
+ItemList/styles/selected_focus = SubResource("StyleBoxFlat_item_selected")
+ItemList/styles/hovered = SubResource("StyleBoxFlat_item_hovered")
+ItemList/styles/hovered_selected = SubResource("StyleBoxFlat_item_selected")
+ItemList/styles/hovered_selected_focus = SubResource("StyleBoxFlat_item_selected")
+ItemList/styles/cursor = SubResource("StyleBoxFlat_item_cursor")
+ItemList/styles/cursor_unfocused = SubResource("StyleBoxFlat_item_cursor")
 Label/colors/font_color = Color(0.97, 0.98, 0.99, 1)
 Label/colors/font_outline_color = Color(0, 0, 0, 0.9)
 Label/constants/outline_size = 2
@@ -120,5 +162,5 @@ ProgressBar/styles/fill = SubResource("StyleBoxTexture_meter_fill")
 RichTextLabel/colors/default_color = Color(0.95, 0.96, 0.97, 1)
 RichTextLabel/colors/font_outline_color = Color(0, 0, 0, 0.9)
 RichTextLabel/constants/outline_size = 2
-RichTextLabel/styles/focus = SubResource("StyleBoxTexture_button_hover")
+RichTextLabel/styles/focus = SubResource("StyleBoxEmpty_no_focus")
 RichTextLabel/styles/normal = SubResource("StyleBoxTexture_panel")

@@ -1,0 +1,135 @@
+"""Static validation for the interview case graphs.
+
+There is no headless Godot in this workspace, so a broken `next` target or a
+dead-end node would otherwise only show up as a blank screen mid-playtest.
+Run from anywhere:  python tools/validate_cases.py
+"""
+import json, glob, os, sys
+
+base = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+files = sorted(glob.glob(os.path.join(base, "resources", "cases", "interview_case_*.json")))
+
+# Evidence ids available across the whole session (seeded pools + granted testimony)
+global_evidence = set()
+parsed = {}
+for f in files:
+    with open(f, encoding="utf-8") as fh:
+        data = json.load(fh)
+    parsed[f] = data
+    for item in data.get("evidence", []):
+        global_evidence.add(item["id"])
+    for node in data.get("nodes", {}).values():
+        for g in node.get("grants_evidence", []):
+            global_evidence.add(g["id"])
+
+errors = []
+for f, data in parsed.items():
+    name = os.path.basename(f)
+    nodes = data.get("nodes", {})
+    ids = set(nodes.keys())
+
+    def check(target, where):
+        if not target:
+            errors.append(f"{name}: EMPTY target at {where}")
+        elif target not in ids:
+            errors.append(f"{name}: '{target}' -> missing node (at {where})")
+
+    check(data.get("start_node"), "start_node")
+    if "failure_node" in data:
+        check(data["failure_node"], "failure_node")
+    person = data.get("person", {})
+    if "hesitant_start" in person:
+        check(person["hesitant_start"], "person.hesitant_start")
+    if ("min_credibility" in person) != ("hesitant_start" in person):
+        errors.append(f"{name}: min_credibility/hesitant_start must be paired")
+
+    endings = 0
+    for nid, node in nodes.items():
+        if node.get("outcome"):
+            endings += 1
+        for i, c in enumerate(node.get("choices", [])):
+            check(c.get("next"), f"{nid}.choices[{i}]")
+        if len(node.get("choices", [])) > 4:
+            errors.append(f"{name}: {nid} has >4 choices (UI has 4 buttons)")
+        for i, e in enumerate(node.get("accepts_evidence", [])):
+            check(e.get("next"), f"{nid}.accepts_evidence[{i}]")
+            eid = e.get("evidence_id")
+            if eid not in global_evidence:
+                errors.append(f"{name}: {nid}.accepts_evidence[{i}] unknown evidence '{eid}'")
+        ec = node.get("evidence_check")
+        if ec:
+            check(ec.get("next_if_met"), f"{nid}.evidence_check.next_if_met")
+            check(ec.get("next_if_not_met"), f"{nid}.evidence_check.next_if_not_met")
+            for eid in ec.get("required_evidence", []):
+                if eid not in global_evidence:
+                    errors.append(f"{name}: {nid}.evidence_check unknown evidence '{eid}'")
+        q = node.get("tactic_quiz")
+        if q:
+            opts = q.get("options", [])
+            if len(opts) > 4:
+                errors.append(f"{name}: {nid} quiz has >4 options (UI has 4 buttons)")
+            correct = [o for o in opts if o.get("correct")]
+            if len(correct) != 1:
+                errors.append(f"{name}: {nid} quiz has {len(correct)} correct options (need exactly 1)")
+            for i, o in enumerate(opts):
+                if not o.get("feedback"):
+                    errors.append(f"{name}: {nid} quiz option {i} has no feedback")
+                if o.get("next"):
+                    check(o["next"], f"{nid}.tactic_quiz.options[{i}]")
+            for k in ("next", "next_correct", "next_wrong"):
+                if q.get(k):
+                    check(q[k], f"{nid}.tactic_quiz.{k}")
+            if not any(q.get(k) for k in ("next", "next_correct", "next_wrong")) and not all(o.get("next") for o in opts):
+                errors.append(f"{name}: {nid} quiz has no next target")
+        if node.get("evidence_prompt") and not node.get("accepts_evidence"):
+            errors.append(f"{name}: {nid} shows Present Evidence but accepts nothing")
+
+        # A node the player can enter but never leave.
+        has_exit = bool(node.get("outcome") or node.get("choices")
+                        or node.get("evidence_check") or node.get("tactic_quiz"))
+        if not has_exit:
+            errors.append(f"{name}: {nid} is a dead end (no choices, outcome, quiz or check)")
+        # Evidence-only nodes strand the player if they lack the right item.
+        if node.get("evidence_prompt") and not node.get("choices") and not node.get("outcome"):
+            errors.append(f"{name}: {nid} exits only via evidence - no fallback choice")
+        # An answered quiz node must be able to fall through if re-entered.
+        q2 = node.get("tactic_quiz")
+        if q2 and not node.get("prompt") and not (q2.get("next") or q2.get("next_correct")):
+            errors.append(f"{name}: {nid} quiz has no shared 'next' to fall through to on re-entry")
+
+    # reachability from start
+    seen, stack = set(), [data.get("start_node")]
+    if person.get("hesitant_start"):
+        stack.append(person["hesitant_start"])
+    if data.get("failure_node"):
+        stack.append(data["failure_node"])
+    while stack:
+        n = stack.pop()
+        if not n or n in seen or n not in nodes:
+            continue
+        seen.add(n)
+        node = nodes[n]
+        for c in node.get("choices", []):
+            stack.append(c.get("next"))
+        for e in node.get("accepts_evidence", []):
+            stack.append(e.get("next"))
+        ec = node.get("evidence_check")
+        if ec:
+            stack += [ec.get("next_if_met"), ec.get("next_if_not_met")]
+        q = node.get("tactic_quiz")
+        if q:
+            stack += [q.get("next"), q.get("next_correct"), q.get("next_wrong")]
+            stack += [o.get("next") for o in q.get("options", [])]
+    orphans = ids - seen
+    if orphans:
+        errors.append(f"{name}: unreachable nodes {sorted(orphans)}")
+    print(f"{name}: {len(ids)} nodes, {endings} endings, "
+          f"{sum(1 for n in nodes.values() if n.get('tactic_quiz'))} quiz")
+
+print()
+if errors:
+    print("FAILURES:")
+    for e in errors:
+        print("  -", e)
+    sys.exit(1)
+print("All case graphs valid.")

@@ -2,121 +2,212 @@
   "case_id": "interview_case_001",
   "title": "The Maria Santos Call",
   "person": {
-    "person_id": "maria_santos",
-    "name": "Maria Santos",
-    "age": 67,
-    "occupation": "Retired clerk",
-    "role": "Victim",
-    "portrait": "res://assets/art/portraits/lady 1.png",
-    "traits": "Worried about her savings. Trusts formal-sounding language. Embarrassed about what happened."
+	"person_id": "maria_santos",
+	"name": "Maria Santos",
+	"age": 67,
+	"occupation": "Retired clerk",
+	"role": "Victim",
+	"portrait": "res://assets/art/portraits/lady 1.png",
+	"traits": "Worried about her savings. Trusts formal-sounding language. Embarrassed about what happened."
   },
   "evidence": [
-    {
-      "id": "ev_call_transcript",
-      "label": "Call Transcript",
-      "description": "A recorded transcript of a caller claiming to be from Maria's bank, warning about a suspicious login.",
-      "tactic": "Impersonating a trusted authority (the bank) to lower the victim's guard."
-    },
-    {
-      "id": "ev_phishing_text",
-      "label": "Phishing Text Message",
-      "description": "A text message with a fake bank link and a warning about account suspension, sent minutes before the call.",
-      "tactic": "Manufactured urgency: threatening account loss to force a fast, unverified reaction."
-    },
-    {
-      "id": "ev_scam_report",
-      "label": "Community Scam Report",
-      "description": "A neighborhood report matching the same caller number to another attempted scam.",
-      "tactic": "Recognizing repeated scripts is one of the fastest ways to confirm a scam pattern."
-    },
-    {
-      "id": "ev_bank_alert",
-      "label": "Bank Security Alert",
-      "description": "An internal bank notice describing unusual transfer pressure and urgent account-verification language.",
-      "tactic": "Real banks do not pressure customers to 'verify' by acting immediately over the phone."
-    },
-    {
-      "id": "ev_internet_note",
-      "label": "Slow Internet Note",
-      "description": "A stray note that Maria's internet connection was slow earlier that day.",
-      "tactic": ""
-    }
+	{
+	  "id": "ev_call_transcript",
+	  "label": "Call Transcript",
+	  "description": "A recorded transcript of a caller claiming to be from Maria's bank, warning about a suspicious login.",
+	  "tactic": "Impersonating a trusted authority (the bank) to lower the victim's guard."
+	},
+	{
+	  "id": "ev_phishing_text",
+	  "label": "Phishing Text Message",
+	  "description": "A text message with a fake bank link and a warning about account suspension, sent minutes before the call.",
+	  "tactic": "Manufactured urgency: threatening account loss to force a fast, unverified reaction."
+	},
+	{
+	  "id": "ev_scam_report",
+	  "label": "Community Scam Report",
+	  "description": "A neighborhood report matching the same caller number to another attempted scam.",
+	  "tactic": "Recognizing repeated scripts is one of the fastest ways to confirm a scam pattern."
+	},
+	{
+	  "id": "ev_bank_alert",
+	  "label": "Bank Security Alert",
+	  "description": "An internal bank notice describing unusual transfer pressure and urgent account-verification language.",
+	  "tactic": "Real banks do not pressure customers to 'verify' by acting immediately over the phone."
+	},
+	{
+	  "id": "ev_internet_note",
+	  "label": "Slow Internet Note",
+	  "description": "A stray note that Maria's internet connection was slow earlier that day.",
+	  "tactic": ""
+	}
   ],
   "start_node": "intro",
+  "failure_node": "end_shutdown",
   "nodes": {
-    "intro": {
-      "prompt": "Maria sits with her hands folded, still a little shaken. \"I already told the bank everything. Do we really have to go over it again?\"",
-      "choices": [
-        { "text": "I just need to hear it from you. What happened on the call?", "next": "ask_call" },
-        { "text": "Take your time. How are you holding up?", "next": "ask_wellbeing" }
-      ]
-    },
-    "ask_wellbeing": {
-      "prompt": "\"Embarrassed, mostly. I've worked with money my whole life. I should have known better.\"",
-      "cooperation": 5,
-      "choices": [
-        { "text": "This isn't your fault. These calls are designed to fool anyone. Can you walk me through it?", "next": "ask_call" }
-      ]
-    },
-    "ask_call": {
-      "prompt": "\"Someone called saying they were from my bank's fraud department. They said my account had a suspicious login and I needed to verify my identity right away.\"",
-      "evidence_prompt": true,
-      "evidence_hint": "Something about this call doesn't line up with how banks actually operate. Do you have anything that could confirm what really happened?",
-      "accepts_evidence": [
-        {
-          "evidence_id": "ev_phishing_text",
-          "next": "confirm_phishing",
-          "response": "Maria's eyes widen. \"That's it - that's the message I got right before the call. I forgot I still had it.\"",
-          "cooperation": 20
-        },
-        {
-          "evidence_id": "ev_internet_note",
-          "next": "ask_call",
-          "response": "\"I don't see what my internet has to do with any of this.\" She looks a little put off.",
-          "cooperation": -5,
-          "wrong": true
-        }
-      ],
-      "choices": [
-        { "text": "Did they ask you to send money or share any codes?", "next": "press_details" }
-      ]
-    },
-    "press_details": {
-      "prompt": "\"They wanted a code from a text message to 'verify' me. I almost gave it to them, but something felt off, so I hung up.\"",
-      "cooperation": 5,
-      "choices": [
-        { "text": "That instinct probably saved you. Is there anything else you can show me?", "next": "ask_call" },
-        { "text": "Thank you, Maria. That's a good starting point.", "next": "end_partial" }
-      ]
-    },
-    "confirm_phishing": {
-      "prompt": "\"Now that I think about it, I got a text right before the call too - a link about my account being suspended. I didn't click it, but I still have it.\" She hands over her phone.",
-      "cooperation": 10,
-      "milestone": {
-        "title": "Key Witness Secured",
-        "detail": "Maria Santos confirmed the phishing text and cooperated fully once shown matching evidence."
-      },
-      "choices": [
-        { "text": "This confirms the pattern. Thank you for trusting me with this.", "next": "end_success" }
-      ]
-    },
-    "end_success": {
-      "prompt": "Maria's account, the phishing text, and the caller's script all match the same operation. This is enough to tie the call to a larger scam network.",
-      "outcome": "success",
-      "grants_evidence": [
-        {
-          "id": "test_maria_confirmed",
-          "label": "Maria's Confirmed Testimony",
-          "description": "Maria formally confirmed the phishing text and the bank-impersonation call matched a single scripted operation.",
-          "tactic": "A confirmed victim testimony is strong enough to confront a suspect with."
-        }
-      ],
-      "choices": []
-    },
-    "end_partial": {
-      "prompt": "You have a rough account of the call, but nothing yet that ties it to the wider operation. It's a start, but the case needs more.",
-      "outcome": "partial",
-      "choices": []
-    }
+	"intro": {
+	  "prompt": "Maria sits with her hands folded, still a little shaken. \"I already told the bank everything. Do we really have to go over it again?\"",
+	  "choices": [
+		{ "text": "Take your time. How are you holding up?", "next": "ask_wellbeing" },
+		{ "text": "I just need to hear it from you. What happened on the call?", "next": "ask_call" },
+		{ "text": "Let's keep this quick - you're one of several people I have to see today.", "next": "rush_her", "cooperation": -14 }
+	  ]
+	},
+	"rush_her": {
+	  "prompt": "Her hands tighten. \"Several people. Of course.\" She looks at the table. \"I'm a line on a list. That's what I get for being stupid enough to answer the phone.\"",
+	  "choices": [
+		{ "text": "That came out wrong. You're not a line on a list, and this wasn't stupidity.", "next": "apologize", "cooperation": 8 },
+		{ "text": "I didn't say that. Let's just get through the call itself.", "next": "ask_call_cold", "cooperation": -8 }
+	  ]
+	},
+	"apologize": {
+	  "prompt": "She lets out a breath. \"...Thank you. Everyone keeps telling me I should have known. It helps to hear someone say otherwise.\"",
+	  "cooperation": 4,
+	  "choices": [
+		{ "text": "These calls are built to work on careful people. Walk me through it?", "next": "ask_call" }
+	  ]
+	},
+	"ask_wellbeing": {
+	  "prompt": "\"Embarrassed, mostly. I've worked with money my whole life. I should have known better.\"",
+	  "cooperation": 8,
+	  "choices": [
+		{ "text": "This isn't your fault. These calls are designed to fool anyone. Can you walk me through it?", "next": "ask_call" }
+	  ]
+	},
+	"ask_call": {
+	  "prompt": "\"Someone called saying they were from my bank's fraud department. They said my account had a suspicious login, and that I needed to verify my identity right away or they'd have to freeze everything.\"",
+	  "choices": [
+		{ "text": "Say that back to me slowly. I want to look at how they worded it.", "next": "tactic_quiz_urgency" }
+	  ]
+	},
+	"ask_call_cold": {
+	  "prompt": "She gives you the short version, eyes on the wall. \"A man said he was from the bank. Suspicious login. Verify right away or they freeze the account. That's it.\"",
+	  "cooperation": -6,
+	  "choices": [
+		{ "text": "Say that back to me slowly. I want to look at how they worded it.", "next": "tactic_quiz_urgency" }
+	  ]
+	},
+	"tactic_quiz_urgency": {
+	  "tactic_quiz": {
+		"setup": "You write the line out as she said it: [i]\"Your account has a suspicious login. You need to verify your identity right away, or we'll have to freeze the account.\"[/i]",
+		"question": "Which part of that sentence is doing the manipulation?",
+		"milestone": {
+		  "title": "Tactic Identified: Manufactured Urgency",
+		  "detail": "Recognized that the artificial deadline - not the bank's name - was the part engineered to stop the victim from verifying."
+		},
+		"options": [
+		  {
+			"text": "\"Right away, or we'll have to freeze the account.\"",
+			"correct": true,
+			"cooperation": 10,
+			"feedback": "The deadline is the scam. A real bank can wait while you hang up and call the number printed on your own card. Urgency exists to stop you from doing exactly that."
+		  },
+		  {
+			"text": "\"Your account has a suspicious login.\"",
+			"cooperation": -8,
+			"feedback": "A suspicious-login warning is something a real bank genuinely might say - which is precisely why scammers borrow it. On its own it proves nothing. The pressure to act immediately is what a real bank would never add."
+		  },
+		  {
+			"text": "That the caller knew which bank she uses.",
+			"cooperation": -8,
+			"feedback": "Knowing someone's bank is cheap. It gets guessed from the biggest local branch or bought in a leaked list. Treating that as proof of legitimacy is how these calls get their opening."
+		  },
+		  {
+			"text": "\"Verify your identity.\"",
+			"cooperation": -6,
+			"feedback": "Close. Verification requests are a red flag when they arrive on an inbound call, but the load-bearing word here is the deadline attached to it - that's what removes her time to think."
+		  }
+		],
+		"next": "ask_evidence"
+	  }
+	},
+	"ask_evidence": {
+	  "prompt": "\"So it was the hurry.\" She frowns at her hands. \"He kept saying there wasn't time.\"",
+	  "evidence_prompt": true,
+	  "evidence_hint": "Something physical should corroborate this. Anything that arrived around the same time as the call is worth showing her.",
+	  "accepts_evidence": [
+		{
+		  "evidence_id": "ev_phishing_text",
+		  "next": "confirm_phishing",
+		  "response": "Maria's eyes widen. \"That's it - that's the message I got right before he called. I forgot I still had it.\"",
+		  "cooperation": 20
+		},
+		{
+		  "evidence_id": "ev_call_transcript",
+		  "next": "ask_evidence",
+		  "response": "\"Yes, that's how he talked. Very official.\" It matches her account, but it's her own words coming back to her - it doesn't add anything she hasn't already given you.",
+		  "cooperation": 4
+		},
+		{
+		  "evidence_id": "ev_bank_alert",
+		  "next": "ask_evidence",
+		  "response": "She reads the notice twice. \"So the bank already knew people were getting calls like this. And they still nearly got me.\"",
+		  "cooperation": 6
+		},
+		{
+		  "evidence_id": "ev_scam_report",
+		  "next": "ask_evidence",
+		  "response": "\"Someone on my street got the same call?\" Something in her posture changes - less shame, more anger.",
+		  "cooperation": 6
+		},
+		{
+		  "evidence_id": "ev_internet_note",
+		  "next": "ask_evidence",
+		  "response": "\"I don't see what my internet has to do with any of this.\" She looks a little put off.",
+		  "cooperation": -8,
+		  "wrong": true
+		}
+	  ],
+	  "choices": [
+		{ "text": "Did they ask you to send money or read out any codes?", "next": "press_details" },
+		{ "text": "Thank you, Maria. That's a good starting point.", "next": "end_partial" }
+	  ]
+	},
+	"press_details": {
+	  "prompt": "\"They wanted a code from a text message to 'verify' me. I almost read it out. But he got impatient with me, and that's when it stopped sounding like a bank.\"",
+	  "cooperation": 6,
+	  "choices": [
+		{ "text": "That instinct saved your savings. Is there anything else you can show me?", "next": "ask_evidence" },
+		{ "text": "Thank you, Maria. That's a good starting point.", "next": "end_partial" }
+	  ]
+	},
+	"confirm_phishing": {
+	  "prompt": "\"A link about my account being suspended. I didn't click it, but I kept it.\" She hands over her phone. \"The text came four minutes before the call. Four minutes. They wanted me already frightened when I picked up.\"",
+	  "cooperation": 10,
+	  "milestone": {
+		"title": "Key Witness Secured",
+		"detail": "Maria Santos confirmed the phishing text arrived minutes before the call - the fear was set up before the scammer ever spoke."
+	  },
+	  "choices": [
+		{ "text": "That's the pattern. Thank you for trusting me with this.", "next": "end_success" }
+	  ]
+	},
+	"end_success": {
+	  "prompt": "Maria's account, the phishing text, and the caller's script all match the same operation. This is enough to tie the call to a larger scam network.",
+	  "outcome": "success",
+	  "grants_evidence": [
+		{
+		  "id": "test_maria_confirmed",
+		  "label": "Maria's Confirmed Testimony",
+		  "description": "Maria formally confirmed the phishing text and the bank-impersonation call matched a single scripted operation.",
+		  "tactic": "A confirmed victim testimony is strong enough to confront a suspect with."
+		}
+	  ],
+	  "choices": []
+	},
+	"end_partial": {
+	  "prompt": "You have a rough account of the call, but nothing yet that ties it to the wider operation. It's a start, but the case needs more.",
+	  "outcome": "partial",
+	  "choices": []
+	},
+	"end_shutdown": {
+	  "prompt": "Maria stands up before you finish your sentence. \"I think I've had enough of being asked what I did wrong.\" The door closes quietly behind her. Whatever she still had - the text, the timing, the name he used - goes with her.",
+	  "outcome": "failure",
+	  "milestone": {
+		"title": "Witness Lost",
+		"detail": "Maria Santos withdrew from the interview. Victims who are made to feel blamed for being targeted usually stop reporting - which is exactly what keeps these operations running."
+	  },
+	  "choices": []
+	}
   }
 }

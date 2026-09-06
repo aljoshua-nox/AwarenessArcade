@@ -19,11 +19,9 @@ extends Node2D
 @onready var fade_overlay: ColorRect = %FadeOverlay
 
 const INTERVIEW_SCENE := "res://scenes/investigation/interview.tscn"
-const CONFRONTATION_SCENE := "res://scenes/investigation/interview.tscn"
 const CASE_MARIA := "res://resources/cases/interview_case_001.json"
 const CASE_KEVIN := "res://resources/cases/interview_case_002.json"
 const CASE_MARCO := "res://resources/cases/interview_case_003.json"
-const CASE_ELENA := "res://resources/cases/interview_case_004.json"
 
 var interview_portals: Array[ScenePortal] = []
 var portal_case_paths: Dictionary = {}
@@ -122,11 +120,12 @@ func _ready() -> void:
 	else:
 		player.global_position = player_spawn
 	player.movement_bounds = movement_bounds
+	# The office door always leads onto the call floor now. Elena is confronted
+	# from inside it, so the player walks the operation before reaching her.
+	portal.target_scene = portal_target_scene
 	if SessionState.suspect_flipped:
-		portal.target_scene = CONFRONTATION_SCENE
-		portal.prompt_text = "Confront the Operation"
+		portal.prompt_text = "Enter the call center"
 	else:
-		portal.target_scene = portal_target_scene
 		portal.prompt_text = "Enter the office"
 	portal.player_entered.connect(_on_portal_entered)
 	portal.player_exited.connect(_on_portal_exited)
@@ -134,7 +133,7 @@ func _ready() -> void:
 	interview_portal_maria.target_scene = INTERVIEW_SCENE
 	interview_portal_maria.prompt_text = "Speak with Maria Santos"
 	interview_portal_kevin.target_scene = INTERVIEW_SCENE
-	interview_portal_kevin.prompt_text = "Speak with Kevin D."
+	interview_portal_kevin.prompt_text = "Speak with Kevin Dizon"
 	interview_portal_marco.target_scene = INTERVIEW_SCENE
 	interview_portal_marco.prompt_text = "Interrogate Marco Reyes"
 
@@ -168,8 +167,6 @@ func _unhandled_input(event: InputEvent) -> void:
 		_remember_return_spawn(active_interview_portal.global_position)
 		_transition_to_scene(active_interview_portal.target_scene)
 	elif event.is_action_pressed("ui_accept") and _can_enter_portal():
-		if SessionState.suspect_flipped:
-			SessionState.pending_case_path = CASE_ELENA
 		_remember_return_spawn(portal.global_position)
 		_transition_to_scene(portal.target_scene)
 

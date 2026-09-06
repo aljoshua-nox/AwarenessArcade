@@ -14,24 +14,61 @@
   "start_node": "start",
   "nodes": {
     "start": {
-      "prompt": "The office goes quiet as you move through the floor. A woman in a blazer steps out of a back room, phone already in her hand. \"I don't know what Marco told you, but whatever it was, it isn't the whole story.\"",
+      "prompt": "The office goes quiet as you move through the floor. Forty headsets. Forty scripts in plastic sleeves. A woman in a blazer steps out of a back room, phone already in her hand. \"I don't know what Marco told you, but whatever it was, it isn't the whole story.\"",
       "choices": [
-        { "text": "It's enough to shut this operation down. Marco already gave us the details.", "next": "pressure_node" }
+        { "text": "It's enough to shut this operation down. Marco already gave us the details.", "next": "pressure_node" },
+        { "text": "Forty desks. Say the number of people out loud for me.", "next": "scale_node" }
+      ]
+    },
+    "scale_node": {
+      "prompt": "She doesn't blink. \"They're employees. They have quotas, like anyone.\" Behind her, a laminated card taped to a monitor reads: [i]IF THEY HESITATE, REMIND THEM OF THE DEADLINE.[/i] Not a suggestion. A procedure.",
+      "choices": [
+        { "text": "That card isn't sales. It's a method for overriding someone's judgment.", "next": "pressure_node" }
       ]
     },
     "pressure_node": {
       "prompt": "\"You don't want to do this,\" she says, lowering her voice. \"I can make this a very expensive mistake for you to have made.\"",
       "choices": [
         { "text": "Are you offering me money to walk away?", "next": "bribe_offer" },
-        { "text": "I'm not interested in whatever you're about to say. This ends today.", "next": "final_check" }
+        { "text": "I'm not interested in whatever you're about to say. This ends today.", "next": "tactic_quiz_pattern" }
       ]
     },
     "bribe_offer": {
-      "prompt": "\"Let's just call it... an inconvenience fee.\" She names a number that would change your life.",
+      "prompt": "\"Let's just call it... an inconvenience fee.\" She names a number that would change your life. \"Nobody in this room is going to remember this conversation differently than you do.\"",
       "choices": [
         { "text": "Take the money and end the investigation here.", "next": "end_bribed" },
-        { "text": "No. Put it away.", "next": "final_check" }
+        { "text": "No. Put it away.", "next": "tactic_quiz_pattern" }
       ]
+    },
+    "tactic_quiz_pattern": {
+      "tactic_quiz": {
+        "setup": "You think about the two people who got you into this room. Maria Santos, sixty-seven, a retired bank clerk, told her account would be frozen unless she verified right now. Kevin Dizon, twenty-four, works with computers all day, told his files were infected and to call before restarting.",
+        "question": "Two completely different scripts, two completely different people. What did both of them actually need in order to work?",
+        "milestone": {
+          "title": "The Pattern Named",
+          "detail": "Identified that every script in the operation depended on removing the victim's time to verify - not on the victim being careless, old, or bad with technology."
+        },
+        "options": [
+          {
+            "text": "A reason to act immediately, before checking with anyone else.",
+            "correct": true,
+            "feedback": "That is the entire operation in one sentence. Every script - bank, tech support, lottery - is built to collapse the gap between hearing the story and acting on it. The defence is always the same, and it is boring: stop, hang up, and verify through a number you already trust. Nothing legitimate is ever destroyed by waiting ten minutes."
+          },
+          {
+            "text": "A victim who wasn't very good with technology.",
+            "feedback": "Look at who they actually hit. Maria handled money professionally for forty years. Kevin is twenty-four and works on computers daily. The 'only gullible people fall for this' belief isn't just wrong - it's useful to the operation, because people who think they're immune don't check, and people who feel stupid don't report."
+          },
+          {
+            "text": "A convincing fake caller ID.",
+            "feedback": "Spoofed numbers help, and they're trivial to fake - which is why caller ID should never be treated as proof of anything. But a perfect fake number still fails against someone who hangs up and calls back on their own. The time pressure is what stops them doing that."
+          },
+          {
+            "text": "The victim's bank details obtained in advance.",
+            "feedback": "They had almost nothing in advance. Both scripts were designed to make the victim hand over what was missing. The pressure isn't there to use the information - it's there to extract it."
+          }
+        ],
+        "next": "final_check"
+      }
     },
     "final_check": {
       "evidence_check": {
@@ -41,7 +78,7 @@
       }
     },
     "end_bribed": {
-      "prompt": "You walk out with a number in your account and a case that quietly goes nowhere. Marco's statement sits in a drawer, unopened. Somewhere, Maria and Kevin are still waiting for a call that will never come.",
+      "prompt": "You walk out with a number in your account and a case that quietly goes nowhere. Marco's statement sits in a drawer, unopened. The forty headsets are back on by Monday, working a list that now has two more names on it with notes in the margin. Somewhere, Maria and Kevin are still waiting for a call that will never come.",
       "outcome": "bribed",
       "milestone": {
         "title": "Investigation Compromised",
@@ -50,7 +87,7 @@
       "choices": []
     },
     "end_full_takedown": {
-      "prompt": "By evening, officers move through three floors of the operation. Scripts, victim lists, and payment logs are seized. Maria and Kevin's testimonies, backed by Marco's statement, are enough to name the people at the top - not just the callers underneath them.",
+      "prompt": "By evening, officers move through three floors of the operation. Scripts, victim lists, and payment logs are seized. Maria and Kevin's testimonies, backed by Marco's statement, are enough to name the people at the top - not just the callers underneath them. The lists are the part that matters: every name on them belongs to someone who was going to be called again.",
       "outcome": "full_takedown",
       "milestone": {
         "title": "Investigation Breakthrough",
@@ -59,7 +96,7 @@
       "choices": []
     },
     "end_partial_justice": {
-      "prompt": "The raid nets Marco and a handful of floor operators, but without a second confirmed testimony, the people who built and ran the operation slip through the paperwork. Some justice, not all of it.",
+      "prompt": "The raid nets Marco and a handful of floor operators, but without a second confirmed testimony, the people who built and ran the operation slip through the paperwork. The scripts survive. So do the lists. Some justice, not all of it.",
       "outcome": "partial_justice",
       "choices": []
     }

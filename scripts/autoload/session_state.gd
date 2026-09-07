@@ -139,10 +139,14 @@ func go_to_prologue_end(reason: String, note: String = "") -> void:
 	go_to_scene("res://scenes/prologue/prologue_end.tscn")
 
 
-func record_prologue_call(victim_name: String, outcome: String, payout: int) -> void:
+# `person_id` is the identity that survives across the two halves and is what
+# the investigation must key off; `victim_name` is only what the office ledger
+# prints. They deliberately differ per character, so they are stored separately.
+func record_prologue_call(person_id: String, victim_name: String, outcome: String, payout: int) -> void:
 	if victim_name.is_empty():
 		return
 	prologue_call_log.append({
+		"person_id": person_id,
 		"name": victim_name,
 		"outcome": outcome,
 		"payout": payout,
@@ -150,10 +154,15 @@ func record_prologue_call(victim_name: String, outcome: String, payout: int) -> 
 
 
 # The most recent call made to this victim, or {} if they were never called.
-func get_call_record(victim_name: String) -> Dictionary:
+# Keyed on person_id, never on the display name: the prologue calls her
+# "Maria S." and her case file calls her "Maria Santos", so a name lookup
+# silently returns nothing instead of failing loudly.
+func get_call_record(person_id: String) -> Dictionary:
+	if person_id.is_empty():
+		return {}
 	var found: Dictionary = {}
 	for entry in prologue_call_log:
-		if str(entry.get("name", "")) == victim_name:
+		if str(entry.get("person_id", "")) == person_id:
 			found = entry
 	return found
 
@@ -161,13 +170,13 @@ func get_call_record(victim_name: String) -> Dictionary:
 # How this victim should open when the detective interviews them. A victim who
 # was called more than once is judged by the worst thing that happened to them,
 # not by the last call: money taken outranks a later refusal.
-func get_victim_disposition(victim_name: String) -> String:
-	if not prologue_played:
+func get_victim_disposition(person_id: String) -> String:
+	if not prologue_played or person_id.is_empty():
 		return DISPOSITION_NEUTRAL
 	var seen_resistant := false
 	var seen_unfinished := false
 	for entry in prologue_call_log:
-		if str(entry.get("name", "")) != victim_name:
+		if str(entry.get("person_id", "")) != person_id:
 			continue
 		var outcome := str(entry.get("outcome", ""))
 		if outcome == CALL_SUCCESS or outcome == CALL_PARTIAL:

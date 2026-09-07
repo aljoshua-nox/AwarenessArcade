@@ -126,6 +126,49 @@ for f, data in parsed.items():
     print(f"{name}: {len(ids)} nodes, {endings} endings, "
           f"{sum(1 for n in nodes.values() if n.get('tactic_quiz'))} quiz")
 
+# --- Prologue <-> investigation identity -------------------------------------
+# Maria is "Maria S." in the prologue and "Maria Santos" in her case file, so
+# the two halves can only be joined on a stable id. A mismatch here does not
+# crash anything - it silently makes a victim read as never-called - so it is
+# checked statically instead.
+#
+# Add a row here whenever a prologue victim gains an interview.
+EXPECTED_LINKS = {
+    "maria_santos": "interview_case_001.json",
+    "kevin_d": "interview_case_002.json",
+}
+
+content_path = os.path.join(base, "resources", "dialogue", "call_content.json")
+with open(content_path, encoding="utf-8") as fh:
+    victims = json.load(fh).get("victims", [])
+
+prologue_ids = {}
+for v in victims:
+    vid = v.get("person_id", "")
+    vname = v.get("name", "?")
+    if not vid:
+        errors.append(f"call_content.json: victim '{vname}' has no person_id")
+    elif vid in prologue_ids:
+        errors.append(f"call_content.json: duplicate person_id '{vid}'"
+                      f" ({prologue_ids[vid]} and {vname})")
+    else:
+        prologue_ids[vid] = vname
+
+case_ids = {os.path.basename(f): d.get("person", {}).get("person_id", "")
+            for f, d in parsed.items()}
+
+for pid, case_file in EXPECTED_LINKS.items():
+    if pid not in prologue_ids:
+        errors.append(f"call_content.json: expected a victim with person_id '{pid}'")
+    if case_ids.get(case_file) != pid:
+        errors.append(f"{case_file}: person_id is '{case_ids.get(case_file)}',"
+                      f" expected '{pid}' to match the prologue victim")
+
+linked = sorted(pid for pid in EXPECTED_LINKS if pid in prologue_ids
+                and case_ids.get(EXPECTED_LINKS[pid]) == pid)
+print(f"call_content.json: {len(prologue_ids)} victims, "
+      f"{len(linked)} linked to an interview ({', '.join(linked) if linked else 'none'})")
+
 print()
 if errors:
     print("FAILURES:")

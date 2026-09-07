@@ -89,11 +89,11 @@ func _test_ledger_distinguishes_outcomes() -> void:
 	SessionState.reset_session()
 	SessionState.reset_prologue()
 	SessionState.prologue_played = true
-	SessionState.record_prologue_call("Maria S.", SessionState.CALL_REFUSED, 0)
-	SessionState.record_prologue_call("Kevin Dizon", SessionState.CALL_HUNG_UP, 0)
-	SessionState.record_prologue_call("Lina Reyes", SessionState.CALL_TIMEOUT, 0)
-	SessionState.record_prologue_call("Ramon Tolentino", SessionState.CALL_ESCALATED, 0)
-	SessionState.record_prologue_call("Noah Paredes", SessionState.CALL_ABORTED, 0)
+	SessionState.record_prologue_call("maria_santos", "Maria S.", SessionState.CALL_REFUSED, 0)
+	SessionState.record_prologue_call("kevin_d", "Kevin Dizon", SessionState.CALL_HUNG_UP, 0)
+	SessionState.record_prologue_call("lina_reyes", "Lina Reyes", SessionState.CALL_TIMEOUT, 0)
+	SessionState.record_prologue_call("ramon_tolentino", "Ramon Tolentino", SessionState.CALL_ESCALATED, 0)
+	SessionState.record_prologue_call("noah_paredes", "Noah Paredes", SessionState.CALL_ABORTED, 0)
 
 	var view := await _open()
 	var body: String = view._station_body(_station(view, "The call list"))
@@ -113,25 +113,35 @@ func _test_disposition_mapping() -> void:
 	SessionState.reset_session()
 	SessionState.reset_prologue()
 	SessionState.prologue_played = true
-	SessionState.record_prologue_call("Maria S.", SessionState.CALL_SUCCESS, 4200)
-	SessionState.record_prologue_call("Kevin Dizon", SessionState.CALL_REFUSED, 0)
-	SessionState.record_prologue_call("Lina Reyes", SessionState.CALL_TIMEOUT, 0)
+	SessionState.record_prologue_call("maria_santos", "Maria S.", SessionState.CALL_SUCCESS, 4200)
+	SessionState.record_prologue_call("kevin_d", "Kevin Dizon", SessionState.CALL_REFUSED, 0)
+	SessionState.record_prologue_call("lina_reyes", "Lina Reyes", SessionState.CALL_TIMEOUT, 0)
 
-	_check(SessionState.get_victim_disposition("Maria S.") == SessionState.DISPOSITION_HARMED,
+	_check(SessionState.get_victim_disposition("maria_santos") == SessionState.DISPOSITION_HARMED,
 		"a victim you took money from reads as harmed")
-	_check(SessionState.get_victim_disposition("Kevin Dizon") == SessionState.DISPOSITION_RESISTANT,
+	_check(SessionState.get_victim_disposition("kevin_d") == SessionState.DISPOSITION_RESISTANT,
 		"a victim who refused reads as resistant")
-	_check(SessionState.get_victim_disposition("Lina Reyes") == SessionState.DISPOSITION_UNFINISHED,
+	_check(SessionState.get_victim_disposition("lina_reyes") == SessionState.DISPOSITION_UNFINISHED,
 		"a call cut short reads as unfinished")
-	_check(SessionState.get_victim_disposition("Evelyn Marsh") == SessionState.DISPOSITION_NEUTRAL,
+	_check(SessionState.get_victim_disposition("evelyn_marsh") == SessionState.DISPOSITION_NEUTRAL,
 		"a victim never called reads as neutral")
 
 	# Money taken outranks a later refusal by the same person.
-	SessionState.record_prologue_call("Kevin Dizon", SessionState.CALL_PARTIAL, 900)
-	_check(SessionState.get_victim_disposition("Kevin Dizon") == SessionState.DISPOSITION_HARMED,
+	SessionState.record_prologue_call("kevin_d", "Kevin Dizon", SessionState.CALL_PARTIAL, 900)
+	_check(SessionState.get_victim_disposition("kevin_d") == SessionState.DISPOSITION_HARMED,
 		"money taken outranks a refusal on a second call")
-	_check(not SessionState.get_call_record("Maria S.").is_empty(), "a called victim has a call record")
-	_check(SessionState.get_call_record("Evelyn Marsh").is_empty(), "an uncalled victim has no call record")
+	_check(not SessionState.get_call_record("maria_santos").is_empty(), "a called victim has a call record")
+	_check(SessionState.get_call_record("evelyn_marsh").is_empty(), "an uncalled victim has no call record")
+
+	# The bug this plumbing exists to prevent: the display name is not an
+	# identity. Looking up by it must find nothing rather than quietly working
+	# for some characters and not others.
+	_check(SessionState.get_victim_disposition("Maria S.") == SessionState.DISPOSITION_NEUTRAL,
+		"the prologue display name is not a valid lookup key")
+	_check(SessionState.get_victim_disposition("Maria Santos") == SessionState.DISPOSITION_NEUTRAL,
+		"the case-file display name is not a valid lookup key either")
+	_check(SessionState.get_victim_disposition("") == SessionState.DISPOSITION_NEUTRAL,
+		"an empty id never matches an entry")
 
 
 # Skipping the prologue must leave the investigation playable, not degraded.
@@ -141,17 +151,17 @@ func _test_skip_prologue_branch() -> void:
 	SessionState.reset_session()
 	SessionState.reset_prologue()
 	_check(not SessionState.prologue_played, "a fresh session has not played the prologue")
-	for name in ["Maria S.", "Kevin Dizon", "Evelyn Marsh"]:
-		_check(SessionState.get_victim_disposition(name) == SessionState.DISPOSITION_NEUTRAL,
-			"%s opens neutral with no prologue history" % name)
+	for id in ["maria_santos", "kevin_d", "evelyn_marsh"]:
+		_check(SessionState.get_victim_disposition(id) == SessionState.DISPOSITION_NEUTRAL,
+			"%s opens neutral with no prologue history" % id)
 
 	# A stale log must not leak into a skip run.
-	SessionState.record_prologue_call("Maria S.", SessionState.CALL_SUCCESS, 4200)
+	SessionState.record_prologue_call("maria_santos", "Maria S.", SessionState.CALL_SUCCESS, 4200)
 	SessionState.prologue_played = true
 	SessionState.reset_prologue()
 	_check(SessionState.prologue_call_log.is_empty(), "resetting the prologue clears the call log")
 	_check(not SessionState.prologue_played, "resetting the prologue clears the played flag")
-	_check(SessionState.get_victim_disposition("Maria S.") == SessionState.DISPOSITION_NEUTRAL,
+	_check(SessionState.get_victim_disposition("maria_santos") == SessionState.DISPOSITION_NEUTRAL,
 		"a victim harmed in a previous run does not leak into a skip run")
 	_check(SessionState.has_method("start_investigation_direct"), "the menu has a direct investigation entry point")
 
@@ -171,9 +181,9 @@ func _test_ledger_reads_back_prologue() -> void:
 	print("\n[call list reads back the prologue]")
 	SessionState.reset_session()
 	SessionState.reset_prologue()
-	SessionState.record_prologue_call("Maria S.", "success", 4200)
-	SessionState.record_prologue_call("Kevin Dizon", "partial", 900)
-	SessionState.record_prologue_call("Evelyn Marsh", "", 0)
+	SessionState.record_prologue_call("maria_santos", "Maria S.", "success", 4200)
+	SessionState.record_prologue_call("kevin_d", "Kevin Dizon", "partial", 900)
+	SessionState.record_prologue_call("evelyn_marsh", "Evelyn Marsh", "", 0)
 
 	var view := await _open()
 	var ledger := _station(view, "The call list")
@@ -244,6 +254,10 @@ func _test_prologue_logs_calls() -> void:
 		var entry: Dictionary = SessionState.prologue_call_log[0]
 		var expected: String = str(call_view.victims[0].get("name", ""))
 		_check(str(entry.get("name", "")) == expected, "the entry names the victim actually called (%s)" % expected)
+		var expected_id: String = str(call_view.victims[0].get("person_id", ""))
+		_check(not expected_id.is_empty(), "the prologue victim carries a person_id")
+		_check(str(entry.get("person_id", "")) == expected_id,
+			"the entry carries the person_id, not just the name (%s)" % expected_id)
 		_check(int(entry.get("payout", 0)) == 3300, "the entry keeps the payout")
 		_check(str(entry.get("outcome", "")) == "success", "the entry keeps the outcome")
 

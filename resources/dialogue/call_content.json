@@ -1,6 +1,7 @@
 {
   "victims": [
 	{
+	  "person_id": "maria_santos",
 	  "name": "Maria S.",
 	  "age": 67,
 	  "occupation": "Retired clerk",
@@ -38,6 +39,7 @@
 	  }
 	},
 	{
+	  "person_id": "kevin_d",
 	  "name": "Kevin Dizon",
 	  "age": 24,
 	  "occupation": "Office worker",
@@ -75,6 +77,7 @@
 	  }
 	},
 	{
+	  "person_id": "lina_reyes",
 	  "name": "Lina Reyes",
 	  "age": 41,
 	  "occupation": "Small business owner",
@@ -112,6 +115,7 @@
 	  }
 	},
 	{
+	  "person_id": "ramon_tolentino",
 	  "name": "Ramon Tolentino",
 	  "age": 52,
 	  "occupation": "Delivery dispatcher",
@@ -149,6 +153,7 @@
 	  }
 	},
 	{
+	  "person_id": "noah_paredes",
 	  "name": "Noah Paredes",
 	  "age": 33,
 	  "occupation": "Night-shift nurse",
@@ -186,6 +191,7 @@
 	  }
 	},
 	{
+	  "person_id": "evelyn_marsh",
 	  "name": "Evelyn Marsh",
 	  "age": 74,
 	  "occupation": "Retired seamstress",

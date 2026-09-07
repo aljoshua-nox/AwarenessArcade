@@ -432,6 +432,7 @@ func _end_current_call(summary_line: String, end_reason: String = SessionState.C
 		if logged_outcome.is_empty():
 			logged_outcome = end_reason
 		SessionState.record_prologue_call(
+			str(victims[current_victim_index].get("person_id", "")),
 			str(victims[current_victim_index].get("name", "")),
 			logged_outcome,
 			current_call_reward)

@@ -30,24 +30,28 @@
   "evidence": [
 	{
 	  "id": "ev_call_transcript",
+	  "tactic_id": "authority_impersonation",
 	  "label": "Call Transcript",
 	  "description": "A recorded transcript of a caller claiming to be from Maria's bank, warning about a suspicious login.",
 	  "tactic": "Impersonating a trusted authority (the bank) to lower the victim's guard."
 	},
 	{
 	  "id": "ev_phishing_text",
+	  "tactic_id": "manufactured_urgency",
 	  "label": "Phishing Text Message",
 	  "description": "A text message with a fake bank link and a warning about account suspension, sent minutes before the call.",
 	  "tactic": "Manufactured urgency: threatening account loss to force a fast, unverified reaction."
 	},
 	{
 	  "id": "ev_scam_report",
+	  "tactic_id": "repeated_script",
 	  "label": "Community Scam Report",
 	  "description": "A neighborhood report matching the same caller number to another attempted scam.",
 	  "tactic": "Recognizing repeated scripts is one of the fastest ways to confirm a scam pattern."
 	},
 	{
 	  "id": "ev_bank_alert",
+	  "tactic_id": "verification_denial",
 	  "label": "Bank Security Alert",
 	  "description": "An internal bank notice describing unusual transfer pressure and urgent account-verification language.",
 	  "tactic": "Real banks do not pressure customers to 'verify' by acting immediately over the phone."
@@ -107,6 +111,7 @@
 	"tactic_quiz_urgency": {
 	  "tactic_quiz": {
 		"setup": "You write the line out as she said it: [i]\"Your account has a suspicious login. You need to verify your identity right away, or we'll have to freeze the account.\"[/i]",
+		"tactic_id": "manufactured_urgency",
 		"tactic": "Manufactured urgency",
 		"question": "Which part of that sentence is doing the manipulation?",
 		"milestone": {

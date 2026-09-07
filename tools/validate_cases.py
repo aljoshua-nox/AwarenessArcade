@@ -126,6 +126,68 @@ for f, data in parsed.items():
     print(f"{name}: {len(ids)} nodes, {endings} endings, "
           f"{sum(1 for n in nodes.values() if n.get('tactic_quiz'))} quiz")
 
+# --- Tactic notebook catalogue ------------------------------------------------
+# Every tactic_id in a case must resolve to a catalogue entry, and every
+# catalogue entry must be reachable - a tactic nothing can unlock is an entry
+# the player is shown as locked forever.
+catalogue_path = os.path.join(base, "resources", "tactics", "tactic_catalogue.json")
+with open(catalogue_path, encoding="utf-8") as fh:
+    catalogue = json.load(fh).get("tactics", [])
+
+catalogue_ids = set()
+for t in catalogue:
+    tid = t.get("id", "")
+    if not tid:
+        errors.append("tactic_catalogue.json: an entry has no id")
+    elif tid in catalogue_ids:
+        errors.append(f"tactic_catalogue.json: duplicate id '{tid}'")
+    else:
+        catalogue_ids.add(tid)
+    for field in ("name", "summary", "spot_it"):
+        if not str(t.get(field, "")).strip():
+            errors.append(f"tactic_catalogue.json: '{tid}' has no {field}")
+
+reachable = set()
+for f, data in parsed.items():
+    name = os.path.basename(f)
+    # Evidence only teaches its tactic when it is accepted somewhere and not
+    # flagged wrong, so an item nothing accepts can never unlock its entry.
+    accepted_ids = set()
+    for node in data.get("nodes", {}).values():
+        for entry in node.get("accepts_evidence", []):
+            if not entry.get("wrong", False):
+                accepted_ids.add(str(entry.get("evidence_id", "")))
+
+    items = list(data.get("evidence", []))
+    for node in data.get("nodes", {}).values():
+        items += list(node.get("grants_evidence", []))
+    for item in items:
+        tid = item.get("tactic_id")
+        if not tid:
+            continue
+        if tid not in catalogue_ids:
+            errors.append(f"{name}: evidence '{item.get('id')}' points at unknown tactic '{tid}'")
+        elif str(item.get("id", "")) in accepted_ids:
+            reachable.add(tid)
+
+    for nid, node in data.get("nodes", {}).items():
+        quiz = node.get("tactic_quiz")
+        if not quiz:
+            continue
+        tid = quiz.get("tactic_id")
+        if not tid:
+            continue
+        if tid not in catalogue_ids:
+            errors.append(f"{name}: quiz '{nid}' points at unknown tactic '{tid}'")
+        else:
+            reachable.add(tid)
+
+for tid in sorted(catalogue_ids - reachable):
+    errors.append(f"tactic_catalogue.json: '{tid}' can never be unlocked - "
+                  f"nothing in any case grants it")
+
+print(f"tactic_catalogue.json: {len(catalogue_ids)} tactics, {len(reachable)} reachable")
+
 # --- Tactic quizzes carry a name ---------------------------------------------
 # The ending names the tactics the player got wrong, so an unlabelled quiz would
 # silently drop out of that list rather than fail.

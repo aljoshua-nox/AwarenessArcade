@@ -69,6 +69,10 @@ var tactic_reads_total: int = 0
 # counters are the score; this is what was actually missed, which is the part
 # worth naming back to the player at the end.
 var tactic_reads: Array[Dictionary] = []
+# Tactics the player has collected in the notebook, as
+# {"id": String, "context": String}. The context records where they met it, so
+# the notebook can say when it was learned rather than only that it was.
+var tactics_learned: Array[Dictionary] = []
 var detective_credibility: int = 50
 var interviewed_people: Array[String] = []
 var pending_case_path: String = ""
@@ -112,6 +116,28 @@ func get_missed_tactics() -> Array[String]:
 		named[tactic] = true
 		missed.append(tactic)
 	return missed
+
+
+# Collected once. Meeting the same tactic again keeps the first context, which
+# is the moment it was actually learned.
+func record_tactic_learned(tactic_id: String, context: String = "") -> void:
+	if tactic_id.is_empty() or has_learned_tactic(tactic_id):
+		return
+	tactics_learned.append({"id": tactic_id, "context": context})
+
+
+func has_learned_tactic(tactic_id: String) -> bool:
+	for entry in tactics_learned:
+		if str(entry.get("id", "")) == tactic_id:
+			return true
+	return false
+
+
+func get_learned_tactic(tactic_id: String) -> Dictionary:
+	for entry in tactics_learned:
+		if str(entry.get("id", "")) == tactic_id:
+			return entry
+	return {}
 
 
 func get_awareness_tier() -> String:
@@ -263,6 +289,7 @@ func reset_session() -> void:
 	tactic_reads_correct = 0
 	tactic_reads_total = 0
 	tactic_reads.clear()
+	tactics_learned.clear()
 	detective_credibility = 50
 	interviewed_people.clear()
 	pending_case_path = ""

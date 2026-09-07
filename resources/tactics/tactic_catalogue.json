@@ -1,0 +1,58 @@
+{
+  "tactics": [
+    {
+      "id": "authority_impersonation",
+      "name": "Impersonating a trusted authority",
+      "summary": "The caller claims to be your bank, a well-known company, or the police. The name does the work before a single fact is checked.",
+      "spot_it": "A caller's claimed identity is not evidence of it. Hang up and dial the number printed on your card, your bill, or the official website - never a number the caller gives you."
+    },
+    {
+      "id": "manufactured_urgency",
+      "name": "Manufactured urgency",
+      "summary": "A deadline that exists only inside the call. Your account closes, the fine doubles, the offer expires - all so you act before you verify.",
+      "spot_it": "Real institutions let you call back. If someone insists this cannot wait, that pressure is the product, not a detail."
+    },
+    {
+      "id": "manufactured_fear",
+      "name": "Manufactured fear",
+      "summary": "A fake virus warning, a breached account, a legal threat. Panic is easier to steer than curiosity.",
+      "spot_it": "Notice the feeling before the content. Being frightened into a fast decision is itself the warning sign."
+    },
+    {
+      "id": "impossible_scan",
+      "name": "The impossible scan",
+      "summary": "A web page announcing it has scanned your computer and found infections. A page in a browser cannot inspect your machine, so the result was written before you arrived.",
+      "spot_it": "Any site claiming to have scanned your device is lying about something it is physically unable to do."
+    },
+    {
+      "id": "remote_access",
+      "name": "Talking you into handing over the controls",
+      "summary": "Posing as technical support to get you to install remote-access software, which hands over your screen, your files and your accounts at once.",
+      "spot_it": "Nobody legitimate cold-calls to ask for remote access. If you did not start the support request, there is no support request."
+    },
+    {
+      "id": "invented_fee",
+      "name": "A fee to fix an invented problem",
+      "summary": "Payment for repairing something that was never broken - the problem, the diagnosis and the cure all supplied by the same stranger.",
+      "spot_it": "Whoever reports the problem should never be the one charging to solve it. Get a second opinion from someone who called nobody."
+    },
+    {
+      "id": "repeated_script",
+      "name": "The same call, more than once",
+      "summary": "The identical wording turning up at a neighbour, a relative, a community group. Scripts are reused because they are cheap and they work.",
+      "spot_it": "Compare notes out loud. A call that felt uniquely targeted usually turns out to have reached half the street."
+    },
+    {
+      "id": "reused_victim_list",
+      "name": "The reused victim list",
+      "summary": "Names and numbers are traded and worked repeatedly. Answering once, even to refuse, confirms a real person is on the end of the line.",
+      "spot_it": "Being called again is not bad luck. If the calls keep coming, treat the number as known and let unknown callers go to voicemail."
+    },
+    {
+      "id": "verification_denial",
+      "name": "Denying you time to check",
+      "summary": "Different scripts, one shared mechanism: keep the person on the line and away from anyone who could confirm the story.",
+      "spot_it": "The single defence that works on every version of this - end the call and check independently. Any caller who resists that has told you what they are."
+    }
+  ]
+}

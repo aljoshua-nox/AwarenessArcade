@@ -532,6 +532,15 @@ func _answer_quiz(option_index: int) -> void:
 	answered_quizzes[current_node_id] = true
 	quiz_active = false
 	SessionState.record_tactic_read(correct, str(current_quiz.get("tactic", "")))
+	# The quiz explains the tactic on a wrong answer too, so the notebook
+	# entry is earned either way - the teaching is not conditional on
+	# playing well.
+	var quiz_tactic_id := str(current_quiz.get("tactic_id", ""))
+	if not quiz_tactic_id.is_empty():
+		var learned_where := "Named while interviewing %s" % str(person.get("name", "a witness"))
+		if not correct:
+			learned_where = "Explained after a misread, interviewing %s" % str(person.get("name", "a witness"))
+		SessionState.record_tactic_learned(quiz_tactic_id, learned_where)
 	_apply_cooperation(int(option.get("cooperation", 0)))
 	_play_sting(correct)
 
@@ -613,6 +622,12 @@ func _on_evidence_chosen(index: int) -> void:
 				var mark: String = TextStyle.MARK_WRONG if is_wrong else TextStyle.MARK_TACTIC
 				var tone: String = TextStyle.COLOR_WRONG if is_wrong else TextStyle.COLOR_TACTIC
 				response = "%s\n\n%s" % [response, _system_line(mark, tactic, tone)]
+				# Reading a tactic off a piece of evidence is how most of them are
+				# met, so that is where most notebook entries come from. A decoy
+				# presented wrongly teaches nothing and unlocks nothing.
+				if not is_wrong:
+					SessionState.record_tactic_learned(str(item.get("tactic_id", "")),
+						"From %s, shown to %s" % [str(item.get("label", "evidence")), str(person.get("name", "a witness"))])
 			var presentation_key := "%s|%s" % [current_node_id, item_id]
 			var repeated := presented_evidence.has(presentation_key)
 			presented_evidence[presentation_key] = true

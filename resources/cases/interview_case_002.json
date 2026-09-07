@@ -32,18 +32,21 @@
   "evidence": [
 	{
 	  "id": "ev_popup_screenshot",
+	  "tactic_id": "manufactured_fear",
 	  "label": "Fake Tech-Support Pop-up",
 	  "description": "A screenshot of a browser pop-up claiming Kevin's device was infected, with a number to call immediately.",
 	  "tactic": "Manufactured fear: a fake virus warning designed to panic the victim into calling."
 	},
 	{
 	  "id": "ev_remote_access_log",
+	  "tactic_id": "remote_access",
 	  "label": "Remote Access Log",
 	  "description": "A log showing a stranger connected to Kevin's laptop for several minutes before he disconnected it.",
 	  "tactic": "Posing as technical support to gain direct access to a victim's device."
 	},
 	{
 	  "id": "ev_fee_receipt",
+	  "tactic_id": "invented_fee",
 	  "label": "Removal Fee Receipt",
 	  "description": "A payment receipt for a 'malware removal fee' charged during the call.",
 	  "tactic": "Charging a fee to 'fix' a problem that was invented in the first place."
@@ -107,6 +110,7 @@
 	"tactic_quiz_popup": {
 	  "tactic_quiz": {
 		"setup": "You pull up the screenshot. A red banner fills the browser window: [i]\"THREAT DETECTED - 3 infected files found. Do not restart your device. Call support immediately.\"[/i]",
+		"tactic_id": "impossible_scan",
 		"tactic": "The impossible scan",
 		"question": "What is the single fact that proves this pop-up was fake before anyone even called the number?",
 		"milestone": {

@@ -1,0 +1,54 @@
+# Line endings are stored LF in the repository and checked out LF everywhere.
+#
+# Without this, each machine's core.autocrlf setting decides how files are
+# written, and a file saved on one setup shows up as a whole-file change on
+# another. That has already happened once here: a single JSON file landed in a
+# commit as ~1249 changed lines that were almost entirely line-ending churn.
+# Godot reads and writes LF on every platform, so LF everywhere is the setting
+# that matches the tools.
+* text=auto eol=lf
+
+# Godot and project text formats, stated explicitly so they are never guessed.
+*.gd    text eol=lf
+*.tscn  text eol=lf
+*.tres  text eol=lf
+*.godot text eol=lf
+*.cfg   text eol=lf
+*.uid   text eol=lf
+*.json  text eol=lf
+*.import text eol=lf
+*.md    text eol=lf
+*.py    text eol=lf
+*.txt   text eol=lf
+*.svg   text eol=lf
+*.xml   text eol=lf
+*.html  text eol=lf
+
+# Do NOT add `-text` exceptions for vendored text files. Most of them already
+# have LF blobs and only look like CRLF in the working tree because Windows
+# checkout converts them; marking those `-text` makes git commit the converted
+# copy and creates a change that did not exist. Let the rule above apply
+# uniformly.
+
+# Binary: never normalised, never diffed as text.
+*.png  binary
+*.jpg  binary
+*.jpeg binary
+*.gif  binary
+*.webp binary
+*.ico  binary
+*.mp3  binary
+*.wav  binary
+*.ogg  binary
+*.ttf  binary
+*.otf  binary
+*.woff binary
+*.woff2 binary
+*.exe  binary
+*.pck  binary
+*.zip  binary
+*.aseprite binary
+*.ase  binary
+*.ai   binary
+*.swf  binary
+*.db   binary

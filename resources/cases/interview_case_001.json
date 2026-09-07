@@ -8,7 +8,24 @@
 	"occupation": "Retired clerk",
 	"role": "Victim",
 	"portrait": "res://assets/art/portraits/lady 1.png",
-	"traits": "Worried about her savings. Trusts formal-sounding language. Embarrassed about what happened."
+	"traits": "Worried about her savings. Trusts formal-sounding language. Embarrassed about what happened.",
+	"dispositions": {
+	  "harmed": {
+		"cooperation": 34,
+		"prompt": "Maria doesn't look up when you sit down. Her hands stay flat on the table either side of a bank statement she has folded and unfolded until the crease has gone soft. \"I've said it all already. To the bank, to my son.\" A pause. \"He keeps asking how I could not have noticed.\"",
+		"note": "The number that called her was yours. She is not being difficult - she is ashamed, and shame is quiet. It is also why most of this never gets reported."
+	  },
+	  "resistant": {
+		"cooperation": 62,
+		"prompt": "Maria is talking before you have finished sitting down. \"Good. Somebody official.\" She pushes a notepad across the table - a phone number, a date, the time she put the phone down. \"I knew. Halfway through, I knew. And I have been waiting three weeks for someone to come and ask me about it.\"",
+		"note": "She refused the call you made. Nothing was taken, so there is nothing on paper - only her word, and she is more than willing to give it."
+	  },
+	  "unfinished": {
+		"cooperation": 44,
+		"prompt": "Maria watches you sit down, guarded. \"It rang, I answered, and then it just... stopped. Nothing happened.\" She turns her cup a quarter turn on the saucer. \"So I don't know what you want from me. Was something supposed to happen?\"",
+		"note": "Your call to her never finished. She does not know what she avoided, which makes her difficult to alarm and difficult to help."
+	  }
+	}
   },
   "evidence": [
 	{

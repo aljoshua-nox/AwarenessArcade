@@ -10,7 +10,24 @@
 	"portrait": "res://assets/art/portraits/fella 1.png",
 	"traits": "Busy and distracted. Embarrassed he let a stranger into his laptop.",
 	"min_credibility": 60,
-	"hesitant_start": "hesitant_intro"
+	"hesitant_start": "hesitant_intro",
+	"dispositions": {
+	  "harmed": {
+		"cooperation": 34,
+		"prompt": "Kevin has the laptop with him, closed, and keeps one hand flat on the lid the whole time. \"I've read about this happening to other people. I always thought, how.\" He shrugs, tries a laugh, doesn't land it. \"Anyway. It's a lot of money to be stupid about.\"",
+		"note": "He paid you. The self-blame in this room is doing the caller's work for them - he will minimise what happened unless you make it safe not to."
+	  },
+	  "resistant": {
+		"cooperation": 62,
+		"prompt": "Kevin drops into the chair mid-sentence. \"Okay - so, the warning popup, the fake scan, the whole thing. I hung up.\" He is still keyed up about it. \"But they had my name. My actual name. That's the part I can't get past. Where does that come from?\"",
+		"note": "He hung up on you. That leaves nothing to trace - but he recalls the script better than most people who paid, because he was listening to it rather than panicking through it."
+	  },
+	  "unfinished": {
+		"cooperation": 44,
+		"prompt": "Kevin checks the time before he sits. \"Someone called about my laptop and then the line dropped. That's the whole story.\" He is already half out of the conversation. \"Is this really worth a house visit?\"",
+		"note": "Your call to him was cut off. He does not believe anything happened, which makes getting his attention the first problem to solve."
+	  }
+	}
   },
   "evidence": [
 	{

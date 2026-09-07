@@ -51,10 +51,20 @@ var current_quiz: Dictionary = {}
 var evidence_misses: int = 0
 var type_tween: Tween
 
+# How this person carries the prologue into the room. Everything after the
+# opening beat is shared, so this is a different first impression - not a
+# separate script per outcome. Empty on a case with no `dispositions` block,
+# and on DISPOSITION_NEUTRAL, which is deliberately the unmodified case.
+var disposition: String = SessionState.DISPOSITION_NEUTRAL
+var disposition_opening: String = ""
+var disposition_note: String = ""
+var opening_node_id: String = ""
+
 
 func _ready() -> void:
 	_build_ui()
 	_load_case()
+	_apply_disposition()
 	_refresh_person_panel()
 	credibility_value.text = "Detective Credibility: %d" % SessionState.detective_credibility
 	var start_node := _determine_start_node()
@@ -74,6 +84,34 @@ func _unhandled_input(event: InputEvent) -> void:
 	if skip:
 		_finish_typing()
 		get_viewport().set_input_as_handled()
+
+
+# The prologue-to-investigation coupling. What the player did to this person
+# while playing the scammer sets how far open the door is, and rewrites the
+# opening beat so the room reflects it.
+#
+# A victim who was robbed opens withdrawn and ashamed - harder to reach, but
+# they have a paper trail. One who refused opens angry and willing, with little
+# to prove. That is a trade, not a difficulty tax: playing the prologue well
+# changes the route through the interview rather than making it strictly worse.
+#
+# Keyed on person_id, never the display name - the two halves spell these
+# characters differently on purpose.
+func _apply_disposition() -> void:
+	opening_node_id = str(case_data.get("start_node", ""))
+	disposition = SessionState.get_victim_disposition(str(person.get("person_id", "")))
+	var table: Dictionary = person.get("dispositions", {})
+	var entry: Dictionary = table.get(disposition, {})
+	if entry.is_empty():
+		return
+	# Cooperation applies on every branch, including a hesitant one: being
+	# robbed makes someone harder to reach whichever door you came in by.
+	if entry.has("cooperation"):
+		cooperation = clampi(int(entry["cooperation"]), 0, 100)
+	# The opening text only replaces the default start. A hesitant branch has
+	# its own reason for existing and keeps its own words.
+	disposition_opening = str(entry.get("prompt", ""))
+	disposition_note = str(entry.get("note", ""))
 
 
 func _determine_start_node() -> String:
@@ -356,8 +394,16 @@ func _load_node(node_id: String, lead_in: String = "") -> void:
 	current_quiz = {}
 
 	var node_prompt := str(current_node.get("prompt", ""))
+	if node_id == opening_node_id and not disposition_opening.is_empty():
+		node_prompt = disposition_opening
 	var has_evidence_prompt := bool(current_node.get("evidence_prompt", false))
 	var display_prompt := _style_dialogue(node_prompt)
+	# Say out loud that this is the player's own doing, or the mechanic is
+	# invisible - the cooperation bar alone gives them nothing to compare against.
+	if node_id == opening_node_id and not disposition_note.is_empty():
+		display_prompt = "%s
+
+%s" % [display_prompt, _system_line(TextStyle.MARK_HARM, disposition_note, TextStyle.COLOR_WRONG)]
 	if has_evidence_prompt:
 		var evidence_hint := str(current_node.get("evidence_hint", ""))
 		if not evidence_hint.is_empty():

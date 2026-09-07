@@ -38,6 +38,23 @@ func _open(case_path: String) -> Node:
 	return view
 
 
+# Same as _open(), but with a prologue behind it. reset_session() wipes the
+# call log, so the history has to be seeded after it and before the scene
+# instantiates - the interview reads its disposition in _ready().
+func _open_after_prologue(case_path: String, person_id: String, victim_name: String,
+		outcome: String, credibility: int = 50) -> Node:
+	SessionState.reset_session()
+	SessionState.prologue_played = true
+	SessionState.detective_credibility = credibility
+	if not person_id.is_empty():
+		SessionState.record_prologue_call(person_id, victim_name, outcome, 0)
+	SessionState.pending_case_path = case_path
+	var view: Node = load(INTERVIEW_SCENE).instantiate()
+	add_child(view)
+	await get_tree().process_frame
+	return view
+
+
 func _close(view: Node) -> void:
 	remove_child(view)
 	view.queue_free()
@@ -55,6 +72,7 @@ func _run() -> void:
 	await _test_failure_route()
 	await _test_antifarming()
 	await _test_text_voices()
+	await _test_prologue_coupling()
 
 	print("\n%d checks, %d failed" % [checks, failures.size()])
 	for f in failures:
@@ -64,6 +82,60 @@ func _run() -> void:
 	await get_tree().process_frame
 	await get_tree().process_frame
 	get_tree().quit(1 if failures.size() > 0 else 0)
+
+
+# The prologue-to-investigation coupling: what the player did as the scammer
+# decides how far open the door is when they arrive as the detective.
+func _test_prologue_coupling() -> void:
+	print("
+[the prologue shapes the interview]")
+
+	# Neutral is the untouched case. A skip-the-prologue run must play exactly
+	# as the case was written, with no content missing.
+	var view := await _open(CASE_MARIA)
+	_check(view.disposition == SessionState.DISPOSITION_NEUTRAL, "no prologue history reads as neutral")
+	_check(view.cooperation == 50, "a neutral victim opens at the default 50 (got %d)" % view.cooperation)
+	_check(view.prompt_value.text.contains("already told the bank"), "a neutral victim keeps the original opening")
+	_check(not view.prompt_value.text.contains("HARM ON RECORD"), "no harm marker without prologue history")
+	await _close(view)
+
+	# Robbed: withdrawn and harder to reach, and the player is told why.
+	view = await _open_after_prologue(CASE_MARIA, "maria_santos", "Maria S.", SessionState.CALL_SUCCESS)
+	_check(view.disposition == SessionState.DISPOSITION_HARMED, "a victim you took money from reads as harmed")
+	_check(view.cooperation == 34, "a harmed victim opens below neutral (got %d)" % view.cooperation)
+	_check(view.prompt_value.text.contains("folded and unfolded"), "a harmed victim gets her own opening beat")
+	_check(view.prompt_value.text.contains("HARM ON RECORD"), "the player is told this is their own doing")
+	await _close(view)
+
+	# Refused: unharmed, angry, willing. The trade, not a difficulty tax.
+	view = await _open_after_prologue(CASE_MARIA, "maria_santos", "Maria S.", SessionState.CALL_REFUSED)
+	_check(view.disposition == SessionState.DISPOSITION_RESISTANT, "a victim who refused reads as resistant")
+	_check(view.cooperation == 62, "a resistant victim opens above neutral (got %d)" % view.cooperation)
+	_check(view.prompt_value.text.contains("Somebody official"), "a resistant victim gets her own opening beat")
+	await _close(view)
+
+	view = await _open_after_prologue(CASE_MARIA, "maria_santos", "Maria S.", SessionState.CALL_TIMEOUT)
+	_check(view.cooperation == 44, "an unfinished call lands between the two (got %d)" % view.cooperation)
+	await _close(view)
+
+	# Harm is per person, not global: robbing Kevin must not change Maria.
+	view = await _open_after_prologue(CASE_MARIA, "kevin_d", "Kevin Dizon", SessionState.CALL_SUCCESS)
+	_check(view.cooperation == 50, "robbing someone else leaves Maria neutral (got %d)" % view.cooperation)
+	await _close(view)
+
+	# Kevin above his credibility gate gets his own harmed opening.
+	view = await _open_after_prologue(CASE_KEVIN, "kevin_d", "Kevin Dizon", SessionState.CALL_SUCCESS, 70)
+	_check(view.cooperation == 34, "Kevin opens harmed as well (got %d)" % view.cooperation)
+	_check(view.prompt_value.text.contains("flat on the lid"), "Kevin gets his own harmed opening beat")
+	await _close(view)
+
+	# Below it, the two gates compose: the hesitant branch keeps its own words
+	# but still carries the cooperation cost of what was done to him.
+	view = await _open_after_prologue(CASE_KEVIN, "kevin_d", "Kevin Dizon", SessionState.CALL_SUCCESS, 40)
+	_check(view.prompt_value.text.contains("feel dumb enough"), "the hesitant branch keeps its own opening")
+	_check(not view.prompt_value.text.contains("flat on the lid"), "a disposition opening never overrides the hesitant branch")
+	_check(view.cooperation == 34, "the hesitant branch still carries the harmed cooperation (got %d)" % view.cooperation)
+	await _close(view)
 
 
 func _test_opening_state() -> void:

@@ -126,6 +126,41 @@ for f, data in parsed.items():
     print(f"{name}: {len(ids)} nodes, {endings} endings, "
           f"{sum(1 for n in nodes.values() if n.get('tactic_quiz'))} quiz")
 
+# --- Disposition blocks ------------------------------------------------------
+# A victim's opening beat varies with what the player did to them in the
+# prologue. `neutral` is deliberately absent: it means "the case exactly as
+# written", which is what a skip-the-prologue run must get.
+VALID_DISPOSITIONS = {"harmed", "resistant", "unfinished"}
+
+for f, data in parsed.items():
+    name = os.path.basename(f)
+    person = data.get("person", {})
+    for key, entry in person.get("dispositions", {}).items():
+        where = f"{name}: disposition '{key}'"
+        if key == "neutral":
+            errors.append(f"{where} must not be declared - neutral is the unmodified case")
+            continue
+        if key not in VALID_DISPOSITIONS:
+            errors.append(f"{where} is not one of {sorted(VALID_DISPOSITIONS)}")
+            continue
+        if not isinstance(entry, dict):
+            errors.append(f"{where} is not an object")
+            continue
+        if "cooperation" not in entry and "prompt" not in entry:
+            errors.append(f"{where} changes nothing - give it a cooperation or a prompt")
+        coop = entry.get("cooperation")
+        if coop is not None:
+            if not isinstance(coop, int) or isinstance(coop, bool):
+                errors.append(f"{where} cooperation is not an integer")
+            elif not 1 <= coop <= 100:
+                # 0 would end the interview on the opening frame.
+                errors.append(f"{where} cooperation {coop} is outside 1-100")
+        for field in ("prompt", "note"):
+            if field in entry and not str(entry[field]).strip():
+                errors.append(f"{where} has an empty {field}")
+        if "[color" in str(entry.get("prompt", "")) or "[font" in str(entry.get("prompt", "")):
+            errors.append(f"{where} prompt carries markup - the engine styles case text")
+
 # --- Prologue <-> investigation identity -------------------------------------
 # Maria is "Maria S." in the prologue and "Maria Santos" in her case file, so
 # the two halves can only be joined on a stable id. A mismatch here does not

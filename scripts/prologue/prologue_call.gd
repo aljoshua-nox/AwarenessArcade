@@ -84,10 +84,14 @@ func _process(delta: float) -> void:
 	if call_active and current_call_time_left > 0.0:
 		current_call_time_left = maxf(0.0, current_call_time_left - delta)
 	if SessionState.time_left <= 0.0 and not prologue_end_transition_started:
+		# A call still live when the shift clock expires was never logged at all,
+		# so that victim silently vanished from the ledger. Record it as cut off.
+		if call_active:
+			_end_current_call("The shift clock ran out mid-call.", SessionState.CALL_TIMEOUT)
 		_start_prologue_end_transition("Session Time Expired", "The session timer ran out.")
 		return
 	elif call_active and current_call_time_left <= 0.0 and not current_node.is_empty():
-		_end_current_call("Victim hung up after waiting too long.")
+		_end_current_call("Victim hung up after waiting too long.", SessionState.CALL_HUNG_UP)
 	_update_timer_display()
 
 
@@ -370,7 +374,7 @@ func _load_node(node_id: String) -> void:
 	current_node = dialogue_nodes.get(node_id, {})
 	if current_node.is_empty():
 		current_prompt_text = ""
-		_end_current_call("Call ended. Select another victim to continue.")
+		_end_current_call("Call ended. Select another victim to continue.", SessionState.CALL_ABORTED)
 		return
 
 	current_prompt_text = _pick_text(current_node.get("prompt_variants", current_node.get("prompt", "")))
@@ -413,13 +417,23 @@ func _update_dialogue_display() -> void:
 	dialogue_value.text = "\n\n".join(text_parts)
 
 
-func _end_current_call(summary_line: String) -> void:
+func _end_current_call(summary_line: String, end_reason: String = SessionState.CALL_REFUSED) -> void:
 	# Log who this was before the call state is cleared - the office call floor
-	# reads these names back to the player later.
+	# reads these names back to the player later, and the investigation half
+	# reads them to decide how each victim opens.
+	#
+	# A payout is the fact that matters, so it outranks however the call
+	# happened to terminate: if they transferred money and the line was pulled a
+	# moment later, they were still robbed. `end_reason` is only recorded when
+	# no money changed hands, which is precisely the case the old empty-string
+	# outcome could not describe.
 	if current_victim_index >= 0 and current_victim_index < victims.size():
+		var logged_outcome := current_call_outcome
+		if logged_outcome.is_empty():
+			logged_outcome = end_reason
 		SessionState.record_prologue_call(
 			str(victims[current_victim_index].get("name", "")),
-			current_call_outcome,
+			logged_outcome,
 			current_call_reward)
 	if current_call_reward > 0:
 		SessionState.profit += current_call_reward
@@ -574,7 +588,7 @@ func _on_choice_pressed(choice_index: int) -> void:
 	_update_system_notices()
 	SessionState.alerts = _build_alert_text(alert_text)
 	if SessionState.suspicion >= 100:
-		_end_current_call("Investigation escalates and the line is shut down.")
+		_end_current_call("Investigation escalates and the line is shut down.", SessionState.CALL_ESCALATED)
 		return
 	if next_node.is_empty():
 		if current_call_outcome == "success":
@@ -582,7 +596,7 @@ func _on_choice_pressed(choice_index: int) -> void:
 		elif current_call_outcome == "partial":
 			_end_current_call("Call ended after a partial transfer.")
 		else:
-			_end_current_call("Call ended with no payout.")
+			_end_current_call("Call ended with no payout.", SessionState.CALL_REFUSED)
 	else:
 		_load_node(next_node)
 	_refresh_ui()
@@ -832,5 +846,5 @@ func _on_end_prologue_pressed() -> void:
 	if prologue_end_transition_started:
 		return
 	if call_active:
-		_end_current_call("You wrap up the call to start the investigation.")
+		_end_current_call("You wrap up the call to start the investigation.", SessionState.CALL_ABORTED)
 	_start_prologue_end_transition("Investigation Begins", "You chose to end the call center session and start investigating.")

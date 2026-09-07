@@ -215,14 +215,29 @@ func _build_call_log_text() -> String:
 		var payout := int(entry.get("payout", 0))
 		var note := ""
 		var tone: String = TextStyle.COLOR_NARRATION
-		if outcome == "success":
+		# Every non-paying call used to print as "hung up", including ones the
+		# player simply ran out of time on. The ledger is the operation's own
+		# record - it should be accurate about what happened on each number.
+		if outcome == SessionState.CALL_SUCCESS:
 			note = "transferred %d - RECONTACT" % payout
 			tone = TextStyle.COLOR_WRONG
-		elif outcome == "partial":
+		elif outcome == SessionState.CALL_PARTIAL:
 			note = "partial %d - warm, try again" % payout
 			tone = TextStyle.COLOR_WRONG
+		elif outcome == SessionState.CALL_HUNG_UP:
+			note = "no payout - hung up early, still live"
+			tone = TextStyle.COLOR_TACTIC
+		elif outcome == SessionState.CALL_ESCALATED:
+			note = "line pulled mid-call - rest the number, still live"
+			tone = TextStyle.COLOR_HINT
+		elif outcome == SessionState.CALL_TIMEOUT:
+			note = "cut off - shift ended mid-call, still live"
+			tone = TextStyle.COLOR_HINT
+		elif outcome == SessionState.CALL_ABORTED:
+			note = "dropped by operator - unworked, still live"
+			tone = TextStyle.COLOR_HINT
 		else:
-			note = "no payout - hung up, still live"
+			note = "no payout - refused, still live"
 			tone = TextStyle.COLOR_TACTIC
 		lines.append("[font=%s][color=#%s]     %s ......... %s[/color][/font]" % [TextStyle.FONT_SYSTEM, tone, entry_name, note])
 	lines.append(TextStyle.system(TextStyle.MARK_HARM,

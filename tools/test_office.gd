@@ -54,6 +54,10 @@ func _run() -> void:
 	await _test_director_door_gate()
 	await _test_inspection_panel()
 	await _test_prologue_logs_calls()
+	_test_outcome_vocabulary()
+	await _test_ledger_distinguishes_outcomes()
+	_test_disposition_mapping()
+	_test_skip_prologue_branch()
 
 	print("\n%d checks, %d failed" % [checks, failures.size()])
 	for f in failures:
@@ -61,6 +65,95 @@ func _run() -> void:
 	await get_tree().process_frame
 	await get_tree().process_frame
 	get_tree().quit(1 if failures.size() > 0 else 0)
+
+
+# The outcome vocabulary: every way a call can end must be distinguishable.
+# These used to collapse into an empty string, so "she refused you" and "you
+# ran out of time" were the same fact.
+func _test_outcome_vocabulary() -> void:
+	print("
+[call outcome vocabulary]")
+	var all := [SessionState.CALL_SUCCESS, SessionState.CALL_PARTIAL, SessionState.CALL_REFUSED,
+		SessionState.CALL_HUNG_UP, SessionState.CALL_ESCALATED, SessionState.CALL_TIMEOUT,
+		SessionState.CALL_ABORTED]
+	var unique := {}
+	for outcome in all:
+		unique[outcome] = true
+		_check(not str(outcome).is_empty(), "outcome '%s' is a real value, not an empty string" % outcome)
+	_check(unique.size() == all.size(), "all %d outcomes are distinct" % all.size())
+
+
+func _test_ledger_distinguishes_outcomes() -> void:
+	print("
+[the ledger tells the outcomes apart]")
+	SessionState.reset_session()
+	SessionState.reset_prologue()
+	SessionState.prologue_played = true
+	SessionState.record_prologue_call("Maria S.", SessionState.CALL_REFUSED, 0)
+	SessionState.record_prologue_call("Kevin Dizon", SessionState.CALL_HUNG_UP, 0)
+	SessionState.record_prologue_call("Lina Reyes", SessionState.CALL_TIMEOUT, 0)
+	SessionState.record_prologue_call("Ramon Tolentino", SessionState.CALL_ESCALATED, 0)
+	SessionState.record_prologue_call("Noah Paredes", SessionState.CALL_ABORTED, 0)
+
+	var view := await _open()
+	var body: String = view._station_body(_station(view, "The call list"))
+	_check(body.contains("refused"), "a refusal is written as a refusal")
+	_check(body.contains("hung up early"), "hanging up early reads differently from refusing")
+	_check(body.contains("shift ended"), "running out of time is not reported as hanging up")
+	_check(body.contains("line pulled"), "an escalated call says the line was pulled")
+	_check(body.contains("unworked"), "a call the operator dropped reads as unworked")
+	_check(not body.contains("RECONTACT"), "no unpaid call is flagged for recontact")
+	await _close(view)
+
+
+# The seam the prologue-to-investigation coupling will hang off.
+func _test_disposition_mapping() -> void:
+	print("
+[victim disposition]")
+	SessionState.reset_session()
+	SessionState.reset_prologue()
+	SessionState.prologue_played = true
+	SessionState.record_prologue_call("Maria S.", SessionState.CALL_SUCCESS, 4200)
+	SessionState.record_prologue_call("Kevin Dizon", SessionState.CALL_REFUSED, 0)
+	SessionState.record_prologue_call("Lina Reyes", SessionState.CALL_TIMEOUT, 0)
+
+	_check(SessionState.get_victim_disposition("Maria S.") == SessionState.DISPOSITION_HARMED,
+		"a victim you took money from reads as harmed")
+	_check(SessionState.get_victim_disposition("Kevin Dizon") == SessionState.DISPOSITION_RESISTANT,
+		"a victim who refused reads as resistant")
+	_check(SessionState.get_victim_disposition("Lina Reyes") == SessionState.DISPOSITION_UNFINISHED,
+		"a call cut short reads as unfinished")
+	_check(SessionState.get_victim_disposition("Evelyn Marsh") == SessionState.DISPOSITION_NEUTRAL,
+		"a victim never called reads as neutral")
+
+	# Money taken outranks a later refusal by the same person.
+	SessionState.record_prologue_call("Kevin Dizon", SessionState.CALL_PARTIAL, 900)
+	_check(SessionState.get_victim_disposition("Kevin Dizon") == SessionState.DISPOSITION_HARMED,
+		"money taken outranks a refusal on a second call")
+	_check(not SessionState.get_call_record("Maria S.").is_empty(), "a called victim has a call record")
+	_check(SessionState.get_call_record("Evelyn Marsh").is_empty(), "an uncalled victim has no call record")
+
+
+# Skipping the prologue must leave the investigation playable, not degraded.
+func _test_skip_prologue_branch() -> void:
+	print("
+[skip-the-prologue branch]")
+	SessionState.reset_session()
+	SessionState.reset_prologue()
+	_check(not SessionState.prologue_played, "a fresh session has not played the prologue")
+	for name in ["Maria S.", "Kevin Dizon", "Evelyn Marsh"]:
+		_check(SessionState.get_victim_disposition(name) == SessionState.DISPOSITION_NEUTRAL,
+			"%s opens neutral with no prologue history" % name)
+
+	# A stale log must not leak into a skip run.
+	SessionState.record_prologue_call("Maria S.", SessionState.CALL_SUCCESS, 4200)
+	SessionState.prologue_played = true
+	SessionState.reset_prologue()
+	_check(SessionState.prologue_call_log.is_empty(), "resetting the prologue clears the call log")
+	_check(not SessionState.prologue_played, "resetting the prologue clears the played flag")
+	_check(SessionState.get_victim_disposition("Maria S.") == SessionState.DISPOSITION_NEUTRAL,
+		"a victim harmed in a previous run does not leak into a skip run")
+	_check(SessionState.has_method("start_investigation_direct"), "the menu has a direct investigation entry point")
 
 
 func _test_stations_exist() -> void:

@@ -65,6 +65,13 @@ func _build_ui() -> void:
 	start_button.pressed.connect(_start_game)
 	column.add_child(start_button)
 
+	var skip_button := Button.new()
+	skip_button.text = "Skip to Investigation"
+	skip_button.custom_minimum_size = Vector2(220, 44)
+	skip_button.tooltip_text = "Start at the detective half with no prologue history. Every witness opens neutral."
+	skip_button.pressed.connect(_start_investigation_only)
+	column.add_child(skip_button)
+
 	var quit_button := Button.new()
 	quit_button.text = "Quit"
 	quit_button.custom_minimum_size = Vector2(220, 44)
@@ -74,3 +81,7 @@ func _build_ui() -> void:
 
 func _start_game() -> void:
 	SessionState.start_prologue()
+
+
+func _start_investigation_only() -> void:
+	SessionState.start_investigation_direct()

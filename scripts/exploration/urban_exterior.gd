@@ -22,19 +22,26 @@ const CASE_MARCO := "res://resources/cases/interview_case_003.json"
 const CASE_EVELYN := "res://resources/cases/interview_case_005.json"
 const CASE_LINA := "res://resources/cases/interview_case_006.json"
 
-# The cast, in the order their doors appear along the block. Portals used to be
-# three hand-placed nodes in the scene file, which capped the cast at three and
-# made adding a witness a scene edit. They are built from this table instead, so
-# growing the cast is one row here plus one entry in BLOCK_BUILDINGS.
+# The cast, and which building each one lives in. Portals used to be three
+# hand-placed nodes in the scene file, which capped the cast at three and made
+# adding a witness a scene edit; they are built from this table instead.
 #
-# Door order is deliberately not gate order: the ungated witness is first so a
-# player walking right from the spawn meets someone who will talk to them.
+# `row` picks the terrace: "block" is the residential row on the grass below the
+# road, "street" is the shop row the office stands in. `slot` is an index into
+# that row's building list. Doors are not all in one row on purpose - the
+# residential row has room for three without crowding the trees and the side
+# streets, and the two who work out of premises rather than homes (Lina's print
+# shop, Marco at the call centre) belong on the commercial row anyway.
+#
+# Adding a witness: one row here, plus a building in the matching list if the
+# slot is not already there. test_urban.tscn fails if a slot does not exist or
+# if a building lands on a side street, a tree or another building.
 const INTERVIEWEES := [
-	{"case": CASE_EVELYN, "label": "EVELYN", "prompt": "Speak with Evelyn Marsh"},
-	{"case": CASE_MARIA, "label": "MARIA", "prompt": "Speak with Maria Santos"},
-	{"case": CASE_KEVIN, "label": "KEVIN", "prompt": "Speak with Kevin Dizon"},
-	{"case": CASE_LINA, "label": "LINA", "prompt": "Speak with Lina Reyes"},
-	{"case": CASE_MARCO, "label": "MARCO", "prompt": "Interrogate Marco Reyes"},
+	{"case": CASE_EVELYN, "label": "EVELYN", "prompt": "Speak with Evelyn Marsh", "row": "block", "slot": 0},
+	{"case": CASE_MARIA, "label": "MARIA", "prompt": "Speak with Maria Santos", "row": "block", "slot": 1},
+	{"case": CASE_KEVIN, "label": "KEVIN", "prompt": "Speak with Kevin Dizon", "row": "block", "slot": 2},
+	{"case": CASE_LINA, "label": "LINA", "prompt": "Speak with Lina Reyes", "row": "street", "slot": 1},
+	{"case": CASE_MARCO, "label": "MARCO", "prompt": "Interrogate Marco Reyes", "row": "street", "slot": 4},
 ]
 
 const INTERVIEW_PORTAL_SIZE := Vector2(56.0, 44.0)
@@ -103,12 +110,15 @@ const BUILDING_ROW := [
 ]
 const OFFICE_ROW_INDEX := 3
 
+# Positions are constrained, not decorative. A block building is 124.8 wide, so
+# each entry occupies [x, x + 124.8] at y 520-702.4, and that band already
+# contains the two side streets ([520,616] and [1400,1496]), the trees at y 600
+# (x 400, 1000, 1550) and a pedestrian at x 700. An earlier five-across layout
+# put one house in the middle of a side street and another through a tree.
 const BLOCK_BUILDINGS := [
 	{"x": 140.0, "color": ROOF_ROSE_X},
-	{"x": 520.0, "color": ROOF_TAN_X},
-	{"x": 900.0, "color": ROOF_MAUVE_X},
-	{"x": 1280.0, "color": ROOF_ROSE_X},
-	{"x": 1660.0, "color": ROOF_TAN_X},
+	{"x": 780.0, "color": ROOF_TAN_X},
+	{"x": 1150.0, "color": ROOF_MAUVE_X},
 ]
 
 const CAR_SPOTS := [300.0, 650.0, 1250.0, 1600.0, 1800.0]
@@ -181,6 +191,19 @@ func _build_interview_portals() -> void:
 		interview_portal.player_exited.connect(_on_interview_exited)
 
 
+# Drops the portal for whoever lives in this row/slot, if anyone does, and
+# labels the building so the player can tell the doors apart.
+func _place_interviewee_door(row: String, slot: int, building_rect: Rect2, door_base: Vector2) -> void:
+	for i in range(INTERVIEWEES.size()):
+		var entry: Dictionary = INTERVIEWEES[i]
+		if str(entry.get("row", "")) != row or int(entry.get("slot", -1)) != slot:
+			continue
+		if i < interview_portals.size():
+			interview_portals[i].global_position = door_base + Vector2(0.0, 14.0)
+		_add_building_label(building_rect, str(entry["label"]))
+		return
+
+
 func _setup_camera_limits() -> void:
 	var camera := player.get_node_or_null("Camera2D") as Camera2D
 	if camera == null:
@@ -242,15 +265,14 @@ func _build_map() -> void:
 		if i == OFFICE_ROW_INDEX:
 			portal.global_position = door_base + Vector2(0.0, 14.0)
 			_add_building_label(rect, "OFFICE")
+		else:
+			_place_interviewee_door("street", i, rect, door_base)
 
 	for i in range(BLOCK_BUILDINGS.size()):
 		var entry: Dictionary = BLOCK_BUILDINGS[i]
 		var rect := _add_building(Vector2(entry["x"], 520.0), entry["color"], BLOCK_BUILDING_SCALE)
 		var door_base := _add_shop_door(rect)
-		if i < interview_portals.size():
-			interview_portals[i].global_position = door_base + Vector2(0.0, 14.0)
-		if i < INTERVIEWEES.size():
-			_add_building_label(rect, str(INTERVIEWEES[i]["label"]))
+		_place_interviewee_door("block", i, rect, door_base)
 
 	for spot in TREE_SPOTS:
 		_add_tree(spot)

@@ -55,6 +55,7 @@ func _gate_of(case_path: String) -> int:
 func _run() -> void:
 	print("\n--- street and credibility economy smoke test ---")
 	await _test_doors()
+	await _test_layout_collisions()
 	await _test_credibility_economy()
 	await _test_locked_case()
 
@@ -105,8 +106,17 @@ func _test_doors() -> void:
 	var expected: int = view.INTERVIEWEES.size()
 	_check(view.interview_portals.size() == expected,
 		"a portal exists for every interviewee (%d of %d)" % [view.interview_portals.size(), expected])
-	_check(view.BLOCK_BUILDINGS.size() >= expected,
-		"there is a building for every door (%d buildings, %d doors)" % [view.BLOCK_BUILDINGS.size(), expected])
+	var block_doors := 0
+	var street_doors := 0
+	for entry in view.INTERVIEWEES:
+		if str(entry.get("row", "")) == "street":
+			street_doors += 1
+		else:
+			block_doors += 1
+	_check(view.BLOCK_BUILDINGS.size() >= block_doors,
+		"the residential row has a house per door (%d houses, %d doors)" % [view.BLOCK_BUILDINGS.size(), block_doors])
+	_check(view.BUILDING_ROW.size() > street_doors,
+		"the shop row has a building per door plus the office (%d buildings, %d doors)" % [view.BUILDING_ROW.size(), street_doors])
 
 	# Every door must lead somewhere, and somewhere different.
 	var seen_cases := {}
@@ -122,14 +132,99 @@ func _test_doors() -> void:
 	_check(placed == expected, "every door was positioned on a building (%d of %d)" % [placed, expected])
 
 	# Doors that sit on top of each other would be unusable.
-	var xs: Array[float] = []
-	for interview_portal in view.interview_portals:
-		xs.append(interview_portal.global_position.x)
-	xs.sort()
 	var min_gap := 999999.0
-	for i in range(1, xs.size()):
-		min_gap = minf(min_gap, xs[i] - xs[i - 1])
+	for i in range(view.interview_portals.size()):
+		for j in range(i + 1, view.interview_portals.size()):
+			min_gap = minf(min_gap, view.interview_portals[i].global_position.distance_to(
+				view.interview_portals[j].global_position))
 	_check(min_gap > 80.0, "doors are far enough apart to enter individually (closest %.0f px)" % min_gap)
+
+	await _close(view)
+
+
+# Buildings are placed by hand-picked x values into a band that already contains
+# side streets, trees and pedestrians. An earlier layout put a house in the
+# middle of a side street and another one through a tree, which is the kind of
+# thing that is obvious on screen and invisible to every other check here.
+func _test_layout_collisions() -> void:
+	print("
+[nothing is built on top of anything]")
+	var view := await _open()
+
+	var block_size := Vector2(16.0 * 3.0 * view.BLOCK_BUILDING_SCALE.x, 0.0)
+	block_size = Vector2(48.0 * view.BLOCK_BUILDING_SCALE.x, 96.0 * view.BLOCK_BUILDING_SCALE.y)
+	var row_size := Vector2(48.0 * view.ROW_BUILDING_SCALE.x, 96.0 * view.ROW_BUILDING_SCALE.y)
+
+	var block_rects: Array[Rect2] = []
+	for entry in view.BLOCK_BUILDINGS:
+		block_rects.append(Rect2(Vector2(float(entry["x"]), 520.0), block_size))
+	var row_rects: Array[Rect2] = []
+	for entry in view.BUILDING_ROW:
+		row_rects.append(Rect2(Vector2(float(entry["x"]), view.BUILDING_ROW_BOTTOM - row_size.y), row_size))
+
+	# The grass starts below the lower pavement; side streets run down through it.
+	var sidewalk_top_end: float = view.BUILDING_ROW_BOTTOM + view.SIDEWALK_HEIGHT
+	var grass_top: float = sidewalk_top_end + view.ROAD_HEIGHT + view.SIDEWALK_HEIGHT
+	var street_rects: Array[Rect2] = []
+	for street_x in view.SIDE_STREET_X_POSITIONS:
+		street_rects.append(Rect2(Vector2(float(street_x), grass_top),
+			Vector2(view.SIDE_STREET_WIDTH, 1080.0 - grass_top)))
+
+	var tree_extent := 16.0 * 2.2 * 0.5
+	var tree_rects: Array[Rect2] = []
+	for spot in view.TREE_SPOTS:
+		tree_rects.append(Rect2(spot - Vector2(tree_extent, tree_extent),
+			Vector2(tree_extent * 2.0, tree_extent * 2.0)))
+
+	var on_street := 0
+	var on_tree := 0
+	for rect in block_rects:
+		for street in street_rects:
+			if rect.intersects(street):
+				on_street += 1
+		for tree in tree_rects:
+			if rect.intersects(tree):
+				on_tree += 1
+	_check(on_street == 0, "no house is built on a side street (%d)" % on_street)
+	_check(on_tree == 0, "no house is built through a tree (%d)" % on_tree)
+
+	var overlaps := 0
+	for i in range(block_rects.size()):
+		for j in range(i + 1, block_rects.size()):
+			if block_rects[i].intersects(block_rects[j]):
+				overlaps += 1
+	for i in range(row_rects.size()):
+		for j in range(i + 1, row_rects.size()):
+			if row_rects[i].intersects(row_rects[j]):
+				overlaps += 1
+	_check(overlaps == 0, "no two buildings overlap each other (%d)" % overlaps)
+
+	var off_map := 0
+	for rect in block_rects + row_rects:
+		if rect.position.x < 0.0 or rect.position.x + rect.size.x > 1920.0:
+			off_map += 1
+	_check(off_map == 0, "every building is inside the map (%d off)" % off_map)
+
+	# A pedestrian standing inside a wall looks like a bug even though nothing breaks.
+	var buried := 0
+	for spot in view.NPC_SPOTS:
+		var point := Vector2(float(spot["x"]), float(spot["y"]))
+		for rect in block_rects + row_rects:
+			if rect.has_point(point):
+				buried += 1
+	_check(buried == 0, "no pedestrian is standing inside a building (%d)" % buried)
+
+	# Every interviewee must have a building to be placed on.
+	var missing := 0
+	for entry in view.INTERVIEWEES:
+		var row := str(entry.get("row", ""))
+		var slot := int(entry.get("slot", -1))
+		var count: int = view.BUILDING_ROW.size() if row == "street" else view.BLOCK_BUILDINGS.size()
+		if slot < 0 or slot >= count:
+			missing += 1
+		if row == "street" and slot == view.OFFICE_ROW_INDEX:
+			missing += 1
+	_check(missing == 0, "every interviewee has a building slot that exists and is not the office (%d bad)" % missing)
 
 	await _close(view)
 

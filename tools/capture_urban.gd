@@ -22,8 +22,8 @@ func _run() -> void:
 	await RenderingServer.frame_post_draw
 
 	var camera: Camera2D = view.player.get_node("Camera2D")
-	camera.zoom = Vector2(0.55, 0.55)
-	view.player.global_position = Vector2(960, 800)
+	camera.zoom = Vector2(0.66, 0.66)
+	view.player.global_position = Vector2(960, 540)
 	for i in range(8):
 		await get_tree().process_frame
 	await RenderingServer.frame_post_draw

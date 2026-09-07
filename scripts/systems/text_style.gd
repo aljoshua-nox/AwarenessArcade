@@ -26,6 +26,10 @@ const MARK_WRONG := "MISREAD"
 const MARK_HINT := "CASE NOTE"
 const MARK_SCENE := "OBSERVED"
 const MARK_HARM := "HARM ON RECORD"
+## A specific, checkable assertion the suspect has just made.
+const MARK_CLAIM := "CLAIM ON RECORD"
+## That assertion failing against something the player is carrying.
+const MARK_CONTRADICTION := "CONTRADICTION"
 
 static var _speech_regex: RegEx
 

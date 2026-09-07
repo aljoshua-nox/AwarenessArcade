@@ -11,6 +11,7 @@ extends Node
 const INTERVIEW_SCENE := "res://scenes/investigation/interview.tscn"
 const CASE_MARIA := "res://resources/cases/interview_case_001.json"
 const CASE_KEVIN := "res://resources/cases/interview_case_002.json"
+const CASE_MARCO := "res://resources/cases/interview_case_003.json"
 
 var failures: Array[String] = []
 var checks := 0
@@ -80,6 +81,7 @@ func _run() -> void:
 	await _test_antifarming()
 	await _test_text_voices()
 	await _test_prologue_coupling()
+	await _test_contradiction()
 
 	print("\n%d checks, %d failed" % [checks, failures.size()])
 	for f in failures:
@@ -143,6 +145,64 @@ func _test_prologue_coupling() -> void:
 	_check(not view.prompt_value.text.contains("flat on the lid"), "a disposition opening never overrides the hesitant branch")
 	_check(view.cooperation == 34, "the hesitant branch still carries the harmed cooperation (got %d)" % view.cooperation)
 	await _close(view)
+
+
+# Presenting corroboration teaches "keep your records". Catching a lie teaches
+# the sharper thing: a rehearsed story survives being doubted, but not being
+# checked against something written down at the time.
+func _test_contradiction() -> void:
+	print("
+[catching the suspect in a contradiction]")
+	SessionState.reset_session()
+	SessionState.detective_credibility = GATE_CLEAR
+	# Kevin's remote-access log, carried over from his interview.
+	SessionState.add_evidence({
+		"id": "ev_remote_access_log",
+		"tactic_id": "remote_access",
+		"label": "Remote Access Log",
+		"description": "A session opened on the victim's machine.",
+		"tactic": "Posing as technical support to gain direct access to a victim's device.",
+	})
+	SessionState.pending_case_path = CASE_MARCO
+	var view: Node = load(INTERVIEW_SCENE).instantiate()
+	add_child(view)
+	await get_tree().process_frame
+
+	view._load_node("deny_node")
+	_check(view.prompt_value.text.contains("CLAIM ON RECORD"),
+		"the suspect's alibi is pinned where the player can aim at it")
+	_check(view.prompt_value.text.contains("seven till two"), "the claim is specific enough to be checkable")
+	_check(view.present_evidence_button.visible, "the existing evidence UI is what challenges it")
+
+	var log_index := _index_of(view, "ev_remote_access_log")
+	_check(log_index >= 0, "the log is available to present")
+	var before: int = view.cooperation
+	view._on_evidence_chosen(log_index)
+
+	_check(view.prompt_value.text.contains("CONTRADICTION"),
+		"catching the lie reads differently from corroborating a story")
+	_check(view.prompt_value.text.contains("23:04"), "the contradiction names the fact that breaks it")
+	_check(view.cooperation > before, "breaking his account moves him (%d -> %d)" % [before, view.cooperation])
+	_check(view.evidence_misses == 0, "a contradiction is not scored as a misread")
+	_check(view.current_node_id == "caught_shift", "it routes to its own beat (%s)" % view.current_node_id)
+
+	# The route has to rejoin the interview, not dead-end.
+	view._on_choice_pressed(0)
+	_check(view.current_node_id == "half_crack", "the contradiction leaves him half-cracked, like a testimony would")
+	await _close(view)
+
+	# Without the log, the claim simply stands.
+	SessionState.reset_session()
+	SessionState.detective_credibility = GATE_CLEAR
+	SessionState.pending_case_path = CASE_MARCO
+	var bare: Node = load(INTERVIEW_SCENE).instantiate()
+	add_child(bare)
+	await get_tree().process_frame
+	bare._load_node("deny_node")
+	_check(bare.prompt_value.text.contains("CLAIM ON RECORD"), "the claim is still made")
+	# _index_of() records a failure when an item is missing, which is the point here.
+	_check(not SessionState.has_evidence("ev_remote_access_log"), "but nothing in hand disproves it")
+	await _close(bare)
 
 
 func _test_opening_state() -> void:

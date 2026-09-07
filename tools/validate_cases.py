@@ -126,6 +126,26 @@ for f, data in parsed.items():
     print(f"{name}: {len(ids)} nodes, {endings} endings, "
           f"{sum(1 for n in nodes.values() if n.get('tactic_quiz'))} quiz")
 
+# --- Contradictions ----------------------------------------------------------
+# A claim the player cannot disprove is dead text, and a contradiction attached
+# to a node that makes no claim gives them nothing to aim at. Both halves have
+# to exist on the same node.
+for f, data in parsed.items():
+    name = os.path.basename(f)
+    for nid, node in data.get("nodes", {}).items():
+        claim = str(node.get("claim", "")).strip()
+        breakers = [e for e in node.get("accepts_evidence", [])
+                    if e.get("contradicts", False)]
+        if claim and not breakers:
+            errors.append(f"{name}: '{nid}' makes a claim nothing can disprove")
+        if breakers and not claim:
+            errors.append(f"{name}: '{nid}' accepts contradicting evidence but states no claim")
+        for entry in breakers:
+            if entry.get("wrong", False):
+                errors.append(f"{name}: '{nid}' marks the same evidence as both a contradiction and wrong")
+            if int(entry.get("cooperation", 0)) <= 0:
+                errors.append(f"{name}: '{nid}' catches a lie without rewarding it")
+
 # --- Tactic notebook catalogue ------------------------------------------------
 # Every tactic_id in a case must resolve to a catalogue entry, and every
 # catalogue entry must be reachable - a tactic nothing can unlock is an entry

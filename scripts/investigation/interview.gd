@@ -405,6 +405,12 @@ func _load_node(node_id: String, lead_in: String = "") -> void:
 		node_prompt = disposition_opening
 	var has_evidence_prompt := bool(current_node.get("evidence_prompt", false))
 	var display_prompt := _style_dialogue(node_prompt)
+	# A claim is a checkable assertion, pinned above the evidence list so the
+	# player is looking for a thing that does not fit rather than a thing that
+	# corroborates. Presenting the right record is the whole mechanic.
+	var claim := str(current_node.get("claim", ""))
+	if not claim.is_empty():
+		display_prompt = "%s\n\n%s" % [display_prompt, _system_line(TextStyle.MARK_CLAIM, claim, TextStyle.COLOR_HINT)]
 	# Say out loud that this is the player's own doing, or the mechanic is
 	# invisible - the cooperation bar alone gives them nothing to compare against.
 	if node_id == opening_node_id and not disposition_note.is_empty():
@@ -627,6 +633,16 @@ func _on_evidence_chosen(index: int) -> void:
 			var response := _style_dialogue(str(entry.get("response", "")))
 			var tactic := str(item.get("tactic", ""))
 			var is_wrong := bool(entry.get("wrong", false))
+			# Presenting corroboration teaches "keep your records". Catching a
+			# lie teaches the sharper thing - a scam story does not survive
+			# cross-checking - so it gets its own marker rather than being
+			# reported as one more successful piece of evidence.
+			if bool(entry.get("contradicts", false)):
+				var broke := str(entry.get("contradiction_note", ""))
+				if broke.is_empty():
+					broke = "That account does not survive the record you are holding."
+				response = "%s\n\n%s" % [response, _system_line(
+					TextStyle.MARK_CONTRADICTION, broke, TextStyle.COLOR_CORRECT)]
 			if not tactic.is_empty():
 				var mark: String = TextStyle.MARK_WRONG if is_wrong else TextStyle.MARK_TACTIC
 				var tone: String = TextStyle.COLOR_WRONG if is_wrong else TextStyle.COLOR_TACTIC

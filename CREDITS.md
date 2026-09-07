@@ -22,6 +22,7 @@ license file bundled, or license terms require per-file checking).
 > *require* attribution in the shipped game, not just in this file. The planned
 > in-game credits screen is what satisfies that.
 
+
 ## Art
 
 | Asset(s) | Location | Source / Author | License | Status |
@@ -69,15 +70,18 @@ All SFX/ambience filenames follow the Freesound.org convention `<id>__<username>
 Freesound license varies per-upload (CC0, CC-BY, CC-BY-NC, or Sampling+), so each one below
 must be checked individually at `freesound.org/s/<id>/` before shipping — do not assume CC0.
 
+**Verification status (checked 2026-09-08).** freesound.org could not be reached from
+tooling — the site is currently serving an expired TLS certificate, and web.archive.org
+is unavailable here too — so only the licence that surfaced in search results could be
+confirmed. The remaining three need someone to open the URL in a browser; the licence is
+printed on the sound's page. Every file listed below is referenced by the game.
+
 | Asset | Location | Freesound user | Freesound ID | License |
 |---|---|---|---|---|
-| Office ambience | `assets/audio/ambience/407292__nightwatcher98__office-ambience.mp3` | nightwatcher98 | [407292](https://freesound.org/s/407292/) | ⚠️ verify on Freesound |
-| Dial tone | `assets/audio/sfx/360480__giddster__dial-tone.wav` | giddster | [360480](https://freesound.org/s/360480/) | ⚠️ verify on Freesound |
-| Phone ring | `assets/audio/sfx/405319__sapatac__phone-ring.wav` | sapatac | [405319](https://freesound.org/s/405319/) | ⚠️ verify on Freesound |
-| Notification sound (handmade) | `assets/audio/sfx/434379__kila_vat__notification-sound-handmade.mp3` | kila_vat | [434379](https://freesound.org/s/434379/) | ⚠️ verify on Freesound |
-| Keyboard typing sounds | `assets/audio/sfx/469014__zrrion__keyboard-typing-sounds.mp3` | zrrion | [469014](https://freesound.org/s/469014/) | ⚠️ verify on Freesound |
-| Radio static | `assets/audio/sfx/524204__joviansounds__radio-static.wav` | joviansounds | [524204](https://freesound.org/s/524204/) | ⚠️ verify on Freesound |
-| Phone ringing 5 | `assets/audio/sfx/629201__audacitier__phone-ringing-5.mp3` | audacitier | [629201](https://freesound.org/s/629201/) | ⚠️ verify on Freesound |
+| Dial tone | `assets/audio/sfx/360480__giddster__dial-tone.wav` | giddster | [360480](https://freesound.org/s/360480/) | ⚠️ unverified — site unreachable |
+| Notification sound (handmade) | `assets/audio/sfx/434379__kila_vat__notification-sound-handmade.mp3` | kila_vat | [434379](https://freesound.org/s/434379/) | ⚠️ unverified — site unreachable |
+| Radio static | `assets/audio/sfx/524204__joviansounds__radio-static.wav` | JovianSounds | [524204](https://freesound.org/s/524204/) | **CC0** — no attribution required (confirmed) |
+| Phone ringing 5 | `assets/audio/sfx/629201__audacitier__phone-ringing-5.mp3` | AUDACITIER | [629201](https://freesound.org/s/629201/) | ⚠️ unverified — site unreachable |
 
 No music tracks are currently in `assets/audio/music/` (empty).
 

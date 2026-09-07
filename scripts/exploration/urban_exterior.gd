@@ -13,15 +13,31 @@ extends Node2D
 @onready var portal_label: Label = %PortalLabel
 @onready var portal: ScenePortal = %Portal
 @onready var interview_label: Label = %InterviewLabel
-@onready var interview_portal_maria: ScenePortal = %InterviewPortalMaria
-@onready var interview_portal_kevin: ScenePortal = %InterviewPortalKevin
-@onready var interview_portal_marco: ScenePortal = %InterviewPortalMarco
 @onready var fade_overlay: ColorRect = %FadeOverlay
 
 const INTERVIEW_SCENE := "res://scenes/investigation/interview.tscn"
 const CASE_MARIA := "res://resources/cases/interview_case_001.json"
 const CASE_KEVIN := "res://resources/cases/interview_case_002.json"
 const CASE_MARCO := "res://resources/cases/interview_case_003.json"
+const CASE_EVELYN := "res://resources/cases/interview_case_005.json"
+const CASE_LINA := "res://resources/cases/interview_case_006.json"
+
+# The cast, in the order their doors appear along the block. Portals used to be
+# three hand-placed nodes in the scene file, which capped the cast at three and
+# made adding a witness a scene edit. They are built from this table instead, so
+# growing the cast is one row here plus one entry in BLOCK_BUILDINGS.
+#
+# Door order is deliberately not gate order: the ungated witness is first so a
+# player walking right from the spawn meets someone who will talk to them.
+const INTERVIEWEES := [
+	{"case": CASE_EVELYN, "label": "EVELYN", "prompt": "Speak with Evelyn Marsh"},
+	{"case": CASE_MARIA, "label": "MARIA", "prompt": "Speak with Maria Santos"},
+	{"case": CASE_KEVIN, "label": "KEVIN", "prompt": "Speak with Kevin Dizon"},
+	{"case": CASE_LINA, "label": "LINA", "prompt": "Speak with Lina Reyes"},
+	{"case": CASE_MARCO, "label": "MARCO", "prompt": "Interrogate Marco Reyes"},
+]
+
+const INTERVIEW_PORTAL_SIZE := Vector2(56.0, 44.0)
 
 var interview_portals: Array[ScenePortal] = []
 var portal_case_paths: Dictionary = {}
@@ -89,8 +105,10 @@ const OFFICE_ROW_INDEX := 3
 
 const BLOCK_BUILDINGS := [
 	{"x": 140.0, "color": ROOF_ROSE_X},
-	{"x": 760.0, "color": ROOF_TAN_X},
-	{"x": 1660.0, "color": ROOF_MAUVE_X},
+	{"x": 520.0, "color": ROOF_TAN_X},
+	{"x": 900.0, "color": ROOF_MAUVE_X},
+	{"x": 1280.0, "color": ROOF_ROSE_X},
+	{"x": 1660.0, "color": ROOF_TAN_X},
 ]
 
 const CAR_SPOTS := [300.0, 650.0, 1250.0, 1600.0, 1800.0]
@@ -125,28 +143,42 @@ func _ready() -> void:
 	portal.target_scene = portal_target_scene
 	if SessionState.suspect_flipped:
 		portal.prompt_text = "Enter the call center"
+	elif SessionState.case_locked:
+		# Marco is gone, so the office holds nothing the player can reach. The
+		# door becomes the way to close an investigation that cannot be closed.
+		portal.prompt_text = "File the case as unresolved"
 	else:
 		portal.prompt_text = "Enter the office"
 	portal.player_entered.connect(_on_portal_entered)
 	portal.player_exited.connect(_on_portal_exited)
 
-	interview_portal_maria.target_scene = INTERVIEW_SCENE
-	interview_portal_maria.prompt_text = "Speak with Maria Santos"
-	interview_portal_kevin.target_scene = INTERVIEW_SCENE
-	interview_portal_kevin.prompt_text = "Speak with Kevin Dizon"
-	interview_portal_marco.target_scene = INTERVIEW_SCENE
-	interview_portal_marco.prompt_text = "Interrogate Marco Reyes"
-
-	interview_portals = [interview_portal_maria, interview_portal_kevin, interview_portal_marco]
-	portal_case_paths[interview_portal_maria] = CASE_MARIA
-	portal_case_paths[interview_portal_kevin] = CASE_KEVIN
-	portal_case_paths[interview_portal_marco] = CASE_MARCO
-	for interview_portal in interview_portals:
-		interview_portal.player_entered.connect(_on_interview_entered)
-		interview_portal.player_exited.connect(_on_interview_exited)
+	_build_interview_portals()
 
 	_setup_camera_limits()
 	_build_map()
+
+
+# One Area2D per interviewee, created from INTERVIEWEES. _build_map() drops
+# each one at its building's door.
+func _build_interview_portals() -> void:
+	for entry in INTERVIEWEES:
+		var interview_portal := ScenePortal.new()
+		interview_portal.target_scene = INTERVIEW_SCENE
+		interview_portal.prompt_text = str(entry["prompt"])
+		interview_portal.monitoring = true
+		interview_portal.monitorable = true
+
+		var shape := RectangleShape2D.new()
+		shape.size = INTERVIEW_PORTAL_SIZE
+		var collider := CollisionShape2D.new()
+		collider.shape = shape
+		interview_portal.add_child(collider)
+
+		add_child(interview_portal)
+		interview_portals.append(interview_portal)
+		portal_case_paths[interview_portal] = str(entry["case"])
+		interview_portal.player_entered.connect(_on_interview_entered)
+		interview_portal.player_exited.connect(_on_interview_exited)
 
 
 func _setup_camera_limits() -> void:
@@ -167,8 +199,22 @@ func _unhandled_input(event: InputEvent) -> void:
 		_remember_return_spawn(active_interview_portal.global_position)
 		_transition_to_scene(active_interview_portal.target_scene)
 	elif event.is_action_pressed("ui_accept") and _can_enter_portal():
+		if SessionState.case_locked and not SessionState.suspect_flipped:
+			_file_case_unresolved()
+			return
 		_remember_return_spawn(portal.global_position)
 		_transition_to_scene(portal.target_scene)
+
+
+# The fourth ending from the original plan: the case is closed because it
+# cannot be carried any further, not because it was solved or sold.
+func _file_case_unresolved() -> void:
+	SessionState.investigation_case_title = "The Call Center Investigation"
+	SessionState.investigation_person_name = "No suspect in custody"
+	SessionState.investigation_outcome = "insufficient_evidence"
+	SessionState.investigation_outcome_note = "Marco Reyes stopped talking and the operation above him was never named. What is on file describes a series of calls and nobody who made them."
+	SessionState.has_urban_return_spawn = false
+	_transition_to_scene("res://scenes/investigation/investigation_end.tscn")
 
 
 func _remember_return_spawn(exit_position: Vector2) -> void:
@@ -197,15 +243,14 @@ func _build_map() -> void:
 			portal.global_position = door_base + Vector2(0.0, 14.0)
 			_add_building_label(rect, "OFFICE")
 
-	var block_labels := ["M. SANTOS", "K. D.", "M. REYES"]
 	for i in range(BLOCK_BUILDINGS.size()):
 		var entry: Dictionary = BLOCK_BUILDINGS[i]
 		var rect := _add_building(Vector2(entry["x"], 520.0), entry["color"], BLOCK_BUILDING_SCALE)
 		var door_base := _add_shop_door(rect)
 		if i < interview_portals.size():
 			interview_portals[i].global_position = door_base + Vector2(0.0, 14.0)
-		if i < block_labels.size():
-			_add_building_label(rect, block_labels[i])
+		if i < INTERVIEWEES.size():
+			_add_building_label(rect, str(INTERVIEWEES[i]["label"]))
 
 	for spot in TREE_SPOTS:
 		_add_tree(spot)

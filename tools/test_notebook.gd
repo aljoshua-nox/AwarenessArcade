@@ -30,6 +30,8 @@ func _check(condition: bool, label: String) -> void:
 
 func _open_interview(case_path: String) -> Node:
 	SessionState.reset_session()
+	# Maria is gated at 55 now; this suite is about the notebook, not the gate.
+	SessionState.detective_credibility = 75
 	SessionState.pending_case_path = case_path
 	var view: Node = load(INTERVIEW_SCENE).instantiate()
 	add_child(view)

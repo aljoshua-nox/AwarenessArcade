@@ -31,6 +31,12 @@
       "spot_it": "Nobody legitimate cold-calls to ask for remote access. If you did not start the support request, there is no support request."
     },
     {
+      "id": "advance_fee",
+      "name": "Paying to receive",
+      "summary": "A fee demanded before a prize, refund, inheritance, loan or job can be released. The money always has to travel towards the stranger first, and each fee is followed by another.",
+      "spot_it": "Winnings arrive net; nobody charges you to give you money. If you must pay to be paid, it is fraud - and if you have already paid once, the next fee will be framed as the last one."
+    },
+    {
       "id": "invented_fee",
       "name": "A fee to fix an invented problem",
       "summary": "Payment for repairing something that was never broken - the problem, the diagnosis and the cure all supplied by the same stranger.",

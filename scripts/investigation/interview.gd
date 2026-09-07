@@ -343,12 +343,19 @@ func _load_node(node_id: String, lead_in: String = "") -> void:
 	var evidence_check: Dictionary = current_node.get("evidence_check", {})
 	if not evidence_check.is_empty():
 		var required: Array = evidence_check.get("required_evidence", [])
-		var all_present := true
+		var held := 0
 		for required_id in required:
-			if not SessionState.has_evidence(str(required_id)):
-				all_present = false
-				break
-		var branch_target := str(evidence_check.get("next_if_met", "")) if all_present else str(evidence_check.get("next_if_not_met", ""))
+			if SessionState.has_evidence(str(required_id)):
+				held += 1
+		# `min_matching` lets a check ask for "any N of these" instead of all of
+		# them. The endings need it: once there is more than one pair of
+		# witnesses who could carry a case, demanding two *named* testimonies
+		# would make every witness after the second one decorative.
+		var needed := required.size()
+		if evidence_check.has("min_matching"):
+			needed = clampi(int(evidence_check["min_matching"]), 1, required.size())
+		var met := held >= needed
+		var branch_target := str(evidence_check.get("next_if_met", "")) if met else str(evidence_check.get("next_if_not_met", ""))
 		_load_node(branch_target, lead_in)
 		return
 
@@ -430,6 +437,8 @@ func _load_node(node_id: String, lead_in: String = "") -> void:
 		SessionState.investigation_cooperation = cooperation
 		SessionState.investigation_evidence_misses = evidence_misses
 		SessionState.record_interview_outcome(str(person.get("person_id", "")), outcome)
+		if bool(current_node.get("locks_case", false)):
+			SessionState.case_locked = true
 		if outcome == "whistleblower":
 			SessionState.suspect_flipped = true
 		if outcome == "failure":

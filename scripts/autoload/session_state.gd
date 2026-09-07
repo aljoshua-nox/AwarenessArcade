@@ -79,6 +79,11 @@ var pending_case_path: String = ""
 var urban_return_spawn: Vector2 = Vector2.ZERO
 var has_urban_return_spawn: bool = false
 var suspect_flipped: bool = false
+# Set when an interview ends on a node marked `locks_case`. Losing Marco means
+# nobody will ever name the floor above him, so the confrontation can never
+# happen - without this the player simply wanders a street with nothing left to
+# do and no ending. The street offers to file the case unresolved instead.
+var case_locked: bool = false
 
 
 func record_interview_outcome(person_id: String, outcome: String) -> void:
@@ -277,6 +282,7 @@ func go_to_menu() -> void:
 func reset_session() -> void:
 	has_urban_return_spawn = false
 	suspect_flipped = false
+	case_locked = false
 	prologue_call_log.clear()
 	prologue_played = false
 	investigation_inventory.clear()

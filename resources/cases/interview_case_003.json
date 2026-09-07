@@ -49,6 +49,18 @@
 		  "cooperation": 20
 		},
 		{
+		  "evidence_id": "test_evelyn_confirmed",
+		  "next": "half_crack",
+		  "response": "\"Marsh.\" He says the name before he can stop himself, then closes his mouth. \"...She didn't even pay. Why is she the one talking to you?\"",
+		  "cooperation": 20
+		},
+		{
+		  "evidence_id": "test_lina_confirmed",
+		  "next": "half_crack",
+		  "response": "He reads the amount on the transfer and something goes out of him. \"That one wasn't mine.\" A beat. \"But I know whose desk it came off.\"",
+		  "cooperation": 20
+		},
+		{
 		  "evidence_id": "test_kevin_confirmed",
 		  "next": "half_crack",
 		  "response": "He shifts in his seat. \"Fine. Maybe. Doesn't mean I'm the one you should be looking at.\"",
@@ -124,6 +136,18 @@
 		  "cooperation": 25
 		},
 		{
+		  "evidence_id": "test_evelyn_confirmed",
+		  "next": "full_crack",
+		  "response": "\"She refused and she still ended up in a file.\" He rubs his face. \"You understand that means the list is the product, right? Not the call.\"",
+		  "cooperation": 25
+		},
+		{
+		  "evidence_id": "test_lina_confirmed",
+		  "next": "full_crack",
+		  "response": "\"Second one.\" He looks at the transfer slip for a long moment. \"She kept paying because we kept telling her the next one was the last one. That was the script. That was written down.\"",
+		  "cooperation": 25
+		},
+		{
 		  "evidence_id": "test_kevin_confirmed",
 		  "next": "full_crack",
 		  "response": "\"...Two of them. Two separate people telling you the same thing.\" His arms drop.",
@@ -155,6 +179,7 @@
 	  "choices": []
 	},
 	"end_lawyered": {
+	  "locks_case": true,
 	  "prompt": "Marco folds his hands and looks past you at the wall. \"I'm done answering things.\" Within the hour there's a lawyer in the building, and the only person who could have named the floor above him has stopped speaking to you entirely.",
 	  "outcome": "failure",
 	  "milestone": {

@@ -64,6 +64,7 @@ func _run() -> void:
 	await _test_missed_tactics_are_named()
 	await _test_untested_and_midcase()
 	await _test_sections_start_collapsed()
+	await _test_lockout_ending()
 
 	print("\n%d checks, %d failed" % [checks, failures.size()])
 	for f in failures:
@@ -112,6 +113,25 @@ func _test_sections_start_collapsed() -> void:
 	var bare := await _open("full_takedown")
 	_check(not bare.awareness_bar.visible, "the bar hides when nothing has been tested")
 	await _close(bare)
+
+
+func _test_lockout_ending() -> void:
+	print("
+[the insufficient-evidence ending]")
+	_seed_reads(4, 4, [])
+	var view := await _open("insufficient_evidence")
+	_check(view.outcome_label.text.contains("Insufficient Evidence"), "the fourth ending has its own title")
+	_check(view.outcome_note.text.contains("nobody charged"), "it says plainly that nobody was charged")
+	_check(view.outcome_note.text.contains("not the same as being able to prove"),
+		"a sharp reading gets its own verdict here too")
+	_check(not view.continue_button.visible, "it is a true ending, not a mid-case summary")
+	await _close(view)
+
+	_seed_reads(0, 4, ["Manufactured urgency"])
+	var blind := await _open("insufficient_evidence")
+	_check(blind.outcome_note.text.contains("Nothing was proved and nothing was understood"),
+		"a blind reading gets the harsher one")
+	await _close(blind)
 
 
 func _test_tiers() -> void:

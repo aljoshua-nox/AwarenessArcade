@@ -9,6 +9,8 @@
 	"role": "Victim",
 	"portrait": "res://assets/art/portraits/lady 1.png",
 	"traits": "Worried about her savings. Trusts formal-sounding language. Embarrassed about what happened.",
+	"min_credibility": 55,
+	"hesitant_start": "hesitant_intro",
 	"dispositions": {
 	  "harmed": {
 		"cooperation": 34,
@@ -66,6 +68,17 @@
   "start_node": "intro",
   "failure_node": "end_shutdown",
   "nodes": {
+	"hesitant_intro": {
+	  "prompt": "Maria opens the door on the chain. \"My son says I'm not to talk to anyone else about it unless they can show me it's going somewhere.\" She glances past you at the street. \"Is it? Going somewhere?\"",
+	  "choices": [
+		{ "text": "Not yet. I'd rather tell you that than tell you otherwise - I'll come back when it is.", "next": "end_partial_hesitant" }
+	  ]
+	},
+	"end_partial_hesitant": {
+	  "prompt": "The chain stays on. She is not refusing to help - she is refusing to be the only one helping, which is a different thing and a fair one.",
+	  "outcome": "partial",
+	  "choices": []
+	},
 	"intro": {
 	  "prompt": "Maria sits with her hands folded, still a little shaken. \"I already told the bank everything. Do we really have to go over it again?\"",
 	  "choices": [

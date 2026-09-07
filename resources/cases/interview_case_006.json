@@ -1,0 +1,284 @@
+{
+  "case_id": "interview_case_006",
+  "title": "The Fee That Kept Moving",
+  "person": {
+    "person_id": "lina_reyes",
+    "name": "Lina Reyes",
+    "age": 41,
+    "occupation": "Owns a small print shop",
+    "role": "Victim",
+    "portrait": "res://assets/art/portraits/lady 1.png",
+    "traits": "Under financial pressure. Keeps trading while she talks. Has stopped expecting help.",
+    "min_credibility": 70,
+    "hesitant_start": "hesitant_intro",
+    "dispositions": {
+      "harmed": {
+        "cooperation": 34,
+        "prompt": "Lina keeps working while you talk - trimming, stacking, not looking up. \"I've filled in the forms. Bank, police, the portal.\" The guillotine comes down. \"Nothing has come back from any of them, so you'll forgive me if I keep working.\"",
+        "note": "You took money from this one, and she runs a business on the margin. Every form she filed after your call went unanswered, which is the ordinary experience and the reason people stop filing them."
+      },
+      "resistant": {
+        "cooperation": 62,
+        "prompt": "\"You're the fraud one?\" Lina wipes her hands and comes to the counter properly. \"Good. I've got the number, the times, and what he said, because I was writing quotes when he called and I just kept writing.\"",
+        "note": "She refused the call you made. She has no loss to report and every reason to help, which makes her cheap to work with and thin as evidence."
+      },
+      "unfinished": {
+        "cooperation": 44,
+        "prompt": "Lina glances up from the counter. \"A call about a prize, and then nothing. It rang off.\" She goes back to the stack. \"I've had three of those this month. They all ring off eventually.\"",
+        "note": "Your call to her never finished. She has absorbed these calls as background noise, which is what happens when they arrive often enough."
+      }
+    }
+  },
+  "evidence": [
+    {
+      "id": "ev_transfer_receipts",
+      "tactic_id": "advance_fee",
+      "label": "Three Transfer Receipts",
+      "description": "Three outgoing transfers over nine days - a release fee, then a tax charge, then a courier bond - each one described as the last payment required.",
+      "tactic": "Advance fee, repeated: every payment buys only the right to be asked for the next one."
+    },
+    {
+      "id": "ev_second_call_log",
+      "tactic_id": "reused_victim_list",
+      "label": "Callback Log",
+      "description": "Lina's phone log showing four further calls from different numbers in the fortnight after she paid.",
+      "tactic": "Paying marks a number as productive. The list is worth more once somebody on it has proved they will pay."
+    },
+    {
+      "id": "ev_recovery_offer",
+      "tactic_id": "verification_denial",
+      "label": "Recovery Offer Message",
+      "description": "A later message offering to recover Lina's lost money for an upfront administration fee.",
+      "tactic": "The second scam sold to the victims of the first, and the one that gets the least sympathy and the least reporting."
+    },
+    {
+      "id": "ev_printer_quote",
+      "label": "Unpaid Printing Quote",
+      "description": "A quote for a job Lina never got paid for, unrelated to the calls.",
+      "tactic": ""
+    }
+  ],
+  "start_node": "intro",
+  "failure_node": "end_shutdown",
+  "nodes": {
+    "hesitant_intro": {
+      "prompt": "Lina looks at your identification longer than most people do, then hands it back. \"No offence meant. People have come in about this before and nothing came of it, and I've had a stranger use the word 'investigator' at me on the phone already this month.\"",
+      "choices": [
+        {
+          "text": "None taken. I'll come back when I can show you the case is real.",
+          "next": "end_partial_hesitant"
+        }
+      ]
+    },
+    "end_partial_hesitant": {
+      "prompt": "She goes back to the counter before you reach the door. Whatever she has - and the way she said 'already this month' suggests it is a lot - stays behind it.",
+      "outcome": "partial",
+      "choices": []
+    },
+    "intro": {
+      "prompt": "Lina reads your identification, then puts down what she is holding, which you get the impression is not something she does often. \"All right. You've actually come.\"",
+      "choices": [
+        {
+          "text": "I have. Start wherever it starts for you.",
+          "next": "ask_wellbeing"
+        },
+        {
+          "text": "Take me through the payments, one at a time.",
+          "next": "ask_call"
+        },
+        {
+          "text": "I'll be straight with you - three transfers is a lot to send a stranger.",
+          "next": "blame_her",
+          "cooperation": -14
+        }
+      ]
+    },
+    "blame_her": {
+      "prompt": "Her face closes. \"It is. It's a lot.\" She picks the stack back up. \"The first one was small enough to be worth the risk. So was the second, once I'd sent the first. That's how it's built. But you've decided already, so.\"",
+      "choices": [
+        {
+          "text": "You're right, and I asked that badly. Each one was small because the last one was.",
+          "next": "recover",
+          "cooperation": 8
+        },
+        {
+          "text": "I haven't decided anything. The payments, please.",
+          "next": "ask_call_cold",
+          "cooperation": -8
+        }
+      ]
+    },
+    "recover": {
+      "prompt": "She sets the stack down again. \"Nobody's said that part back to me before. They just ask why I sent the third one.\"",
+      "cooperation": 4,
+      "choices": [
+        {
+          "text": "Because the third one was small too. Tell me about the first.",
+          "next": "ask_call"
+        }
+      ]
+    },
+    "ask_wellbeing": {
+      "prompt": "\"Trading. Just about.\" She gestures at the shop. \"It was the deposit for the new machine. I'd been putting it aside for two years, so I'm running the old one until it dies, and then I don't know.\"",
+      "cooperation": 8,
+      "choices": [
+        {
+          "text": "I'm sorry. Take me through how the payments started.",
+          "next": "ask_call"
+        }
+      ]
+    },
+    "ask_call": {
+      "prompt": "\"A release fee. Small - I checked the amount twice, it was less than a print run. Then a tax charge, because the sum had cleared into a holding account. Then a courier bond, because it was being sent physically.\" She looks up. \"Every single time, that was the last thing.\"",
+      "choices": [
+        {
+          "text": "Say that last part again. Every time it was the last thing.",
+          "next": "tactic_quiz_escalation"
+        }
+      ]
+    },
+    "ask_call_cold": {
+      "prompt": "\"Release fee. Tax charge. Courier bond.\" She counts them off without warmth. \"Nine days. Each one presented as the final step.\"",
+      "cooperation": -6,
+      "choices": [
+        {
+          "text": "Say that last part again. Each one presented as the final step.",
+          "next": "tactic_quiz_escalation"
+        }
+      ]
+    },
+    "tactic_quiz_escalation": {
+      "tactic_quiz": {
+        "setup": "Three payments in nine days. Each one described, at the time, as the only thing standing between her and the money: [i]\"That clears it. Once this is settled the transfer goes out today.\"[/i]",
+        "tactic_id": "advance_fee",
+        "tactic": "Paying to receive",
+        "question": "Why does a scam like this ask three times instead of asking once for the whole amount?",
+        "milestone": {
+          "title": "Tactic Identified: The Escalating Fee",
+          "detail": "Recognised that the fee is split deliberately - each payment is small next to what has already been sunk, so the decision never feels like the large one it is."
+        },
+        "options": [
+          {
+            "text": "Because each new fee looks small next to what she has already sent.",
+            "correct": true,
+            "cooperation": 12,
+            "feedback": "That is the mechanism, and it is why 'why did she send the third one' is the wrong question. By the third, walking away means writing off the first two. Every payment makes the next one easier to justify and harder to refuse."
+          },
+          {
+            "text": "Because asking for everything at once would exceed her bank's limit.",
+            "cooperation": -8,
+            "feedback": "Practical, but it is not the reason. They split the ask long before any limit is in play, on amounts a bank would pass without a blink."
+          },
+          {
+            "text": "Because it gives them more chances to be caught, which they accept.",
+            "cooperation": -8,
+            "feedback": "It is not a cost they are tolerating - it is the design. More contacts is more commitment, not more risk, because the person paying now has a reason to want it to be real."
+          },
+          {
+            "text": "Because she asked to pay in instalments.",
+            "cooperation": -6,
+            "feedback": "She did not. The instalments were offered, and they were offered because a sequence of small decisions is far easier to obtain than one large one."
+          }
+        ],
+        "next": "ask_evidence"
+      }
+    },
+    "ask_evidence": {
+      "prompt": "\"Sunk cost.\" She says it like a word from her own trade. \"I price jobs for a living. I know what that is. I still did it.\"",
+      "evidence_prompt": true,
+      "evidence_hint": "She paid, which means unlike the others there is a trail. Anything showing the money moving, or showing what happened to her afterwards.",
+      "accepts_evidence": [
+        {
+          "evidence_id": "ev_transfer_receipts",
+          "next": "confirm_transfers",
+          "response": "Lina lays the three receipts out in order without being asked. \"Nine days. Look at the dates - he waited until the panic had gone off the last one before he called about the next.\"",
+          "cooperation": 20
+        },
+        {
+          "evidence_id": "ev_second_call_log",
+          "next": "ask_evidence",
+          "response": "\"Four more, after. Different numbers, same shape of thing.\" She scrolls back through it. \"I stopped answering the landline entirely.\"",
+          "cooperation": 8
+        },
+        {
+          "evidence_id": "ev_recovery_offer",
+          "next": "ask_evidence",
+          "response": "She reads it and laughs once, without any humour in it. \"Pay us to get back the money you paid them. I nearly did. That is the part I would rather you didn't write down.\"",
+          "cooperation": 6
+        },
+        {
+          "evidence_id": "ev_printer_quote",
+          "next": "ask_evidence",
+          "response": "\"That's a customer who hasn't paid me. Different problem, and not one you can help with.\"",
+          "cooperation": -8,
+          "wrong": true
+        }
+      ],
+      "choices": [
+        {
+          "text": "What happened after the third payment?",
+          "next": "press_details"
+        },
+        {
+          "text": "Thank you. I have enough to work with.",
+          "next": "end_partial"
+        }
+      ]
+    },
+    "press_details": {
+      "prompt": "\"He stopped answering. And then a fortnight later somebody else rang about a completely different prize.\" She shrugs. \"So either it's a coincidence, or I'm worth more to them now than I was before.\"",
+      "cooperation": 6,
+      "choices": [
+        {
+          "text": "It isn't a coincidence. Can you show me the money moving?",
+          "next": "ask_evidence"
+        },
+        {
+          "text": "Thank you. I have enough to work with.",
+          "next": "end_partial"
+        }
+      ]
+    },
+    "confirm_transfers": {
+      "prompt": "The dates do the work on their own - each call timed to arrive once the last payment had stopped stinging. \"I want it on a record somewhere,\" Lina says. \"Not for the money. I know that's gone. I want it written down that it was a system and not me being a fool.\"",
+      "cooperation": 10,
+      "milestone": {
+        "title": "Key Witness Secured: The Money Trail",
+        "detail": "Lina Reyes documented three escalating payments and the callbacks that followed. Hers is the only account in the case where the money can actually be followed."
+      },
+      "choices": [
+        {
+          "text": "It was a system. It's written down now.",
+          "next": "end_success"
+        }
+      ]
+    },
+    "end_success": {
+      "prompt": "Three dated transfers, a callback log, and a recovery offer aimed at the same victim. This is the strongest documentary evidence in the case - and the only place the operation's money can be traced.",
+      "outcome": "success",
+      "grants_evidence": [
+        {
+          "id": "test_lina_confirmed",
+          "label": "Lina's Confirmed Testimony",
+          "description": "Lina Reyes documented three escalating advance-fee payments, the callbacks that followed, and the recovery scam aimed at her afterwards.",
+          "tactic": "A victim who paid leaves a trail. It is the hardest testimony to obtain and the hardest to argue with."
+        }
+      ],
+      "choices": []
+    },
+    "end_partial": {
+      "prompt": "You have the shape of what happened to her, but not the receipts that would let anyone follow the money. She has them. She simply has not been asked for them.",
+      "outcome": "partial",
+      "choices": []
+    },
+    "end_shutdown": {
+      "prompt": "\"Right.\" Lina picks the stack back up, and the guillotine comes down on it. \"I've got a run to finish.\" She does not look up again. The receipts stay in the drawer, where they have been since the day she filed the report nobody read.",
+      "outcome": "failure",
+      "milestone": {
+        "title": "Witness Lost",
+        "detail": "Lina Reyes went back to work. She had already reported this once to no effect; a second dead end is what teaches a victim that reporting is not worth the afternoon."
+      },
+      "choices": []
+    }
+  }
+}

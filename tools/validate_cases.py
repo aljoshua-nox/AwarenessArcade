@@ -245,6 +245,8 @@ for f, data in parsed.items():
 EXPECTED_LINKS = {
     "maria_santos": "interview_case_001.json",
     "kevin_d": "interview_case_002.json",
+    "evelyn_marsh": "interview_case_005.json",
+    "lina_reyes": "interview_case_006.json",
 }
 
 content_path = os.path.join(base, "resources", "dialogue", "call_content.json")

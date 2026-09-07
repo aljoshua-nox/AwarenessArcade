@@ -74,7 +74,8 @@
     },
     "final_check": {
       "evidence_check": {
-        "required_evidence": ["test_maria_confirmed", "test_kevin_confirmed"],
+        "required_evidence": ["test_maria_confirmed", "test_kevin_confirmed", "test_evelyn_confirmed", "test_lina_confirmed"],
+        "min_matching": 2,
         "next_if_met": "end_full_takedown",
         "next_if_not_met": "end_partial_justice"
       }

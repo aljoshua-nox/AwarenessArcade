@@ -1,4 +1,4 @@
-[gd_scene load_steps=8 format=3]
+[gd_scene load_steps=7 format=3]
 
 [ext_resource type="Script" path="res://scripts/exploration/urban_exterior.gd" id="1"]
 [ext_resource type="Script" path="res://scripts/exploration/exploration_player.gd" id="2"]
@@ -9,9 +9,6 @@ radius = 10.0
 height = 20.0
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_Portal"]
-size = Vector2(56, 44)
-
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_Interview"]
 size = Vector2(56, 44)
 
 [node name="UrbanExterior" type="Node2D"]
@@ -46,36 +43,6 @@ position = Vector2(998, 250)
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Portal"]
 shape = SubResource("RectangleShape2D_Portal")
-
-[node name="InterviewPortalMaria" type="Area2D" parent="."]
-unique_name_in_owner = true
-script = ExtResource("3")
-monitoring = true
-monitorable = true
-position = Vector2(202, 716)
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="InterviewPortalMaria"]
-shape = SubResource("RectangleShape2D_Interview")
-
-[node name="InterviewPortalKevin" type="Area2D" parent="."]
-unique_name_in_owner = true
-script = ExtResource("3")
-monitoring = true
-monitorable = true
-position = Vector2(822, 716)
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="InterviewPortalKevin"]
-shape = SubResource("RectangleShape2D_Interview")
-
-[node name="InterviewPortalMarco" type="Area2D" parent="."]
-unique_name_in_owner = true
-script = ExtResource("3")
-monitoring = true
-monitorable = true
-position = Vector2(1722, 716)
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="InterviewPortalMarco"]
-shape = SubResource("RectangleShape2D_Interview")
 
 [node name="HUD" type="CanvasLayer" parent="."]
 

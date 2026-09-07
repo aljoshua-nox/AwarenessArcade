@@ -2,7 +2,7 @@ extends Control
 
 const TextStyle := preload("res://scripts/systems/text_style.gd")
 
-const FINAL_OUTCOMES := ["full_takedown", "partial_justice", "bribed"]
+const FINAL_OUTCOMES := ["full_takedown", "partial_justice", "bribed", "insufficient_evidence"]
 
 const OUTCOME_LABELS := {
 	"success": "Case Lead Confirmed",
@@ -12,6 +12,7 @@ const OUTCOME_LABELS := {
 	"full_takedown": "Case Closed: Operation Dismantled",
 	"partial_justice": "Case Closed: Partial Justice",
 	"bribed": "Case Closed: Compromised",
+	"insufficient_evidence": "Case Closed: Insufficient Evidence",
 }
 
 const OUTCOME_MESSAGES := {
@@ -22,6 +23,7 @@ const OUTCOME_MESSAGES := {
 	"full_takedown": "Every testimony you gathered held up. The operation is being dismantled from the top down, not just the callers who made the calls.",
 	"partial_justice": "The callers face consequences, but the case wasn't strong enough to reach whoever was really running things.",
 	"bribed": "The investigation ends here - not because the evidence ran out, but because it stopped being pursued.",
+	"insufficient_evidence": "The file closes with nobody charged. The calls are documented, the people who took them are on record, and the operation that made them is still a phone number nobody can attach a name to.",
 }
 
 # Whether the player could name the manipulation does not decide who gets
@@ -39,6 +41,11 @@ const AWARENESS_VERDICTS := {
 		"sharp": "You could not reach the top of it, but you understood it. That is the part of an unfinished case that still protects somebody.",
 		"mixed": "A partial case and a partial reading of it. Both are fixable. Neither is fixed yet.",
 		"blind": "The callers face consequences, and nobody involved - including you - ever said out loud what they were actually doing.",
+	},
+	"insufficient_evidence": {
+		"sharp": "You read every tactic correctly and still could not make the case. That is worth separating out: understanding how a fraud works is not the same as being able to prove who ran it, and the second one needs witnesses who are still willing to talk.",
+		"mixed": "The case ran out of people willing to carry it. Some of what it ran on you named; the rest went past you, and there is nobody left to ask about it.",
+		"blind": "Nothing was proved and nothing was understood. The operation is still working, the scripts are still on the desk, and the only record of any of it is a file that says a number of people received calls.",
 	},
 	"bribed": {
 		"sharp": "You named every tactic correctly. You understood exactly what was done to Maria and to Kevin. Then you were offered money, and it turned out that understanding was never the thing standing in the way.",

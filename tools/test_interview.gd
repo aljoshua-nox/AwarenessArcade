@@ -29,8 +29,15 @@ func _check(condition: bool, label: String) -> void:
 		print("  ok    %s" % label)
 
 
+## Credibility that clears every witness gate (highest is Lina at 70). Tests
+## that are about the engine rather than the gates open with this; the gates
+## have their own tests further down.
+const GATE_CLEAR := 75
+
+
 func _open(case_path: String) -> Node:
 	SessionState.reset_session()
+	SessionState.detective_credibility = GATE_CLEAR
 	SessionState.pending_case_path = case_path
 	var view: Node = load(INTERVIEW_SCENE).instantiate()
 	add_child(view)
@@ -42,7 +49,7 @@ func _open(case_path: String) -> Node:
 # call log, so the history has to be seeded after it and before the scene
 # instantiates - the interview reads its disposition in _ready().
 func _open_after_prologue(case_path: String, person_id: String, victim_name: String,
-		outcome: String, credibility: int = 50) -> Node:
+		outcome: String, credibility: int = GATE_CLEAR) -> Node:
 	SessionState.reset_session()
 	SessionState.prologue_played = true
 	SessionState.detective_credibility = credibility
@@ -245,7 +252,7 @@ func _test_failure_route() -> void:
 	_check(view.interview_over, "cooperation hitting 0 ends the interview")
 	_check(view.current_node_id == "end_shutdown", "it routes to the case's own failure node")
 	_check(SessionState.investigation_outcome == "failure", "outcome is failure")
-	_check(SessionState.detective_credibility == 40, "failure costs 10 credibility (got %d)" % SessionState.detective_credibility)
+	_check(SessionState.detective_credibility == GATE_CLEAR - 10, "failure costs 10 credibility (got %d)" % SessionState.detective_credibility)
 	await _close(view)
 
 
@@ -265,8 +272,14 @@ func _test_antifarming() -> void:
 	_check(view.cooperation == revisit, "revisiting a node does not re-apply its bonus")
 	await _close(view)
 
-	# Kevin is gated at 60 credibility; a fresh session sits at 50.
-	view = await _open(CASE_KEVIN)
+	# Kevin is gated at 60. _open() now arrives with standing, so drop below the
+	# gate deliberately to exercise the hesitant branch.
+	SessionState.reset_session()
+	SessionState.detective_credibility = 50
+	SessionState.pending_case_path = CASE_KEVIN
+	view = load(INTERVIEW_SCENE).instantiate()
+	add_child(view)
+	await get_tree().process_frame
 	_check(view.current_node_id == "hesitant_intro", "Kevin is hesitant below 60 credibility")
 	await _close(view)
 

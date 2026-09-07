@@ -7,20 +7,26 @@ new asset is added under `assets/`.
 Status legend: ✅ confirmed from bundled license/readme · ⚠️ needs verification (no
 license file bundled, or license terms require per-file checking).
 
-> **Redistribution note — read before making the repository public.**
-> Two packs here permit use in a built game but forbid redistributing the raw
+> **Redistribution — resolved 2026-09-08.**
+> Two packs permitted use in a built game but forbade redistributing the raw
 > files: **Modern Office 2D Props** ("Resell, sublicense, share, or redistribute
 > the assets as standalone files" is not permitted) and **Pixel Life – Desk
 > Essentials** ("no resale or redistribution of standalone files"). Committing
-> their PNGs to a public Git repository is redistribution of standalone files,
-> which those terms do not allow — shipping them inside an exported `.exe` is
-> what they do allow. This is unresolved. Options: keep the repository private,
-> remove those assets from version control, or replace them with CC0
-> equivalents.
+> their PNGs to a public Git repository is exactly that. **Neither was
+> referenced by the game**, so both were removed from version control rather
+> than kept under terms the repository could not satisfy. Do not re-add them to
+> this repo while it is public.
 >
-> Separately, **Font Awesome** (CC BY 4.0) and **Pixel Life** (CC BY 4.0) both
-> *require* attribution in the shipped game, not just in this file. The planned
-> in-game credits screen is what satisfies that.
+> **Font Awesome** (CC BY 4.0) still *requires* attribution in the shipped game,
+> not just in this file. The planned in-game credits screen is what satisfies
+> that.
+>
+> **Removed the same day, all unreferenced by the game:** Modern Office 2D
+> Props, Pixel Life – Desk Essentials, 25 Portrait Pixel Art pack1 (terms never
+> stated), FG11 Trial (unidentifiable, folder marked "Trial"), MetroCity +
+> MetroCity 2.0 (CC0, simply unused), and the `Modern_City_GameKit/` folder —
+> 319 files, ~12 MB. See the note on the `urban/` sheets below before assuming
+> the GameKit question is closed.
 
 
 ## Art
@@ -36,15 +42,9 @@ license file bundled, or license terms require per-file checking).
 | RPG Urban Pack 1.0 | `assets/art/maps/kenney_rpg-urban-pack/` | Kenney (kenney.nl) | CC0 | ✅ |
 | PixelOffice pack (characters + office props) | `assets/art/maps/PixelOffice/` | itch.io asset pack ("PixelOffice") | CC0 | ✅ |
 | Free Office Pixel Art | `assets/art/maps/free-office-pixel-art/` | arlantr — [itch.io](https://arlantr.itch.io/) / [OpenGameArt](https://opengameart.org/users/arlantr) | Free to use, credit appreciated | ✅ |
-| Modern Office 2D Props Pack v1.0 | `assets/art/maps/ModernOffice2DProps_v1.0/` | nacl1234 | Commercial license — embed in compiled build only, no standalone redistribution | ✅ (note: cannot resell/redistribute as raw files) |
 | Little Bits: Office (tileset + businessman1 character) | `assets/art/maps/Little_Bits_Office_tileset/` | AdricCustoms — [itch.io](https://adriccustoms.itch.io/little-bits-office) | Name-your-own-price; creator states use is unrestricted ("Use it for whatever you like"). No formal license text published | ✅ identified, terms informal |
-| Pixel Life – Desk Essentials | `assets/art/maps/Pixel Life - Desk Essentials/` | Chris Perich — [itch.io](https://christianperich.itch.io/pixel-life-office-essentials) (download "Pixel Life - Desk Essentials.zip") | **CC BY 4.0 — attribution required.** Page also states no resale or redistribution of standalone files | ⚠️ attribution required; see redistribution note below |
-| Office/urban tile sheets (`office/`, `urban/` — desk, cabinet, printer, buses, roads, etc.) | `assets/art/maps/office/`, `assets/art/maps/urban/` | ⚠️ appears to match a "Modern City Game Kit" style pack; see `Modern_City_GameKit` below — likely same source, files renamed/flattened | ⚠️ unknown | ⚠️ needs source lookup |
-| Modern City GameKit (characters, props, tiles, Aseprite sources) | `assets/art/characters/Modern_City_GameKit/` | ⚠️ Still unidentified. Searched itch.io/OpenGameArt for the name and for distinctive filenames (`Detective_idle_front-Sheet`, `NPC_Copper_Idle-Sheet`, `traffic lights animation-Sheet`) with no match. Ships `.aseprite` sources, so it is likely a paid or bundled itch.io pack | ⚠️ unknown | ⚠️ unresolved — highest priority |
-| 25 Portrait Pixel Art pack1 | `assets/art/characters/25_portrait_pixel_art_pack1/` | phoenix1291 (Swiss Arcade Game Entertainment) — [itch.io](https://phoenix1291.itch.io/25-portrait-pixel-art-pack1) | Free / pay-what-you-think-is-fair. **No license terms stated on the page** — only "support me if you like my work" | ⚠️ source identified, terms unstated |
-| FG11 Trial (OfficeMan expression sprites) | `assets/art/characters/FG11_Trial/` | ⚠️ Still unidentified; no match for "FG11". Filenames (`103_OfficeMan_Angry/Normal/Sad/Smile/Special`) match the shape of a visual-novel character pack sold with a free sampler. **The folder name says "Trial"**, and trial/sampler builds commonly forbid redistribution | ⚠️ unknown | ⚠️ unresolved — treat as unsafe to ship |
-| MetroCity — Free Top Down Character Pack | `assets/art/characters/MetroCity/` | JIK-A-4 — [itch.io](https://jik-a-4.itch.io/metrocity-free-topdown-character-pack) | CC0. Creator: "You can use it as you wish"; credit appreciated, not required. Commercial use confirmed by the creator | ✅ |
-| MetroCity 2.0 (hair/suit sprites) | `assets/art/characters/MetroCity 2.0/` | JIK-A-4 — same pack, [Update 2.0](https://jik-a-4.itch.io/metrocity-free-topdown-character-pack) (Jan 2024, added "Suits and more") | CC0, as above | ✅ |
+| Urban tile sheets — **used to build the city block** (`doors_windows`, `props`, `walls_grass_roof`; plus unused `road_pavements`, `buses_cars`) | `assets/art/maps/urban/` | ⚠️ **Unidentified — this is the one that matters.** These are byte-identical (MD5-matched) copies of files from the removed `Modern_City_GameKit/` pack, renamed and flattened. Deleting that folder did **not** remove this art from the game. Searches for the pack name and for distinctive filenames (`Detective_idle_front-Sheet`, `NPC_Copper_Idle-Sheet`, `traffic lights animation-Sheet`) found nothing | ⚠️ unknown | ⚠️ **unresolved — highest priority.** Ask whoever downloaded it (itch.io library / download history), or replace with the Kenney CC0 city packs already in the project |
+| Office tile sheets — floor and wall tiles used by the call floor (`floor_tiles`, `wall_tiles`; other props unused) | `assets/art/maps/office/` | ⚠️ unidentified; did not match the removed GameKit pack, so a separate source | ⚠️ unknown | ⚠️ needs source lookup |
 | Numbered character pack (`pack/pack/1.png`…) | `assets/art/characters/pack/` | ⚠️ unidentified — no bundled license found | ⚠️ unknown | ⚠️ needs source lookup |
 | Player detective sprite (idle/walk, 4 directions) | `assets/art/characters/player/` | ⚠️ unidentified — likely custom or from one of the packs above | ⚠️ unknown | ⚠️ needs source lookup |
 | Portraits (fella 1/2, lady 1/2) | `assets/art/portraits/` | ⚠️ No pack found. PNG metadata records `Software: Celsys Studio Tool` (Clip Studio Paint), which suggests hand-drawn artwork rather than a downloaded pack — **ask the team whether a member drew these** | ⚠️ unknown | ⚠️ confirm with the team first |
@@ -87,15 +87,19 @@ No music tracks are currently in `assets/audio/music/` (empty).
 
 ## Open items
 
-1. Identify the source/license for the packs marked ⚠️ above (Little Bits Office tileset,
-   Pixel Life – Desk Essentials, Modern City GameKit + the flattened `office/`/`urban/`
-   sheets, 25 Portrait Pixel Art Pack 1, FG11 Trial, MetroCity/MetroCity 2.0, the numbered
-   `pack/` character sheets, the player detective sprite, and the four loose portraits).
-   Check the itch.io/download folder these came from, or any purchase receipts/emails.
-2. Confirm each Freesound SFX's actual license (CC0 vs CC-BY vs CC-BY-NC) — CC-BY entries
+1. **Identify the `urban/` tile sheets.** They draw the city block the whole investigation
+   walks around, and nobody knows where they came from. Ask whoever downloaded the art —
+   their itch.io library or browser download history will answer it far faster than
+   searching. Failing that, replace them with the Kenney *Roguelike Modern City* / *RPG
+   Urban Pack* already in this project, both CC0.
+2. Identify the remaining ⚠️ art: the `office/` floor and wall tiles, the numbered `pack/`
+   character sheets, the player detective sprite, and the four loose portraits. The
+   portraits carry Clip Studio Paint metadata and may be a team member's own work — ask
+   before hunting for a source.
+3. Confirm each Freesound SFX's actual license (CC0 vs CC-BY vs CC-BY-NC) — CC-BY entries
    need "Author — title (freesound.org)" in the credits screen; CC-BY-NC entries are not
    safe to ship in a commercial release.
-3. Font Awesome Free icons are CC BY 4.0 — the credits screen must include an attribution
+4. Font Awesome Free icons are CC BY 4.0 — the credits screen must include an attribution
    line for Font Awesome (fontawesome.com) since these are not the CC0 subset.
 4. Modern Office 2D Props Pack (nacl1234) forbids standalone redistribution — fine as
    embedded assets in the compiled game, just don't ship the raw PNG/JSON files separately.

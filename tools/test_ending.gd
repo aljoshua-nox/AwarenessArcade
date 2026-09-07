@@ -63,6 +63,7 @@ func _run() -> void:
 	await _test_verdict_changes_with_awareness()
 	await _test_missed_tactics_are_named()
 	await _test_untested_and_midcase()
+	await _test_sections_start_collapsed()
 
 	print("\n%d checks, %d failed" % [checks, failures.size()])
 	for f in failures:
@@ -70,6 +71,47 @@ func _run() -> void:
 	await get_tree().process_frame
 	await get_tree().process_frame
 	get_tree().quit(1 if failures.size() > 0 else 0)
+
+
+# The reference lists used to unroll to roughly forty lines and bury the
+# ending under themselves. They are still one click away, just not by default.
+func _test_sections_start_collapsed() -> void:
+	print("\n[the lists do not bury the ending]")
+	_seed_reads(2, 4, ["Manufactured urgency"])
+	SessionState.add_evidence({"id": "a", "label": "Phishing text", "tactic": "Manufactured urgency"})
+	SessionState.add_evidence({"id": "b", "label": "Bank alert", "tactic": "Denying time to verify"})
+	SessionState.record_reflection_milestone("First Report Filed", "A call crossed the report threshold.")
+
+	var view := await _open("full_takedown")
+	_check(not view.evidence_value.visible, "evidence starts collapsed")
+	_check(not view.milestones_value.visible, "milestones start collapsed")
+	_check(view.evidence_header.text.contains("(2)"), "the header counts the evidence (%s)" % view.evidence_header.text)
+	_check(view.milestones_header.text.contains("(1)"), "the header counts the milestones")
+	_check(view.evidence_header.text.begins_with(">"), "a collapsed section points right")
+
+	# The ending itself is never hidden behind a click.
+	_check(view.outcome_note.text.length() > 0, "the verdict is visible without expanding anything")
+
+	view._toggle_section(view.evidence_header, view.evidence_value)
+	_check(view.evidence_value.visible, "clicking the header expands it")
+	_check(view.evidence_header.text.begins_with("v"), "an expanded section points down")
+	_check(view.evidence_value.text.contains("Phishing text"), "the expanded list names the evidence")
+	_check(view.evidence_value.text.contains("Manufactured urgency"), "and keeps the tactic it proves")
+	_check(view.evidence_value.fit_content, "the list grows rather than clipping as evidence accumulates")
+
+	view._toggle_section(view.evidence_header, view.evidence_value)
+	_check(not view.evidence_value.visible, "clicking again collapses it")
+
+	_check(view.awareness_bar.visible, "the awareness bar shows once a quiz has been answered")
+	_check(is_equal_approx(view.awareness_bar.value, 50.0),
+		"the bar reflects 2 of 4 (got %.0f)" % view.awareness_bar.value)
+	await _close(view)
+
+	# With no quizzes answered there is no ratio to draw.
+	SessionState.reset_session()
+	var bare := await _open("full_takedown")
+	_check(not bare.awareness_bar.visible, "the bar hides when nothing has been tested")
+	await _close(bare)
 
 
 func _test_tiers() -> void:

@@ -1,5 +1,7 @@
 extends Control
 
+const TextStyle := preload("res://scripts/systems/text_style.gd")
+
 const FINAL_OUTCOMES := ["full_takedown", "partial_justice", "bribed"]
 
 const OUTCOME_LABELS := {
@@ -30,7 +32,7 @@ const OUTCOME_MESSAGES := {
 const AWARENESS_VERDICTS := {
 	"full_takedown": {
 		"sharp": "You did not only close it - you can name every lever they pulled. The office is gone, and so is the part of this that could ever be used on you.",
-		"mixed": "The operation is dismantled. Some of what it ran on still went past you unnamed, and those same lines are being read off a script somewhere else tonight.",
+		"mixed": "Some of what it ran on still went past you unnamed, though, and those same lines are being read off a script somewhere else tonight.",
 		"blind": "The office is gone. The scripts are not. You took an operation apart without once naming what it actually did to people - and the next crew will use the same three, because they work.",
 	},
 	"partial_justice": {
@@ -49,8 +51,12 @@ var title_label: Label
 var outcome_label: Label
 var outcome_note: RichTextLabel
 var scorecard_value: RichTextLabel
+var awareness_title: Label
+var awareness_bar: ProgressBar
 var evidence_value: RichTextLabel
 var milestones_value: RichTextLabel
+var evidence_header: Button
+var milestones_header: Button
 var continue_button: Button
 
 
@@ -80,19 +86,26 @@ func _build_ui() -> void:
 		root_margin.add_theme_constant_override(side, 16)
 	add_child(root_margin)
 
-	var root_scroll := ScrollContainer.new()
-	root_scroll.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	root_scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	root_scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
-	root_margin.add_child(root_scroll)
+	# A fixed-width column centred by spacers, filling the available height, so
+	# the reading measure stays comfortable and the panel has a real bottom to
+	# pin the buttons to.
+	var centring_row := HBoxContainer.new()
+	centring_row.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	centring_row.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	root_margin.add_child(centring_row)
 
-	var center := CenterContainer.new()
-	center.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	root_scroll.add_child(center)
+	var left_spacer := Control.new()
+	left_spacer.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	centring_row.add_child(left_spacer)
 
 	var panel := PanelContainer.new()
 	panel.custom_minimum_size = Vector2(720, 0)
-	center.add_child(panel)
+	panel.size_flags_vertical = Control.SIZE_FILL
+	centring_row.add_child(panel)
+
+	var right_spacer := Control.new()
+	right_spacer.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	centring_row.add_child(right_spacer)
 
 	var margin := MarginContainer.new()
 	for side in ["margin_left", "margin_top", "margin_right", "margin_bottom"]:
@@ -105,47 +118,62 @@ func _build_ui() -> void:
 
 	title_label = Label.new()
 	title_label.add_theme_font_size_override("font_size", 26)
+	title_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	column.add_child(title_label)
 
 	outcome_label = Label.new()
 	outcome_label.add_theme_font_size_override("font_size", 18)
 	column.add_child(outcome_label)
 
+	var body_scroll := ScrollContainer.new()
+	body_scroll.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	body_scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	body_scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
+	column.add_child(body_scroll)
+
+	var body := VBoxContainer.new()
+	body.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	body.add_theme_constant_override("separation", 10)
+	body_scroll.add_child(body)
+
+	# The verdict is the ending. It gets the room, and the reference material
+	# below it does not compete with it for attention.
 	outcome_note = RichTextLabel.new()
 	outcome_note.bbcode_enabled = true
 	outcome_note.fit_content = true
 	outcome_note.custom_minimum_size = Vector2(0, 60)
-	column.add_child(outcome_note)
+	body.add_child(outcome_note)
 
-	var scorecard_title := Label.new()
-	scorecard_title.text = "Awareness Scorecard"
-	column.add_child(scorecard_title)
+	body.add_child(_rule())
+
+	awareness_title = Label.new()
+	awareness_title.text = "Awareness"
+	body.add_child(awareness_title)
+
+	awareness_bar = ProgressBar.new()
+	awareness_bar.custom_minimum_size = Vector2(0, 14)
+	awareness_bar.min_value = 0.0
+	awareness_bar.max_value = 100.0
+	awareness_bar.show_percentage = false
+	body.add_child(awareness_bar)
 
 	scorecard_value = RichTextLabel.new()
 	scorecard_value.bbcode_enabled = true
 	scorecard_value.fit_content = true
-	scorecard_value.custom_minimum_size = Vector2(0, 80)
-	column.add_child(scorecard_value)
+	body.add_child(scorecard_value)
 
-	var evidence_title := Label.new()
-	evidence_title.text = "Evidence on File"
-	column.add_child(evidence_title)
+	body.add_child(_rule())
 
-	evidence_value = RichTextLabel.new()
-	evidence_value.bbcode_enabled = true
-	evidence_value.fit_content = true
-	evidence_value.custom_minimum_size = Vector2(0, 120)
-	column.add_child(evidence_value)
+	# Evidence and milestones are reference, not reading. Collapsed by default
+	# so a full case file does not bury the ending under forty lines of list;
+	# nothing is removed, it is one click away.
+	var evidence_section := _add_collapsible(body, "Evidence on file")
+	evidence_header = evidence_section["header"]
+	evidence_value = evidence_section["body"]
 
-	var milestones_title := Label.new()
-	milestones_title.text = "Reflection Milestones"
-	column.add_child(milestones_title)
-
-	milestones_value = RichTextLabel.new()
-	milestones_value.bbcode_enabled = true
-	milestones_value.fit_content = true
-	milestones_value.custom_minimum_size = Vector2(0, 100)
-	column.add_child(milestones_value)
+	var milestones_section := _add_collapsible(body, "Reflection milestones")
+	milestones_header = milestones_section["header"]
+	milestones_value = milestones_section["body"]
 
 	var button_row := HBoxContainer.new()
 	button_row.add_theme_constant_override("separation", 12)
@@ -165,8 +193,70 @@ func _build_ui() -> void:
 	button_row.add_child(main_menu_button)
 
 
+# The themed fill is red, which reads as failure at any value. Colour it by
+# tier instead so a strong reading looks like one.
+func _tint_awareness_bar() -> void:
+	var fill := StyleBoxFlat.new()
+	match SessionState.get_awareness_tier():
+		SessionState.AWARENESS_SHARP:
+			fill.bg_color = Color(TextStyle.COLOR_CORRECT)
+		SessionState.AWARENESS_BLIND:
+			fill.bg_color = Color(TextStyle.COLOR_WRONG)
+		_:
+			fill.bg_color = Color(TextStyle.COLOR_TACTIC)
+	fill.corner_radius_top_left = 2
+	fill.corner_radius_top_right = 2
+	fill.corner_radius_bottom_left = 2
+	fill.corner_radius_bottom_right = 2
+	awareness_bar.add_theme_stylebox_override("fill", fill)
+
+
+func _rule() -> Control:
+	var rule := ColorRect.new()
+	rule.color = Color(1, 1, 1, 0.12)
+	rule.custom_minimum_size = Vector2(0, 1)
+	return rule
+
+
+# A header button that shows or hides its own body. Deliberately plain - the
+# arrow and the count carry the affordance.
+func _add_collapsible(parent: VBoxContainer, title: String) -> Dictionary:
+	var header := Button.new()
+	header.alignment = HORIZONTAL_ALIGNMENT_LEFT
+	header.flat = true
+	header.set_meta("title", title)
+	parent.add_child(header)
+
+	var body := RichTextLabel.new()
+	body.bbcode_enabled = true
+	# fit_content inside the screen's ScrollContainer: a fixed height would
+	# silently clip the list as it grows, which is a bug this project has hit
+	# three times already.
+	body.fit_content = true
+	body.visible = false
+	parent.add_child(body)
+
+	header.pressed.connect(_toggle_section.bind(header, body))
+	return {"header": header, "body": body}
+
+
+func _toggle_section(header: Button, body: RichTextLabel) -> void:
+	body.visible = not body.visible
+	_refresh_section_header(header, body)
+
+
+func _refresh_section_header(header: Button, body: RichTextLabel) -> void:
+	var arrow := "v" if body.visible else ">"
+	header.text = "%s  %s   (%d)" % [arrow, str(header.get_meta("title", "")), int(header.get_meta("count", 0))]
+
+
 func _refresh_view() -> void:
-	title_label.text = "%s - %s" % [SessionState.investigation_case_title, SessionState.investigation_person_name]
+	var case_title := SessionState.investigation_case_title
+	var person_name := SessionState.investigation_person_name
+	if person_name.is_empty() or case_title.contains(person_name):
+		title_label.text = case_title
+	else:
+		title_label.text = "%s - %s" % [case_title, person_name]
 	var outcome := SessionState.investigation_outcome
 	outcome_label.text = OUTCOME_LABELS.get(outcome, "Interview Concluded")
 	continue_button.visible = not FINAL_OUTCOMES.has(outcome)
@@ -176,12 +266,32 @@ func _refresh_view() -> void:
 	var verdict := _awareness_verdict(outcome)
 	if not verdict.is_empty():
 		note_lines.append(verdict)
-	note_lines.append("Cooperation reached: %d / 100" % SessionState.investigation_cooperation)
-	note_lines.append("Detective credibility: %d / 100" % SessionState.detective_credibility)
+	# Two running numbers do not need a paragraph each.
+	note_lines.append("[color=#%s]Cooperation %d / 100     Credibility %d / 100[/color]" % [
+		TextStyle.COLOR_NARRATION,
+		SessionState.investigation_cooperation,
+		SessionState.detective_credibility])
 	outcome_note.text = "\n\n".join(note_lines)
+
 	scorecard_value.text = _build_scorecard_text()
+	var total := SessionState.tactic_reads_total
+	awareness_bar.visible = total > 0
+	if total > 0:
+		awareness_bar.value = (float(SessionState.tactic_reads_correct) / float(total)) * 100.0
+		awareness_title.text = "Awareness - %d of %d tactics named" % [
+			SessionState.tactic_reads_correct, total]
+	else:
+		awareness_bar.value = 0.0
+		awareness_title.text = "Awareness"
+	_tint_awareness_bar()
+
 	evidence_value.text = _build_evidence_text()
+	evidence_header.set_meta("count", SessionState.investigation_inventory.size())
+	_refresh_section_header(evidence_header, evidence_value)
+
 	milestones_value.text = _build_milestones_text()
+	milestones_header.set_meta("count", SessionState.reflection_milestones.size())
+	_refresh_section_header(milestones_header, milestones_value)
 
 
 # Only the three true endings carry a verdict. The per-interview outcomes are
@@ -201,7 +311,6 @@ func _build_scorecard_text() -> String:
 	if SessionState.tactic_reads_total <= 0:
 		lines.append("[i]No manipulation tactics have been identified yet this session.[/i]")
 	else:
-		lines.append("[b]Tactics read correctly:[/b] %d of %d" % [SessionState.tactic_reads_correct, SessionState.tactic_reads_total])
 		if SessionState.tactic_reads_correct == SessionState.tactic_reads_total:
 			lines.append("You named the manipulation every time it was put in front of you.")
 		elif SessionState.tactic_reads_correct == 0:
@@ -224,16 +333,18 @@ func _build_scorecard_text() -> String:
 func _build_evidence_text() -> String:
 	if SessionState.investigation_inventory.is_empty():
 		return "[i]No evidence has been logged yet.[/i]"
+	# The description was already read in play, when the item was presented.
+	# What is worth carrying out of the case is the item and the tactic it
+	# proves, so each row is a name and a lesson rather than a paragraph.
 	var lines: Array[String] = []
 	for item in SessionState.investigation_inventory:
 		var label := str(item.get("label", "Evidence"))
-		var description := str(item.get("description", ""))
 		var tactic := str(item.get("tactic", ""))
 		if tactic.is_empty():
-			lines.append("- [b]%s[/b]: %s" % [label, description])
+			lines.append("[b]%s[/b]" % label)
 		else:
-			lines.append("- [b]%s[/b]: %s [i](Tactic: %s)[/i]" % [label, description, tactic])
-	return "\n".join(lines)
+			lines.append("[b]%s[/b]\n    [color=#%s]%s[/color]" % [label, TextStyle.COLOR_NARRATION, tactic])
+	return "\n\n".join(lines)
 
 
 func _build_milestones_text() -> String:
@@ -244,10 +355,10 @@ func _build_milestones_text() -> String:
 		var title := str(milestone.get("title", ""))
 		var detail := str(milestone.get("detail", ""))
 		if detail.is_empty():
-			lines.append("- %s" % title)
+			lines.append("[b]%s[/b]" % title)
 		else:
-			lines.append("- [b]%s[/b]: %s" % [title, detail])
-	return "\n".join(lines)
+			lines.append("[b]%s[/b]\n    [color=#%s]%s[/color]" % [title, TextStyle.COLOR_NARRATION, detail])
+	return "\n\n".join(lines)
 
 
 func _on_continue_pressed() -> void:

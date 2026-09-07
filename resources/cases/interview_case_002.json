@@ -107,6 +107,7 @@
 	"tactic_quiz_popup": {
 	  "tactic_quiz": {
 		"setup": "You pull up the screenshot. A red banner fills the browser window: [i]\"THREAT DETECTED - 3 infected files found. Do not restart your device. Call support immediately.\"[/i]",
+		"tactic": "The impossible scan",
 		"question": "What is the single fact that proves this pop-up was fake before anyone even called the number?",
 		"milestone": {
 		  "title": "Tactic Identified: The Impossible Scan",

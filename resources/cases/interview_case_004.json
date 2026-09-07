@@ -43,6 +43,7 @@
     "tactic_quiz_pattern": {
       "tactic_quiz": {
         "setup": "You think about the two people who got you into this room. Maria Santos, sixty-seven, a retired bank clerk, told her account would be frozen unless she verified right now. Kevin Dizon, twenty-four, works with computers all day, told his files were infected and to call before restarting.",
+        "tactic": "The pattern behind every script",
         "question": "Two completely different scripts, two completely different people. What did both of them actually need in order to work?",
         "milestone": {
           "title": "The Pattern Named",

@@ -22,6 +22,29 @@ const OUTCOME_MESSAGES := {
 	"bribed": "The investigation ends here - not because the evidence ran out, but because it stopped being pursued.",
 }
 
+# Whether the player could name the manipulation does not decide who gets
+# arrested - that is what the evidence is for, and gating justice behind a quiz
+# score would punish the wrong thing. What it decides is whether they leave able
+# to recognise the next one, which is the entire point of the game, so the
+# ending has to say it out loud instead of leaving it in a scorecard.
+const AWARENESS_VERDICTS := {
+	"full_takedown": {
+		"sharp": "You did not only close it - you can name every lever they pulled. The office is gone, and so is the part of this that could ever be used on you.",
+		"mixed": "The operation is dismantled. Some of what it ran on still went past you unnamed, and those same lines are being read off a script somewhere else tonight.",
+		"blind": "The office is gone. The scripts are not. You took an operation apart without once naming what it actually did to people - and the next crew will use the same three, because they work.",
+	},
+	"partial_justice": {
+		"sharp": "You could not reach the top of it, but you understood it. That is the part of an unfinished case that still protects somebody.",
+		"mixed": "A partial case and a partial reading of it. Both are fixable. Neither is fixed yet.",
+		"blind": "The callers face consequences, and nobody involved - including you - ever said out loud what they were actually doing.",
+	},
+	"bribed": {
+		"sharp": "You named every tactic correctly. You understood exactly what was done to Maria and to Kevin. Then you were offered money, and it turned out that understanding was never the thing standing in the way.",
+		"mixed": "You saw some of it clearly. It made no difference to what you did with the envelope.",
+		"blind": "You never named what they were doing, and then you took their money. The two are not unrelated - it is easier to accept payment for something you have declined to describe.",
+	},
+}
+
 var title_label: Label
 var outcome_label: Label
 var outcome_note: RichTextLabel
@@ -150,12 +173,27 @@ func _refresh_view() -> void:
 	var note_lines: Array[String] = []
 	note_lines.append(OUTCOME_MESSAGES.get(outcome, ""))
 	note_lines.append(SessionState.investigation_outcome_note)
+	var verdict := _awareness_verdict(outcome)
+	if not verdict.is_empty():
+		note_lines.append(verdict)
 	note_lines.append("Cooperation reached: %d / 100" % SessionState.investigation_cooperation)
 	note_lines.append("Detective credibility: %d / 100" % SessionState.detective_credibility)
 	outcome_note.text = "\n\n".join(note_lines)
 	scorecard_value.text = _build_scorecard_text()
 	evidence_value.text = _build_evidence_text()
 	milestones_value.text = _build_milestones_text()
+
+
+# Only the three true endings carry a verdict. The per-interview outcomes are
+# mid-case summaries, where a closing statement on the player's awareness would
+# be premature.
+func _awareness_verdict(outcome: String) -> String:
+	if not FINAL_OUTCOMES.has(outcome):
+		return ""
+	var tier := SessionState.get_awareness_tier()
+	if tier == SessionState.AWARENESS_UNTESTED:
+		return ""
+	return str(AWARENESS_VERDICTS.get(outcome, {}).get(tier, ""))
 
 
 func _build_scorecard_text() -> String:
@@ -170,6 +208,11 @@ func _build_scorecard_text() -> String:
 			lines.append("The tactics went unnamed. These scripts work precisely because the pressure looks like ordinary procedure.")
 		else:
 			lines.append("Some of the manipulation went unnamed. Reviewing the tactics on file is worth the time.")
+		# Naming the specific misses is the difference between a score and a
+		# thing the player can go and look up.
+		var missed := SessionState.get_missed_tactics()
+		if not missed.is_empty():
+			lines.append("[b]Went unnamed:[/b] %s" % ", ".join(missed))
 
 	var misses := SessionState.investigation_evidence_misses
 	if misses > 0:

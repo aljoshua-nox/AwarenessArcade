@@ -126,6 +126,18 @@ for f, data in parsed.items():
     print(f"{name}: {len(ids)} nodes, {endings} endings, "
           f"{sum(1 for n in nodes.values() if n.get('tactic_quiz'))} quiz")
 
+# --- Tactic quizzes carry a name ---------------------------------------------
+# The ending names the tactics the player got wrong, so an unlabelled quiz would
+# silently drop out of that list rather than fail.
+for f, data in parsed.items():
+    name = os.path.basename(f)
+    for nid, node in data.get("nodes", {}).items():
+        quiz = node.get("tactic_quiz")
+        if not quiz:
+            continue
+        if not str(quiz.get("tactic", "")).strip():
+            errors.append(f"{name}: quiz at '{nid}' has no 'tactic' name to report in the ending")
+
 # --- Disposition blocks ------------------------------------------------------
 # A victim's opening beat varies with what the player did to them in the
 # prologue. `neutral` is deliberately absent: it means "the case exactly as

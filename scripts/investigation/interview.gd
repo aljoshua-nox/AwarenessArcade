@@ -531,7 +531,7 @@ func _answer_quiz(option_index: int) -> void:
 
 	answered_quizzes[current_node_id] = true
 	quiz_active = false
-	SessionState.record_tactic_read(correct)
+	SessionState.record_tactic_read(correct, str(current_quiz.get("tactic", "")))
 	_apply_cooperation(int(option.get("cooperation", 0)))
 	_play_sting(correct)
 

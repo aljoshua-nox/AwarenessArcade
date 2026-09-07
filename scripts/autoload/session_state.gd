@@ -23,6 +23,15 @@ const DISPOSITION_RESISTANT := "resistant"    # they refused you, unharmed
 const DISPOSITION_UNFINISHED := "unfinished"  # the call never resolved
 const DISPOSITION_NEUTRAL := "neutral"        # you never called them at all
 
+# How well the player read the manipulation across the whole session. This is
+# folded into the ending: the case is closed by evidence, but whether the player
+# leaves able to recognise the next scam is a separate question, and the game
+# should answer it out loud.
+const AWARENESS_SHARP := "sharp"        # named every tactic put in front of them
+const AWARENESS_MIXED := "mixed"        # named some
+const AWARENESS_BLIND := "blind"        # named none
+const AWARENESS_UNTESTED := "untested"  # never reached a tactic quiz
+
 # Prologue (scam-call sim) state
 var calls_made: int = 0
 var victims_affected: int = 0
@@ -56,6 +65,10 @@ var investigation_cooperation: int = 0
 var investigation_evidence_misses: int = 0
 var tactic_reads_correct: int = 0
 var tactic_reads_total: int = 0
+# Every tactic quiz answered, as {"tactic": String, "correct": bool}. The
+# counters are the score; this is what was actually missed, which is the part
+# worth naming back to the player at the end.
+var tactic_reads: Array[Dictionary] = []
 var detective_credibility: int = 50
 var interviewed_people: Array[String] = []
 var pending_case_path: String = ""
@@ -75,13 +88,40 @@ func record_interview_outcome(person_id: String, outcome: String) -> void:
 		detective_credibility = clampi(detective_credibility - 10, 0, 100)
 
 
-func record_tactic_read(correct: bool) -> void:
+func record_tactic_read(correct: bool, tactic: String = "") -> void:
 	tactic_reads_total += 1
+	tactic_reads.append({"tactic": tactic, "correct": correct})
 	if correct:
 		tactic_reads_correct += 1
 		detective_credibility = clampi(detective_credibility + 3, 0, 100)
 	else:
 		detective_credibility = clampi(detective_credibility - 3, 0, 100)
+
+
+# The tactics the player got wrong, in the order they met them, de-duplicated
+# so a retried interview does not list the same miss twice.
+func get_missed_tactics() -> Array[String]:
+	var missed: Array[String] = []
+	var named := {}
+	for entry in tactic_reads:
+		var tactic := str(entry.get("tactic", ""))
+		if tactic.is_empty() or bool(entry.get("correct", false)):
+			continue
+		if named.has(tactic):
+			continue
+		named[tactic] = true
+		missed.append(tactic)
+	return missed
+
+
+func get_awareness_tier() -> String:
+	if tactic_reads_total <= 0:
+		return AWARENESS_UNTESTED
+	if tactic_reads_correct >= tactic_reads_total:
+		return AWARENESS_SHARP
+	if tactic_reads_correct <= 0:
+		return AWARENESS_BLIND
+	return AWARENESS_MIXED
 
 
 func add_evidence(item: Dictionary) -> void:
@@ -222,6 +262,7 @@ func reset_session() -> void:
 	investigation_evidence_misses = 0
 	tactic_reads_correct = 0
 	tactic_reads_total = 0
+	tactic_reads.clear()
 	detective_credibility = 50
 	interviewed_people.clear()
 	pending_case_path = ""

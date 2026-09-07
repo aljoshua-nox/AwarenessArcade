@@ -107,6 +107,7 @@
 	"tactic_quiz_urgency": {
 	  "tactic_quiz": {
 		"setup": "You write the line out as she said it: [i]\"Your account has a suspicious login. You need to verify your identity right away, or we'll have to freeze the account.\"[/i]",
+		"tactic": "Manufactured urgency",
 		"question": "Which part of that sentence is doing the manipulation?",
 		"milestone": {
 		  "title": "Tactic Identified: Manufactured Urgency",

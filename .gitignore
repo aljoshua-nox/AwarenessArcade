@@ -2,4 +2,4 @@
 tmp_render/
 *.tmp
 *.log
-
+build/

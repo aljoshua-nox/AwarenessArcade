@@ -317,8 +317,10 @@ func _refresh_ui() -> void:
 
 func _populate_victims() -> void:
 	victim_list.clear()
-	for victim in victims:
-		victim_list.add_item("%s, %d" % [str(victim.get("name", "Unknown")), int(victim.get("age", 0))])
+	for i in range(victims.size()):
+		var victim: Dictionary = victims[i]
+		var row := victim_list.add_item("%s, %d" % [str(victim.get("name", "Unknown")), int(victim.get("age", 0))])
+		victim_list.set_item_metadata(row, i)
 	if victim_list.item_count > 0:
 		victim_list.select(0)
 		_preview_victim(0)
@@ -343,17 +345,28 @@ func _load_content() -> void:
 	dialogue_nodes = content.get("dialogue_nodes", {})
 
 
-func _on_victim_selected(index: int) -> void:
-	_preview_victim(index)
+# The list rows happen to line up with `victims` today because every victim is
+# listed, but the signals hand out ROW numbers, not indices into the data. The
+# evidence list made exactly that assumption and broke the moment it started
+# filtering, so these resolve through the row's metadata instead. Free to filter
+# or reorder this list later - the cast is expected to grow.
+func _victim_index_for_row(row: int) -> int:
+	if row < 0 or row >= victim_list.item_count:
+		return -1
+	return int(victim_list.get_item_metadata(row))
 
 
-func _on_victim_clicked(index: int, _at_position: Vector2, mouse_button_index: int) -> void:
+func _on_victim_selected(row: int) -> void:
+	_preview_victim(_victim_index_for_row(row))
+
+
+func _on_victim_clicked(row: int, _at_position: Vector2, mouse_button_index: int) -> void:
 	if mouse_button_index == MOUSE_BUTTON_LEFT:
-		_start_call(index)
+		_start_call(_victim_index_for_row(row))
 
 
-func _on_victim_activated(index: int) -> void:
-	_start_call(index)
+func _on_victim_activated(row: int) -> void:
+	_start_call(_victim_index_for_row(row))
 
 
 func _preview_victim(index: int) -> void:

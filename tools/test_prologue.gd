@@ -81,6 +81,7 @@ func _run() -> void:
 	await _test_a_new_call_starts_a_new_transcript()
 	await _test_every_call_outcome_has_a_cost()
 	await _test_a_refused_call_is_recorded_and_shown()
+	await _test_victim_rows_resolve_by_metadata()
 
 	print("\n%d checks, %d failed" % [checks, failures.size()])
 	for f in failures:
@@ -301,4 +302,40 @@ func _test_a_refused_call_is_recorded_and_shown() -> void:
 	_check(_box(view).contains("Victim Perspective"),
 		"a refused call still shows the victim's perspective")
 	_check(_box(view).contains(recorded), "the line shown is the line recorded")
+	await _close(view)
+
+
+# The victim list hands out ROW numbers. They line up with `victims` today
+# because nothing is filtered, but the evidence list made that same assumption
+# and broke silently the moment it started filtering - so the contract, not the
+# coincidence, is what gets checked here.
+func _test_victim_rows_resolve_by_metadata() -> void:
+	print("\n[the victim list resolves rows, not positions]")
+	var view := await _open()
+
+	_check(view.victim_list.item_count == view.victims.size(),
+		"every victim has a row (%d rows, %d victims)"
+		% [view.victim_list.item_count, view.victims.size()])
+
+	var mismatched := 0
+	for row in range(view.victim_list.item_count):
+		var index: int = view._victim_index_for_row(row)
+		if index < 0 or index >= view.victims.size():
+			mismatched += 1
+			continue
+		# The row's own text has to name the victim the row resolves to.
+		if not view.victim_list.get_item_text(row).begins_with(
+				str(view.victims[index].get("name", ""))):
+			mismatched += 1
+	_check(mismatched == 0, "every row resolves to the victim it names (%d wrong)" % mismatched)
+	_check(view._victim_index_for_row(-1) == -1, "a row below the list resolves to nothing")
+	_check(view._victim_index_for_row(view.victim_list.item_count) == -1,
+		"a row past the end resolves to nothing")
+
+	# Selecting a row has to preview that row's victim, through the same path
+	# the signal uses.
+	var last_row: int = view.victim_list.item_count - 1
+	view._on_victim_selected(last_row)
+	_check(view.preview_victim_index == view._victim_index_for_row(last_row),
+		"selecting a row previews the victim that row names")
 	await _close(view)

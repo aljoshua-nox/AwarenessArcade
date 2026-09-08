@@ -269,6 +269,26 @@ EXPECTED_LINKS = {
     "lina_reyes": "interview_case_006.json",
 }
 
+# Mirror of SessionState's closed call vocabulary and its outcome -> disposition
+# mapping. The prologue picks a victim's perspective line as
+# [outcome, disposition_for_outcome(outcome)], so a gap here is a call the player
+# can make that shows no consequence at all - which is exactly how every
+# non-payout outcome sat silent, with the lines written for it unreachable.
+CALL_OUTCOMES = ["success", "partial", "refused", "hung_up",
+                 "escalated", "timeout", "aborted"]
+DISPOSITIONS = ["harmed", "resistant", "unfinished"]
+
+
+def disposition_for_outcome(outcome):
+    if outcome in ("success", "partial"):
+        return "harmed"
+    if outcome in ("refused", "hung_up"):
+        return "resistant"
+    return "unfinished"
+
+
+PERSPECTIVE_KEYS = set(CALL_OUTCOMES) | set(DISPOSITIONS)
+
 content_path = os.path.join(base, "resources", "dialogue", "call_content.json")
 with open(content_path, encoding="utf-8") as fh:
     victims = json.load(fh).get("victims", [])
@@ -284,6 +304,23 @@ for v in victims:
                       f" ({prologue_ids[vid]} and {vname})")
     else:
         prologue_ids[vid] = vname
+
+    pv = v.get("perspective_variants", {})
+    if not isinstance(pv, dict) or not pv:
+        errors.append(f"call_content.json: victim '{vname}' has no perspective_variants,"
+                      f" so their calls end with no consequence shown")
+        continue
+    for key, quotes in pv.items():
+        if key not in PERSPECTIVE_KEYS:
+            errors.append(f"call_content.json: {vname} perspective_variants key '{key}' is"
+                          f" neither a call outcome nor a disposition - nothing reads it")
+        elif not isinstance(quotes, list) or not [q for q in quotes if str(q).strip()]:
+            errors.append(f"call_content.json: {vname} perspective_variants['{key}'] is empty")
+    for outcome in CALL_OUTCOMES:
+        fallback = disposition_for_outcome(outcome)
+        if not (pv.get(outcome) or pv.get(fallback)):
+            errors.append(f"call_content.json: {vname} has no perspective line for a"
+                          f" '{outcome}' call - add '{outcome}' or '{fallback}'")
 
 case_ids = {os.path.basename(f): d.get("person", {}).get("person_id", "")
             for f, d in parsed.items()}

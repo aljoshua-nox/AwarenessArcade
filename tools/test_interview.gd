@@ -50,12 +50,12 @@ func _open(case_path: String) -> Node:
 # call log, so the history has to be seeded after it and before the scene
 # instantiates - the interview reads its disposition in _ready().
 func _open_after_prologue(case_path: String, person_id: String, victim_name: String,
-		outcome: String, credibility: int = GATE_CLEAR) -> Node:
+		outcome: String, credibility: int = GATE_CLEAR, consequence: String = "") -> Node:
 	SessionState.reset_session()
 	SessionState.prologue_played = true
 	SessionState.detective_credibility = credibility
 	if not person_id.is_empty():
-		SessionState.record_prologue_call(person_id, victim_name, outcome, 0)
+		SessionState.record_prologue_call(person_id, victim_name, outcome, 0, consequence)
 	SessionState.pending_case_path = case_path
 	var view: Node = load(INTERVIEW_SCENE).instantiate()
 	add_child(view)
@@ -114,6 +114,34 @@ func _test_prologue_coupling() -> void:
 	_check(view.cooperation == 34, "a harmed victim opens below neutral (got %d)" % view.cooperation)
 	_check(view.prompt_value.text.contains("folded and unfolded"), "a harmed victim gets her own opening beat")
 	_check(view.prompt_value.text.contains("HARM ON RECORD"), "the player is told this is their own doing")
+	await _close(view)
+
+	# The harm is quoted back at the call that caused it. The case note is
+	# written before anyone plays; this line is what the player actually did.
+	const HER_WORDS := "I thought I was protecting my account, but the transfer took my savings instead."
+	view = await _open_after_prologue(CASE_MARIA, "maria_santos", "Maria S.",
+		SessionState.CALL_SUCCESS, GATE_CLEAR, HER_WORDS)
+	_check(view.prompt_value.text.contains(HER_WORDS),
+		"the victim's own words about that call are quoted back in the opening")
+	_check(view.prompt_value.text.contains("Recorded after your call"),
+		"the quote is attributed to the call the player made")
+	_check(view.prompt_value.text.contains("folded and unfolded"),
+		"quoting the record does not replace the authored opening")
+	_check(view.prompt_value.text.contains("shame is quiet"),
+		"the authored case note survives alongside the quote")
+	await _close(view)
+
+	# A record with no consequence on it must not leave the marker dangling.
+	view = await _open_after_prologue(CASE_MARIA, "maria_santos", "Maria S.", SessionState.CALL_SUCCESS)
+	_check(not view.prompt_value.text.contains("Recorded after your call"),
+		"no quote is claimed when the call recorded none")
+	await _close(view)
+
+	# Someone else's words must never turn up in this victim's mouth.
+	view = await _open_after_prologue(CASE_MARIA, "kevin_d", "Kevin Dizon",
+		SessionState.CALL_SUCCESS, GATE_CLEAR, "I let remote access in because the warning looked real.")
+	_check(not view.prompt_value.text.contains("remote access"),
+		"a consequence recorded against someone else stays out of Maria's opening")
 	await _close(view)
 
 	# Refused: unharmed, angry, willing. The trade, not a difficulty tax.

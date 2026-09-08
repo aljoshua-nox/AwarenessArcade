@@ -32,9 +32,13 @@
 		  "The money I sent was only part of what I had, but it still came from my living expenses.",
 		  "I kept hoping the request would stop before any more money left my account."
 		],
-		"failure": [
+		"resistant": [
 		  "I almost gave the code away, and that thought makes it hard to trust phone calls now.",
 		  "I hung up, but I still feel embarrassed that I came so close to losing the money."
+		],
+		"unfinished": [
+		  "The call stopped in the middle and nobody ever rang back. I spent that whole week waiting to find out if something had gone wrong.",
+		  "I never found out what they wanted. Not knowing is its own kind of worry at my age."
 		]
 	  }
 	},
@@ -70,9 +74,13 @@
 		  "I paid the fee because I wanted the warning gone. It was still money I needed for the week.",
 		  "I backed out late, but not before the caller got enough out of me to make the scare feel real."
 		],
-		"failure": [
+		"resistant": [
 		  "I almost installed the tool, and that is enough to make me nervous about every pop-up now.",
 		  "I shut it down before they got in, but I still feel shaken."
+		],
+		"unfinished": [
+		  "The line went dead partway through and I never got an answer about the warning. I kept checking the laptop for days.",
+		  "I still do not know whether that was a real support call, and there is nobody to ask."
 		]
 	  }
 	},
@@ -108,9 +116,13 @@
 		  "I lost less than the full amount, but it still came out of the money set aside for bills.",
 		  "I wanted to believe the prize was real, and that made the smaller payment hurt more."
 		],
-		"failure": [
+		"resistant": [
 		  "I hung up before paying, but the offer still felt aimed right at my pressure points.",
 		  "The call made me doubt any message that promises easy money."
+		],
+		"unfinished": [
+		  "The call ended before they told me anything, and I was left holding a prize letter I could not check.",
+		  "I never learned whether it was real. It sat in my head all through the month's invoicing."
 		]
 	  }
 	},
@@ -146,9 +158,13 @@
 		  "I should have stopped before any money moved, but I only realized that after the first transfer.",
 		  "The call felt like a test of patience, and I failed part of it."
 		],
-		"failure": [
+		"resistant": [
 		  "I was close to trusting them, and that makes the hang-up feel like a narrow escape.",
 		  "The pressure made me want to check every bank message twice."
+		],
+		"unfinished": [
+		  "The call broke off before I could ask for a reference number, so I had nothing to take to the bank.",
+		  "Nothing came of it, and somehow that left me more uneasy than if something had."
 		]
 	  }
 	},
@@ -184,9 +200,13 @@
 		  "I paid a small fee just to keep the call moving, and it still came from money I needed.",
 		  "I should not have given anything, even if it was only a little."
 		],
-		"failure": [
+		"resistant": [
 		  "I nearly gave the code away, and that is enough to make me distrust every support message now.",
 		  "I shut the call down before they got into the device, but it still left me uneasy."
+		],
+		"unfinished": [
+		  "It cut out while they were still talking me through it, and I never found out what the problem was meant to be.",
+		  "I was too tired to chase it up, and I have wondered about it ever since."
 		]
 	  }
 	},
@@ -222,9 +242,13 @@
 		  "Even the reduced fee was money I could not spare, and now I have to adjust my budget.",
 		  "I thought I was being careful, but I still paid out before I should have."
 		],
-		"failure": [
+		"resistant": [
 		  "I ended the call before sending anything, but the whole thing still felt predatory.",
 		  "I am glad I stopped, although I still feel embarrassed that I almost paid."
+		],
+		"unfinished": [
+		  "The call ended before anything was settled, and I was never told what the prize was supposed to be.",
+		  "I have no idea what that was. At my age you stop asking, and that is exactly what they count on."
 		]
 	  }
 	}

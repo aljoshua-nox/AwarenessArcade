@@ -5,7 +5,9 @@ extends Node
 ##
 ##   godot --path . res://tools/capture_ui.tscn
 ##
-## Writes prologue_preview.png and evidence_preview.png under user://.
+## Writes prologue_preview.png, evidence_preview.png and harm_preview.png under
+## user://. The last is the densest an interview opening gets: a harmed victim's
+## own words quoted off the call record, on top of the authored case note.
 
 const PROLOGUE_SCENE := "res://scenes/prologue/prologue_call.tscn"
 const INTERVIEW_SCENE := "res://scenes/investigation/interview.tscn"
@@ -19,6 +21,7 @@ func _ready() -> void:
 func _run() -> void:
 	await _capture_prologue()
 	await _capture_evidence_list()
+	await _capture_harmed_opening()
 	get_tree().quit()
 
 
@@ -75,6 +78,27 @@ func _capture_evidence_list() -> void:
 
 	await _settle()
 	_save("evidence_preview")
+	remove_child(view)
+	view.queue_free()
+	await get_tree().process_frame
+
+
+# The worst case for the opening beat: a harmed disposition, whose prompt is
+# already the longest in the case, carrying a quoted consequence off the call
+# record AND the authored note. Density here cannot be asserted - look at it.
+func _capture_harmed_opening() -> void:
+	SessionState.reset_session()
+	SessionState.prologue_played = true
+	SessionState.detective_credibility = 80
+	SessionState.record_prologue_call("maria_santos", "Maria S.", SessionState.CALL_SUCCESS, 2200,
+		"I trusted the caller because they sounded like bank staff. Now I am trying to figure out how to cover medicine and groceries.")
+	SessionState.pending_case_path = CASE_MARIA
+	var view: Node = load(INTERVIEW_SCENE).instantiate()
+	add_child(view)
+	await get_tree().process_frame
+	view._finish_typing()
+	await _settle()
+	_save("harm_preview")
 	remove_child(view)
 	view.queue_free()
 	await get_tree().process_frame

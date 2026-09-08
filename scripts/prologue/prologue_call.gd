@@ -588,22 +588,29 @@ func _end_current_call(summary_line: String, end_reason: String = SessionState.C
 	# moment later, they were still robbed. `end_reason` is only recorded when
 	# no money changed hands, which is precisely the case the old empty-string
 	# outcome could not describe.
+	var consequence_victim: Dictionary = {}
+	var consequence := ""
 	if current_victim_index >= 0 and current_victim_index < victims.size():
+		consequence_victim = victims[current_victim_index]
 		var logged_outcome := current_call_outcome
 		if logged_outcome.is_empty():
 			logged_outcome = end_reason
+		# Pick what this call cost this person before the record is written, so
+		# the log carries their own words into the investigation half.
+		consequence = _pick_consequence_line(consequence_victim, logged_outcome)
 		SessionState.record_prologue_call(
-			str(victims[current_victim_index].get("person_id", "")),
-			str(victims[current_victim_index].get("name", "")),
+			str(consequence_victim.get("person_id", "")),
+			str(consequence_victim.get("name", "")),
 			logged_outcome,
-			current_call_reward)
+			current_call_reward,
+			consequence)
 	if current_call_reward > 0:
 		SessionState.profit += current_call_reward
 	SessionState.victims_affected += 1
 	if current_call_reward == 0:
 		SessionState.record_reflection_milestone("Trust Broken", "The call ended without a payout after trust broke down.")
 	_queue_beats(current_call_consequence_lines)
-	_maybe_add_perspective_moment()
+	_queue_consequence_beats(consequence_victim, consequence)
 	current_node_id = ""
 	current_node = {}
 	current_prompt_text = ""
@@ -690,7 +697,7 @@ func _on_choice_pressed(choice_index: int) -> void:
 	if partial_success:
 		profit_awarded = int(option.get("partial_profit", option.get("profit", 0)))
 		current_call_reward = profit_awarded
-		current_call_outcome = "partial"
+		current_call_outcome = SessionState.CALL_PARTIAL
 		if outcome_label.is_empty():
 			outcome_label = "partial transfer"
 		var partial_aftermath := _format_consequence_text(_pick_text(option.get("partial_aftermath_variants", [])))
@@ -706,7 +713,7 @@ func _on_choice_pressed(choice_index: int) -> void:
 		if trust_after >= success_trust and suspicion_after <= success_suspicion:
 			profit_awarded = int(option.get("profit", 0))
 			current_call_reward = profit_awarded
-			current_call_outcome = "success"
+			current_call_outcome = SessionState.CALL_SUCCESS
 			if outcome_label.is_empty():
 				outcome_label = _get_success_outcome_label()
 			var success_aftermath := _format_consequence_text(_pick_text(option.get("success_aftermath_variants", current_node.get("success_aftermath_variants", ""))))
@@ -716,7 +723,7 @@ func _on_choice_pressed(choice_index: int) -> void:
 		var failure_aftermath := _format_consequence_text(_pick_text(option.get("failure_aftermath_variants", [])))
 		if not failure_aftermath.is_empty():
 			current_call_consequence_lines.append(failure_aftermath)
-	if current_call_outcome == "success":
+	if current_call_outcome == SessionState.CALL_SUCCESS:
 		_apply_bank_security_reduction(tactic, lines)
 		lines.append("Outcome: %s trust, %s suspicion, %s, %s reputation." % [
 			_format_signed(trust_change),
@@ -724,7 +731,7 @@ func _on_choice_pressed(choice_index: int) -> void:
 			outcome_label,
 			_format_signed(reputation_change),
 		])
-	elif current_call_outcome == "partial":
+	elif current_call_outcome == SessionState.CALL_PARTIAL:
 		_apply_bank_security_reduction(tactic, lines)
 		lines.append("Outcome: %s trust, %s suspicion, %s, %s reputation." % [
 			_format_signed(trust_change),
@@ -744,7 +751,7 @@ func _on_choice_pressed(choice_index: int) -> void:
 	SessionState.trust = trust_after
 	SessionState.suspicion = suspicion_after
 	SessionState.reputation = clampi(SessionState.reputation + reputation_change, 0, 100)
-	if next_node.is_empty() and current_call_outcome != "success" and suspicion_after >= 45:
+	if next_node.is_empty() and current_call_outcome != SessionState.CALL_SUCCESS and suspicion_after >= 45:
 		SessionState.reports_filed += 1
 		if SessionState.reports_filed == 1:
 			SessionState.record_reflection_milestone("First Report Filed", "The first suspicious call crossed the report threshold.")
@@ -754,9 +761,9 @@ func _on_choice_pressed(choice_index: int) -> void:
 		_end_current_call("Investigation escalates and the line is shut down.", SessionState.CALL_ESCALATED)
 		return
 	if next_node.is_empty():
-		if current_call_outcome == "success":
+		if current_call_outcome == SessionState.CALL_SUCCESS:
 			_end_current_call("Call ended after a full transfer.")
-		elif current_call_outcome == "partial":
+		elif current_call_outcome == SessionState.CALL_PARTIAL:
 			_end_current_call("Call ended after a partial transfer.")
 		else:
 			_end_current_call("Call ended with no payout.", SessionState.CALL_REFUSED)
@@ -895,30 +902,38 @@ func _apply_bank_security_reduction(tactic: String, lines: Array[String]) -> voi
 		lines.append("System Notice: Bank security flags part of the transfer, reducing the payout.")
 
 
-func _maybe_add_perspective_moment() -> void:
-	if current_call_outcome.is_empty():
-		return
-	if rng.randf() > 0.45:
-		return
-	if current_victim_index < 0 or current_victim_index >= victims.size():
-		return
-
-	var victim: Dictionary = victims[current_victim_index]
+# What this call cost the person on the other end, in their own words.
+#
+# This used to read `perspective_variants[current_call_outcome]`, and
+# `current_call_outcome` is only ever set when money changes hands - so a
+# refused, cut-off or shut-down call showed nothing at all, and the lines
+# written for those outcomes were unreachable content that no player had seen.
+# The lookup now takes the whole closed vocabulary: the most specific line the
+# writer left for this exact outcome, else the one for what the call did to
+# them.
+func _pick_consequence_line(victim: Dictionary, outcome: String) -> String:
+	if victim.is_empty() or outcome.is_empty():
+		return ""
 	var perspective_data: Dictionary = victim.get("perspective_variants", {})
 	if perspective_data.is_empty():
-		return
+		return ""
+	for key in [outcome, SessionState.disposition_for_outcome(outcome)]:
+		var quote := _pick_text(perspective_data.get(key, []))
+		if not quote.is_empty():
+			return quote
+	return ""
 
-	var outcome_quotes: Variant = perspective_data.get(current_call_outcome, [])
-	var quote := _pick_text(outcome_quotes)
-	if quote.is_empty():
-		return
 
-	var victim_name := str(victim.get("name", "Unknown"))
-	var age := int(victim.get("age", 0))
+# Deliberately not a random chance any more. The project's guardrail is that
+# scam success must never read as pure power fantasy, and a harm beat that only
+# fired on some calls let the player bank a payout with no cost shown at all.
+func _queue_consequence_beats(victim: Dictionary, quote: String) -> void:
+	if victim.is_empty() or quote.is_empty():
+		return
 	SessionState.record_reflection_milestone("Voices of the Victims", "A victim perspective line appeared after the call ended.")
 	_queue_beats([
 		"Victim Perspective",
-		"%s, %d" % [victim_name, age],
+		"%s, %d" % [str(victim.get("name", "Unknown")), int(victim.get("age", 0))],
 		"\"%s\"" % quote,
 	])
 

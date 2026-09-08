@@ -213,7 +213,11 @@ func go_to_prologue_end(reason: String, note: String = "") -> void:
 # `person_id` is the identity that survives across the two halves and is what
 # the investigation must key off; `victim_name` is only what the office ledger
 # prints. They deliberately differ per character, so they are stored separately.
-func record_prologue_call(person_id: String, victim_name: String, outcome: String, payout: int) -> void:
+# `consequence` is the victim's own words about what that call did to them,
+# picked in the prologue and carried here so the investigation can quote the
+# specific harm back rather than describing it in general terms.
+func record_prologue_call(person_id: String, victim_name: String, outcome: String, payout: int,
+		consequence: String = "") -> void:
 	if victim_name.is_empty():
 		return
 	prologue_call_log.append({
@@ -221,6 +225,7 @@ func record_prologue_call(person_id: String, victim_name: String, outcome: Strin
 		"name": victim_name,
 		"outcome": outcome,
 		"payout": payout,
+		"consequence": consequence,
 	})
 
 
@@ -238,6 +243,19 @@ func get_call_record(person_id: String) -> Dictionary:
 	return found
 
 
+# What one call outcome did to the person on the other end. The single place
+# that mapping lives: get_victim_disposition() folds a whole call history down
+# with it, and the prologue uses it to pick which perspective line a victim
+# gives when the call ends. Anything not explicitly harmful or refused is a call
+# that never resolved - the victim was left not knowing what it was.
+func disposition_for_outcome(outcome: String) -> String:
+	if outcome == CALL_SUCCESS or outcome == CALL_PARTIAL:
+		return DISPOSITION_HARMED
+	if outcome == CALL_REFUSED or outcome == CALL_HUNG_UP:
+		return DISPOSITION_RESISTANT
+	return DISPOSITION_UNFINISHED
+
+
 # How this victim should open when the detective interviews them. A victim who
 # was called more than once is judged by the worst thing that happened to them,
 # not by the last call: money taken outranks a later refusal.
@@ -249,10 +267,10 @@ func get_victim_disposition(person_id: String) -> String:
 	for entry in prologue_call_log:
 		if str(entry.get("person_id", "")) != person_id:
 			continue
-		var outcome := str(entry.get("outcome", ""))
-		if outcome == CALL_SUCCESS or outcome == CALL_PARTIAL:
+		var mapped := disposition_for_outcome(str(entry.get("outcome", "")))
+		if mapped == DISPOSITION_HARMED:
 			return DISPOSITION_HARMED
-		elif outcome == CALL_REFUSED or outcome == CALL_HUNG_UP:
+		elif mapped == DISPOSITION_RESISTANT:
 			seen_resistant = true
 		else:
 			seen_unfinished = true

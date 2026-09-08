@@ -99,7 +99,8 @@ func _unhandled_input(event: InputEvent) -> void:
 # characters differently on purpose.
 func _apply_disposition() -> void:
 	opening_node_id = str(case_data.get("start_node", ""))
-	disposition = SessionState.get_victim_disposition(str(person.get("person_id", "")))
+	var person_id := str(person.get("person_id", ""))
+	disposition = SessionState.get_victim_disposition(person_id)
 	var table: Dictionary = person.get("dispositions", {})
 	var entry: Dictionary = table.get(disposition, {})
 	if entry.is_empty():
@@ -112,6 +113,18 @@ func _apply_disposition() -> void:
 	# its own reason for existing and keeps its own words.
 	disposition_opening = str(entry.get("prompt", ""))
 	disposition_note = str(entry.get("note", ""))
+	# Attach the harm to the call that caused it. The case note explains the
+	# mechanic in general terms and is written before anyone plays; this is what
+	# this person said after the call THIS player made, carried across on the
+	# call record. Without it the opening describes a consequence the player has
+	# to take on trust - with it, the game quotes their own work back at them.
+	var recorded := str(SessionState.get_call_record(person_id).get("consequence", ""))
+	if not recorded.is_empty():
+		var quoted := "Recorded after your call: \"%s\"" % recorded
+		if disposition_note.is_empty():
+			disposition_note = quoted
+		else:
+			disposition_note = "%s  %s" % [quoted, disposition_note]
 
 
 func _determine_start_node() -> String:

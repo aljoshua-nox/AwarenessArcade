@@ -1,13 +1,16 @@
 extends Node
 
-## Headless smoke test for the prologue call transcript's beat-by-beat reveal.
+## Headless smoke test for the prologue call screen: the transcript's
+## beat-by-beat reveal, and the consequence every call leaves behind.
 ##
 ##   godot --headless --path . res://tools/test_prologue.tscn
 ##
 ## The call box holds the whole conversation, so the typewriter has to reveal
 ## only the newly queued tail while the history stays put - and the choice
 ## buttons have to stay shut until the line the player is answering has
-## actually arrived. Exits 0 if every check passes, 1 otherwise.
+## actually arrived. Every call must also end by showing what it cost the person
+## on the other end, and record that line for the investigation to quote back.
+## Exits 0 if every check passes, 1 otherwise.
 
 const PROLOGUE_SCENE := "res://scenes/prologue/prologue_call.tscn"
 const DRAIN_TIMEOUT_MS := 8000
@@ -76,6 +79,8 @@ func _run() -> void:
 	await _test_skip_drains_everything()
 	await _test_ending_a_call_queues_its_summary()
 	await _test_a_new_call_starts_a_new_transcript()
+	await _test_every_call_outcome_has_a_cost()
+	await _test_a_refused_call_is_recorded_and_shown()
 
 	print("\n%d checks, %d failed" % [checks, failures.size()])
 	for f in failures:
@@ -236,4 +241,64 @@ func _test_a_new_call_starts_a_new_transcript() -> void:
 	await _drain(view, "second opening")
 	_check(_box(view).contains(str(view.victims[1].get("name", ""))),
 		"the new target is named in the fresh transcript")
+	await _close(view)
+
+
+# The project's guardrail is that scam success must never read as pure power
+# fantasy. A call used to end in silence unless money changed hands - and the
+# lines written for every other outcome had never been reachable at all.
+func _test_every_call_outcome_has_a_cost() -> void:
+	print("\n[the cost of a call]")
+	var view := await _open()
+	var outcomes := [
+		SessionState.CALL_SUCCESS, SessionState.CALL_PARTIAL, SessionState.CALL_REFUSED,
+		SessionState.CALL_HUNG_UP, SessionState.CALL_ESCALATED, SessionState.CALL_TIMEOUT,
+		SessionState.CALL_ABORTED,
+	]
+	var gaps: Array[String] = []
+	for victim in view.victims:
+		for outcome in outcomes:
+			var line: String = view._pick_consequence_line(victim, outcome)
+			if line.is_empty():
+				gaps.append("%s/%s" % [str(victim.get("person_id", "?")), outcome])
+	_check(gaps.is_empty(),
+		"every victim has a consequence line for every call outcome (missing: %s)" % ", ".join(gaps))
+
+	# The writer's specific line beats the disposition fallback.
+	var maria: Dictionary = view.victims[0]
+	var pools: Dictionary = maria.get("perspective_variants", {})
+	var success_line: String = view._pick_consequence_line(maria, SessionState.CALL_SUCCESS)
+	var refused_line: String = view._pick_consequence_line(maria, SessionState.CALL_REFUSED)
+	var timeout_line: String = view._pick_consequence_line(maria, SessionState.CALL_TIMEOUT)
+	var success_pool: Array = pools.get("success", [])
+	var resistant_pool: Array = pools.get("resistant", [])
+	var unfinished_pool: Array = pools.get("unfinished", [])
+	_check(success_pool.has(success_line), "a payout uses the outcome's own lines")
+	_check(resistant_pool.has(refused_line), "a refusal falls back to the resistant lines")
+	_check(unfinished_pool.has(timeout_line), "a call that never resolved falls back to unfinished")
+	_check(success_line != refused_line,
+		"a robbed victim and one who refused do not say the same thing")
+	_check(view._pick_consequence_line(maria, "").is_empty(), "an unknown outcome claims nothing")
+	await _close(view)
+
+
+func _test_a_refused_call_is_recorded_and_shown() -> void:
+	print("\n[a refused call]")
+	var view := await _open()
+	view._start_call(0)
+	await _drain(view, "opening")
+	var person_id: String = str(view.victims[0].get("person_id", ""))
+
+	view._end_current_call("Call ended with no payout.", SessionState.CALL_REFUSED)
+	await _drain(view, "ending")
+
+	var record: Dictionary = SessionState.get_call_record(person_id)
+	var recorded: String = str(record.get("consequence", ""))
+	_check(str(record.get("outcome", "")) == SessionState.CALL_REFUSED,
+		"the refusal is logged as a refusal, not a payout")
+	_check(not recorded.is_empty(),
+		"the call record carries what the call cost them, for the investigation to quote")
+	_check(_box(view).contains("Victim Perspective"),
+		"a refused call still shows the victim's perspective")
+	_check(_box(view).contains(recorded), "the line shown is the line recorded")
 	await _close(view)

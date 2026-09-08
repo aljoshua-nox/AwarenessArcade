@@ -332,6 +332,53 @@ for pid, case_file in EXPECTED_LINKS.items():
         errors.append(f"{case_file}: person_id is '{case_ids.get(case_file)}',"
                       f" expected '{pid}' to match the prologue victim")
 
+# Portraits. Two rules, both of them learned from shipped bugs.
+#
+# 1. A character has ONE face. Evelyn was drawn as lady 2 in her interview and
+#    lady 1 in the prologue, and Lina was the exact reverse - so calling someone
+#    as the scammer and then interviewing them as the detective showed two
+#    different people, and nothing anywhere caught it.
+# 2. No victim wears an antagonist's face. Evelyn, the entry witness, shared a
+#    portrait with Elena, so the director of the operation looked like the first
+#    person the player helped - at the confrontation the whole game builds to.
+#
+# There are only four portraits for ten characters, so victims sharing with each
+# other is expected and deliberate; these two cases are not.
+case_portraits = {}
+for f, d in parsed.items():
+    person = d.get("person", {})
+    case_portraits[os.path.basename(f)] = (person.get("name", "?"),
+                                           person.get("role", ""),
+                                           person.get("portrait", ""))
+
+prologue_portraits = {v.get("person_id", ""): (v.get("name", "?"), v.get("portrait", ""))
+                      for v in victims}
+
+for pid, case_file in EXPECTED_LINKS.items():
+    if case_file not in case_portraits or pid not in prologue_portraits:
+        continue
+    case_name, _role, case_portrait = case_portraits[case_file]
+    pro_name, pro_portrait = prologue_portraits[pid]
+    if case_portrait != pro_portrait:
+        errors.append(
+            f"{case_file}: {case_name} is drawn as"
+            f" '{os.path.basename(case_portrait)}' but the prologue draws"
+            f" {pro_name} as '{os.path.basename(pro_portrait)}' - the same person"
+            f" changes face between the two halves")
+
+suspect_faces = {portrait: name
+                 for name, role, portrait in case_portraits.values()
+                 if role == "Suspect" and portrait}
+for name, role, portrait in case_portraits.values():
+    if role != "Suspect" and portrait in suspect_faces:
+        errors.append(
+            f"{name} shares a portrait with {suspect_faces[portrait]}, who is a"
+            f" suspect - a victim must not wear an antagonist's face")
+
+unique_faces = sorted({os.path.basename(p) for _n, _r, p in case_portraits.values() if p})
+print(f"portraits: {len(unique_faces)} in use across {len(case_portraits)} cases"
+      f" ({', '.join(unique_faces)})")
+
 linked = sorted(pid for pid in EXPECTED_LINKS if pid in prologue_ids
                 and case_ids.get(EXPECTED_LINKS[pid]) == pid)
 print(f"call_content.json: {len(prologue_ids)} victims, "

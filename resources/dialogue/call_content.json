@@ -90,7 +90,7 @@
 	  "age": 41,
 	  "occupation": "Small business owner",
 	  "traits": "Under financial pressure and trying to keep operations moving.",
-	  "portrait": "res://assets/art/portraits/lady 2.png",
+	  "portrait": "res://assets/art/portraits/lady 1.png",
 	  "start_node": "lottery_intro",
 	  "preferred_tactic": "lottery",
 	  "payout_model": "lottery",

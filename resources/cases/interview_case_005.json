@@ -7,7 +7,7 @@
     "age": 58,
     "occupation": "Retired bookkeeper",
     "role": "Victim",
-    "portrait": "res://assets/art/portraits/lady 2.png",
+    "portrait": "res://assets/art/portraits/lady 1.png",
     "traits": "Careful with money. Checks things twice. Annoyed rather than shaken.",
     "dispositions": {
       "harmed": {

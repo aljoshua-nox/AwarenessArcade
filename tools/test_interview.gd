@@ -82,6 +82,7 @@ func _run() -> void:
 	await _test_text_voices()
 	await _test_prologue_coupling()
 	await _test_contradiction()
+	await _test_evidence_scoping()
 
 	print("\n%d checks, %d failed" % [checks, failures.size()])
 	for f in failures:
@@ -205,7 +206,7 @@ func _test_contradiction() -> void:
 	var log_index := _index_of(view, "ev_remote_access_log")
 	_check(log_index >= 0, "the log is available to present")
 	var before: int = view.cooperation
-	view._on_evidence_chosen(log_index)
+	view._present_evidence_index(log_index)
 
 	_check(view.prompt_value.text.contains("CONTRADICTION"),
 		"catching the lie reads differently from corroborating a story")
@@ -314,16 +315,16 @@ func _test_evidence() -> void:
 
 	var decoy := _index_of(view, "ev_internet_note")
 	var before: int = view.cooperation
-	view._on_evidence_chosen(decoy)
+	view._present_evidence_index(decoy)
 	_check(view.cooperation < before, "the decoy costs cooperation")
 	_check(view.evidence_misses == 1, "the decoy counts as a miss")
 
 	var repeat_before: int = view.cooperation
-	view._on_evidence_chosen(decoy)
+	view._present_evidence_index(decoy)
 	_check(view.cooperation == repeat_before, "re-presenting the decoy does not double-charge")
 
 	var key := _index_of(view, "ev_phishing_text")
-	view._on_evidence_chosen(key)
+	view._present_evidence_index(key)
 	_check(view.current_node_id == "confirm_phishing", "the key evidence advances the interview")
 	view._on_choice_pressed(0)
 	_check(view.interview_over, "interview ends after confirming")
@@ -416,7 +417,7 @@ func _test_text_voices() -> void:
 	_check(right_text.contains("[color=#78d08b]"), "a correct read is coloured as a hit")
 
 	# A successful evidence presentation appends the tactic in the system voice.
-	view._on_evidence_chosen(_index_of(view, "ev_phishing_text"))
+	view._present_evidence_index(_index_of(view, "ev_phishing_text"))
 	var tactic_text: String = view.prompt_value.text
 	_check(tactic_text.contains("TACTIC IDENTIFIED"), "successful evidence names the tactic")
 	_check(tactic_text.contains("[color=#e8b454]"), "the tactic note uses the tactic colour")
@@ -429,3 +430,102 @@ func _index_of(view: Node, evidence_id: String) -> int:
 			return i
 	failures.append("evidence '%s' not in inventory" % evidence_id)
 	return -1
+
+
+# The list was the whole inventory, so by the interrogation it ran to 21 rows in
+# a panel that shows four - and since every victim's evidence node only ever
+# accepted that victim's own items, 14 of those rows were identical generic
+# misses. It is scoped to what the case can actually respond to now.
+#
+# The consequence worth guarding: a row number is no longer an inventory index.
+func _test_evidence_scoping() -> void:
+	print("\n[the evidence list is scoped to the case]")
+
+	# Another case's item, in the inventory BEFORE this case seeds its own, so
+	# rows and inventory indices cannot accidentally agree.
+	SessionState.reset_session()
+	SessionState.detective_credibility = GATE_CLEAR
+	SessionState.add_evidence({
+		"id": "ev_popup_screenshot", "label": "Pop-up screenshot",
+		"description": "Kevin's, not hers.", "tactic": "Manufactured fear",
+		"tactic_id": "manufactured_fear",
+	})
+	SessionState.pending_case_path = CASE_MARIA
+	var view: Node = load(INTERVIEW_SCENE).instantiate()
+	add_child(view)
+	await get_tree().process_frame
+
+	view._on_choice_pressed(1)
+	view._on_choice_pressed(0)
+	view._on_choice_pressed(0)  # through the quiz to ask_evidence
+	view._on_present_evidence_pressed()
+
+	_check(SessionState.investigation_inventory.size() == 6,
+		"the inventory holds another case's item alongside Maria's five (%d)"
+		% SessionState.investigation_inventory.size())
+	_check(view.evidence_list.item_count == 5,
+		"only Maria's own five are listed (%d)" % view.evidence_list.item_count)
+
+	var listed: Array[String] = []
+	for row in range(view.evidence_list.item_count):
+		var index := int(view.evidence_list.get_item_metadata(row))
+		listed.append(str(SessionState.investigation_inventory[index].get("id", "")))
+	_check(not listed.has("ev_popup_screenshot"),
+		"another victim's evidence is not offered to Maria")
+	_check(listed.has("ev_internet_note"),
+		"her own decoy is still listed - the careful-choice lesson survives scoping")
+
+	# The guard. Row 0 is inventory 1 here, so a handler that treated the row as
+	# an inventory index would present the pop-up screenshot and take a miss.
+	_check(int(view.evidence_list.get_item_metadata(0)) != 0,
+		"a row number and an inventory index genuinely disagree in this setup")
+	var before: int = view.cooperation
+	view._on_evidence_chosen(0)
+	_check(view.cooperation > before,
+		"presenting row 0 lands on that row's evidence, not the inventory's (%d -> %d)"
+		% [before, view.cooperation])
+	_check(view.evidence_misses == 0, "and it is not scored as a miss")
+	await _close(view)
+
+	# The suspect carries no evidence of his own, so his list is entirely what he
+	# can be confronted with - the half of the rule that makes him work.
+	SessionState.reset_session()
+	SessionState.detective_credibility = GATE_CLEAR
+	SessionState.add_evidence({"id": "ev_prize_notice", "label": "Prize notice",
+		"description": "Evelyn's.", "tactic": "Paying to receive", "tactic_id": "advance_fee"})
+	SessionState.add_evidence({"id": "ev_remote_access_log", "label": "Remote access log",
+		"description": "Kevin's.", "tactic": "Handing over the controls", "tactic_id": "remote_access"})
+	SessionState.add_evidence({"id": "test_maria_confirmed", "label": "Maria's statement",
+		"description": "Confirmed.", "tactic": "", "tactic_id": ""})
+	SessionState.pending_case_path = CASE_MARCO
+	view = load(INTERVIEW_SCENE).instantiate()
+	add_child(view)
+	await get_tree().process_frame
+	view._on_present_evidence_pressed()
+
+	var marco_listed: Array[String] = []
+	for row in range(view.evidence_list.item_count):
+		var index := int(view.evidence_list.get_item_metadata(row))
+		marco_listed.append(str(SessionState.investigation_inventory[index].get("id", "")))
+	_check(marco_listed.has("test_maria_confirmed"), "testimony can be taken to the suspect")
+	_check(marco_listed.has("ev_remote_access_log"),
+		"so can the log his alibi has to survive")
+	_check(not marco_listed.has("ev_prize_notice"),
+		"an item no node of his names stays out of the list")
+	await _close(view)
+
+	# Marco is ungated, so a player can walk into the interrogation carrying
+	# nothing at all. That has to read as a state, not a blank panel.
+	SessionState.reset_session()
+	SessionState.detective_credibility = GATE_CLEAR
+	SessionState.pending_case_path = CASE_MARCO
+	view = load(INTERVIEW_SCENE).instantiate()
+	add_child(view)
+	await get_tree().process_frame
+	view._on_present_evidence_pressed()
+	_check(view.evidence_list.item_count == 1, "an empty list still renders a row")
+	_check(view.evidence_list.is_item_disabled(0), "and that row cannot be presented")
+	var empty_before: int = view.cooperation
+	view._on_evidence_chosen(0)
+	_check(view.cooperation == empty_before, "the placeholder row costs nothing if activated")
+	await _close(view)

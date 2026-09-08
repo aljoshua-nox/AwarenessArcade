@@ -265,7 +265,10 @@ func _build_ui() -> void:
 	evidence_caution.add_theme_font_size_override("font_size", 13)
 	evidence_column.add_child(evidence_caution)
 	evidence_list = ItemList.new()
-	evidence_list.custom_minimum_size = Vector2(0, 120)
+	# Tall enough for the whole scoped list without scrolling. The widest case is
+	# the interrogation at seven rows; before scoping this was 120px against an
+	# inventory of twenty-one, which is what made it feel like a filing cabinet.
+	evidence_list.custom_minimum_size = Vector2(0, 208)
 	evidence_list.item_activated.connect(_on_evidence_chosen)
 	evidence_column.add_child(evidence_list)
 
@@ -614,15 +617,50 @@ func _on_choice_pressed(choice_index: int) -> void:
 	_load_node(next_node)
 
 
+# What this case is able to react to at all: the items its own account is built
+# from, plus anything any of its nodes can respond to. The suspect holds no
+# evidence of his own, so the second half is what makes him work - his list is
+# whatever he can be confronted with.
+func _presentable_ids() -> Dictionary:
+	var ids: Dictionary = {}
+	for item in evidence_items:
+		ids[str(item.get("id", ""))] = true
+	for node_id in nodes:
+		var node: Dictionary = nodes[node_id]
+		for entry in node.get("accepts_evidence", []):
+			ids[str(entry.get("evidence_id", ""))] = true
+	return ids
+
+
+# The list used to be the whole inventory, which by the interrogation meant 21
+# rows in a panel that shows about four - and every victim's evidence node only
+# ever accepted that victim's own items, so 14 of those rows were identical
+# generic misses. The choice the writer actually authored is this case's own
+# set, decoy included, and that is what gets listed.
+#
+# Rows carry their inventory index as metadata. They used to BE the inventory
+# index, which is why filtering has to go through metadata - a filtered row
+# number would otherwise resolve to the wrong item entirely.
 func _on_present_evidence_pressed() -> void:
 	evidence_list.clear()
-	for item in SessionState.investigation_inventory:
+	var presentable := _presentable_ids()
+	for i in range(SessionState.investigation_inventory.size()):
+		var item: Dictionary = SessionState.investigation_inventory[i]
+		if not presentable.has(str(item.get("id", ""))):
+			continue
 		var index := evidence_list.add_item(str(item.get("label", "Evidence")))
+		evidence_list.set_item_metadata(index, i)
 		var tooltip := str(item.get("description", ""))
 		var tactic := str(item.get("tactic", ""))
 		if not tactic.is_empty():
 			tooltip = "%s\n\nTactic: %s" % [tooltip, tactic]
 		evidence_list.set_item_tooltip(index, tooltip)
+	if evidence_list.item_count == 0:
+		# Reachable: Marco is ungated, so a player can walk into the
+		# interrogation holding nothing at all.
+		var index := evidence_list.add_item("Nothing you are carrying speaks to this")
+		evidence_list.set_item_metadata(index, -1)
+		evidence_list.set_item_disabled(index, true)
 	evidence_panel.visible = true
 
 
@@ -633,7 +671,16 @@ func _on_present_selected_evidence_pressed() -> void:
 	_on_evidence_chosen(selected[0])
 
 
-func _on_evidence_chosen(index: int) -> void:
+# `row` is a position in the filtered list, not in the inventory. Resolving one
+# to the other is a UI concern and stays here; everything below works on the
+# inventory, which is what the case content is written against.
+func _on_evidence_chosen(row: int) -> void:
+	if row < 0 or row >= evidence_list.item_count:
+		return
+	_present_evidence_index(int(evidence_list.get_item_metadata(row)))
+
+
+func _present_evidence_index(index: int) -> void:
 	if index < 0 or index >= SessionState.investigation_inventory.size():
 		return
 	var item: Dictionary = SessionState.investigation_inventory[index]

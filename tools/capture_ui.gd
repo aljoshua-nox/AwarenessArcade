@@ -60,6 +60,10 @@ func _capture_prologue() -> void:
 
 func _capture_evidence_list() -> void:
 	SessionState.reset_session()
+	# Above Maria's gate of 55. Without this she takes the hesitant branch, which
+	# seeds no evidence at all - so this shot was of an empty list, and the
+	# select(1) below was throwing an out-of-bounds every run.
+	SessionState.detective_credibility = 75
 	SessionState.pending_case_path = CASE_MARIA
 	var view: Node = load(INTERVIEW_SCENE).instantiate()
 	add_child(view)

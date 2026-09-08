@@ -42,6 +42,12 @@ func _capture_prologue() -> void:
 	SessionState.reset_prologue()
 	var view: Node = load(PROLOGUE_SCENE).instantiate()
 	add_child(view)
+	await get_tree().process_frame
+	# The transcript types itself in now, so an empty box would be all this
+	# caught. Open a call and skip to the end of the reveal to render a settled
+	# screen with real dialogue in it.
+	view._start_call(0)
+	view._finish_reveal()
 	await _settle()
 	_save("prologue_preview")
 	remove_child(view)

@@ -20,6 +20,10 @@ const RING_SFX := "res://assets/audio/sfx/629201__audacitier__phone-ringing-5.mp
 const ALERT_SFX := "res://assets/audio/sfx/434379__kila_vat__notification-sound-handmade.mp3"
 const DIAL_TONE_SFX := "res://assets/audio/sfx/360480__giddster__dial-tone.wav"
 const SUGGESTED_CALL_TARGET := 3
+# Matches the interview engine's typewriter so both halves of the game read at
+# the same speed. BEAT_PAUSE is the beat between one revealed line and the next.
+const TYPE_CHARS_PER_SECOND := 55.0
+const BEAT_PAUSE := 0.35
 
 var calls_value: Label
 var profit_value: Label
@@ -57,7 +61,16 @@ var current_call_consequence_lines: Array[String] = []
 var current_call_notice_lines: Array[String] = []
 var current_call_time_left: float = 0.0
 var current_call_time_limit: float = 0.0
+# The transcript is revealed one line at a time rather than dumped as a block.
+# `transcript_lines` is what has already been typed into the box; anything still
+# waiting sits in `pending_beats` and is drained by _advance_beats(). The box
+# holds the whole call, so each beat types from `revealed_chars` to the end
+# instead of retyping the history above it.
 var transcript_lines: Array[String] = []
+var pending_beats: Array[String] = []
+var pending_prompt: bool = false
+var revealed_chars: int = 0
+var beat_tween: Tween
 var current_choice_indices: Array[int] = []
 var last_alert_text: String = ""
 var rng: RandomNumberGenerator = RandomNumberGenerator.new()
@@ -93,6 +106,27 @@ func _process(delta: float) -> void:
 	elif call_active and current_call_time_left <= 0.0 and not current_node.is_empty():
 		_end_current_call("Victim hung up after waiting too long.", SessionState.CALL_HUNG_UP)
 	_update_timer_display()
+
+
+# Same contract as the interview: a click or Space drops the rest of the queue
+# in at once for anyone who reads faster than the typewriter.
+func _unhandled_input(event: InputEvent) -> void:
+	if not _is_revealing():
+		return
+	var skip := false
+	if event is InputEventMouseButton and event.pressed:
+		skip = true
+	elif event.is_action_pressed("ui_accept"):
+		skip = true
+	if skip:
+		_finish_reveal()
+		get_viewport().set_input_as_handled()
+
+
+func _on_dialogue_gui_input(event: InputEvent) -> void:
+	if event is InputEventMouseButton and event.pressed and _is_revealing():
+		_finish_reveal()
+		dialogue_value.accept_event()
 
 
 func _build_ui() -> void:
@@ -210,6 +244,9 @@ func _build_ui() -> void:
 	dialogue_value.bbcode_enabled = true
 	dialogue_value.scroll_following = true
 	dialogue_value.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	# _unhandled_input never sees a click the transcript panel consumed itself,
+	# and the box is the natural place to click to hurry a line along.
+	dialogue_value.gui_input.connect(_on_dialogue_gui_input)
 	dialogue_panel.add_child(dialogue_value)
 
 	for index in range(3):
@@ -331,14 +368,16 @@ func _preview_victim(index: int) -> void:
 	var portrait_path := str(victim.get("portrait", ""))
 	if not portrait_path.is_empty():
 		victim_portrait.texture = load(portrait_path)
-	transcript_lines.clear()
-	transcript_lines.append("Previewing target: %s" % str(victim.get("name", "Unknown")))
-	transcript_lines.append("Click the name again to begin the call.")
 	call_active = false
 	current_node_id = ""
 	current_node = {}
 	current_prompt_text = ""
 	_clear_choices()
+	_reset_transcript()
+	_queue_beats([
+		"Previewing target: %s" % str(victim.get("name", "Unknown")),
+		"Click the name again to begin the call.",
+	])
 	_refresh_ui()
 
 
@@ -360,11 +399,9 @@ func _start_call(index: int) -> void:
 	var portrait_path := str(victim.get("portrait", ""))
 	if not portrait_path.is_empty():
 		victim_portrait.texture = load(portrait_path)
-	transcript_lines.clear()
-	transcript_lines.append("Selected target: %s" % str(victim.get("name", "Unknown")))
 	var intro_line := _pick_text(victim.get("intro_variants", victim.get("intro", "Call line ready.")))
-	if not intro_line.is_empty():
-		transcript_lines.append(intro_line)
+	_reset_transcript()
+	_queue_beats(["Selected target: %s" % str(victim.get("name", "Unknown")), intro_line])
 	_load_node(str(victim.get("start_node", "")))
 	_refresh_ui()
 
@@ -384,37 +421,161 @@ func _load_node(node_id: String) -> void:
 	for i in range(choices.size()):
 		current_choice_indices.append(i)
 	current_choice_indices.shuffle()
-	for index in range(choice_buttons.size()):
-		var button := choice_buttons[index]
-		if index < current_choice_indices.size():
-			var choice: Dictionary = choices[current_choice_indices[index]]
-			button.visible = true
-			button.disabled = false
-			button.text = str(choice.get("text", "Choice"))
-		else:
-			button.visible = false
-			button.disabled = true
-			button.text = ""
+	# The prompt is the last beat to land. Hold it out of the box while the
+	# lines queued ahead of it are still typing, so the call reads in order.
+	pending_prompt = _is_revealing()
+	_sync_choice_buttons()
 	_update_dialogue_display()
 
 
 func _clear_choices() -> void:
 	current_choice_indices.clear()
-	for button in choice_buttons:
-		button.visible = false
-		button.disabled = true
-		button.text = ""
+	_sync_choice_buttons()
 
 
-func _update_dialogue_display() -> void:
+# The buttons are the gate on the reveal: you cannot answer a line that has not
+# finished arriving. A disabled Button still swallows mouse input, which would
+# eat the click-to-skip, so it stops accepting the mouse while it is greyed out.
+func _sync_choice_buttons() -> void:
+	var revealing := _is_revealing()
+	var choices: Array = current_node.get("choices", [])
+	for index in range(choice_buttons.size()):
+		var button := choice_buttons[index]
+		if call_active and index < current_choice_indices.size():
+			var choice: Dictionary = choices[current_choice_indices[index]]
+			button.visible = true
+			button.disabled = revealing
+			button.mouse_filter = Control.MOUSE_FILTER_IGNORE if revealing else Control.MOUSE_FILTER_STOP
+			button.text = str(choice.get("text", "Choice"))
+		else:
+			button.visible = false
+			button.disabled = true
+			button.mouse_filter = Control.MOUSE_FILTER_STOP
+			button.text = ""
+
+
+# --- Transcript reveal -------------------------------------------------------
+
+func _build_dialogue_text() -> String:
 	var text_parts: Array[String] = []
 	text_parts.append("[b]Call Transcript[/b]")
 	text_parts.append_array(transcript_lines)
-	if call_active and not current_prompt_text.is_empty():
+	# The preview prompt is not repeated here - _preview_victim already queues
+	# "Click the name again to begin the call." as a beat.
+	if call_active and not current_prompt_text.is_empty() and not pending_prompt:
 		text_parts.append("[i]%s[/i]" % current_prompt_text)
-	# The preview prompt is not repeated here - _preview_victim already appends
-	# "Click the name again to begin the call." to the transcript.
-	dialogue_value.text = "\n\n".join(text_parts)
+	return "\n\n".join(text_parts)
+
+
+func _is_typing() -> bool:
+	return beat_tween != null and beat_tween.is_running()
+
+
+func _is_revealing() -> bool:
+	return _is_typing() or not pending_beats.is_empty() or pending_prompt
+
+
+# Everything queued lands ahead of the current prompt, so queueing drops the
+# prompt out of the box until _load_node re-issues it behind the new lines.
+# Without that the prompt the player just answered would sit below its own reply.
+func _queue_beats(beats: Array) -> void:
+	pending_prompt = true
+	for beat in beats:
+		var trimmed := str(beat).strip_edges()
+		if not trimmed.is_empty():
+			pending_beats.append(trimmed)
+	if not _is_typing():
+		_advance_beats()
+
+
+func _update_dialogue_display() -> void:
+	# The pump owns the box while a beat is in flight - re-rendering mid-tween
+	# would restart the line. _refresh_ui() calls this on every state change.
+	if _is_typing():
+		return
+	_advance_beats()
+
+
+func _advance_beats() -> void:
+	if not pending_beats.is_empty():
+		_rebase_read_mark()
+		transcript_lines.append(pending_beats.pop_front())
+	elif pending_prompt:
+		pending_prompt = false
+	_render_and_reveal()
+
+
+# The prompt the player just answered leaves the box before their reply lands,
+# so the box can be SHORTER than what was already read. The read mark has to
+# come back down to what is actually still on screen, or the next beat would be
+# measured against characters that no longer exist and never type at all.
+func _rebase_read_mark() -> void:
+	dialogue_value.text = _build_dialogue_text()
+	revealed_chars = mini(revealed_chars, dialogue_value.get_total_character_count())
+
+
+func _render_and_reveal() -> void:
+	var new_text := _build_dialogue_text()
+	if new_text != dialogue_value.text:
+		dialogue_value.text = new_text
+	var total := dialogue_value.get_total_character_count()
+	if total <= revealed_chars:
+		revealed_chars = total
+		dialogue_value.visible_characters = total
+		# Never strand the queue on a beat that added nothing: the buttons are
+		# gated on the reveal finishing, so a stall here is a softlock.
+		if not pending_beats.is_empty() or pending_prompt:
+			_advance_beats()
+			return
+		_sync_choice_buttons()
+		return
+	dialogue_value.visible_characters = revealed_chars
+	beat_tween = create_tween()
+	beat_tween.tween_property(dialogue_value, "visible_characters", total,
+		float(total - revealed_chars) / TYPE_CHARS_PER_SECOND)
+	beat_tween.tween_interval(BEAT_PAUSE)
+	beat_tween.tween_callback(_on_beat_revealed)
+	_sync_choice_buttons()
+
+
+func _on_beat_revealed() -> void:
+	# A tween still reports is_running() from inside its own final callback, so
+	# drop the reference first - otherwise the last beat of a reply would leave
+	# the choice buttons greyed out with nothing left to wait for.
+	beat_tween = null
+	revealed_chars = dialogue_value.get_total_character_count()
+	dialogue_value.visible_characters = revealed_chars
+	if pending_beats.is_empty() and not pending_prompt:
+		_sync_choice_buttons()
+		return
+	_advance_beats()
+
+
+func _finish_reveal() -> void:
+	if beat_tween != null:
+		beat_tween.kill()
+		beat_tween = null
+	while not pending_beats.is_empty():
+		transcript_lines.append(pending_beats.pop_front())
+	pending_prompt = false
+	dialogue_value.text = _build_dialogue_text()
+	revealed_chars = dialogue_value.get_total_character_count()
+	dialogue_value.visible_characters = revealed_chars
+	_sync_choice_buttons()
+
+
+# A new call starts a new transcript. The header is counted as already revealed
+# so it does not retype itself every time the player picks a target.
+func _reset_transcript() -> void:
+	if beat_tween != null:
+		beat_tween.kill()
+		beat_tween = null
+	pending_beats.clear()
+	pending_prompt = false
+	transcript_lines.clear()
+	dialogue_value.text = _build_dialogue_text()
+	revealed_chars = dialogue_value.get_total_character_count()
+	dialogue_value.visible_characters = revealed_chars
 
 
 func _end_current_call(summary_line: String, end_reason: String = SessionState.CALL_REFUSED) -> void:
@@ -441,8 +602,7 @@ func _end_current_call(summary_line: String, end_reason: String = SessionState.C
 	SessionState.victims_affected += 1
 	if current_call_reward == 0:
 		SessionState.record_reflection_milestone("Trust Broken", "The call ended without a payout after trust broke down.")
-	if not current_call_consequence_lines.is_empty():
-		transcript_lines.append_array(current_call_consequence_lines)
+	_queue_beats(current_call_consequence_lines)
 	_maybe_add_perspective_moment()
 	current_node_id = ""
 	current_node = {}
@@ -456,7 +616,7 @@ func _end_current_call(summary_line: String, end_reason: String = SessionState.C
 	current_call_notice_lines.clear()
 	current_call_time_left = 0.0
 	current_call_time_limit = 0.0
-	transcript_lines.append(summary_line)
+	_queue_beats([summary_line])
 	_clear_choices()
 	if SessionState.prologue_end_reason.is_empty() and SessionState.suspicion >= 100:
 		_start_prologue_end_transition("Investigation Escalates", "Police suspicion reached the maximum level.")
@@ -578,7 +738,9 @@ func _on_choice_pressed(choice_index: int) -> void:
 			_format_signed(suspicion_change),
 			_format_signed(reputation_change),
 		])
-	transcript_lines.append("\n".join(lines))
+	# One beat per line, not one block: the player's line, the victim's reply,
+	# the reaction and the outcome each land on their own.
+	_queue_beats(lines)
 	SessionState.trust = trust_after
 	SessionState.suspicion = suspicion_after
 	SessionState.reputation = clampi(SessionState.reputation + reputation_change, 0, 100)
@@ -682,7 +844,7 @@ func _update_alert_display() -> void:
 func _append_system_notice(notice_text: String) -> void:
 	if notice_text.is_empty():
 		return
-	transcript_lines.append(notice_text)
+	_queue_beats([notice_text])
 	current_call_notice_lines.append(notice_text)
 
 
@@ -754,9 +916,11 @@ func _maybe_add_perspective_moment() -> void:
 	var victim_name := str(victim.get("name", "Unknown"))
 	var age := int(victim.get("age", 0))
 	SessionState.record_reflection_milestone("Voices of the Victims", "A victim perspective line appeared after the call ended.")
-	transcript_lines.append("Victim Perspective")
-	transcript_lines.append("%s, %d" % [victim_name, age])
-	transcript_lines.append("\"%s\"" % quote)
+	_queue_beats([
+		"Victim Perspective",
+		"%s, %d" % [victim_name, age],
+		"\"%s\"" % quote,
+	])
 
 
 func _get_tactic_bonus(victim: Dictionary, tactic: String) -> Dictionary:

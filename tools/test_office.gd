@@ -273,6 +273,10 @@ func _test_prologue_logs_calls() -> void:
 	# And the office reads it back.
 	var view := await _open()
 	_check(view._station_body(_station(view, "The call list")).contains("3300"), "the office ledger shows the logged call")
+	# The street's residents keep naming one number. It has to be this one, or
+	# the pattern the street is built to teach dead-ends here.
+	_check(view._station_body(_station(view, "The call list")).contains(SessionState.OPERATION_NUMBER),
+		"the ledger dials out on the number the street keeps naming")
 	await _close(view)
 
 

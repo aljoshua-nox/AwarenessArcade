@@ -356,7 +356,7 @@ func _build_stations() -> void:
 	_add_station({
 		"title": "The call list",
 		"prompt": "Examine the call list",
-		"body": "A ring binder, open on the supervisor's desk. Column headings in marker: NAME. NUMBER. LAST RESULT. Names run down the page in a dozen different hands, some crossed out, most not.",
+		"body": "A ring binder, open on the supervisor's desk. Column headings in marker: NAME. NUMBER. LAST RESULT. Names run down the page in a dozen different hands, some crossed out, most not. Taped inside the cover, on a strip of card gone furry at the edges, is the line every desk on this floor dials out on: %s." % SessionState.OPERATION_NUMBER,
 		"is_ledger": true,
 		"milestone_title": "The List Has Your Handwriting On It",
 		"milestone_detail": "The operation's ledger holds the victims the player called during the prologue - proof that a scam list is a durable asset, not a one-off.",

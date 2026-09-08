@@ -1,5 +1,7 @@
 extends Node2D
 
+const TextStyle := preload("res://scripts/systems/text_style.gd")
+
 @export var map_title: String = "Urban Block"
 @export var map_hint: String = "Move with WASD or arrow keys. Press Enter at a door to interact."
 @export_file("*.tscn") var portal_target_scene: String = "res://scenes/exploration/office_interior.tscn"
@@ -14,6 +16,7 @@ extends Node2D
 @onready var portal: ScenePortal = %Portal
 @onready var interview_label: Label = %InterviewLabel
 @onready var fade_overlay: ColorRect = %FadeOverlay
+@onready var hud: CanvasLayer = %HUD
 
 const INTERVIEW_SCENE := "res://scenes/investigation/interview.tscn"
 const CASE_MARIA := "res://resources/cases/interview_case_001.json"
@@ -46,9 +49,114 @@ const INTERVIEWEES := [
 
 const INTERVIEW_PORTAL_SIZE := Vector2(56.0, 44.0)
 
+# The street's own content. Exploration was pure transit between doors, which
+# wasted the one space the player crosses over and over. What these are FOR is
+# pattern-recognition living somewhere other than a dialogue tree: the same
+# number and the same script turning up at door after door, so the player joins
+# it up themselves instead of being told in an interview that scripts get reused.
+#
+# The number itself is SessionState.OPERATION_NUMBER: the call floor's own
+# ledger has to print the SAME string, so there is exactly one copy of it.
+# Nothing points the repetition out - noticing it is the mechanic.
+const STOP_SIZE := Vector2(104.0, 96.0)
+# Below the residential terrace (buildings end at y 702.4), clear of the trees
+# at y 600/950 and of both side streets. test_urban checks that.
+const NOTICEBOARD_POSITION := Vector2(980.0, 770.0)
+
+# Each stop sits on an NPC from NPC_SPOTS, except the noticeboard. `cites_number`
+# marks the ones that print that number - reading two of them is what earns the
+# pattern milestone, so the payoff is for joining sources up, not for walking far.
+const STREET_STOPS := [
+	{
+		"position": NOTICEBOARD_POSITION,
+		"is_noticeboard": true,
+		"title": "Community noticeboard",
+		"prompt": "Read the noticeboard",
+		"body": "A cork board on a post outside the terrace, behind cracked perspex. Under a bus timetable and a card for guitar lessons, a barangay notice has been pinned square in the middle and laminated against the weather.\n\nWARNING - TELEPHONE FRAUD IN THIS AREA. Callers claim to be from your bank's fraud desk, a device support line, or a prize office. Reported number: %s. They will ask you to stay on the line. Hang up. Call your bank on the number printed on your own card. No bank, agency or prize office will ever ask you to read out a one-time code.",
+		"note": "That last line is the one worth carrying out of the game. A code sent to your phone is the bank checking it is you. Reading it aloud to a caller hands them the check.",
+		"note_color": TextStyle.COLOR_HINT,
+		"marker": TextStyle.MARK_HINT,
+		"tactic_id": "repeated_script",
+		"cites_number": true,
+		"milestone_title": "The Warning Was Already Up",
+		"milestone_detail": "A community notice on the street named the operation's number and all three of its scripts - the information existed before the case did.",
+	},
+	{
+		"position": Vector2(700.0, 600.0),
+		"title": "Neighbour on the terrace",
+		"prompt": "Talk to the neighbour",
+		"body": "Someone is out on the step with a mug, watching you work down the row. \"You're asking about the calls.\" A nod at the houses either side. \"I got the same one. Fraud desk, account compromised, stay on the line while they secure it.\" A shrug. \"I put the phone down. Then I asked next door. Next door got it too, word for word.\"",
+		"note": "Three households, one script, delivered to each as though it had been written for them. A call that feels personally aimed is usually a form letter read aloud.",
+		"note_color": TextStyle.COLOR_TACTIC,
+		"marker": TextStyle.MARK_TACTIC,
+		"tactic_id": "repeated_script",
+		"milestone_title": "Word For Word, Three Doors Apart",
+		"milestone_detail": "Neighbours on one row received identical wording, which is what makes it a script rather than a targeted approach.",
+	},
+	{
+		"position": Vector2(500.0, 216.0),
+		"title": "Passer-by at the crossing",
+		"prompt": "Talk to the passer-by",
+		"body": "\"My mother had one of these.\" They answer before you have finished asking. \"Twice. Once in March, once about six weeks ago. Different story the second time - a refund instead of a fraud alert - but the same wrong pronunciation of her surname both times.\"",
+		"note": "Being called twice is not bad luck. A number that answers is worth more than one that does not, so it is kept, sold on and worked again under a fresh story.",
+		"note_color": TextStyle.COLOR_TACTIC,
+		"marker": TextStyle.MARK_TACTIC,
+		"tactic_id": "reused_victim_list",
+		"milestone_title": "Called Twice, Six Weeks Apart",
+		"milestone_detail": "One resident was worked twice from the same list under two different scripts - answering once marks a number as live.",
+	},
+	{
+		"position": Vector2(950.0, 216.0),
+		"title": "Shopkeeper",
+		"prompt": "Talk to the shopkeeper",
+		"body": "\"That your poster?\" A tip of the head down the road towards the noticeboard. \"I put the number up in my window as well. Big, where you can't miss it. %s.\" They straighten a stack of receipts. \"Four people came in this month to ask me if it was real. Four that came in. I've no idea how many just paid it.\"",
+		"note": "The people who come in to ask are the ones who did not lose anything. What a scam costs a street is never the number of reports - it is the silence around them.",
+		"note_color": TextStyle.COLOR_WRONG,
+		"marker": TextStyle.MARK_HARM,
+		"cites_number": true,
+		"milestone_title": "Four Asked. Nobody Counted The Rest.",
+		"milestone_detail": "A shopkeeper posted the number and fielded four queries in a month - the questions asked out loud are a fraction of the actual contact.",
+	},
+	{
+		"position": Vector2(1200.0, 408.0),
+		"title": "Waiting at the kerb",
+		"prompt": "Talk to the person waiting",
+		"body": "\"Scam calls?\" A short laugh. \"You'd have to be pretty gullible, wouldn't you. My grandmother, maybe. Not me - I'd hear it coming a mile off.\" A pause, and the laugh goes out of it. \"...Why? What is it they say?\"",
+		"note": "Everyone believes they would hear it coming, and that belief is the thing the scripts are built around. Being busy, tired or halfway out the door does more work than being credulous ever did. The question at the end is the honest part.",
+		"note_color": TextStyle.COLOR_TACTIC,
+		"marker": TextStyle.MARK_TACTIC,
+		"milestone_title": "\"You'd Have To Be Gullible\"",
+		"milestone_detail": "The commonest myth about fraud victims, met on the street - confidence that you would spot it is exactly what the scripts count on.",
+	},
+	{
+		"position": Vector2(1750.0, 950.0),
+		"title": "Resident by the back path",
+		"prompt": "Talk to the resident",
+		"body": "\"I stopped answering months ago.\" They say it without looking up from the gate latch. \"They ring anyway. Same number every time - %s - four or five times a week, then nothing for a month, then it starts again.\" The latch drops into place. \"I know what it is now. I just want it to stop.\"",
+		"note": "The calls do not stop because a confirmed line stays on the list whatever the person does. Letting unknown callers go to voicemail costs nothing and is what takes a number back off it.",
+		"note_color": TextStyle.COLOR_HINT,
+		"marker": TextStyle.MARK_HINT,
+		"tactic_id": "reused_victim_list",
+		"cites_number": true,
+		"milestone_title": "The Number That Keeps Ringing",
+		"milestone_detail": "A resident who stopped answering is still called weekly from the same number - refusing does not remove you from a list, it only confirms you are on it.",
+	},
+]
+
+const PATTERN_MILESTONE := "One Number, More Than One Door"
+const PATTERN_DETAIL := "The number on the community notice is the number two residents read back from their own phones - the same line worked the whole street."
+
 var interview_portals: Array[ScenePortal] = []
 var portal_case_paths: Dictionary = {}
 var active_interview_portal: ScenePortal = null
+
+var street_stops: Array[Dictionary] = []
+var active_stop: Dictionary = {}
+var stop_label: Label
+var inspect_panel: PanelContainer
+var inspect_title: Label
+var inspect_body: RichTextLabel
+var inspection_open: bool = false
 
 const MAP_WIDTH := 1920.0
 const MAP_HEIGHT := 1080.0
@@ -163,6 +271,7 @@ func _ready() -> void:
 	portal.player_exited.connect(_on_portal_exited)
 
 	_build_interview_portals()
+	_build_stop_ui()
 
 	_setup_camera_limits()
 	_build_map()
@@ -215,8 +324,18 @@ func _setup_camera_limits() -> void:
 
 
 func _unhandled_input(event: InputEvent) -> void:
+	# A stop is a modal read, so it eats both keys before anything else can act
+	# on them - otherwise Escape would quit to the menu out from under it.
+	if inspection_open:
+		if event.is_action_pressed("ui_accept") or event.is_action_pressed("ui_cancel"):
+			_close_stop()
+			get_viewport().set_input_as_handled()
+		return
+
 	if event.is_action_pressed("ui_cancel"):
 		SessionState.go_to_scene("res://scenes/main_menu/main_menu.tscn")
+	elif event.is_action_pressed("ui_accept") and not active_stop.is_empty():
+		_open_stop(active_stop)
 	elif event.is_action_pressed("ui_accept") and _can_enter_interview():
 		SessionState.pending_case_path = str(portal_case_paths.get(active_interview_portal, ""))
 		_remember_return_spawn(active_interview_portal.global_position)
@@ -291,6 +410,8 @@ func _build_map() -> void:
 	var curb_y := sidewalk_top_end + 24.0
 	for i in range(CAR_SPOTS.size()):
 		_add_car(Vector2(CAR_SPOTS[i], curb_y), CAR_TINTS[i % CAR_TINTS.size()])
+
+	_build_street_stops()
 
 	portal_label.visible = false
 	interview_label.visible = false
@@ -475,6 +596,191 @@ func _add_car(spawn_position: Vector2, tint: Color) -> void:
 	shape.shape = rect
 	body.add_child(shape)
 	car.add_child(body)
+
+
+# --- Street stops ------------------------------------------------------------
+
+func _build_stop_ui() -> void:
+	stop_label = Label.new()
+	stop_label.offset_left = 20.0
+	stop_label.offset_top = 130.0
+	stop_label.visible = false
+	hud.add_child(stop_label)
+
+	inspect_panel = PanelContainer.new()
+	inspect_panel.set_anchors_preset(Control.PRESET_CENTER)
+	inspect_panel.anchor_left = 0.5
+	inspect_panel.anchor_right = 0.5
+	inspect_panel.anchor_top = 0.5
+	inspect_panel.anchor_bottom = 0.5
+	inspect_panel.offset_left = -380.0
+	inspect_panel.offset_right = 380.0
+	inspect_panel.offset_top = -230.0
+	inspect_panel.offset_bottom = 230.0
+	inspect_panel.visible = false
+	hud.add_child(inspect_panel)
+
+	var margin := MarginContainer.new()
+	for side in ["margin_left", "margin_top", "margin_right", "margin_bottom"]:
+		margin.add_theme_constant_override(side, 22)
+	inspect_panel.add_child(margin)
+
+	var column := VBoxContainer.new()
+	column.add_theme_constant_override("separation", 12)
+	margin.add_child(column)
+
+	inspect_title = Label.new()
+	inspect_title.add_theme_font_size_override("font_size", 22)
+	column.add_child(inspect_title)
+
+	# The bodies are variable length and one of them is a whole poster, so the
+	# text grows and the container scrolls - a fixed-height label would swallow
+	# everything past the fold, which this project has been bitten by before.
+	var scroll := ScrollContainer.new()
+	scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
+	column.add_child(scroll)
+
+	inspect_body = RichTextLabel.new()
+	inspect_body.bbcode_enabled = true
+	inspect_body.fit_content = true
+	inspect_body.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	scroll.add_child(inspect_body)
+
+	var footer := Label.new()
+	footer.text = "Enter or Esc to step away"
+	footer.add_theme_font_size_override("font_size", 13)
+	column.add_child(footer)
+
+
+func _build_street_stops() -> void:
+	street_stops.clear()
+	active_stop = {}
+	for data in STREET_STOPS:
+		var stop_position: Vector2 = data["position"]
+		if bool(data.get("is_noticeboard", false)):
+			_add_noticeboard(stop_position)
+
+		var area := Area2D.new()
+		area.position = stop_position
+		area.monitoring = true
+		var shape := CollisionShape2D.new()
+		var rect := RectangleShape2D.new()
+		rect.size = STOP_SIZE
+		shape.shape = rect
+		area.add_child(shape)
+		decor.add_child(area)
+
+		var entry: Dictionary = data.duplicate()
+		entry["area"] = area
+		street_stops.append(entry)
+		area.body_entered.connect(_on_stop_entered.bind(entry))
+		area.body_exited.connect(_on_stop_exited.bind(entry))
+
+
+func _add_noticeboard(base_position: Vector2) -> void:
+	var board_size := Vector2(88.0, 60.0)
+	var top_left := base_position - Vector2(board_size.x * 0.5, board_size.y + 24.0)
+
+	var post := ColorRect.new()
+	post.color = Color(0.33, 0.24, 0.16, 1.0)
+	post.position = Vector2(base_position.x - 6.0, top_left.y + board_size.y)
+	post.size = Vector2(12.0, 28.0)
+	decor.add_child(post)
+
+	var frame := ColorRect.new()
+	frame.color = Color(0.28, 0.20, 0.13, 1.0)
+	frame.position = top_left - Vector2(5.0, 5.0)
+	frame.size = board_size + Vector2(10.0, 10.0)
+	decor.add_child(frame)
+
+	var face := ColorRect.new()
+	face.color = Color(0.90, 0.88, 0.80, 1.0)
+	face.position = top_left
+	face.size = board_size
+	decor.add_child(face)
+
+	var label := Label.new()
+	label.text = "NOTICE"
+	label.position = top_left
+	label.size = board_size
+	label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	label.add_theme_font_size_override("font_size", 15)
+	label.add_theme_color_override("font_color", Color(0.55, 0.12, 0.10, 1.0))
+	decor.add_child(label)
+
+
+func _on_stop_entered(body: Node, entry: Dictionary) -> void:
+	if not body.is_in_group("player"):
+		return
+	active_stop = entry
+	stop_label.text = str(entry.get("prompt", ""))
+	stop_label.visible = not inspection_open
+
+
+func _on_stop_exited(body: Node, entry: Dictionary) -> void:
+	if not body.is_in_group("player"):
+		return
+	if active_stop.get("area", null) == entry.get("area", null):
+		active_stop = {}
+		stop_label.visible = false
+
+
+func _stop_body(stop: Dictionary) -> String:
+	var parts: Array[String] = []
+	var body := str(stop.get("body", ""))
+	if bool(stop.get("cites_number", false)):
+		body = body % SessionState.OPERATION_NUMBER
+	parts.append(TextStyle.dialogue(body))
+	var note := str(stop.get("note", ""))
+	if not note.is_empty():
+		var marker: String = str(stop.get("marker", TextStyle.MARK_SCENE))
+		var tone: String = str(stop.get("note_color", TextStyle.COLOR_HINT))
+		parts.append(TextStyle.system(marker, note, tone))
+	return "\n\n".join(parts)
+
+
+func _open_stop(stop: Dictionary) -> void:
+	inspection_open = true
+	inspect_title.text = str(stop.get("title", ""))
+	inspect_body.text = _stop_body(stop)
+	inspect_panel.visible = true
+	stop_label.visible = false
+	player.velocity = Vector2.ZERO
+	player.set_physics_process(false)
+
+	SessionState.record_reflection_milestone(
+		str(stop.get("milestone_title", "")), str(stop.get("milestone_detail", "")))
+	var tactic_id := str(stop.get("tactic_id", ""))
+	if not tactic_id.is_empty():
+		SessionState.record_tactic_learned(tactic_id,
+			"Heard on the street - %s" % str(stop.get("title", "")))
+	# Two people naming the same number is the whole point of the street. It is
+	# the player joining sources up, so it earns its own line in the summary.
+	if _cited_number_count() >= 2:
+		SessionState.record_reflection_milestone(PATTERN_MILESTONE, PATTERN_DETAIL)
+
+
+func _close_stop() -> void:
+	inspection_open = false
+	inspect_panel.visible = false
+	player.set_physics_process(true)
+	if not active_stop.is_empty():
+		stop_label.text = str(active_stop.get("prompt", ""))
+		stop_label.visible = true
+
+
+# Read off the milestones rather than a counter of its own, so it survives the
+# player walking off to an interview and coming back to a rebuilt street.
+func _cited_number_count() -> int:
+	var count := 0
+	for stop in street_stops:
+		if not bool(stop.get("cites_number", false)):
+			continue
+		if SessionState.has_reflection_milestone(str(stop.get("milestone_title", ""))):
+			count += 1
+	return count
 
 
 func _can_enter_portal() -> bool:

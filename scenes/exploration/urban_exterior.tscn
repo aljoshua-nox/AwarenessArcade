@@ -45,6 +45,7 @@ position = Vector2(998, 250)
 shape = SubResource("RectangleShape2D_Portal")
 
 [node name="HUD" type="CanvasLayer" parent="."]
+unique_name_in_owner = true
 
 [node name="FadeOverlay" type="ColorRect" parent="HUD"]
 unique_name_in_owner = true

@@ -32,6 +32,13 @@ const AWARENESS_MIXED := "mixed"        # named some
 const AWARENESS_BLIND := "blind"        # named none
 const AWARENESS_UNTESTED := "untested"  # never reached a tactic quiz
 
+# The operation's outgoing line. It is world fact rather than session state, but
+# it lives here because two scenes have to print the SAME string: the street
+# (a community notice and two residents citing it) and the call floor's own
+# ledger. The player is meant to notice the repetition unprompted, which only
+# works if there is one copy of it.
+const OPERATION_NUMBER := "0917-555-0142"
+
 # Prologue (scam-call sim) state
 var calls_made: int = 0
 var victims_affected: int = 0
@@ -281,12 +288,18 @@ func get_victim_disposition(person_id: String) -> String:
 	return DISPOSITION_NEUTRAL
 
 
-func record_reflection_milestone(milestone: String, detail: String = "") -> void:
-	if milestone.is_empty():
-		return
+func has_reflection_milestone(title: String) -> bool:
+	if title.is_empty():
+		return false
 	for entry in reflection_milestones:
-		if entry.get("title", "") == milestone:
-			return
+		if str(entry.get("title", "")) == title:
+			return true
+	return false
+
+
+func record_reflection_milestone(milestone: String, detail: String = "") -> void:
+	if milestone.is_empty() or has_reflection_milestone(milestone):
+		return
 	reflection_milestones.append({
 		"title": milestone,
 		"detail": detail,

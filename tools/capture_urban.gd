@@ -1,8 +1,9 @@
 extends Node
 
-## Renders the street so the block layout can be looked at. The cast grew from
-## three doors to five, and door spacing is not something a headless assertion
-## can judge.
+## Renders the street so the block layout can be looked at, then the noticeboard
+## panel open. The cast grew from three doors to five, and neither door spacing
+## nor the density of the longest stop is something a headless assertion can
+## judge.
 ##
 ##   godot --path . res://tools/capture_urban.tscn
 
@@ -28,8 +29,26 @@ func _run() -> void:
 		await get_tree().process_frame
 	await RenderingServer.frame_post_draw
 
-	var path := "user://urban_preview.png"
+	_save("urban_preview")
+
+	# The noticeboard is the longest body on the street and the one place the
+	# game gives real-world advice outright, so it is the one worth looking at.
+	for stop in view.street_stops:
+		if bool(stop.get("is_noticeboard", false)):
+			view._open_stop(stop)
+			break
+	for i in range(8):
+		await get_tree().process_frame
+	await RenderingServer.frame_post_draw
+	_save("noticeboard_preview")
+
+	get_tree().quit()
+
+
+func _save(preview_name: String) -> void:
+	var path := "user://%s.png" % preview_name
 	var image := get_viewport().get_texture().get_image()
 	if image.save_png(path) == OK:
 		print("PREVIEW: %s" % ProjectSettings.globalize_path(path))
-	get_tree().quit()
+	else:
+		printerr("could not save %s" % preview_name)

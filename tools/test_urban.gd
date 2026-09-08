@@ -58,6 +58,8 @@ func _run() -> void:
 	await _test_layout_collisions()
 	await _test_credibility_economy()
 	await _test_locked_case()
+	await _test_street_stops()
+	await _test_street_stops_record()
 
 	print("\n%d checks, %d failed" % [checks, failures.size()])
 	for f in failures:
@@ -282,3 +284,159 @@ func _test_credibility_economy() -> void:
 			reachable_after_success += 1
 	_check(reachable_after_success > open_at_start,
 		"one good interview opens at least one new door (%d reachable)" % reachable_after_success)
+
+
+# The street used to be pure transit between doors. These are the things worth
+# stopping for, and what they teach is a pattern - the same number and the same
+# script at door after door - so the checks are about the pattern holding
+# together, not about any one line of writing.
+func _test_street_stops() -> void:
+	print("\n[the street is worth walking]")
+	SessionState.reset_session()
+	var view := await _open()
+
+	var stops: Array = view.street_stops
+	_check(stops.size() >= 5, "the street has stops on it (%d)" % stops.size())
+
+	# Layout: a stop the player cannot reach, or one buried in a wall, is dead.
+	var block_size := Vector2(48.0 * view.BLOCK_BUILDING_SCALE.x, 96.0 * view.BLOCK_BUILDING_SCALE.y)
+	var row_size := Vector2(48.0 * view.ROW_BUILDING_SCALE.x, 96.0 * view.ROW_BUILDING_SCALE.y)
+	var building_rects: Array[Rect2] = []
+	for entry in view.BLOCK_BUILDINGS:
+		building_rects.append(Rect2(Vector2(float(entry["x"]), 520.0), block_size))
+	for entry in view.BUILDING_ROW:
+		building_rects.append(Rect2(Vector2(float(entry["x"]), view.BUILDING_ROW_BOTTOM - row_size.y), row_size))
+
+	var sidewalk_top_end: float = view.BUILDING_ROW_BOTTOM + view.SIDEWALK_HEIGHT
+	var grass_top: float = sidewalk_top_end + view.ROAD_HEIGHT + view.SIDEWALK_HEIGHT
+	var street_rects: Array[Rect2] = []
+	for street_x in view.SIDE_STREET_X_POSITIONS:
+		street_rects.append(Rect2(Vector2(float(street_x), grass_top),
+			Vector2(view.SIDE_STREET_WIDTH, 1080.0 - grass_top)))
+
+	var bounds: Rect2 = view.movement_bounds
+	var buried := 0
+	var unreachable := 0
+	var on_street := 0
+	for stop in stops:
+		var point: Vector2 = stop["position"]
+		if not bounds.has_point(point):
+			unreachable += 1
+		for rect in building_rects:
+			if rect.has_point(point):
+				buried += 1
+		if bool(stop.get("is_noticeboard", false)):
+			for street in street_rects:
+				if street.has_point(point):
+					on_street += 1
+	_check(unreachable == 0, "every stop is inside the walkable bounds (%d outside)" % unreachable)
+	_check(buried == 0, "no stop is buried inside a building (%d)" % buried)
+	_check(on_street == 0, "the noticeboard is not planted in a side street (%d)" % on_street)
+
+	# Every stop that is not the noticeboard stands on an actual pedestrian, or
+	# the player walks up to a prompt with nobody attached to it.
+	var npc_points: Array[Vector2] = []
+	for spot in view.NPC_SPOTS:
+		npc_points.append(Vector2(float(spot["x"]), float(spot["y"])))
+	var orphaned := 0
+	var boards := 0
+	for stop in stops:
+		if bool(stop.get("is_noticeboard", false)):
+			boards += 1
+		elif not npc_points.has(stop["position"]):
+			orphaned += 1
+	_check(boards == 1, "there is exactly one noticeboard (%d)" % boards)
+	_check(orphaned == 0, "every other stop stands on a pedestrian (%d floating)" % orphaned)
+
+	# Content: each stop has to be openable and has to leave something behind.
+	var incomplete := 0
+	for stop in stops:
+		if str(stop.get("prompt", "")).is_empty() or str(stop.get("title", "")).is_empty():
+			incomplete += 1
+		if str(stop.get("milestone_title", "")).is_empty():
+			incomplete += 1
+	_check(incomplete == 0, "every stop has a prompt, a title and a milestone (%d incomplete)" % incomplete)
+
+	var catalogue_ids := _catalogue_ids()
+	var bad_tactics: Array[String] = []
+	for stop in stops:
+		var tid := str(stop.get("tactic_id", ""))
+		if not tid.is_empty() and not catalogue_ids.has(tid):
+			bad_tactics.append(tid)
+	_check(bad_tactics.is_empty(),
+		"every tactic a stop unlocks is in the catalogue (bad: %s)" % ", ".join(bad_tactics))
+
+	# The number is the through-line. More than one source has to print it, and
+	# it has to be the same string the call floor's ledger prints.
+	var citing: Array[Dictionary] = []
+	for stop in stops:
+		if bool(stop.get("cites_number", false)):
+			citing.append(stop)
+	_check(citing.size() >= 2, "more than one source names the number (%d)" % citing.size())
+	var unprinted := 0
+	for stop in citing:
+		if not view._stop_body(stop).contains(SessionState.OPERATION_NUMBER):
+			unprinted += 1
+	_check(unprinted == 0, "every source that cites the number actually prints it (%d silent)" % unprinted)
+
+	# The poster is the one place the game gives real-world advice outright.
+	var board: Dictionary = {}
+	for stop in stops:
+		if bool(stop.get("is_noticeboard", false)):
+			board = stop
+	_check(view._stop_body(board).contains("one-time code"),
+		"the noticeboard carries the advice, not just a warning")
+
+	await _close(view)
+
+
+# Reading a stop has to leave the player with something: a milestone in the
+# summary, and the tactic in the notebook.
+func _test_street_stops_record() -> void:
+	print("\n[what the street leaves behind]")
+	SessionState.reset_session()
+	var view := await _open()
+
+	var first: Dictionary = view.street_stops[0]
+	_check(not SessionState.has_reflection_milestone(str(first.get("milestone_title", ""))),
+		"the milestone is not recorded before the player reads it")
+	view._open_stop(first)
+	_check(view.inspection_open, "reading a stop opens the panel")
+	_check(not view.player.is_physics_processing(), "the player is held still while reading")
+	_check(SessionState.has_reflection_milestone(str(first.get("milestone_title", ""))),
+		"reading a stop records its milestone")
+	_check(SessionState.has_learned_tactic(str(first.get("tactic_id", ""))),
+		"reading a stop unlocks the tactic it teaches")
+	view._close_stop()
+	_check(not view.inspection_open, "stepping away closes the panel")
+	_check(view.player.is_physics_processing(), "the player can move again")
+
+	# One source naming the number is not a pattern. Two is.
+	_check(not SessionState.has_reflection_milestone(view.PATTERN_MILESTONE),
+		"one source naming the number is not yet a pattern")
+	var cited := 0
+	for stop in view.street_stops:
+		if not bool(stop.get("cites_number", false)):
+			continue
+		view._open_stop(stop)
+		view._close_stop()
+		cited += 1
+		if cited == 2:
+			break
+	_check(cited == 2, "two sources citing the number were read (%d)" % cited)
+	_check(SessionState.has_reflection_milestone(view.PATTERN_MILESTONE),
+		"two sources naming the same number records the pattern")
+
+	await _close(view)
+
+
+func _catalogue_ids() -> Array[String]:
+	var ids: Array[String] = []
+	var file := FileAccess.open("res://resources/tactics/tactic_catalogue.json", FileAccess.READ)
+	if file == null:
+		return ids
+	var parsed: Variant = JSON.parse_string(file.get_as_text())
+	var entries: Variant = parsed.get("tactics", []) if typeof(parsed) == TYPE_DICTIONARY else parsed
+	for entry in entries:
+		ids.append(str(entry.get("id", "")))
+	return ids

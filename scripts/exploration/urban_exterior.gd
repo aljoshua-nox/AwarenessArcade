@@ -94,7 +94,7 @@ const STREET_STOPS := [
 		"milestone_detail": "Neighbours on one row received identical wording, which is what makes it a script rather than a targeted approach.",
 	},
 	{
-		"position": Vector2(500.0, 216.0),
+		"position": Vector2(330.0, 216.0),
 		"title": "Passer-by at the crossing",
 		"prompt": "Talk to the passer-by",
 		"body": "\"My mother had one of these.\" They answer before you have finished asking. \"Twice. Once in March, once about six weeks ago. Different story the second time - a refund instead of a fraud alert - but the same wrong pronunciation of her surname both times.\"",
@@ -106,7 +106,7 @@ const STREET_STOPS := [
 		"milestone_detail": "One resident was worked twice from the same list under two different scripts - answering once marks a number as live.",
 	},
 	{
-		"position": Vector2(950.0, 216.0),
+		"position": Vector2(740.0, 216.0),
 		"title": "Shopkeeper",
 		"prompt": "Talk to the shopkeeper",
 		"body": "\"That your poster?\" A tip of the head down the road towards the noticeboard. \"I put the number up in my window as well. Big, where you can't miss it. %s.\" They straighten a stack of receipts. \"Four people came in this month to ask me if it was real. Four that came in. I've no idea how many just paid it.\"",
@@ -239,11 +239,11 @@ const LAMP_TOP_X := [350.0, 900.0, 1450.0]
 const LAMP_BOTTOM_X := [350.0, 900.0, 1300.0]
 
 const NPC_SPOTS := [
-	{"x": 500.0, "y": 216.0, "kind": "a", "tint": Color(1, 1, 1, 1)},
+	{"x": 330.0, "y": 216.0, "kind": "a", "tint": Color(1, 1, 1, 1)},
 	{"x": 1200.0, "y": 408.0, "kind": "b", "tint": Color(1, 1, 1, 1)},
 	{"x": 700.0, "y": 600.0, "kind": "a", "tint": Color(0.85, 1.0, 0.85, 1)},
 	{"x": 1750.0, "y": 950.0, "kind": "a", "tint": Color(1.0, 0.85, 0.85, 1)},
-	{"x": 950.0, "y": 216.0, "kind": "b", "tint": Color(1, 1, 1, 1)},
+	{"x": 740.0, "y": 216.0, "kind": "b", "tint": Color(1, 1, 1, 1)},
 ]
 
 
@@ -334,8 +334,6 @@ func _unhandled_input(event: InputEvent) -> void:
 
 	if event.is_action_pressed("ui_cancel"):
 		SessionState.go_to_scene("res://scenes/main_menu/main_menu.tscn")
-	elif event.is_action_pressed("ui_accept") and not active_stop.is_empty():
-		_open_stop(active_stop)
 	elif event.is_action_pressed("ui_accept") and _can_enter_interview():
 		SessionState.pending_case_path = str(portal_case_paths.get(active_interview_portal, ""))
 		_remember_return_spawn(active_interview_portal.global_position)
@@ -346,6 +344,11 @@ func _unhandled_input(event: InputEvent) -> void:
 			return
 		_remember_return_spawn(portal.global_position)
 		_transition_to_scene(portal.target_scene)
+	elif event.is_action_pressed("ui_accept") and not active_stop.is_empty():
+		# Last, deliberately. A stop is optional flavour and a door is the way
+		# on, so an overlap must never leave the player unable to go inside -
+		# the shopkeeper's zone used to swallow the office door completely.
+		_open_stop(active_stop)
 
 
 # The fourth ending from the original plan: the case is closed because it

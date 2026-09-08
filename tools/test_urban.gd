@@ -346,6 +346,33 @@ func _test_street_stops() -> void:
 		elif not npc_points.has(stop["position"]):
 			orphaned += 1
 	_check(boards == 1, "there is exactly one noticeboard (%d)" % boards)
+	# A stop sitting on a door locked the player out of the building: both answer
+	# Enter, and the shopkeeper's zone covered the office portal completely, so
+	# standing at the door opened the shop dialogue instead. Doors win the
+	# keypress now, but an overlap would then hide the stop, so the geometry has
+	# to stay clear either way.
+	var door_rects: Array[Rect2] = []
+	door_rects.append(_area_rect(view.portal, view.INTERVIEW_PORTAL_SIZE))
+	for door in view.interview_portals:
+		door_rects.append(_area_rect(door, view.INTERVIEW_PORTAL_SIZE))
+
+	var shadowed: Array[String] = []
+	var crowded: Array[String] = []
+	for stop in stops:
+		var area: Area2D = stop["area"]
+		var stop_rect := _area_rect(area, view.STOP_SIZE)
+		for door_rect in door_rects:
+			if stop_rect.intersects(door_rect):
+				shadowed.append(str(stop.get("title", "?")))
+				break
+		# _can_enter_portal() also accepts anything within 120px of the office
+		# door, which reaches past the rectangles.
+		if area.global_position.distance_to(view.portal.global_position) <= 120.0:
+			crowded.append(str(stop.get("title", "?")))
+	_check(shadowed.is_empty(), "no stop overlaps a door (%s)" % ", ".join(shadowed))
+	_check(crowded.is_empty(), "no stop sits inside the office door's reach (%s)" % ", ".join(crowded))
+
+
 	_check(orphaned == 0, "every other stop stands on a pedestrian (%d floating)" % orphaned)
 
 	# Content: each stop has to be openable and has to leave something behind.
@@ -440,3 +467,11 @@ func _catalogue_ids() -> Array[String]:
 	for entry in entries:
 		ids.append(str(entry.get("id", "")))
 	return ids
+
+
+func _area_rect(area: Area2D, fallback: Vector2) -> Rect2:
+	var size := fallback
+	var shape := area.get_node_or_null("CollisionShape2D") as CollisionShape2D
+	if shape != null and shape.shape is RectangleShape2D:
+		size = (shape.shape as RectangleShape2D).size
+	return Rect2(area.global_position - size * 0.5, size)

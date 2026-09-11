@@ -44,7 +44,7 @@ const INTERVIEWEES := [
 	{"case": CASE_MARIA, "label": "MARIA", "prompt": "Speak with Maria Santos", "row": "block", "slot": 1},
 	{"case": CASE_KEVIN, "label": "KEVIN", "prompt": "Speak with Kevin Dizon", "row": "block", "slot": 2},
 	{"case": CASE_LINA, "label": "LINA", "prompt": "Speak with Lina Reyes", "row": "street", "slot": 1},
-	{"case": CASE_MARCO, "label": "MARCO", "prompt": "Interrogate Marco Reyes", "row": "street", "slot": 4},
+	{"case": CASE_MARCO, "label": "MARCO", "prompt": "Interrogate Marco Navarro", "row": "street", "slot": 4},
 ]
 
 const INTERVIEW_PORTAL_SIZE := Vector2(56.0, 44.0)
@@ -357,7 +357,7 @@ func _file_case_unresolved() -> void:
 	SessionState.investigation_case_title = "The Call Center Investigation"
 	SessionState.investigation_person_name = "No suspect in custody"
 	SessionState.investigation_outcome = "insufficient_evidence"
-	SessionState.investigation_outcome_note = "Marco Reyes stopped talking and the operation above him was never named. What is on file describes a series of calls and nobody who made them."
+	SessionState.investigation_outcome_note = "Marco Navarro stopped talking and the operation above him was never named. What is on file describes a series of calls and nobody who made them."
 	SessionState.has_urban_return_spawn = false
 	_transition_to_scene("res://scenes/investigation/investigation_end.tscn")
 

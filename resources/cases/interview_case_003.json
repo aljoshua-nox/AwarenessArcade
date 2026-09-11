@@ -1,9 +1,9 @@
 {
   "case_id": "interview_case_003",
-  "title": "The Interrogation of Marco Reyes",
+  "title": "The Interrogation of Marco Navarro",
   "person": {
-	"person_id": "marco_reyes",
-	"name": "Marco Reyes",
+	"person_id": "marco_navarro",
+	"name": "Marco Navarro",
 	"age": 29,
 	"occupation": "Call floor operator",
 	"role": "Suspect",
@@ -39,7 +39,7 @@
 	},
 	"deny_node": {
 	  "prompt": "\"I just work off a list. I don't write the scripts, I don't pick the targets. That's not on me.\" He shifts in the chair and adds it like it settles something. \"And whatever you've been told, I'm on mornings. Seven till two. I'm not in the building after that.\"",
-	  "claim": "Marco Reyes, on the record: seven till two, mornings only, not in the building afterwards.",
+	  "claim": "Marco Navarro, on the record: seven till two, mornings only, not in the building afterwards.",
 	  "evidence_prompt": true,
 	  "evidence_hint": "Two ways through him. A victim willing to go on the record moves him - raw documents on their own do not. But he has just volunteered a checkable fact, and a checkable fact can be wrong.",
 	  "accepts_evidence": [
@@ -138,7 +138,7 @@
 	  "cooperation": 6,
 	  "milestone": {
 		"title": "Account Broken: The Shift That Wasn't",
-		"detail": "Marco Reyes volunteered a specific alibi and a timestamped record disproved it. A rehearsed story survives being doubted; it does not survive being checked against something written down at the time."
+		"detail": "Marco Navarro volunteered a specific alibi and a timestamped record disproved it. A rehearsed story survives being doubted; it does not survive being checked against something written down at the time."
 	  },
 	  "choices": [
 		{ "text": "You didn't have to say the hours. People who are telling the truth usually don't.", "next": "half_crack" }
@@ -187,7 +187,7 @@
 	  "prompt": "Marco finally deflates. \"Okay - okay. It's not just me. There's a whole floor running four different scripts. We get bonuses on the ones who cry.\" He hears himself say it. \"I can give you names if it keeps me out of the worst of this.\"",
 	  "milestone": {
 		"title": "Whistleblower Secured",
-		"detail": "Marco Reyes agreed to identify the wider call-center operation once confronted with two independent victim testimonies."
+		"detail": "Marco Navarro agreed to identify the wider call-center operation once confronted with two independent victim testimonies."
 	  },
 	  "choices": [
 		{ "text": "Tell me everything, starting with who runs the floor.", "next": "end_whistleblower" }
@@ -204,7 +204,7 @@
 	  "outcome": "failure",
 	  "milestone": {
 		"title": "Suspect Lost",
-		"detail": "Marco Reyes shut down under pressure. A low-level operator who feels he'll carry the whole operation alone has no reason to name anyone above him."
+		"detail": "Marco Navarro shut down under pressure. A low-level operator who feels he'll carry the whole operation alone has no reason to name anyone above him."
 	  },
 	  "choices": []
 	}

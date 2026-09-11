@@ -17,9 +17,9 @@ license file bundled, or license terms require per-file checking).
 > than kept under terms the repository could not satisfy. Do not re-add them to
 > this repo while it is public.
 >
-> **Font Awesome** (CC BY 4.0) still *requires* attribution in the shipped game,
-> not just in this file. The planned in-game credits screen is what satisfies
-> that.
+> **Font Awesome** (CC BY 4.0) and the **Calciumtrice Portrait Pack** (CC-BY 3.0)
+> both *require* attribution in the shipped game, not just in this file. The
+> planned in-game credits screen is what satisfies that.
 >
 > **Removed the same day, all unreferenced by the game:** Modern Office 2D
 > Props, Pixel Life – Desk Essentials, 25 Portrait Pixel Art pack1 (terms never
@@ -49,7 +49,8 @@ license file bundled, or license terms require per-file checking).
 | Office tile sheets — floor and wall tiles used by the call floor (`floor_tiles`, `wall_tiles`; other props unused) | `assets/art/maps/office/` | ⚠️ unidentified; did not match the removed GameKit pack, so a separate source | ⚠️ unknown | ⚠️ needs source lookup |
 | Numbered character pack (`pack/pack/1.png`…) | `assets/art/characters/pack/` | ⚠️ unidentified — no bundled license found | ⚠️ unknown | ⚠️ needs source lookup |
 | Player detective sprite (idle/walk, 4 directions) | `assets/art/characters/player/` | ⚠️ unidentified — likely custom or from one of the packs above | ⚠️ unknown | ⚠️ needs source lookup |
-| Portraits (fella 1/2, lady 1/2) | `assets/art/portraits/` | ⚠️ No pack found. PNG metadata records `Software: Celsys Studio Tool` (Clip Studio Paint), which suggests hand-drawn artwork rather than a downloaded pack — **ask the team whether a member drew these** | ⚠️ unknown | ⚠️ confirm with the team first |
+| Portrait Pack (`fella 1`, `fella 2`, `lady 1`, `lady 2`) | `assets/art/portraits/` | Calciumtrice — [OpenGameArt](https://opengameart.org/content/portrait-pack) (identified 2026-09-12; the "C" monogram bottom-right is the artist's) | **CC-BY 3.0** — attribution required. Author's notice: *"Portrait Pack by Calciumtrice, usable under Creative Commons Attribution 3.0 license."* | ✅ |
+| Portraits (`lady 3`, `lady 4`) | `assets/art/portraits/` | ⚠️ supplied by the team on 2026-09-09 / 2026-09-12; 1254x1254 RGB, so not from the Calciumtrice pack — **source not yet recorded** | ⚠️ unknown | ⚠️ ask whoever supplied them |
 | UI/status icons (bell, clock, phone, shield, gear, user, etc.) | `assets/art/icons/` | **Font Awesome Free 7.2.0** — fontawesome.com (embedded in SVG headers) | CC BY 4.0 (icons) — attribution required | ✅ |
 | Background photos: Alesia Kazantceva | `assets/art/backgrounds/alesia-kazantceva-VWcPlbHglYc-unsplash.jpg` | Alesia Kazantceva — [Unsplash](https://unsplash.com/photos/VWcPlbHglYc) | Unsplash License (free, attribution appreciated not required) | ✅ |
 | Background photos: Copernico | `assets/art/backgrounds/copernico-p_kICQCOM4s-unsplash.jpg` | Copernico — [Unsplash](https://unsplash.com/photos/p_kICQCOM4s) | Unsplash License | ✅ |
@@ -95,13 +96,15 @@ No music tracks are currently in `assets/audio/music/` (empty).
    searching. Failing that, replace them with the Kenney *Roguelike Modern City* / *RPG
    Urban Pack* already in this project, both CC0.
 2. Identify the remaining ⚠️ art: the `office/` floor and wall tiles, the numbered `pack/`
-   character sheets, the player detective sprite, and the four loose portraits. The
-   portraits carry Clip Studio Paint metadata and may be a team member's own work — ask
-   before hunting for a source.
+   character sheets, the player detective sprite, and the two newer portraits (`lady 3`,
+   `lady 4`) — record where those came from and under what terms. The original four
+   portraits are resolved (Calciumtrice, CC-BY 3.0).
 3. Confirm each Freesound SFX's actual license (CC0 vs CC-BY vs CC-BY-NC) — CC-BY entries
    need "Author — title (freesound.org)" in the credits screen; CC-BY-NC entries are not
    safe to ship in a commercial release.
 4. Font Awesome Free icons are CC BY 4.0 — the credits screen must include an attribution
-   line for Font Awesome (fontawesome.com) since these are not the CC0 subset.
+   line for Font Awesome (fontawesome.com) since these are not the CC0 subset. The same
+   screen must carry "Portrait Pack by Calciumtrice, usable under Creative Commons
+   Attribution 3.0 license." for the four original portraits.
 4. Modern Office 2D Props Pack (nacl1234) forbids standalone redistribution — fine as
    embedded assets in the compiled game, just don't ship the raw PNG/JSON files separately.

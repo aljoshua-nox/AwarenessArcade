@@ -42,7 +42,7 @@
     },
     "tactic_quiz_pattern": {
       "tactic_quiz": {
-        "setup": "You think about the two people who got you into this room. Maria Santos, sixty-seven, a retired bank clerk, told her account would be frozen unless she verified right now. Kevin Dizon, twenty-four, works with computers all day, told his files were infected and to call before restarting.",
+        "setup": "You think about two of the people this floor called. Maria Santos, sixty-seven, a retired bank clerk, told her account would be frozen unless she verified right now. Kevin Dizon, twenty-four, works with computers all day, told his files were infected and to call before restarting.",
         "tactic_id": "verification_denial",
         "tactic": "The pattern behind every script",
         "question": "Two completely different scripts, two completely different people. What did both of them actually need in order to work?",
@@ -81,7 +81,7 @@
       }
     },
     "end_bribed": {
-      "prompt": "You walk out with a number in your account and a case that quietly goes nowhere. Marco's statement sits in a drawer, unopened. The forty headsets are back on by Monday, working a list that now has two more names on it with notes in the margin. Somewhere, Maria and Kevin are still waiting for a call that will never come.",
+      "prompt": "You walk out with a number in your account and a case that quietly goes nowhere. Marco's statement sits in a drawer, unopened. The forty headsets are back on by Monday, working a list that now has more names on it with notes in the margin. Somewhere, the witnesses who trusted you are still waiting for a call that will never come.",
       "outcome": "bribed",
       "milestone": {
         "title": "Investigation Compromised",
@@ -90,7 +90,7 @@
       "choices": []
     },
     "end_full_takedown": {
-      "prompt": "By evening, officers move through three floors of the operation. Scripts, victim lists, and payment logs are seized. Maria and Kevin's testimonies, backed by Marco's statement, are enough to name the people at the top - not just the callers underneath them. The lists are the part that matters: every name on them belongs to someone who was going to be called again.",
+      "prompt": "By evening, officers move through three floors of the operation. Scripts, victim lists, and payment logs are seized. With a second confirmed testimony behind Marco's statement, there is enough to name the people at the top - not just the callers underneath them. The lists are the part that matters: every name on them belongs to someone who was going to be called again.",
       "outcome": "full_takedown",
       "milestone": {
         "title": "Investigation Breakthrough",

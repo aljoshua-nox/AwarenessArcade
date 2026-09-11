@@ -351,6 +351,27 @@ for pid, case_file in EXPECTED_LINKS.items():
             f"{case_file}: {case_name} is {case_age} but the prologue has"
             f" {pro_name} at {pro_age} - the same person ages between the two halves")
 
+# Occupation is the third half. Evelyn was a retired bookkeeper in her interview
+# ("thirty years telling other people to check their figures") and a retired
+# seamstress on the prologue's call card, and both strings are shown to the
+# player under her name. One string per person, compared verbatim - two
+# phrasings of the same job are still two things to keep in step.
+case_jobs = {os.path.basename(f): (d.get("person", {}).get("name", "?"),
+                                   d.get("person", {}).get("occupation"))
+             for f, d in parsed.items()}
+prologue_jobs = {v.get("person_id", ""): (v.get("name", "?"), v.get("occupation"))
+                 for v in victims}
+
+for pid, case_file in EXPECTED_LINKS.items():
+    if case_file not in case_jobs or pid not in prologue_jobs:
+        continue
+    case_name, case_job = case_jobs[case_file]
+    pro_name, pro_job = prologue_jobs[pid]
+    if case_job != pro_job:
+        errors.append(
+            f"{case_file}: {case_name} is '{case_job}' but the prologue has"
+            f" {pro_name} as '{pro_job}' - the same person changes job between the two halves")
+
 # Portraits. Two rules, both of them learned from shipped bugs.
 #
 # 1. A character has ONE face. Evelyn was drawn as lady 2 in her interview and

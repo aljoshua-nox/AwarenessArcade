@@ -4,10 +4,10 @@
   "person": {
     "person_id": "elena_cruz",
     "name": "Elena Cruz",
-    "age": 44,
+    "age": 27,
     "occupation": "Floor Director",
     "role": "Suspect",
-    "portrait": "res://assets/art/portraits/lady 2.png",
+    "portrait": "res://assets/art/portraits/lady 4.png",
     "traits": "Composed and calculating. Switches quickly from denial to negotiation when cornered."
   },
   "evidence": [],

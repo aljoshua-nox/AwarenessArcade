@@ -332,6 +332,25 @@ for pid, case_file in EXPECTED_LINKS.items():
         errors.append(f"{case_file}: person_id is '{case_ids.get(case_file)}',"
                       f" expected '{pid}' to match the prologue victim")
 
+# Age is the other half of identity. Evelyn was 58 in her case file and 74 in
+# the prologue for a whole build, and nothing read both numbers side by side;
+# an artist briefed from one file would have painted the wrong person.
+case_ages = {os.path.basename(f): (d.get("person", {}).get("name", "?"),
+                                   d.get("person", {}).get("age"))
+             for f, d in parsed.items()}
+prologue_ages = {v.get("person_id", ""): (v.get("name", "?"), v.get("age"))
+                 for v in victims}
+
+for pid, case_file in EXPECTED_LINKS.items():
+    if case_file not in case_ages or pid not in prologue_ages:
+        continue
+    case_name, case_age = case_ages[case_file]
+    pro_name, pro_age = prologue_ages[pid]
+    if case_age != pro_age:
+        errors.append(
+            f"{case_file}: {case_name} is {case_age} but the prologue has"
+            f" {pro_name} at {pro_age} - the same person ages between the two halves")
+
 # Portraits. Two rules, both of them learned from shipped bugs.
 #
 # 1. A character has ONE face. Evelyn was drawn as lady 2 in her interview and

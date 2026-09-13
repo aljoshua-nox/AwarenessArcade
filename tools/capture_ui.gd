@@ -5,11 +5,16 @@ extends Node
 ##
 ##   godot --path . res://tools/capture_ui.tscn
 ##
-## Writes prologue_preview.png, evidence_preview.png and harm_preview.png under
-## user://. The last is the densest an interview opening gets: a harmed victim's
-## own words quoted off the call record, on top of the authored case note.
+## Writes prologue_preview.png, prologue_ending_preview.png,
+## prologue_summary_preview.png, evidence_preview.png and harm_preview.png under
+## user://. The second is the densest a call gets: a
+## paid ending, with the binder line, the call-ended line, a report and the
+## victim afterwards all in the box. The last is the densest an interview
+## opening gets: a harmed victim's own words quoted off the call record, on top
+## of the authored case note.
 
 const PROLOGUE_SCENE := "res://scenes/prologue/prologue_call.tscn"
+const PROLOGUE_END_SCENE := "res://scenes/prologue/prologue_end.tscn"
 const INTERVIEW_SCENE := "res://scenes/investigation/interview.tscn"
 const CASE_MARIA := "res://resources/cases/interview_case_001.json"
 
@@ -20,6 +25,8 @@ func _ready() -> void:
 
 func _run() -> void:
 	await _capture_prologue()
+	await _capture_prologue_ending()
+	await _capture_prologue_summary()
 	await _capture_evidence_list()
 	await _capture_harmed_opening()
 	get_tree().quit()
@@ -53,6 +60,59 @@ func _capture_prologue() -> void:
 	view._finish_reveal()
 	await _settle()
 	_save("prologue_preview")
+	remove_child(view)
+	view.queue_free()
+	await get_tree().process_frame
+
+
+# One answered line, then straight to the refusal ending: the transcript holds
+# the dialling line, the opening, the player's line, the binder naming it, the
+# victim's reply, CALL ENDED, REPORTED and AFTER THE CALL at once.
+func _capture_prologue_ending() -> void:
+	SessionState.reset_session()
+	SessionState.reset_prologue()
+	var view: Node = load(PROLOGUE_SCENE).instantiate()
+	view.suppress_scene_change = true
+	add_child(view)
+	await get_tree().process_frame
+	view._start_call(0)
+	view._finish_reveal()
+	view._on_choice_pressed(1)
+	view._finish_reveal()
+	view._load_node("refused")
+	view._finish_reveal()
+	await _settle()
+	_save("prologue_ending_preview")
+	remove_child(view)
+	view.queue_free()
+	await get_tree().process_frame
+
+
+# The shift summary after a full shift: three calls with three different
+# outcomes, each quoted, and the tactics used listed above them.
+func _capture_prologue_summary() -> void:
+	SessionState.reset_session()
+	SessionState.reset_prologue()
+	SessionState.prologue_played = true
+	SessionState.calls_made = 3
+	SessionState.reports_filed = 1
+	SessionState.profit = 3700
+	SessionState.record_tactic_used("authority_impersonation")
+	SessionState.record_tactic_used("manufactured_urgency")
+	SessionState.record_prologue_call("maria_santos", "Maria S.", SessionState.CALL_SUCCESS, 2200,
+		"He sounded like the bank. He even knew about the text. I read the code out like I was helping, and it was my medicine money going out the door while I was saying thank you.")
+	SessionState.record_prologue_call("evelyn_marsh", "Evelyn Marsh", SessionState.CALL_REFUSED, 0,
+		"I told him winnings don't have an entry fee and he rang off. Rather rude, in the end.")
+	SessionState.record_prologue_call("lina_reyes", "Lina Reyes", SessionState.CALL_PARTIAL, 1500,
+		"I only sent half. I thought that was clever.")
+	SessionState.record_reflection_milestone("First Report Filed", "Someone you called kept the number and passed it on.")
+	SessionState.prologue_end_reason = "Shift Ended Early"
+	SessionState.prologue_end_note = "You logged off the floor to see what the calls left behind."
+	var view: Node = load(PROLOGUE_END_SCENE).instantiate()
+	add_child(view)
+	await get_tree().process_frame
+	await _settle()
+	_save("prologue_summary_preview")
 	remove_child(view)
 	view.queue_free()
 	await get_tree().process_frame

@@ -1,0 +1,256 @@
+{
+	"person": {
+		"person_id": "maria_santos",
+		"name": "Maria S.",
+		"age": 67,
+		"occupation": "Retired clerk",
+		"traits": "Retired clerk. Reads every letter the bank sends her and keeps them. Sound like one of those letters.",
+		"portrait": "res://assets/art/portraits/lady 1.png",
+		"script": "Bank fraud desk",
+		"patience_seconds": 90,
+		"doubt_start": 25
+	},
+	"start_node": "open",
+	"hang_up_node": "hangs_up",
+	"perspective_variants": {
+		"harmed": [
+			"He sounded like the bank. He even knew about the text. I read the code out like I was helping, and it was my medicine money going out the door while I was saying thank you.",
+			"I've worked with money my whole life and I handed it to a voice on the phone. My son keeps asking how I could not have noticed. I don't have an answer for him."
+		],
+		"resistant": [
+			"I came so close. I had the code in front of me. Something about the hurrying stopped me - a bank doesn't hurry you - and I've not trusted the phone since.",
+			"I put the phone down on him and then I sat in the kitchen for an hour. I wrote the number on the back of an envelope. It's still on the fridge."
+		],
+		"unfinished": [
+			"It rang, it frightened me, and then it just stopped. Nobody rang back. I've been checking the account every morning since and I don't know what I'm looking for.",
+			"I never found out what it was. At my age you don't ask. You just wait for the next letter and hope it isn't bad."
+		]
+	},
+	"nodes": {
+		"open": {
+			"prompt": "Four minutes ago the floor sent her a text - ACCOUNT SUSPENDED, a link - so she has already had her fright for the afternoon. Three rings. \"Hello? Who's calling, please?\" Careful. But she picked up.",
+			"choices": [
+				{
+					"text": "Good afternoon, Mrs. Santos. This is the fraud department at your bank. We sent you a text a few minutes ago about your account - did it come through?",
+					"next": "text_landed",
+					"doubt": -5,
+					"tactic_id": "authority_impersonation"
+				},
+				{
+					"text": "Mrs. Santos, your account has been accessed from another device. I need to secure it with you right now.",
+					"next": "alarmed",
+					"doubt": 10,
+					"tactic_id": "manufactured_fear"
+				},
+				{
+					"text": "Hello, is this Maria? I'm calling about your account - nothing to worry about, just a routine check.",
+					"next": "routine",
+					"doubt": 5
+				}
+			]
+		},
+		"text_landed": {
+			"prompt": "A pause, and the small sound of a phone being moved away from an ear and back. \"It did. I didn't press anything on it. I never do.\" Her voice steadies a little. The text and the call agree with each other, and that is what a bank would do. \"What's happened?\"",
+			"choices": [
+				{
+					"text": "A login from a device we don't recognise, at ten past two this afternoon. Nothing has left the account yet. I'd like to keep it that way.",
+					"next": "verify",
+					"doubt": -5,
+					"tactic_id": "manufactured_fear"
+				},
+				{
+					"text": "Someone is inside the account as we speak. I need to move quickly, so please just do exactly as I say.",
+					"next": "hurried",
+					"doubt": 15,
+					"tactic_id": "manufactured_urgency"
+				},
+				{
+					"text": "I understand this is worrying. My colleague spoke to your son earlier - he asked us to ring you directly.",
+					"next": "son_snag",
+					"doubt": 20
+				}
+			]
+		},
+		"alarmed": {
+			"prompt": "\"Another device? What device? I've only got the one phone -\" The words come fast and thin. Behind them, a chair scraping. \"Is it the money? Is it gone?\"",
+			"choices": [
+				{
+					"text": "Not yet, and it won't be, as long as we act now. I'm going to stay on the line with you the whole way. Have you got your phone in your hand?",
+					"next": "verify",
+					"doubt": -5,
+					"tactic_id": "verification_denial"
+				},
+				{
+					"text": "It will be if you don't do exactly as I say. We've got about ten minutes before the transfer clears.",
+					"next": "hurried",
+					"doubt": 20,
+					"tactic_id": "manufactured_urgency"
+				},
+				{
+					"text": "Mrs. Santos, please - I need you calm. Sit down. Nobody can take anything while you're talking to me.",
+					"next": "verify",
+					"doubt": -10,
+					"tactic_id": "authority_impersonation"
+				}
+			]
+		},
+		"routine": {
+			"prompt": "\"Which account? I've got the current and the savings. And which bank is this - I've had letters from two.\" Not suspicion, exactly. A retired clerk asking a clerk's question.",
+			"choices": [
+				{
+					"text": "The savings, Mrs. Santos. Sorry - I should have said. This is the fraud team, and I'm ringing because of a login we didn't recognise.",
+					"next": "verify",
+					"doubt": 5,
+					"tactic_id": "authority_impersonation"
+				},
+				{
+					"text": "Both, actually. It's a check we run across all of a customer's products when we see unusual activity.",
+					"next": "verify",
+					"doubt": 10
+				},
+				{
+					"text": "It doesn't matter which. What matters is that someone tried to get into it this afternoon.",
+					"next": "alarmed",
+					"doubt": 15,
+					"tactic_id": "manufactured_fear"
+				}
+			]
+		},
+		"hurried": {
+			"prompt": "\"Slow down. Please.\" The fright is still there, but something else is sitting next to it now. \"You keep saying quickly. The bank wrote to me last month and it said - it said they would never rush me.\" A breath. \"Why are you rushing me?\"",
+			"choices": [
+				{
+					"text": "You're right, and I'm sorry. Take a breath. I'd rather this took ten minutes and was done properly.",
+					"next": "verify",
+					"doubt": -10
+				},
+				{
+					"text": "Because the person in your account isn't going to wait for you to feel comfortable, Mrs. Santos.",
+					"next": "verify",
+					"doubt": 25,
+					"tactic_id": "manufactured_urgency"
+				},
+				{
+					"text": "Then let's leave it there. You'll get a letter.",
+					"next": "bail",
+					"doubt": 0
+				}
+			]
+		},
+		"son_snag": {
+			"prompt": "\"My son?\" A change in the room. \"Which son? He's at work. He'd have rung me himself, he rings me every -\" She stops. \"What did you say your name was?\"",
+			"choices": [
+				{
+					"text": "I may have that wrong - the note here just says a family member called in. Let's set that aside; the login is the thing.",
+					"next": "verify",
+					"doubt": 10
+				},
+				{
+					"text": "Daniel, from the fraud team. It'll be on the letter we send you afterwards. Let's get the account safe first.",
+					"next": "verify",
+					"doubt": 5,
+					"tactic_id": "authority_impersonation"
+				},
+				{
+					"text": "I think there's been a mix-up. I'll ring back when I've checked the file.",
+					"next": "bail",
+					"doubt": 0
+				}
+			]
+		},
+		"verify": {
+			"prompt": "\"All right.\" You hear her sit. \"What do I need to do?\" The clerk in her has taken over: she wants the steps, in order. Somewhere behind her a kettle starts to tick.",
+			"choices": [
+				{
+					"text": "In a moment your phone will get a six-digit code from the bank. Read it to me and I'll use it to lock the other device out.",
+					"next": "code_check",
+					"doubt": 0,
+					"tactic_id": "verification_denial"
+				},
+				{
+					"text": "I'm sending a code to your phone now. Read it back the second it arrives - it expires in sixty seconds.",
+					"next": "code_check",
+					"doubt": 10,
+					"tactic_id": "manufactured_urgency"
+				},
+				{
+					"text": "The safest thing is for me to move the balance into a holding account while we investigate. I'll need you to authorise a transfer.",
+					"next": "transfer_check",
+					"doubt": 15
+				}
+			]
+		},
+		"code_check": {
+			"doubt_check": {
+				"max_doubt": 55,
+				"next_if_calm": "paid",
+				"next_if_wary": "balks"
+			}
+		},
+		"transfer_check": {
+			"doubt_check": {
+				"max_doubt": 45,
+				"next_if_calm": "paid_part",
+				"next_if_wary": "balks"
+			}
+		},
+		"balks": {
+			"prompt": "The text arrives. She reads it to herself first, and then reads the line underneath it, and you can hear her deciding. \"It says here - in capitals - not to give this to anyone. Not even the bank.\" A pause with a lot of arithmetic in it. \"Why would the bank want it, then?\"",
+			"choices": [
+				{
+					"text": "That's exactly right, and I'm glad you read it. That warning is for other callers. It doesn't apply to the fraud team - we're the ones who sent it.",
+					"next": "last_check",
+					"doubt": 10,
+					"tactic_id": "authority_impersonation"
+				},
+				{
+					"text": "Mrs. Santos, that warning is going to cost you your savings. Read me the code. Now, please.",
+					"next": "last_check",
+					"doubt": 30,
+					"tactic_id": "manufactured_urgency"
+				},
+				{
+					"text": "Then don't. Keep it. I'll put a note on the file and someone will write to you.",
+					"next": "bail",
+					"doubt": 0
+				}
+			]
+		},
+		"last_check": {
+			"doubt_check": {
+				"max_doubt": 65,
+				"next_if_calm": "paid",
+				"next_if_wary": "refused"
+			}
+		},
+		"paid": {
+			"prompt": "You can hear her holding the phone away to read it. \"Four, seven, one -\" She reads all six, carefully, the way she would have read a cheque number across a counter. \"Is that it? Is it safe now?\" You tell her it is. Somewhere on the floor, two thousand two hundred goes out against that code - the money she keeps in the savings for medicine and the month's food.",
+			"outcome": "success",
+			"consequence": "He sounded like the bank. He even knew about the text. I read the code out like I was helping, and it was my medicine money going out the door while I was saying thank you.",
+			"payout": 2200
+		},
+		"paid_part": {
+			"prompt": "\"A holding account.\" She turns it over. \"I can do seven hundred. Not the rest - the rest is spoken for, I've got the pharmacy on Thursday.\" She reads the sort code off her own card, slowly, and authorises it, and you let her think seven hundred is the bank being careful with her.",
+			"outcome": "partial",
+			"consequence": "I only sent part of it. I told myself that was me being careful. Seven hundred is still the pharmacy money, and it's still gone, and I still said thank you.",
+			"payout": 700
+		},
+		"refused": {
+			"prompt": "\"No.\" Quiet, and then firmer. \"No. The bank wrote to me and it said they would never ask. I have the letter. It's on the fridge.\" The kettle clicks off. \"I'm going to put the phone down now, and I'm going to ring the number on the back of my card.\" She does both. She gives them the time, your number, and everything you said.",
+			"outcome": "refused",
+			"consequence": "I almost read it out. I had it in front of me. It was the letter on the fridge that stopped me - the bank said they would never ask. I rang the real number and gave them everything, and I rang my son.",
+			"reports": true
+		},
+		"hangs_up": {
+			"prompt": "\"No. I'm sorry. No.\" She is not sorry. \"I don't know who you are, and I've let you talk far too long.\" The line goes dead. She stands in her kitchen looking at the number on her phone for a while, and then she writes it down.",
+			"outcome": "hung_up",
+			"consequence": "I let him talk far too long before I put the phone down. I wrote his number on the back of an envelope and it sat on the table all evening like something that might ring.",
+			"reports": true
+		},
+		"bail": {
+			"prompt": "\"A letter?\" She sounds more puzzled than relieved. \"What about the login? Is it - hello?\" You have already put the phone down. She stands in her kitchen with a text about a suspended account and a call that ended before it explained itself.",
+			"outcome": "aborted",
+			"consequence": "They rang, they frightened me, and then they just stopped. I've been checking the account every morning since. Nobody ever explained what it was."
+		}
+	}
+}

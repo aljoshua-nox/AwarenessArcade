@@ -1,0 +1,220 @@
+{
+	"person": {
+		"person_id": "evelyn_marsh",
+		"name": "Evelyn Marsh",
+		"age": 74,
+		"occupation": "Retired bookkeeper",
+		"traits": "Retired bookkeeper. Entered a shop raffle for a hamper in March - that's where the name and the road came from. Writes things down. Do not give her time to.",
+		"portrait": "res://assets/art/portraits/lady 2.png",
+		"script": "Prize draw desk",
+		"patience_seconds": 60,
+		"doubt_start": 45
+	},
+	"start_node": "open",
+	"hang_up_node": "hangs_up",
+	"perspective_variants": {
+		"harmed": [
+			"I spent thirty years telling other people to check their figures. He read me a sum and I stopped checking. I'd written his number down before I paid, which is somehow the worst part.",
+			"The fee sounded small next to the prize. That is the whole trick, and I knew the trick, and I paid it anyway."
+		],
+		"resistant": [
+			"I told him winnings don't have an entry fee and he rang off. Rather rude, in the end. I had it all written down by then - number, time, every word - and I've been waiting for someone to come and collect it.",
+			"I put the phone down on him, which I don't usually do. Then I wrote the whole thing out while it was fresh and kept it by the phone."
+		],
+		"unfinished": [
+			"Somebody rang about a prize and then rang off. I'd started writing it down out of habit. I put a question mark next to it and, I'm afraid, forgot about it.",
+			"I assumed it was a wrong number that got bored. I did note the time. I note everything; it's not a virtue, it's a habit."
+		]
+	},
+	"nodes": {
+		"open": {
+			"prompt": "Two rings. \"Marsh residence.\" A voice that has answered a great many telephones and expects the caller to state their business. Somewhere near the phone, a drawer opens.",
+			"choices": [
+				{
+					"text": "Good afternoon - is that Mrs. Evelyn Marsh? I'm calling from the regional prize draw office. Mrs. Marsh, I'm very pleased to tell you your entry has come up.",
+					"next": "pleased",
+					"doubt": -5,
+					"tactic_id": "authority_impersonation"
+				},
+				{
+					"text": "Congratulations! Is this Evelyn? You've won! Four hundred and twelve thousand -",
+					"next": "slow_down",
+					"doubt": 15
+				},
+				{
+					"text": "Mrs. Marsh, I'm following up on the raffle you entered at the shop on the parade in March. There's been a draw across all the entries.",
+					"next": "raffle",
+					"doubt": -10
+				}
+			]
+		},
+		"pleased": {
+			"prompt": "\"Have I.\" Not a question. \"Which draw, and what was the entry? I do like to have things in front of me.\" She is, you realise, writing.",
+			"choices": [
+				{
+					"text": "The regional promotional draw - it pools entries from participating retailers. Yours came through the shop on the parade, in March. The sum is four hundred and twelve thousand.",
+					"next": "sum",
+					"doubt": 0,
+					"tactic_id": "authority_impersonation"
+				},
+				{
+					"text": "I can send all that in writing, Mrs. Marsh - but the draw closes at five today, and I'd hate for you to miss it over paperwork.",
+					"next": "sum",
+					"doubt": 15,
+					"tactic_id": "manufactured_urgency"
+				},
+				{
+					"text": "You've a very good memory, I'm sure, Mrs. Marsh - it'll be one of the ones you filled in at the shops. It doesn't matter which.",
+					"next": "sum",
+					"doubt": 20
+				}
+			]
+		},
+		"slow_down": {
+			"prompt": "\"Young man.\" The two words do the work of a sentence. \"Slow down. I've not said who I am, and you've not said who you are.\" Paper. \"Start again, please, and start with your name.\"",
+			"choices": [
+				{
+					"text": "Of course - I'm sorry. Daniel, from the regional draw office. The entry is in the name of Evelyn Marsh, on the road - I won't read the number out over the phone.",
+					"next": "sum",
+					"doubt": -5,
+					"tactic_id": "authority_impersonation"
+				},
+				{
+					"text": "It doesn't really matter who I am, Mrs. Marsh. What matters is that you've won.",
+					"next": "sum",
+					"doubt": 20
+				},
+				{
+					"text": "I think I've got a wrong number. Sorry to disturb you.",
+					"next": "bail",
+					"doubt": 0
+				}
+			]
+		},
+		"raffle": {
+			"prompt": "\"The hamper.\" A pause in which she is deciding whether to be pleased. \"I did put my name in for that. I don't recall being told it went into anything else.\" A pen, a page. \"Go on.\"",
+			"choices": [
+				{
+					"text": "It's in the small print on the slip - all the shop's entries go into the regional draw as well. Yours has come up. Four hundred and twelve thousand.",
+					"next": "sum",
+					"doubt": 5,
+					"tactic_id": "authority_impersonation"
+				},
+				{
+					"text": "That's the shop's doing, not mine - but the draw closes at five and yours is the only unclaimed winner.",
+					"next": "sum",
+					"doubt": 15,
+					"tactic_id": "manufactured_urgency"
+				},
+				{
+					"text": "Actually - I'm sorry, I've the wrong Marsh. Do forgive me.",
+					"next": "bail",
+					"doubt": 0
+				}
+			]
+		},
+		"sum": {
+			"prompt": "\"Four hundred and twelve thousand.\" She says it flat, like a figure being entered in a ledger, and then, because she cannot help it, there is a small pause afterwards. \"And what is it you need from me?\" The pen is waiting.",
+			"choices": [
+				{
+					"text": "There's a release fee on winnings over a hundred thousand - it covers the transfer insurance. Four thousand eight hundred, and once it's paid the sum is released the same day.",
+					"next": "fee_check",
+					"doubt": 10,
+					"tactic_id": "advance_fee"
+				},
+				{
+					"text": "Just the release fee - four thousand eight hundred, it's a fixed charge - and I'll need it today, because the draw closes at five.",
+					"next": "fee_check",
+					"doubt": 20,
+					"tactic_id": "advance_fee"
+				},
+				{
+					"text": "Nothing today, Mrs. Marsh. I'll put the paperwork in the post.",
+					"next": "bail",
+					"doubt": 0
+				}
+			]
+		},
+		"fee_check": {
+			"doubt_check": {
+				"max_doubt": 50,
+				"next_if_calm": "agrees",
+				"next_if_wary": "balks"
+			}
+		},
+		"agrees": {
+			"prompt": "A longer silence than any so far. \"I see.\" The pen has stopped. \"Insurance on the transfer. Yes. That would be how it's done.\" Thirty years of telling other people to check their figures, and the figure in front of her is four hundred and twelve thousand. \"How do I pay it?\"",
+			"choices": [
+				{
+					"text": "By card is quickest - I'll take the number now and it's done, and the sum goes out this afternoon.",
+					"next": "paid",
+					"doubt": 0
+				},
+				{
+					"text": "If it's easier, there's a pensioner rate - two thousand two hundred - as long as it's settled on this call.",
+					"next": "paid_part",
+					"doubt": 0,
+					"tactic_id": "advance_fee"
+				}
+			]
+		},
+		"balks": {
+			"prompt": "\"A fee.\" The pen starts again. \"A fee, to be paid by me, in order to receive money that is owed to me.\" Perfectly polite. \"Say the amount again, slowly. I want it written down exactly as you said it.\"",
+			"choices": [
+				{
+					"text": "Mrs. Marsh, with respect, I have eleven other winners to reach before five. Four thousand eight hundred, or the sum is forfeit.",
+					"next": "last_check",
+					"doubt": 30,
+					"tactic_id": "manufactured_urgency"
+				},
+				{
+					"text": "It's a standard release charge, Mrs. Marsh - the same as a solicitor's fee on a will. It's insurance on the transfer, not a charge for the prize.",
+					"next": "last_check",
+					"doubt": 10,
+					"tactic_id": "authority_impersonation"
+				},
+				{
+					"text": "Then perhaps this isn't for you. I'll withdraw the entry. Good afternoon.",
+					"next": "bail",
+					"doubt": 0
+				}
+			]
+		},
+		"last_check": {
+			"doubt_check": {
+				"max_doubt": 65,
+				"next_if_calm": "agrees",
+				"next_if_wary": "refused"
+			}
+		},
+		"paid": {
+			"prompt": "She reads the card number out in groups of four, the way she'd read a cheque, and asks you to repeat it back, which you do. \"And the sum arrives this afternoon.\" It is not a question; it is a figure being entered. You tell her by five. Four thousand eight hundred leaves an account she has balanced to the penny every month since 1989, and nothing arrives at five, or after.",
+			"outcome": "success",
+			"consequence": "I spent thirty years telling other people to check their figures. He read me a sum and I stopped checking. I'd written his number down before I paid, which is somehow the worst part.",
+			"payout": 4800
+		},
+		"paid_part": {
+			"prompt": "\"The pensioner rate.\" A short breath that might, on another day, be a laugh. \"Well. There's a first.\" She pays it - two thousand two hundred, the card read in fours - and puts the pen down, and waits for five o'clock, and then for six.",
+			"outcome": "partial",
+			"consequence": "He gave me a pensioner's discount on the fee. I remember thinking how considerate. Two thousand two hundred, and I sat by the phone until six.",
+			"payout": 2200
+		},
+		"refused": {
+			"prompt": "\"Winnings,\" says Evelyn Marsh, \"do not have an entry fee.\" She says it the way she has said it to nephews and neighbours. \"I've written down the number you rang from, the time, and what you said, near enough word for word. Now - what did you say your name was?\" You put the phone down before she can finish the sentence. She finishes writing it anyway.",
+			"outcome": "refused",
+			"consequence": "I told him winnings don't have an entry fee and he rang off. Rather rude, in the end. I had it all written down by then - number, time, every word - and I've been waiting for someone to come and collect it.",
+			"reports": true
+		},
+		"hangs_up": {
+			"prompt": "\"No. Thank you. No.\" The drawer closes. \"I kept books for thirty years and I know what a figure sounds like when it's been made up on the spot.\" The line goes. The notebook, with your number in it, stays open on the table.",
+			"outcome": "hung_up",
+			"consequence": "I put the phone down on him, which I don't usually do. Then I wrote the whole thing out while it was fresh and kept it by the phone.",
+			"reports": true
+		},
+		"bail": {
+			"prompt": "The line goes dead in her ear. She looks at the receiver, then at what she has managed to write - a name, a sum, a time - and puts a question mark beside all of it, and the notebook back in the drawer.",
+			"outcome": "aborted",
+			"consequence": "Somebody rang about a prize and then rang off. I'd started writing it down out of habit. I put a question mark next to it and, I'm afraid, forgot about it."
+		}
+	}
+}

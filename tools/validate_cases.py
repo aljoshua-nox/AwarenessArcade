@@ -289,37 +289,169 @@ def disposition_for_outcome(outcome):
 
 PERSPECTIVE_KEYS = set(CALL_OUTCOMES) | set(DISPOSITIONS)
 
+# --- Prologue call scripts ---------------------------------------------------
+# call_content.json is a roster: one script file per victim, in list order. A
+# script is shaped like a case file - a `person` block plus a node graph - and
+# the graph has three kinds of node: a line the player answers (`choices`), a
+# `doubt_check` that routes on the meter and is never shown, and an ending
+# (`outcome`) that declares its own payout and consequence. Everything the
+# ledger prints and the interview quotes back comes from the ending node, so an
+# ending that lies about its outcome breaks the coupling silently.
 content_path = os.path.join(base, "resources", "dialogue", "call_content.json")
 with open(content_path, encoding="utf-8") as fh:
-    victims = json.load(fh).get("victims", [])
+    roster = json.load(fh).get("calls", [])
+
+if not roster:
+    errors.append("call_content.json: the roster names no call scripts")
+
+CHOICE_BUTTONS = 4
+PAYING_OUTCOMES = {"success", "partial"}
+REPORTING_OUTCOMES = {"refused", "hung_up"}
+
+victims = []
+for res_path in roster:
+    rel = res_path.replace("res://", "").replace("/", os.sep)
+    script_path = os.path.join(base, rel)
+    sname = os.path.basename(script_path)
+    if not os.path.exists(script_path):
+        errors.append(f"call_content.json: roster names a missing script '{res_path}'")
+        continue
+    with open(script_path, encoding="utf-8") as fh:
+        script = json.load(fh)
+    # Flatten the way the engine does, so the identity checks below read one
+    # dictionary per victim.
+    flat = dict(script.get("person", {}))
+    flat["perspective_variants"] = script.get("perspective_variants", {})
+    flat["_file"] = sname
+    victims.append(flat)
+
+    person = script.get("person", {})
+    for field in ("person_id", "name", "age", "occupation", "portrait", "script", "patience_seconds", "doubt_start"):
+        if field not in person:
+            errors.append(f"{sname}: person block has no '{field}'")
+    ds = person.get("doubt_start", 0)
+    if not isinstance(ds, int) or not 0 <= ds < 100:
+        errors.append(f"{sname}: doubt_start must be 0-99 (got {ds!r}) - 100 hangs up before a word is said")
+
+    nodes = script.get("nodes", {})
+    ids = set(nodes.keys())
+
+    def scheck(target, where):
+        if not target:
+            errors.append(f"{sname}: EMPTY target at {where}")
+        elif target not in ids:
+            errors.append(f"{sname}: '{target}' -> missing node (at {where})")
+
+    scheck(script.get("start_node"), "start_node")
+    hang_up = script.get("hang_up_node")
+    scheck(hang_up, "hang_up_node")
+    if hang_up in nodes and nodes[hang_up].get("outcome") != "hung_up":
+        errors.append(f"{sname}: hang_up_node '{hang_up}' must be an ending with outcome 'hung_up'")
+
+    for nid, node in nodes.items():
+        kinds = [k for k in ("choices", "doubt_check", "outcome") if node.get(k)]
+        if len(kinds) != 1:
+            errors.append(f"{sname}: {nid} must be exactly one of a line (choices), a doubt_check"
+                          f" or an ending (outcome) - has {kinds or 'none'}")
+        for text_field in ("prompt", "consequence"):
+            if "[color" in str(node.get(text_field, "")) or "[font" in str(node.get(text_field, "")):
+                errors.append(f"{sname}: {nid}.{text_field} carries markup - the engine styles call text")
+
+        choices = node.get("choices", [])
+        if len(choices) > CHOICE_BUTTONS:
+            errors.append(f"{sname}: {nid} has >{CHOICE_BUTTONS} choices (UI has {CHOICE_BUTTONS} buttons)")
+        if choices and not node.get("prompt"):
+            errors.append(f"{sname}: {nid} offers choices with no prompt to answer")
+        for i, c in enumerate(choices):
+            scheck(c.get("next"), f"{nid}.choices[{i}]")
+            if not c.get("text"):
+                errors.append(f"{sname}: {nid}.choices[{i}] has no text")
+            if '"' in str(c.get("text", "")):
+                errors.append(f"{sname}: {nid}.choices[{i}] contains a double quote - the engine quotes the player's line")
+            if not isinstance(c.get("doubt", 0), int):
+                errors.append(f"{sname}: {nid}.choices[{i}] doubt must be an integer")
+            tid = c.get("tactic_id")
+            if tid and tid not in catalogue_ids:
+                errors.append(f"{sname}: {nid}.choices[{i}] tactic_id '{tid}' is not in the catalogue")
+
+        dc = node.get("doubt_check")
+        if dc:
+            scheck(dc.get("next_if_calm"), f"{nid}.doubt_check.next_if_calm")
+            scheck(dc.get("next_if_wary"), f"{nid}.doubt_check.next_if_wary")
+            md = dc.get("max_doubt")
+            if not isinstance(md, int) or not 0 < md < 100:
+                errors.append(f"{sname}: {nid}.doubt_check.max_doubt must be 1-99 (got {md!r})")
+            if node.get("prompt"):
+                errors.append(f"{sname}: {nid} is a doubt_check but has a prompt - checks are never shown")
+
+        outcome = node.get("outcome")
+        if outcome:
+            if outcome not in CALL_OUTCOMES:
+                errors.append(f"{sname}: {nid} outcome '{outcome}' is not in the call vocabulary")
+            if not node.get("prompt"):
+                errors.append(f"{sname}: ending {nid} has no prompt - the call would close on nothing")
+            if not node.get("consequence"):
+                errors.append(f"{sname}: ending {nid} has no consequence - the interview would quote nothing")
+            payout = node.get("payout", 0)
+            if outcome in PAYING_OUTCOMES and not (isinstance(payout, int) and payout > 0):
+                errors.append(f"{sname}: ending {nid} is '{outcome}' but declares no payout")
+            if outcome not in PAYING_OUTCOMES and payout:
+                errors.append(f"{sname}: ending {nid} is '{outcome}' but declares a payout of {payout}")
+            if node.get("reports") and outcome not in REPORTING_OUTCOMES:
+                errors.append(f"{sname}: ending {nid} reports the number on a '{outcome}' - only a"
+                              f" victim who caught on ({'/'.join(sorted(REPORTING_OUTCOMES))}) does")
+
+    # Reachability. The hang-up node is entered by the engine at the doubt
+    # ceiling, so it is a root, not something a choice has to point at.
+    seen, stack = set(), [script.get("start_node"), hang_up]
+    while stack:
+        n = stack.pop()
+        if not n or n in seen or n not in nodes:
+            continue
+        seen.add(n)
+        node = nodes[n]
+        for c in node.get("choices", []):
+            stack.append(c.get("next"))
+        dc = node.get("doubt_check", {})
+        stack.extend([dc.get("next_if_calm"), dc.get("next_if_wary")])
+    for nid in sorted(ids - seen):
+        errors.append(f"{sname}: {nid} is unreachable")
+    outcomes_reached = {nodes[n].get("outcome") for n in seen if nodes[n].get("outcome")}
+    if "success" not in outcomes_reached:
+        errors.append(f"{sname}: no reachable ending pays out - the script cannot be won")
+    if not (outcomes_reached & REPORTING_OUTCOMES):
+        errors.append(f"{sname}: no reachable ending refuses - the script cannot be lost")
+    if not any(nodes[n].get("reports") for n in seen if nodes[n].get("outcome")):
+        errors.append(f"{sname}: no reachable ending reports the number - this victim can never add to the line's reports")
+    print(f"{sname}: {len(nodes)} nodes, endings {sorted(outcomes_reached)}")
 
 prologue_ids = {}
 for v in victims:
     vid = v.get("person_id", "")
     vname = v.get("name", "?")
     if not vid:
-        errors.append(f"call_content.json: victim '{vname}' has no person_id")
+        errors.append(f"{v['_file']}: victim '{vname}' has no person_id")
     elif vid in prologue_ids:
-        errors.append(f"call_content.json: duplicate person_id '{vid}'"
+        errors.append(f"{v['_file']}: duplicate person_id '{vid}'"
                       f" ({prologue_ids[vid]} and {vname})")
     else:
         prologue_ids[vid] = vname
 
     pv = v.get("perspective_variants", {})
     if not isinstance(pv, dict) or not pv:
-        errors.append(f"call_content.json: victim '{vname}' has no perspective_variants,"
-                      f" so their calls end with no consequence shown")
+        errors.append(f"{v['_file']}: victim '{vname}' has no perspective_variants,"
+                      f" so a call the engine has to force closed shows no consequence")
         continue
     for key, quotes in pv.items():
         if key not in PERSPECTIVE_KEYS:
-            errors.append(f"call_content.json: {vname} perspective_variants key '{key}' is"
+            errors.append(f"{v['_file']}: {vname} perspective_variants key '{key}' is"
                           f" neither a call outcome nor a disposition - nothing reads it")
         elif not isinstance(quotes, list) or not [q for q in quotes if str(q).strip()]:
-            errors.append(f"call_content.json: {vname} perspective_variants['{key}'] is empty")
+            errors.append(f"{v['_file']}: {vname} perspective_variants['{key}'] is empty")
     for outcome in CALL_OUTCOMES:
         fallback = disposition_for_outcome(outcome)
         if not (pv.get(outcome) or pv.get(fallback)):
-            errors.append(f"call_content.json: {vname} has no perspective line for a"
+            errors.append(f"{v['_file']}: {vname} has no perspective line for a"
                           f" '{outcome}' call - add '{outcome}' or '{fallback}'")
 
 case_ids = {os.path.basename(f): d.get("person", {}).get("person_id", "")
@@ -421,7 +553,7 @@ print(f"portraits: {len(unique_faces)} in use across {len(case_portraits)} cases
 
 linked = sorted(pid for pid in EXPECTED_LINKS if pid in prologue_ids
                 and case_ids.get(EXPECTED_LINKS[pid]) == pid)
-print(f"call_content.json: {len(prologue_ids)} victims, "
+print(f"call_content.json: {len(prologue_ids)} call scripts, "
       f"{len(linked)} linked to an interview ({', '.join(linked) if linked else 'none'})")
 
 print()

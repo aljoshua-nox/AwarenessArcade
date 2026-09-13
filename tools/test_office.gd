@@ -244,10 +244,11 @@ func _test_prologue_logs_calls() -> void:
 	await get_tree().process_frame
 
 	_check(call_view.victims.size() > 0, "prologue victims loaded (got %d)" % call_view.victims.size())
-	call_view.current_victim_index = 0
-	call_view.current_call_outcome = "success"
-	call_view.current_call_reward = 3300
-	call_view._end_current_call("test call ended")
+	call_view._start_call(0)
+	call_view._finish_reveal()
+	# An ending node declares what it cost; the engine records what it declares.
+	call_view._end_current_call(SessionState.CALL_SUCCESS, {"payout": 3300})
+	call_view._finish_reveal()
 
 	_check(SessionState.prologue_call_log.size() == 1, "ending a call writes one ledger entry")
 	if SessionState.prologue_call_log.size() == 1:
@@ -263,7 +264,7 @@ func _test_prologue_logs_calls() -> void:
 
 	# Ending the prologue with no call in progress must not invent an entry.
 	call_view.current_victim_index = -1
-	call_view._end_current_call("wrapped up")
+	call_view._end_current_call(SessionState.CALL_ABORTED)
 	_check(SessionState.prologue_call_log.size() == 1, "ending with no active call logs nothing")
 
 	remove_child(call_view)

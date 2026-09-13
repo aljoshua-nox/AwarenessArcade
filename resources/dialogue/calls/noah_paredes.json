@@ -1,0 +1,222 @@
+{
+	"person": {
+		"person_id": "noah_paredes",
+		"name": "Noah Paredes",
+		"age": 33,
+		"occupation": "Night-shift nurse",
+		"traits": "Night-shift nurse. Does an online course on a laptop that's been slow for a month. Ring after three - he'll agree to anything practical.",
+		"portrait": "res://assets/art/portraits/fella 4.png",
+		"script": "Tech support callback",
+		"patience_seconds": 90,
+		"doubt_start": 20
+	},
+	"start_node": "open",
+	"hang_up_node": "hangs_up",
+	"perspective_variants": {
+		"harmed": [
+			"I was exhausted. I just wanted the warning gone and to get back to my module. He was in for ten minutes and I paid him to fix a driver. There was never anything wrong with it.",
+			"I paid for a scan that didn't need me to do anything. That was the selling point - I didn't have to do anything. Nothing changed. I don't know what I paid for."
+		],
+		"resistant": [
+			"I asked him why software would ring me and he didn't really have an answer. I told IT in the morning. They said it happens all the time, and to give them the number, so I did.",
+			"I let him talk longer than I should have because I was too tired to argue. Then I just hung up. I told the ward clerk in the morning and she'd had the same call."
+		],
+		"unfinished": [
+			"Somebody rang about my laptop at three in the morning and then hung up. I was so tired I half thought I'd dreamt it. I kept it off the wifi for a bit, just in case.",
+			"I was too tired to chase it up. I've wondered about it since - whether something was actually wrong, and I just never found out."
+		]
+	},
+	"nodes": {
+		"open": {
+			"prompt": "It rings six times. \"...Hello?\" A voice on the wrong side of a fourteen-hour shift, somewhere with a vending machine humming. He has been awake for twenty hours and has a module due on Friday.",
+			"choices": [
+				{
+					"text": "Noah? Sorry to ring so late - it's the software support desk for your laptop. It's been sending us error reports for about a week and I thought I'd catch you before it locked you out.",
+					"next": "errors",
+					"doubt": 0,
+					"tactic_id": "authority_impersonation"
+				},
+				{
+					"text": "Noah Paredes? Your laptop's been flagged - it's been sending data out to an address overseas for the last three days. I need to walk you through shutting that down.",
+					"next": "overseas",
+					"doubt": 10,
+					"tactic_id": "manufactured_fear"
+				},
+				{
+					"text": "Hi, is that Noah? Quick one - are you near your laptop?",
+					"next": "errors",
+					"doubt": 10
+				}
+			]
+		},
+		"errors": {
+			"prompt": "\"Error reports.\" He tries to sit up in whatever chair he's in. \"It's been - yeah, it's been slow. I've got a module due Friday.\" A yawn he doesn't cover. \"What do I need to do? Is it quick?\"",
+			"choices": [
+				{
+					"text": "Very. If you open it up I can connect and clear it from here while you have a coffee. Ten minutes. No charge for the diagnostic.",
+					"next": "remote_ask",
+					"doubt": -5,
+					"tactic_id": "remote_access"
+				},
+				{
+					"text": "Quick if we do it now. It's been trying to lock for two days; the next restart, it will. Is it near you?",
+					"next": "remote_ask",
+					"doubt": 10,
+					"tactic_id": "manufactured_urgency"
+				},
+				{
+					"text": "Actually - it can wait till you're awake. I'll put a note on the account.",
+					"next": "bail",
+					"doubt": 0
+				}
+			]
+		},
+		"overseas": {
+			"prompt": "\"Overseas -\" A long, tired pause. \"What data? I use it for the course. And the roster.\" The roster. That has got through: names, shifts, a ward. \"Okay. Okay, what do I do.\"",
+			"choices": [
+				{
+					"text": "Nothing you can't do from where you are. Open it, I'll send a link, and I'll close the connection from this end. You'll see me do it.",
+					"next": "remote_ask",
+					"doubt": 0,
+					"tactic_id": "remote_access"
+				},
+				{
+					"text": "First - is the roster on it? Patient names? Because if it is, this is a reportable breach, and I'd rather fix it than report it.",
+					"next": "remote_ask",
+					"doubt": 20,
+					"tactic_id": "manufactured_fear"
+				},
+				{
+					"text": "Leave it off the wifi tonight. Someone will ring you in the morning.",
+					"next": "bail",
+					"doubt": 0
+				}
+			]
+		},
+		"remote_ask": {
+			"prompt": "\"A link.\" He's found the laptop; you hear it open, the fan spinning up. \"We've got a whole thing at work about links.\" But he's saying it to himself, not to you, and the laptop's awake now and the module's due Friday.",
+			"choices": [
+				{
+					"text": "Good policy. Ours is different - it's the support tool that came with the machine. You're just letting it run. I'll tell you exactly what you'll see before you see it.",
+					"next": "remote_check",
+					"doubt": -5,
+					"tactic_id": "authority_impersonation"
+				},
+				{
+					"text": "Noah, I've got a queue and you've got a laptop that's about to lock. Link's in your email. Click it.",
+					"next": "remote_check",
+					"doubt": 20,
+					"tactic_id": "manufactured_urgency"
+				},
+				{
+					"text": "If you'd rather not, there's a remote clean we can push from our side without connecting - four hundred, done in five minutes.",
+					"next": "push_check",
+					"doubt": 0,
+					"tactic_id": "invented_fee"
+				}
+			]
+		},
+		"remote_check": {
+			"doubt_check": {
+				"max_doubt": 50,
+				"next_if_calm": "remote_in",
+				"next_if_wary": "balks"
+			}
+		},
+		"push_check": {
+			"doubt_check": {
+				"max_doubt": 60,
+				"next_if_calm": "paid_part",
+				"next_if_wary": "balks"
+			}
+		},
+		"balks": {
+			"prompt": "\"Hang on.\" The fan's still going. \"Why did you ring me? I didn't ring you. Software doesn't ring you.\" It isn't sharp. He's too tired for sharp. But it's the right question, and he's waiting for the answer.",
+			"choices": [
+				{
+					"text": "Because it's a managed device - it came with a support plan through the retailer. Most people never hear from us. Yours has been shouting for a week.",
+					"next": "last_check",
+					"doubt": 5,
+					"tactic_id": "authority_impersonation"
+				},
+				{
+					"text": "Because it's about to lock and you've got a module due Friday, Noah. I'm trying to help you. Do you want it or not?",
+					"next": "last_check",
+					"doubt": 35,
+					"tactic_id": "manufactured_urgency"
+				},
+				{
+					"text": "You're right. Ask your IT in the morning. Sorry to wake you.",
+					"next": "bail",
+					"doubt": 0
+				}
+			]
+		},
+		"last_check": {
+			"doubt_check": {
+				"max_doubt": 60,
+				"next_if_calm": "remote_in",
+				"next_if_wary": "refused"
+			}
+		},
+		"remote_in": {
+			"prompt": "He clicks it. His screen arrives on yours: a course page, a PDF called ROSTER_WK37, a browser with eleven tabs. \"You're in? Okay.\" You open the black window and let it scroll. He watches it for a while, then stops watching, because he has been awake for twenty hours and the text is soothing. \"Is that - is it finding stuff?\"",
+			"choices": [
+				{
+					"text": "It's found it. Old driver, been failing for a week - that's your slowness. The repair's a licensed tool, fifteen hundred one-off, and I'll do it now so you're not back here Friday.",
+					"next": "fee_check",
+					"doubt": 0,
+					"tactic_id": "invented_fee"
+				},
+				{
+					"text": "It's found it, and it's worse than the errors - there's a keylogger on here. Fifteen hundred for the removal, and honestly, I'd change your work password tonight.",
+					"next": "fee_check",
+					"doubt": 10,
+					"tactic_id": "manufactured_fear"
+				}
+			]
+		},
+		"fee_check": {
+			"doubt_check": {
+				"max_doubt": 65,
+				"next_if_calm": "paid",
+				"next_if_wary": "pulls_out"
+			}
+		},
+		"paid": {
+			"prompt": "\"Fifteen hundred.\" He does the sum against the end of the month and loses. \"Yeah. Okay. Go on.\" He reads a card number out with his eyes closed, and you take it, and you leave the window scrolling for a while so it looks like something is being done. Nothing is. The laptop is exactly as slow as it was, and now somebody else has been through it.",
+			"outcome": "success",
+			"consequence": "I was exhausted. I just wanted the warning gone and to get back to my module. He was in for ten minutes and I paid him to fix a driver. There was never anything wrong with it.",
+			"payout": 1500
+		},
+		"paid_part": {
+			"prompt": "\"Four hundred and I don't have to click anything.\" He has already decided. \"Fine.\" He pays it from his phone, half asleep, and the laptop is exactly as slow as before, and he goes back to the module.",
+			"outcome": "partial",
+			"consequence": "I paid for a scan that didn't need me to do anything. That was the selling point - I didn't have to do anything. Nothing changed. I don't know what I paid for.",
+			"payout": 400
+		},
+		"pulls_out": {
+			"prompt": "\"Fifteen hundred.\" He's awake now. It's the number that did it - not the link, not the black window. \"For a driver.\" He reaches over and closes the lid, which cuts the connection, and you're looking at your own desktop. \"I'm going to ask our IT about this in the morning.\" He does. So does the ward clerk, who writes the number down.",
+			"outcome": "refused",
+			"consequence": "The price woke me up. Fifteen hundred for a driver - I've paid less for a whole laptop. I shut the lid on him and told IT in the morning; they said give them the number.",
+			"reports": true
+		},
+		"refused": {
+			"prompt": "\"No.\" A long breath out. \"I'm going to ask IT. Sorry.\" He isn't, quite. \"What's this number, so I can tell them?\" You don't say. He reads it off his phone into the silence, slowly, so he'll remember it, and hangs up.",
+			"outcome": "refused",
+			"consequence": "I asked him why software would ring me and he didn't really have an answer. I told IT in the morning. They said it happens all the time, and to give them the number, so I did.",
+			"reports": true
+		},
+		"hangs_up": {
+			"prompt": "\"Right, I'm - no. I'm hanging up.\" He does. He sits in the chair with the laptop open and the module on it and doesn't do the module. In the morning he tells the ward clerk, who has heard this one before.",
+			"outcome": "hung_up",
+			"consequence": "I let him talk longer than I should have because I was too tired to argue. Then I just hung up. I told the ward clerk in the morning and she'd had the same call.",
+			"reports": true
+		},
+		"bail": {
+			"prompt": "\"...Hello?\" The line's gone. He looks at the laptop, which is open now, and slow, and then at the time, and closes it. In the morning he won't be sure it happened.",
+			"outcome": "aborted",
+			"consequence": "Somebody rang about my laptop at three in the morning and then hung up. I was so tired I half thought I'd dreamt it. I kept it off the wifi for a bit, just in case."
+		}
+	}
+}

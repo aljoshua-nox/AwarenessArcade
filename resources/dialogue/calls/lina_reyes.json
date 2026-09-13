@@ -1,0 +1,212 @@
+{
+	"person": {
+		"person_id": "lina_reyes",
+		"name": "Lina Reyes",
+		"age": 41,
+		"occupation": "Owns a small print shop",
+		"traits": "Print shop, trading on the margin. Previous desk noted: saving for a new press, two years. Talks while she works. The machine is the hook.",
+		"portrait": "res://assets/art/portraits/lady 3.png",
+		"script": "Prize draw desk",
+		"patience_seconds": 90,
+		"doubt_start": 30
+	},
+	"start_node": "open",
+	"hang_up_node": "hangs_up",
+	"perspective_variants": {
+		"harmed": [
+			"The first one was small - less than a print run, I checked it twice. I wrote it on the corner of a quote so I'd move it across. Then there was a tax charge, and then a bond, and then the machine money was gone.",
+			"I priced it like a job. Fee against prize. That's how it's built - each one small enough to be worth the risk, once you've paid the last one."
+		],
+		"resistant": [
+			"I asked him to take the fee off the top and he rang off. I'd been writing quotes when he called and I just kept writing - number, time, what he said. I rang the supplier; they'd never heard of it.",
+			"I've had three of those this month. He was the best of them - he knew about the machine. I wrote the time down and went back to work."
+		],
+		"unfinished": [
+			"A call about a prize, and then nothing. I've had three of those this month. They all ring off eventually. I don't think about them.",
+			"It rang off before he'd said what he wanted. I had a customer in. I've a number in the margin of a quote and no idea why I wrote it."
+		]
+	},
+	"nodes": {
+		"open": {
+			"prompt": "The shop phone, picked up on the fourth ring over the sound of a machine. \"Reyes Print, hold on -\" The machine stops. \"- sorry. Go ahead.\" She has a pen in her hand already; she was writing a quote when it rang, and she doesn't put it down.",
+			"choices": [
+				{
+					"text": "Is that Lina Reyes? Lina, I'm calling from the trade awards draw - your shop was entered through your supplier account. I'm pleased to say it's come up.",
+					"next": "entered",
+					"doubt": -5,
+					"tactic_id": "authority_impersonation"
+				},
+				{
+					"text": "Lina! Congratulations - you've won the regional business prize! Have you got a minute?",
+					"next": "no_minute",
+					"doubt": 10
+				},
+				{
+					"text": "Ms. Reyes, I'll be quick because I know you're working - there's a prize sitting in your name and it closes today.",
+					"next": "entered",
+					"doubt": 5,
+					"tactic_id": "manufactured_urgency"
+				}
+			]
+		},
+		"entered": {
+			"prompt": "\"Through the supplier.\" The pen keeps moving; she's still writing the quote. \"Which supplier? I've got three and I'm behind with two of them.\" Not hostile. Interested in a tired way, the way you'd be interested in a bill that might turn out to be a refund.",
+			"choices": [
+				{
+					"text": "The paper supplier - they enter every trade account in the annual draw. Yours came out. It's a hundred and fifty thousand, towards equipment.",
+					"next": "equipment",
+					"doubt": 0,
+					"tactic_id": "authority_impersonation"
+				},
+				{
+					"text": "Honestly, it'll be on the letter - I've just got the shortlist here. The important bit is the sum: a hundred and fifty thousand.",
+					"next": "equipment",
+					"doubt": 15
+				},
+				{
+					"text": "Sorry - I've the wrong Reyes. Apologies for the interruption.",
+					"next": "bail",
+					"doubt": 0
+				}
+			]
+		},
+		"no_minute": {
+			"prompt": "\"I've got about half of one.\" The machine starts again behind her. \"Regional what? I didn't enter anything. I don't enter things.\"",
+			"choices": [
+				{
+					"text": "You wouldn't have - your paper supplier enters every trade account automatically. It's a hundred and fifty thousand, towards equipment.",
+					"next": "equipment",
+					"doubt": -5,
+					"tactic_id": "authority_impersonation"
+				},
+				{
+					"text": "You didn't have to. Look - it closes today, that's why I'm ringing round. Do you want it or not?",
+					"next": "equipment",
+					"doubt": 15,
+					"tactic_id": "manufactured_urgency"
+				},
+				{
+					"text": "Fair enough. I'll take you off the list.",
+					"next": "bail",
+					"doubt": 0
+				}
+			]
+		},
+		"equipment": {
+			"prompt": "The machine stops. \"Towards equipment.\" The pen has stopped too. \"...What kind of equipment?\" It is the first thing she has asked that she actually wants the answer to.",
+			"choices": [
+				{
+					"text": "Anything for the business - a machine, a fit-out. It's paid direct to you, not the supplier; you spend it how you like. There's one form and a release fee, and it's yours.",
+					"next": "fee",
+					"doubt": 0
+				},
+				{
+					"text": "Whatever you need - but I've got to close the list by four, so I need a yes from you now.",
+					"next": "fee",
+					"doubt": 15,
+					"tactic_id": "manufactured_urgency"
+				},
+				{
+					"text": "Don't get excited yet - there's a bit of admin first. The fee's the thing.",
+					"next": "fee",
+					"doubt": 10
+				}
+			]
+		},
+		"fee": {
+			"prompt": "\"A release fee.\" Back to the pen. She is writing the number down as you say it. \"Two and a half thousand.\" A breath. \"That's - all right. That's less than a print run. What's it for?\"",
+			"choices": [
+				{
+					"text": "It's the transfer bond - it covers the payment insurance, and it comes back to you with the sum. Everyone pays it. It isn't ours.",
+					"next": "fee_check",
+					"doubt": 0,
+					"tactic_id": "advance_fee"
+				},
+				{
+					"text": "Admin, basically. Two and a half, today, and the hundred and fifty goes out Monday. Or I move to the next name.",
+					"next": "fee_check",
+					"doubt": 15,
+					"tactic_id": "manufactured_urgency"
+				},
+				{
+					"text": "Half now would hold it - twelve hundred - and the rest when the sum lands.",
+					"next": "half_check",
+					"doubt": 0,
+					"tactic_id": "advance_fee"
+				}
+			]
+		},
+		"fee_check": {
+			"doubt_check": {
+				"max_doubt": 55,
+				"next_if_calm": "paid",
+				"next_if_wary": "balks"
+			}
+		},
+		"half_check": {
+			"doubt_check": {
+				"max_doubt": 60,
+				"next_if_calm": "paid_part",
+				"next_if_wary": "balks"
+			}
+		},
+		"balks": {
+			"prompt": "\"Hang on.\" The pen is down now. \"If it's insurance on a payment to me, why am I paying it? Take it off the top.\" Behind her a customer comes in; she doesn't look up. \"Go on. Take it off the hundred and fifty and send me the rest.\"",
+			"choices": [
+				{
+					"text": "I'd love to - it's the bank's rule, not ours. The bond has to clear from the recipient's side or the transfer's flagged. It's a nuisance for everyone.",
+					"next": "last_check",
+					"doubt": 10,
+					"tactic_id": "authority_impersonation"
+				},
+				{
+					"text": "Lina, I've got fourteen names on this list and the list closes at four. I can't argue the bank's rules with each one.",
+					"next": "last_check",
+					"doubt": 25,
+					"tactic_id": "manufactured_urgency"
+				},
+				{
+					"text": "Understood. I'll note it as declined. Good luck with the machine.",
+					"next": "bail",
+					"doubt": 0
+				}
+			]
+		},
+		"last_check": {
+			"doubt_check": {
+				"max_doubt": 70,
+				"next_if_calm": "paid",
+				"next_if_wary": "refused"
+			}
+		},
+		"paid": {
+			"prompt": "She pays it from the business account, reading the card out between two customers - \"sorry, hold on - yes, go on\" - and writes RELEASE FEE 2,500 on the corner of the quote she was doing, so she'll remember to move it across. \"And it's Monday, you said.\" You say Monday. On the card, someone on the floor writes: paid first. Tax charge next - give it a week.",
+			"outcome": "success",
+			"consequence": "The first one was small - less than a print run, I checked it twice. I wrote it on the corner of a quote so I'd move it across. Then there was a tax charge, and then a bond, and then the machine money was gone.",
+			"payout": 2500
+		},
+		"paid_part": {
+			"prompt": "\"Half.\" She thinks about the quote under her hand and the deposit she has been not-touching for two years. \"Twelve hundred. Fine. Now, and the rest when I see something.\" She pays it, and writes it down, and does not see anything.",
+			"outcome": "partial",
+			"consequence": "I only sent half. I thought that was clever - hold the rest till I saw something. Nothing came, and then a different man rang about the other half.",
+			"payout": 1200
+		},
+		"refused": {
+			"prompt": "\"Take it off the top or there's no fee.\" Perfectly reasonable, and perfectly final. \"And I'll want that in writing, from the supplier, on their letterhead - which I know, because I print it.\" She writes the time next to your number. \"I'll wait.\" You don't make her wait. You hang up, and she goes back to the quote, finishes it, and then rings the supplier.",
+			"outcome": "refused",
+			"consequence": "I asked him to take the fee off the top and he rang off. I'd been writing quotes when he called and I just kept writing - number, time, what he said. I rang the supplier; they'd never heard of it.",
+			"reports": true
+		},
+		"hangs_up": {
+			"prompt": "\"No.\" The machine starts up again behind her. \"I've had three of these this month. Yours was the best one.\" The line goes, and she writes the time on the corner of the quote before she forgets.",
+			"outcome": "hung_up",
+			"consequence": "I've had three of those this month. He was the best of them - he knew about the machine. I wrote the time down and went back to work.",
+			"reports": true
+		},
+		"bail": {
+			"prompt": "\"Hello? -\" The line's gone. She holds the phone for a second, then puts it down and picks up the pen, and the quote she was writing has a number in the margin now that she doesn't remember writing.",
+			"outcome": "aborted",
+			"consequence": "A call about a prize, and then nothing. I've had three of those this month. They all ring off eventually. I don't think about them."
+		}
+	}
+}

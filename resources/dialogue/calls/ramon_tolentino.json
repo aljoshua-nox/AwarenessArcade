@@ -1,0 +1,212 @@
+{
+	"person": {
+		"person_id": "ramon_tolentino",
+		"name": "Ramon Tolentino",
+		"age": 52,
+		"occupation": "Delivery dispatcher",
+		"traits": "Dispatcher. Checks everything, reads everything back. But he's always at work, and at work he wants problems closed.",
+		"portrait": "res://assets/art/portraits/fella 1.png",
+		"script": "Bank fraud desk",
+		"patience_seconds": 60,
+		"doubt_start": 40
+	},
+	"start_node": "open",
+	"hang_up_node": "hangs_up",
+	"perspective_variants": {
+		"harmed": [
+			"He had a reference number. He had the shop, the amount, the lot. I read him the code like I was confirming a drop. I've been reading things back to people for thirty years and never once thought about who was on the other end.",
+			"I sent a test payment first. I thought that was smart. It's still money, and there was nothing to test - it went where he said and that was the last I heard."
+		],
+		"resistant": [
+			"He had a reference number and everything. I said I'd ring the bank and quote it, and I did, and they'd never heard of it. I gave them his number. I read it off my screen like a plate.",
+			"I gave him a minute more than I should have, because he sounded like he knew what he was doing. Then I put the phone down and wrote his number on the drop sheet."
+		],
+		"unfinished": [
+			"Someone rang about my card and then rang off before I'd got a reference out of him. I've been checking the statement every day since. There's nothing on it.",
+			"Nothing came of it, and somehow that left me more uneasy than if something had. I like a thing to have an end."
+		]
+	},
+	"nodes": {
+		"open": {
+			"prompt": "He answers on the second ring with the name of the courier firm, then, when you ask for him: \"Speaking. Make it quick, I've got eleven vans out.\" A radio crackles under his voice. He has a pen; he has a screen; he has, at most, four minutes.",
+			"choices": [
+				{
+					"text": "Mr. Tolentino, this is the card fraud team at your bank. I'll be quick. There's a payment on your card from this morning that we've held - nine thousand eight hundred at an electronics retailer. Was that you?",
+					"next": "not_me",
+					"doubt": -5,
+					"tactic_id": "authority_impersonation"
+				},
+				{
+					"text": "Ramon, your card's been cloned. Someone's spending on it right now. I need you to stop what you're doing.",
+					"next": "cloned",
+					"doubt": 15,
+					"tactic_id": "manufactured_fear"
+				},
+				{
+					"text": "Hi Ramon - security call from the bank, nothing serious, we just need to verify a couple of transactions.",
+					"next": "which_bank",
+					"doubt": 5
+				}
+			]
+		},
+		"not_me": {
+			"prompt": "\"Nine thousand -\" The radio gets muted. \"No. No, that's not me. I'm at work, I've been here since six.\" Something scrapes; he's sat up. \"Where was it? What shop?\"",
+			"choices": [
+				{
+					"text": "A branch in the city - online order, collect in store. It hasn't been collected yet, which is why we could hold it. I can cancel it and the card now, if you'll bear with me.",
+					"next": "cancel",
+					"doubt": -5,
+					"tactic_id": "authority_impersonation"
+				},
+				{
+					"text": "That doesn't matter now. What matters is there are two more pending behind it. I need to move fast.",
+					"next": "cancel",
+					"doubt": 15,
+					"tactic_id": "manufactured_urgency"
+				},
+				{
+					"text": "I can't give you the merchant details until we've verified you, I'm afraid. Date of birth and the long number on the card?",
+					"next": "cancel",
+					"doubt": 15
+				}
+			]
+		},
+		"cloned": {
+			"prompt": "\"Cloned -\" A van door somewhere. \"Hang on. Hang on. Who is this? Which bank?\" He is not panicking. He's dispatching: get the facts, in order. \"Give me a reference number.\"",
+			"choices": [
+				{
+					"text": "Card services, fraud team. Reference CS-4471 - write it down. There's a hold on a nine-thousand-eight-hundred payment from this morning and I need your say-so to cancel it.",
+					"next": "cancel",
+					"doubt": -5,
+					"tactic_id": "authority_impersonation"
+				},
+				{
+					"text": "There isn't time for a reference. Every minute we're talking, they're spending.",
+					"next": "cancel",
+					"doubt": 25,
+					"tactic_id": "manufactured_urgency"
+				},
+				{
+					"text": "I'll get the reference and ring you back.",
+					"next": "bail",
+					"doubt": 0
+				}
+			]
+		},
+		"which_bank": {
+			"prompt": "\"Which bank?\" Flat. He has asked drivers this question - which depot, which drop - a thousand times, and he waits for the answer the same way.",
+			"choices": [
+				{
+					"text": "Sorry - card services, your main current account. There's a hold on a nine-thousand-eight-hundred payment from this morning. Was that you?",
+					"next": "not_me",
+					"doubt": 5,
+					"tactic_id": "authority_impersonation"
+				},
+				{
+					"text": "The one your card's with, Mr. Tolentino. I'm looking at the account now.",
+					"next": "not_me",
+					"doubt": 20
+				},
+				{
+					"text": "You know what, I'll ring back with the file in front of me.",
+					"next": "bail",
+					"doubt": 0
+				}
+			]
+		},
+		"cancel": {
+			"prompt": "\"Cancel it. Cancel the card, whatever you need.\" The radio comes back on low; a driver is asking for him and he tells them to wait. \"Just tell me what to do. I've got four minutes.\"",
+			"choices": [
+				{
+					"text": "To cancel the payment I need to confirm it's you - the bank will text you a code now. Read it to me and the hold becomes a cancellation.",
+					"next": "code_check",
+					"doubt": 0,
+					"tactic_id": "verification_denial"
+				},
+				{
+					"text": "We cancel the card, but the balance is exposed until we move it. I'll give you a safe account to transfer it into for the next twenty-four hours.",
+					"next": "safe_check",
+					"doubt": 15,
+					"tactic_id": "manufactured_fear"
+				},
+				{
+					"text": "Simplest is you ring the number on the back of your card and quote the reference. I'll leave the hold on till you do.",
+					"next": "bail",
+					"doubt": 0
+				}
+			]
+		},
+		"code_check": {
+			"doubt_check": {
+				"max_doubt": 50,
+				"next_if_calm": "paid",
+				"next_if_wary": "balks"
+			}
+		},
+		"safe_check": {
+			"doubt_check": {
+				"max_doubt": 45,
+				"next_if_calm": "paid_part",
+				"next_if_wary": "balks"
+			}
+		},
+		"balks": {
+			"prompt": "\"Hold on.\" The dispatcher's voice - the one that stops a driver mid-sentence. \"You rang me. You've got my name and my number. So you don't need me to prove who I am. You need to prove who you are.\" He waits.",
+			"choices": [
+				{
+					"text": "Fair - and you should be careful. Ring the number on your card, quote CS-4471, and they'll put you back through to me. Or I finish it now and you're done in sixty seconds. Your call.",
+					"next": "last_check",
+					"doubt": 0,
+					"tactic_id": "authority_impersonation"
+				},
+				{
+					"text": "Mr. Tolentino, while you're proving things, they're spending. Nine thousand eight hundred. Do you want the next one to be twenty?",
+					"next": "last_check",
+					"doubt": 25,
+					"tactic_id": "manufactured_urgency"
+				},
+				{
+					"text": "Then ring them. I'll close the ticket.",
+					"next": "bail",
+					"doubt": 0
+				}
+			]
+		},
+		"last_check": {
+			"doubt_check": {
+				"max_doubt": 60,
+				"next_if_calm": "paid",
+				"next_if_wary": "refused"
+			}
+		},
+		"paid": {
+			"prompt": "The text arrives on the phone in his other hand. He reads it out clearly, digit by digit, the way he'd read a postcode to a driver, and asks you to confirm it back, and you do. \"Right. Is it cancelled?\" It is not cancelled. Two thousand goes out of the account against that code before he has put the radio back on.",
+			"outcome": "success",
+			"consequence": "He had a reference number. He had the shop, the amount, the lot. I read him the code like I was confirming a drop. I've been reading things back to people for thirty years and never once thought about who was on the other end.",
+			"payout": 2000
+		},
+		"paid_part": {
+			"prompt": "\"I'm not sending the lot to an account I've never heard of.\" A pause; a decision. \"Eight hundred. If I see it land, I'll send the rest.\" He sends the eight hundred, reads the confirmation to you, and waits to see it land. It lands somewhere.",
+			"outcome": "partial",
+			"consequence": "I sent eight hundred as a test. I thought that was smart. It's still eight hundred, and there was nothing to test - it went where he said and that was the last I heard.",
+			"payout": 800
+		},
+		"refused": {
+			"prompt": "\"Then I'll ring them.\" No heat in it. \"Reference CS-4471. I'll quote it.\" He reads your number back to you off his screen, the way he'd read a plate. \"That's you, is it? Good.\" The line goes. He rings the number on the back of his card from the depot, with the radio going, and the bank has never heard of the reference.",
+			"outcome": "refused",
+			"consequence": "He had a reference number and everything. I said I'd ring the bank and quote it, and I did, and they'd never heard of it. I gave them his number. I read it off my screen like a plate.",
+			"reports": true
+		},
+		"hangs_up": {
+			"prompt": "\"No. Done.\" The radio's back on before the phone's down. He writes the number on the dispatch log between two drops, because that is where he writes things down.",
+			"outcome": "hung_up",
+			"consequence": "I gave him a minute more than I should have, because he sounded like he knew what he was doing. Then I put the phone down and wrote his number on the drop sheet.",
+			"reports": true
+		},
+		"bail": {
+			"prompt": "\"- ring back. Right.\" He's already reaching for his wallet as the line goes. He rings the bank. They've no hold on anything. He sits with that for a second, then puts the radio back on.",
+			"outcome": "aborted",
+			"consequence": "Someone rang about my card and then rang off before I'd got a reference out of him. I've been checking the statement every day since. There's nothing on it."
+		}
+	}
+}

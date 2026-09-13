@@ -1,0 +1,222 @@
+{
+	"person": {
+		"person_id": "kevin_d",
+		"name": "Kevin Dizon",
+		"age": 24,
+		"occupation": "Office worker",
+		"traits": "Called the number on the pop-up himself, got the queue. Working late on something else. Wants it gone more than he wants it explained.",
+		"portrait": "res://assets/art/portraits/fella 3.png",
+		"script": "Tech support callback",
+		"patience_seconds": 100,
+		"doubt_start": 20
+	},
+	"start_node": "open",
+	"hang_up_node": "hangs_up",
+	"perspective_variants": {
+		"harmed": [
+			"The guy sounded exactly like real support. I let him in, watched him type for six minutes and paid him to stop. I've no idea what he took while I was looking at my other screen.",
+			"I've read about this happening to other people and always thought, how. Now I know how. You're tired, you're busy, and someone sounds like they know what they're doing."
+		],
+		"resistant": [
+			"I nearly ran it. I had the link open. Then I thought - hang on, I never gave the queue my name. They had my name. That's the bit I can't get past.",
+			"The more he pushed, the more it sounded like a sales call. I hung up and then I actually looked at the pop-up properly. Thirty-one infections. It hadn't scanned anything."
+		],
+		"unfinished": [
+			"The technician just hung up on me. I sat there with the timer going and no idea whether the thing was real. I kept the laptop off the wifi for a week.",
+			"I still don't know if that was a real support call. There's nobody to ask. I closed the browser and it went away, which somehow made it worse."
+		]
+	},
+	"nodes": {
+		"open": {
+			"prompt": "He picks up on the first ring, because he's the one who rang. Forty minutes ago a page took over his laptop - INFECTED, FILES AT RISK, a number to call immediately, and a countdown - and the number put him in a queue and promised a technician would call back. \"Hi - yeah - is this the support line? I've still got the thing on my screen, I haven't touched it.\" He's typing while he talks. Something else, on another machine.",
+			"choices": [
+				{
+					"text": "This is Kevin? Hi, Kevin, I'm the technician on your ticket. Thanks for waiting. Let's take a look at what's on the screen.",
+					"next": "ticket",
+					"doubt": -5,
+					"tactic_id": "authority_impersonation"
+				},
+				{
+					"text": "Kevin, don't touch the laptop. The scan on your screen is live - every minute it's on the network, it's spreading.",
+					"next": "spreading",
+					"doubt": 15,
+					"tactic_id": "manufactured_fear"
+				},
+				{
+					"text": "Right, so what we're seeing on our end is a trojan that's got into the system files. Are you the administrator of the device?",
+					"next": "ticket",
+					"doubt": 5,
+					"tactic_id": "impossible_scan"
+				}
+			]
+		},
+		"ticket": {
+			"prompt": "\"Yeah, it says - hang on -\" He reads it out, badly, half his attention elsewhere. \"Threat detected, thirty-one infections, do not restart. There's a timer. It's on eleven minutes.\" A keyboard clatters on the other machine. \"Look, I'm slammed. I just need it gone. What do I do?\"",
+			"choices": [
+				{
+					"text": "Quickest way is for me to see it myself. There's a small support tool - I'll give you a link, you run it, and I clean it from here while you get on with your work.",
+					"next": "remote_ask",
+					"doubt": 0,
+					"tactic_id": "remote_access"
+				},
+				{
+					"text": "The timer's the thing. When it hits zero the encryption starts. We need to be inside the machine before then.",
+					"next": "remote_ask",
+					"doubt": 10,
+					"tactic_id": "manufactured_urgency"
+				},
+				{
+					"text": "Honestly? Close the browser. If it comes back, ring us.",
+					"next": "bail",
+					"doubt": 0
+				}
+			]
+		},
+		"spreading": {
+			"prompt": "The typing stops. \"Spreading to what? It's - this is my own laptop, it's on the office wifi -\" You can hear him actually looking at it now. \"Okay. Okay. What do I do. Tell me what to do.\"",
+			"choices": [
+				{
+					"text": "Nothing yet. I'm going to connect to it and isolate it. You'll see a link - run it, then keep your hands off the keyboard.",
+					"next": "remote_ask",
+					"doubt": 0,
+					"tactic_id": "remote_access"
+				},
+				{
+					"text": "First thing: who else is on that wifi? Because if this gets into your company's server, it stops being a laptop problem.",
+					"next": "remote_ask",
+					"doubt": 20,
+					"tactic_id": "manufactured_fear"
+				},
+				{
+					"text": "Pull the wifi and leave it. Someone will follow up.",
+					"next": "bail",
+					"doubt": 0
+				}
+			]
+		},
+		"remote_ask": {
+			"prompt": "\"A link.\" A pause while the word goes through whatever's left of his attention. \"Like - install something? On the laptop that's got the virus?\" It isn't suspicion yet. It's a man who once read a work email about not installing things and is trying to remember what it said.",
+			"choices": [
+				{
+					"text": "It's the same tool every support desk uses - your IT team will have one just like it. It uninstalls itself when we're done.",
+					"next": "remote_check",
+					"doubt": -5,
+					"tactic_id": "authority_impersonation"
+				},
+				{
+					"text": "Kevin, I've got nine minutes on your timer and four other tickets. Do you want this fixed or not?",
+					"next": "remote_check",
+					"doubt": 25,
+					"tactic_id": "manufactured_urgency"
+				},
+				{
+					"text": "You can bring it into a shop instead, if you'd rather. They'll charge you for the day and you'll be without it till Thursday.",
+					"next": "remote_check",
+					"doubt": 5
+				}
+			]
+		},
+		"remote_check": {
+			"doubt_check": {
+				"max_doubt": 50,
+				"next_if_calm": "remote_in",
+				"next_if_wary": "balks"
+			}
+		},
+		"balks": {
+			"prompt": "\"Hang on.\" The word 'install' has got through. \"Hang on, no. I'm not putting anything on it. Can you email me something? From the company address?\"",
+			"choices": [
+				{
+					"text": "Kevin. Seven minutes. I can't email you a timer.",
+					"next": "last_check",
+					"doubt": 30,
+					"tactic_id": "manufactured_urgency"
+				},
+				{
+					"text": "Or skip the install. There's a scan we can push from our side for three hundred and fifty - nothing goes on the machine.",
+					"next": "scan_check",
+					"doubt": 0,
+					"tactic_id": "invented_fee"
+				},
+				{
+					"text": "Fair enough. I'll drop it in the ticket notes and you can run it when you've got a minute. Watch that timer, though.",
+					"next": "bail",
+					"doubt": 0
+				}
+			]
+		},
+		"last_check": {
+			"doubt_check": {
+				"max_doubt": 70,
+				"next_if_calm": "remote_in",
+				"next_if_wary": "refused"
+			}
+		},
+		"scan_check": {
+			"doubt_check": {
+				"max_doubt": 65,
+				"next_if_calm": "paid_part",
+				"next_if_wary": "refused"
+			}
+		},
+		"remote_in": {
+			"prompt": "He runs it. Your screen fills with his: a desktop, a browser with the warning still up, a spreadsheet with a deadline in the file name. \"Okay, you're in. That's - okay.\" He goes quiet for the first time, watching the cursor move on its own. You open a black window and let text scroll for a while. \"Is that it? Is that fixing it?\"",
+			"choices": [
+				{
+					"text": "That's the diagnostic. The removal is a licensed tool - a one-off charge of sixteen hundred, and then it's done. I can take the card while I'm in here.",
+					"next": "fee_check",
+					"doubt": 0,
+					"tactic_id": "invented_fee"
+				},
+				{
+					"text": "That's it finding them. Thirty-one, like it said. Some of these have been in since March, Kevin - your banking, your work login. The removal's sixteen hundred and I'd do it now.",
+					"next": "fee_check",
+					"doubt": 10,
+					"tactic_id": "manufactured_fear"
+				}
+			]
+		},
+		"fee_check": {
+			"doubt_check": {
+				"max_doubt": 60,
+				"next_if_calm": "paid",
+				"next_if_wary": "pulls_cable"
+			}
+		},
+		"paid": {
+			"prompt": "\"Sixteen hundred.\" He does the sum of what that is against the rest of the month. \"Fine. Fine, just - do it, I need this thing back.\" He reads the card out with his eyes on the other screen. You leave the black window scrolling for a few minutes more, because that is the part that makes it feel like a repair. Six minutes in, a folder opens that has nothing to do with viruses, and he pulls the cable out of the wall. Too late for the sixteen hundred.",
+			"outcome": "success",
+			"consequence": "The guy sounded exactly like real support. I let him in, watched him type for six minutes and paid him to stop. I've no idea what he took while I was looking at my other screen.",
+			"payout": 1600
+		},
+		"paid_part": {
+			"prompt": "\"Three-fifty.\" That's a number he can make go away without thinking about it, which is the point. He reads a card out to a stranger, the warning on his screen closes - because you close it - and he says thanks, genuinely, and goes back to the spreadsheet. The laptop was never infected. It is now short a card number.",
+			"outcome": "partial",
+			"consequence": "I paid for a scan to make the warning go away, and it went away, so I thought fine, that's done. It was only later I thought: they never actually did anything, did they.",
+			"payout": 350
+		},
+		"pulls_cable": {
+			"prompt": "\"Sixteen hundred.\" Silence, then a different kind of silence - the tool's window has stopped moving. \"You know what. No.\" A cable comes out of a wall. Your screen goes black. \"I've got your number, mate.\" The call ends from his side. He screenshots the warning, the timer and the number before he closes the browser.",
+			"outcome": "refused",
+			"consequence": "He was in for about six minutes and then he asked for sixteen hundred, and that was the bit that didn't sound like support. I pulled the cable. I've got the screenshot and I've got the number.",
+			"reports": true
+		},
+		"refused": {
+			"prompt": "\"Nah.\" The typing on the other machine has stopped. \"Nah, I'm not paying for anything and I'm not installing anything. My IT guy would kill me.\" A beat, and then, more awake than he has been all call: \"How'd you get my name, actually? I didn't give the queue my name.\" You don't answer that. He hangs up first.",
+			"outcome": "refused",
+			"consequence": "I nearly ran it. I had the link open. Then I thought - hang on, I never gave the queue my name. They had my name. That's the bit I can't get past.",
+			"reports": true
+		},
+		"hangs_up": {
+			"prompt": "\"You know what - no. No.\" He's properly listening now, which is the worst thing that could have happened. \"A real support desk doesn't talk like this.\" Click. He sits for a minute, then photographs the screen, then looks up the number.",
+			"outcome": "hung_up",
+			"consequence": "The more he pushed, the more it sounded like a sales call. I hung up and then I actually looked at the pop-up properly. Thirty-one infections. It hadn't scanned anything.",
+			"reports": true
+		},
+		"bail": {
+			"prompt": "\"Wait, so - what do I do with the -\" You've gone. The warning is still on his screen with its timer running. He closes the browser, opens it again to check, and sits looking at a laptop that is fine and does not feel it.",
+			"outcome": "aborted",
+			"consequence": "The technician just hung up on me. I sat there with the timer going and no idea whether the thing was real. I kept the laptop off the wifi for a week."
+		}
+	}
+}

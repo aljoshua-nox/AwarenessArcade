@@ -1,5 +1,7 @@
 extends Control
 
+const TextStyle := preload("res://scripts/systems/text_style.gd")
+
 const HARM_MESSAGES: Array[String] = [
 	"Fraud depends on pressure, false urgency, and abuse of trust. The damage is measured in savings lost, debts created, and people left afraid to answer the phone.",
 	"Scams often work by isolating one person long enough to overwhelm their judgment. The aftermath can leave victims ashamed, stressed, and financially exposed.",
@@ -12,6 +14,7 @@ const HARM_MESSAGES: Array[String] = [
 var end_title: Label
 var end_reason: Label
 var summary_value: RichTextLabel
+var call_log_value: RichTextLabel
 var milestones_value: RichTextLabel
 var note_value: RichTextLabel
 
@@ -81,6 +84,16 @@ func _build_ui() -> void:
 	summary_value.custom_minimum_size = Vector2(0, 140)
 	column.add_child(summary_value)
 
+	var log_title := Label.new()
+	log_title.text = "The Calls"
+	column.add_child(log_title)
+
+	call_log_value = RichTextLabel.new()
+	call_log_value.bbcode_enabled = true
+	call_log_value.fit_content = true
+	call_log_value.custom_minimum_size = Vector2(0, 80)
+	column.add_child(call_log_value)
+
 	var milestones_title := Label.new()
 	milestones_title.text = "Reflection Milestones"
 	column.add_child(milestones_title)
@@ -119,6 +132,7 @@ func _refresh_view() -> void:
 	end_title.text = "The Call Center Goes Quiet"
 	end_reason.text = SessionState.prologue_end_reason if not SessionState.prologue_end_reason.is_empty() else "The operation has concluded."
 	summary_value.text = _build_summary_text()
+	call_log_value.text = _build_call_log_text()
 	milestones_value.text = _build_milestones_text()
 	var note_lines: Array[String] = []
 	if not SessionState.prologue_end_note.is_empty():
@@ -131,13 +145,60 @@ func _refresh_view() -> void:
 func _build_summary_text() -> String:
 	var lines: Array[String] = []
 	lines.append("[b]Calls made:[/b] %d" % SessionState.calls_made)
-	lines.append("[b]Victims affected:[/b] %d" % SessionState.victims_affected)
-	lines.append("[b]Reports filed:[/b] %d" % SessionState.reports_filed)
-	lines.append("[b]Estimated financial losses:[/b] %s" % _format_currency(SessionState.profit))
-	lines.append("[b]Trust:[/b] %d" % SessionState.trust)
-	lines.append("[b]Suspicion:[/b] %d" % SessionState.suspicion)
-	lines.append("[b]Reputation:[/b] %d" % SessionState.reputation)
+	lines.append("[b]Reports against the line:[/b] %d of %d" % [SessionState.reports_filed, SessionState.REPORTS_TO_PULL_LINE])
+	lines.append("[b]Taken from the people you called:[/b] %s" % _format_currency(SessionState.profit))
+	var tactic_names: Array[String] = []
+	for tactic_id in SessionState.prologue_tactics_used:
+		tactic_names.append(_tactic_name(str(tactic_id)))
+	if not tactic_names.is_empty():
+		lines.append("[b]From the binder, you used:[/b] %s" % ", ".join(tactic_names))
 	return "\n".join(lines)
+
+
+# One row per call, in the order they were made: who, what happened, what it
+# cost, and what they said about it afterwards. The same record the office
+# ledger prints and the interviews quote - this is the player's first look at it.
+func _build_call_log_text() -> String:
+	if SessionState.prologue_call_log.is_empty():
+		return "[i]You made no calls.[/i]"
+	var lines: Array[String] = []
+	for entry in SessionState.prologue_call_log:
+		var outcome := str(entry.get("outcome", ""))
+		var payout := int(entry.get("payout", 0))
+		var tone: String = TextStyle.COLOR_HINT
+		var what := ""
+		match outcome:
+			SessionState.CALL_SUCCESS:
+				what = "transferred %s" % _format_currency(payout)
+				tone = TextStyle.COLOR_WRONG
+			SessionState.CALL_PARTIAL:
+				what = "partial transfer, %s" % _format_currency(payout)
+				tone = TextStyle.COLOR_WRONG
+			SessionState.CALL_REFUSED:
+				what = "refused"
+				tone = TextStyle.COLOR_TACTIC
+			SessionState.CALL_HUNG_UP:
+				what = "hung up"
+				tone = TextStyle.COLOR_TACTIC
+			SessionState.CALL_TIMEOUT:
+				what = "cut off by the shift clock"
+			SessionState.CALL_ABORTED:
+				what = "dropped by you"
+			_:
+				what = "line pulled"
+		lines.append("[color=#%s][b]%s[/b] - %s[/color]" % [tone, str(entry.get("name", "Unknown")), what])
+		var consequence := str(entry.get("consequence", ""))
+		if not consequence.is_empty():
+			lines.append(TextStyle.dialogue("\"%s\"" % consequence))
+		lines.append("")
+	return "\n".join(lines)
+
+
+func _tactic_name(tactic_id: String) -> String:
+	for entry in TacticNotebook.tactics:
+		if str(entry.get("id", "")) == tactic_id:
+			return str(entry.get("name", tactic_id))
+	return tactic_id
 
 
 func _build_milestones_text() -> String:
@@ -156,8 +217,7 @@ func _build_milestones_text() -> String:
 
 
 func _on_continue_pressed() -> void:
-	SessionState.reset_session()
-	SessionState.go_to_scene("res://scenes/exploration/urban_exterior.tscn")
+	SessionState.start_investigation_from_prologue()
 
 
 func _on_main_menu_pressed() -> void:
@@ -165,7 +225,15 @@ func _on_main_menu_pressed() -> void:
 
 
 func _format_currency(amount: int) -> String:
-	return "P%d" % amount
+	var digits := str(absi(amount))
+	var out := ""
+	var count := 0
+	for i in range(digits.length() - 1, -1, -1):
+		out = digits[i] + out
+		count += 1
+		if count % 3 == 0 and i > 0:
+			out = "," + out
+	return "P%s" % out
 
 
 func _get_random_harm_message() -> String:

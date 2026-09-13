@@ -12,7 +12,7 @@ const CALL_SUCCESS := "success"      # full transfer - money taken
 const CALL_PARTIAL := "partial"      # partial transfer - money taken
 const CALL_REFUSED := "refused"      # heard the pitch out, paid nothing
 const CALL_HUNG_UP := "hung_up"      # bailed mid-call before it could land
-const CALL_ESCALATED := "escalated"  # suspicion maxed, the line was shut down
+const CALL_ESCALATED := "escalated"  # the line was pulled mid-call (kept in the vocabulary; the ledger prints it)
 const CALL_TIMEOUT := "timeout"      # the shift clock expired mid-call
 const CALL_ABORTED := "aborted"      # the player ended the session mid-call
 
@@ -39,19 +39,25 @@ const AWARENESS_UNTESTED := "untested"  # never reached a tactic quiz
 # works if there is one copy of it.
 const OPERATION_NUMBER := "0917-555-0142"
 
+# The prologue's only session-level pressure besides the shift clock. A victim
+# who catches on and keeps the number files a report; this many and the floor
+# pulls the line. The old trust/suspicion/reputation meters lived here - they
+# were session-wide numbers that a per-call conversation could not honestly
+# move, which is why the text and the bars disagreed.
+const REPORTS_TO_PULL_LINE := 3
+
 # Prologue (scam-call sim) state
 var calls_made: int = 0
 var victims_affected: int = 0
 var reports_filed: int = 0
+# Money taken across the shift. Never shown as a running score during play -
+# the summary reports it as the victims' losses.
 var profit: int = 0
-var trust: int = 35
-var suspicion: int = 10
-var reputation: int = 75
 var time_left: float = 240.0
-var alerts: String = "No active alerts"
-var community_alert_active: bool = false
-var bank_security_active: bool = false
-var investigation_notice_active: bool = false
+# Catalogue tactic ids the player used from the binder, in first-use order.
+# Recorded for the summary; deliberately does NOT unlock the notebook - the
+# investigation is where a tactic is named, the prologue is where it is used.
+var prologue_tactics_used: Array[String] = []
 var reflection_milestones: Array[Dictionary] = []
 var prologue_end_reason: String = ""
 var prologue_end_note: String = ""
@@ -181,14 +187,8 @@ func reset_prologue() -> void:
 	victims_affected = 0
 	reports_filed = 0
 	profit = 0
-	trust = 35
-	suspicion = 10
-	reputation = 75
 	time_left = 240.0
-	alerts = "No active alerts"
-	community_alert_active = false
-	bank_security_active = false
-	investigation_notice_active = false
+	prologue_tactics_used.clear()
 	reflection_milestones.clear()
 	prologue_end_reason = ""
 	prologue_end_note = ""
@@ -209,6 +209,21 @@ func start_prologue() -> void:
 func start_investigation_direct() -> void:
 	reset_prologue()
 	go_to_scene("res://scenes/exploration/urban_exterior.tscn")
+
+
+# Continue from the prologue summary into the detective half. The investigation
+# starts clean, but the call log is the whole point of having played the
+# prologue and must survive - this used to call reset_session(), which wiped
+# it, so the coupling only ever worked in tests that seeded the log afterwards.
+func start_investigation_from_prologue() -> void:
+	reset_investigation()
+	go_to_scene("res://scenes/exploration/urban_exterior.tscn")
+
+
+func record_tactic_used(tactic_id: String) -> void:
+	if tactic_id.is_empty() or prologue_tactics_used.has(tactic_id):
+		return
+	prologue_tactics_used.append(tactic_id)
 
 
 func go_to_prologue_end(reason: String, note: String = "") -> void:
@@ -310,12 +325,18 @@ func go_to_menu() -> void:
 	go_to_scene("res://scenes/main_menu/main_menu.tscn")
 
 
+# Everything, for a fresh game from the menu.
 func reset_session() -> void:
+	prologue_call_log.clear()
+	prologue_played = false
+	reset_investigation()
+
+
+# The detective half only. Leaves the prologue's call history alone.
+func reset_investigation() -> void:
 	has_urban_return_spawn = false
 	suspect_flipped = false
 	case_locked = false
-	prologue_call_log.clear()
-	prologue_played = false
 	investigation_inventory.clear()
 	investigation_case_title = ""
 	investigation_person_name = ""

@@ -114,7 +114,7 @@
 			]
 		},
 		"fee": {
-			"prompt": "\"A release fee.\" Back to the pen. She is writing the number down as you say it. \"Two and a half thousand.\" A breath. \"That's - all right. That's less than a print run. What's it for?\"",
+			"prompt": "\"A release fee.\" Back to the pen. She is writing the number down as you say it. \"Ten thousand.\" A breath. \"That's - all right. That's less than a print run. What's it for?\"",
 			"choices": [
 				{
 					"text": "It's the transfer bond - it covers the payment insurance, and it comes back to you with the sum. Everyone pays it. It isn't ours.",
@@ -123,13 +123,13 @@
 					"tactic_id": "advance_fee"
 				},
 				{
-					"text": "Admin, basically. Two and a half, today, and the hundred fifty goes out Monday. Or I move to the next name.",
+					"text": "Admin, basically. Ten thousand, today, and the hundred fifty goes out Monday. Or I move to the next name.",
 					"next": "fee_check",
 					"doubt": 15,
 					"tactic_id": "manufactured_urgency"
 				},
 				{
-					"text": "Half now would hold it - twelve hundred - and the rest when the sum lands.",
+					"text": "Half now would hold it - five thousand - and the rest when the sum lands.",
 					"next": "half_check",
 					"doubt": 0,
 					"tactic_id": "advance_fee"
@@ -180,16 +180,16 @@
 			}
 		},
 		"paid": {
-			"prompt": "She pays it from the business account, reading the card out between two customers - \"sorry, hold on - yes, go on\" - and writes RELEASE FEE 2,500 on the corner of the quote she was doing, so she'll remember to move it across. \"And it's Monday, you said.\" You say Monday. On the card, someone on the floor writes: paid first. Tax charge next - give it a week.",
+			"prompt": "She pays it from the business account, reading the card out between two customers - \"sorry, hold on - yes, go on\" - and writes RELEASE FEE 10,000 on the corner of the quote she was doing, so she'll remember to move it across. \"And it's Monday, you said.\" You say Monday. On the card, someone on the floor writes: paid first. Tax charge next - give it a week.",
 			"outcome": "success",
 			"consequence": "The first one was small - less than a print run, I checked it twice. I wrote it on the corner of a quote so I'd move it across. Then there was a tax charge, and then a bond, and then the machine money was gone.",
-			"payout": 2500
+			"payout": 10000
 		},
 		"paid_part": {
-			"prompt": "\"Half.\" She thinks about the quote under her hand and the deposit she has been not-touching for two years. \"Twelve hundred. Fine. Now, and the rest when I see something.\" She pays it, and writes it down, and does not see anything.",
+			"prompt": "\"Half.\" She thinks about the quote under her hand and the deposit she has been not-touching for two years. \"Five thousand. Fine. Now, and the rest when I see something.\" She pays it, and writes it down, and does not see anything.",
 			"outcome": "partial",
 			"consequence": "I only sent half. I thought that was clever - hold the rest until I saw something. Nothing came, and then a different man called about the other half.",
-			"payout": 1200
+			"payout": 5000
 		},
 		"refused": {
 			"prompt": "\"Take it off the top or there's no fee.\" Perfectly reasonable, and perfectly final. \"And I'll want that in writing, from the supplier, on their letterhead - which I know, because I print it.\" She writes the time next to your number. \"I'll wait.\" You don't make her wait. You hang up, and she goes back to the quote, finishes it, and then calls the supplier.",

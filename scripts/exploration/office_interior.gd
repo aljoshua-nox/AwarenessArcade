@@ -219,10 +219,10 @@ func _build_call_log_text() -> String:
 		# player simply ran out of time on. The ledger is the operation's own
 		# record - it should be accurate about what happened on each number.
 		if outcome == SessionState.CALL_SUCCESS:
-			note = "transferred %d - RECONTACT" % payout
+			note = "transferred %s - RECONTACT" % TextStyle.currency(payout)
 			tone = TextStyle.COLOR_WRONG
 		elif outcome == SessionState.CALL_PARTIAL:
-			note = "partial %d - warm, try again" % payout
+			note = "partial %s - warm, try again" % TextStyle.currency(payout)
 			tone = TextStyle.COLOR_WRONG
 		elif outcome == SessionState.CALL_HUNG_UP:
 			note = "no payout - hung up early, still live"
@@ -359,7 +359,7 @@ func _build_stations() -> void:
 		"body": "A ring binder, open on the supervisor's desk. Column headings in marker: NAME. NUMBER. LAST RESULT. Names run down the page in a dozen different hands, some crossed out, most not. Taped inside the cover, on a strip of card gone furry at the edges, is the line every desk on this floor dials out on: %s." % SessionState.OPERATION_NUMBER,
 		"is_ledger": true,
 		"milestone_title": "The List Has Your Handwriting On It",
-		"milestone_detail": "The operation's ledger holds the victims the player called during the prologue - proof that a scam list is a durable asset, not a one-off.",
+		"milestone_detail": "The operation's ledger holds the victims the player called during the prologue - proof that a scam list is a durable asset, not a one-time thing.",
 	}, Vector2(660.0, 612.0))
 	_add_prop(OFFICE_WALLS, WALL_BENCH, Vector2(660.0, 604.0), 1.9, -10)
 

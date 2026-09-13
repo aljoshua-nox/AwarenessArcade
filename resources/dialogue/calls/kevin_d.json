@@ -133,7 +133,7 @@
 					"tactic_id": "manufactured_urgency"
 				},
 				{
-					"text": "Or skip the install. There's a scan we can push from our side for three hundred and fifty - nothing goes on the machine.",
+					"text": "Or skip the install. There's a scan we can push from our side for fifteen hundred - nothing goes on the machine.",
 					"next": "scan_check",
 					"doubt": 0,
 					"tactic_id": "invented_fee"
@@ -163,13 +163,13 @@
 			"prompt": "He runs it. Your screen fills with his: a desktop, a browser with the warning still up, a spreadsheet with a deadline in the file name. \"Okay, you're in. That's - okay.\" He goes quiet for the first time, watching the cursor move on its own. You open a black window and let text scroll for a while. \"Is that it? Is that fixing it?\"",
 			"choices": [
 				{
-					"text": "That's the diagnostic. The removal is a licensed tool - a one-off charge of sixteen hundred, and then it's done. I can take the card while I'm in here.",
+					"text": "That's the diagnostic. The removal is a licensed tool - a one-time charge of twelve thousand five hundred, and then it's done. I can take the card while I'm in here.",
 					"next": "fee_check",
 					"doubt": 0,
 					"tactic_id": "invented_fee"
 				},
 				{
-					"text": "That's it finding them. Thirty-one, like it said. Some of these have been in since March, Kevin - your banking, your work login. The removal's sixteen hundred and I'd do it now.",
+					"text": "That's it finding them. Thirty-one, like it said. Some of these have been in since March, Kevin - your banking, your work login. The removal's twelve thousand five hundred and I'd do it now.",
 					"next": "fee_check",
 					"doubt": 10,
 					"tactic_id": "manufactured_fear"
@@ -184,21 +184,21 @@
 			}
 		},
 		"paid": {
-			"prompt": "\"Sixteen hundred.\" He does the sum of what that is against the rest of the month. \"Fine. Fine, just - do it, I need this thing back.\" He reads the card out with his eyes on the other screen. You leave the black window scrolling for a few minutes more, because that is the part that makes it feel like a repair. Six minutes in, a folder opens that has nothing to do with viruses, and he pulls the cable out of the wall. Too late for the sixteen hundred.",
+			"prompt": "\"Twelve and a half thousand.\" He does the sum of what that is against the rest of the month, and against the rent. \"Fine. Fine, just - do it, I need this thing back.\" He reads the card out with his eyes on the other screen. You leave the black window scrolling for a few minutes more, because that is the part that makes it feel like a repair. Six minutes in, a folder opens that has nothing to do with viruses, and he pulls the cable out of the wall. Too late for the twelve and a half thousand.",
 			"outcome": "success",
 			"consequence": "The guy sounded exactly like real support. I let him in, watched him type for six minutes and paid him to stop. I have no idea what he took while I was looking at my other screen.",
-			"payout": 1600
+			"payout": 12500
 		},
 		"paid_part": {
-			"prompt": "\"Three-fifty.\" That's a number he can make go away without thinking about it, which is the point. He reads a card out to a stranger, the warning on his screen closes - because you close it - and he says thanks, genuinely, and goes back to the spreadsheet. The laptop was never infected. It is now short a card number.",
+			"prompt": "\"Fifteen hundred.\" That's a number he can make go away without thinking about it, which is the point. He reads a card out to a stranger, the warning on his screen closes - because you close it - and he says thanks, genuinely, and goes back to the spreadsheet. The laptop was never infected. It is now short a card number.",
 			"outcome": "partial",
 			"consequence": "I paid for a scan to make the warning go away, and it went away, so I thought fine, that's done. It was only later I thought: they never actually did anything, did they.",
-			"payout": 350
+			"payout": 1500
 		},
 		"pulls_cable": {
-			"prompt": "\"Sixteen hundred.\" Silence, then a different kind of silence - the tool's window has stopped moving. \"You know what. No.\" A cable comes out of a wall. Your screen goes black. \"I've got your number.\" The call ends from his side. He screenshots the warning, the timer and the number before he closes the browser.",
+			"prompt": "\"Twelve and a half thousand.\" Silence, then a different kind of silence - the tool's window has stopped moving. \"You know what. No.\" A cable comes out of a wall. Your screen goes black. \"I've got your number.\" The call ends from his side. He screenshots the warning, the timer and the number before he closes the browser.",
 			"outcome": "refused",
-			"consequence": "He was in for about six minutes and then he asked for sixteen hundred, and that was the bit that didn't sound like support. I pulled the cable. I've got the screenshot and I've got the number.",
+			"consequence": "He was in for about six minutes and then he asked for twelve and a half thousand, and that was the bit that didn't sound like support. I pulled the cable. I've got the screenshot and I've got the number.",
 			"reports": true
 		},
 		"refused": {

@@ -109,7 +109,7 @@
 					"tactic_id": "manufactured_urgency"
 				},
 				{
-					"text": "If you'd rather not, there's a remote clean we can push from our side without connecting - four hundred, done in five minutes.",
+					"text": "If you'd rather not, there's a remote clean we can push from our side without connecting - fifteen hundred, done in five minutes.",
 					"next": "push_check",
 					"doubt": 0,
 					"tactic_id": "invented_fee"
@@ -163,13 +163,13 @@
 			"prompt": "He clicks it. His screen arrives on yours: a course page, a PDF called ROSTER_WK37, a browser with eleven tabs. \"You're in? Okay.\" You open the black window and let it scroll. He watches it for a while, then stops watching, because he has been awake for twenty hours and the text is soothing. \"Is that - is it finding stuff?\"",
 			"choices": [
 				{
-					"text": "It's found it. Old driver, been failing for a week - that's your slowness. The repair's a licensed tool, fifteen hundred one-off, and I'll do it now so you're not back here Friday.",
+					"text": "It's found it. Old driver, been failing for a week - that's your slowness. The repair's a licensed tool, eleven thousand five hundred one-time, and I'll do it now so you're not back here Friday.",
 					"next": "fee_check",
 					"doubt": 0,
 					"tactic_id": "invented_fee"
 				},
 				{
-					"text": "It's found it, and it's worse than the errors - there's a keylogger on here. Fifteen hundred for the removal, and honestly, I'd change your work password tonight.",
+					"text": "It's found it, and it's worse than the errors - there's a keylogger on here. Eleven thousand five hundred for the removal, and honestly, I'd change your work password tonight.",
 					"next": "fee_check",
 					"doubt": 10,
 					"tactic_id": "manufactured_fear"
@@ -184,21 +184,21 @@
 			}
 		},
 		"paid": {
-			"prompt": "\"Fifteen hundred.\" He does the sum against the end of the month and loses. \"Yeah. Okay. Go on.\" He reads a card number out with his eyes closed, and you take it, and you leave the window scrolling for a while so it looks like something is being done. Nothing is. The laptop is exactly as slow as it was, and now somebody else has been through it.",
+			"prompt": "\"Eleven thousand five hundred.\" He does the sum against the end of the month and loses. \"Yeah. Okay. Go on.\" He reads a card number out with his eyes closed, and you take it, and you leave the window scrolling for a while so it looks like something is being done. Nothing is. The laptop is exactly as slow as it was, and now somebody else has been through it.",
 			"outcome": "success",
 			"consequence": "I was exhausted. I just wanted the warning gone and to get back to my module. He was in for ten minutes and I paid him to fix a driver. There was never anything wrong with it.",
-			"payout": 1500
+			"payout": 11500
 		},
 		"paid_part": {
-			"prompt": "\"Four hundred and I don't have to click anything.\" He has already decided. \"Fine.\" He pays it from his phone, half asleep, and the laptop is exactly as slow as before, and he goes back to the module.",
+			"prompt": "\"Fifteen hundred and I don't have to click anything.\" He has already decided. \"Fine.\" He pays it from his phone, half asleep, and the laptop is exactly as slow as before, and he goes back to the module.",
 			"outcome": "partial",
 			"consequence": "I paid for a scan that didn't need me to do anything. That was the selling point - I didn't have to do anything. Nothing changed. I don't know what I paid for.",
-			"payout": 400
+			"payout": 1500
 		},
 		"pulls_out": {
-			"prompt": "\"Fifteen hundred.\" He's awake now. It's the number that did it - not the link, not the black window. \"For a driver.\" He reaches over and closes the lid, which cuts the connection, and you're looking at your own desktop. \"I'm going to ask our IT about this in the morning.\" He does. So does the ward clerk, who writes the number down.",
+			"prompt": "\"Eleven thousand five hundred.\" He's awake now. It's the number that did it - not the link, not the black window. \"For a driver.\" He reaches over and closes the lid, which cuts the connection, and you're looking at your own desktop. \"I'm going to ask our IT about this in the morning.\" He does. So does the ward clerk, who writes the number down.",
 			"outcome": "refused",
-			"consequence": "The price woke me up. Fifteen hundred for a driver - I've paid less for a whole laptop. I shut the lid on him and told IT in the morning; they said give them the number.",
+			"consequence": "The price woke me up. Eleven thousand five hundred for a driver - I've paid less for a whole laptop. I shut the lid on him and told IT in the morning; they said give them the number.",
 			"reports": true
 		},
 		"refused": {

@@ -180,16 +180,16 @@
 			}
 		},
 		"paid": {
-			"prompt": "The text arrives on the phone in his other hand. He reads it out clearly, digit by digit, the way he'd read an address to a driver, and asks you to confirm it back, and you do. \"Right. Is it canceled?\" It is not canceled. Two thousand goes out of the account against that code before he has put the radio back on.",
+			"prompt": "The text arrives on the phone in his other hand. He reads it out clearly, digit by digit, the way he'd read an address to a driver, and asks you to confirm it back, and you do. \"Right. Is it canceled?\" It is not canceled. Twenty-one thousand four hundred goes out of the account against that code - most of the fifteenth's pay - before he has put the radio back on.",
 			"outcome": "success",
 			"consequence": "He had a reference number. He had the shop, the amount, the lot. I read him the code like I was confirming a drop. I've been reading things back to people for thirty years and never once thought about who was on the other end.",
-			"payout": 2000
+			"payout": 21400
 		},
 		"paid_part": {
-			"prompt": "\"I'm not sending the lot to an account I've never heard of.\" A pause; a decision. \"Eight hundred. If I see it land, I'll send the rest.\" He sends the eight hundred, reads the confirmation to you, and waits to see it land. It lands somewhere.",
+			"prompt": "\"I'm not sending the lot to an account I've never heard of.\" A pause; a decision. \"Two thousand. If I see it land, I'll send the rest.\" He sends the two thousand, reads the confirmation to you, and waits to see it land. It lands somewhere.",
 			"outcome": "partial",
-			"consequence": "I sent eight hundred as a test. I thought that was smart. It's still eight hundred, and there was nothing to test - it went where he said and that was the last I heard.",
-			"payout": 800
+			"consequence": "I sent two thousand as a test. I thought that was smart. It's still two thousand, and there was nothing to test - it went where he said and that was the last I heard.",
+			"payout": 2000
 		},
 		"refused": {
 			"prompt": "\"Then I'll call them.\" No heat in it. \"Reference CS-4471. I'll quote it.\" He reads your number back to you off his screen, the way he'd read a plate. \"That's you, is it? Good.\" The line goes. He calls the number on the back of his card from the hub, with the radio going, and the bank has never heard of the reference.",

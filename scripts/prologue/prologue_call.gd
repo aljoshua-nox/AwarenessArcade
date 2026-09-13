@@ -883,19 +883,7 @@ func _on_end_prologue_pressed() -> void:
 # --- Helpers ------------------------------------------------------------------
 
 func _format_currency(amount: int) -> String:
-	return "P%s" % _thousands(amount)
-
-
-func _thousands(amount: int) -> String:
-	var digits := str(absi(amount))
-	var out := ""
-	var count := 0
-	for i in range(digits.length() - 1, -1, -1):
-		out = digits[i] + out
-		count += 1
-		if count % 3 == 0 and i > 0:
-			out = "," + out
-	return ("-" if amount < 0 else "") + out
+	return TextStyle.currency(amount)
 
 
 func _format_time(seconds_left: float) -> String:

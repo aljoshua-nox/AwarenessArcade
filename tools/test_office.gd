@@ -190,7 +190,7 @@ func _test_ledger_reads_back_prologue() -> void:
 	var body: String = view._station_body(ledger)
 	_check(body.contains("Maria S."), "the ledger names a victim the player called")
 	_check(body.contains("Kevin Dizon"), "the ledger names every victim called")
-	_check(body.contains("4200"), "a successful call shows its payout")
+	_check(body.contains("P4,200"), "a successful call shows its payout")
 	_check(body.contains("RECONTACT"), "a paying victim is flagged for recontact")
 	_check(body.contains("still live"), "even a refusal keeps the number on the list")
 	_check(body.contains("HARM ON RECORD"), "the ledger carries the harm marker")
@@ -273,7 +273,7 @@ func _test_prologue_logs_calls() -> void:
 
 	# And the office reads it back.
 	var view := await _open()
-	_check(view._station_body(_station(view, "The call list")).contains("3300"), "the office ledger shows the logged call")
+	_check(view._station_body(_station(view, "The call list")).contains("P3,300"), "the office ledger shows the logged call")
 	# The street's residents keep naming one number. It has to be this one, or
 	# the pattern the street is built to teach dead-ends here.
 	_check(view._station_body(_station(view, "The call list")).contains(SessionState.OPERATION_NUMBER),

@@ -96,14 +96,14 @@ func _capture_prologue_summary() -> void:
 	SessionState.prologue_played = true
 	SessionState.calls_made = 3
 	SessionState.reports_filed = 1
-	SessionState.profit = 3700
+	SessionState.profit = 23500
 	SessionState.record_tactic_used("authority_impersonation")
 	SessionState.record_tactic_used("manufactured_urgency")
-	SessionState.record_prologue_call("maria_santos", "Maria S.", SessionState.CALL_SUCCESS, 2200,
+	SessionState.record_prologue_call("maria_santos", "Maria S.", SessionState.CALL_SUCCESS, 18500,
 		"He sounded like the bank. He even knew about the text. I read the code out like I was helping, and it was my medicine money going out the door while I was saying thank you.")
 	SessionState.record_prologue_call("evelyn_marsh", "Evelyn Marsh", SessionState.CALL_REFUSED, 0,
 		"I told him winnings don't have an entry fee and he hung up. Rather rude, in the end.")
-	SessionState.record_prologue_call("lina_reyes", "Lina Reyes", SessionState.CALL_PARTIAL, 1500,
+	SessionState.record_prologue_call("lina_reyes", "Lina Reyes", SessionState.CALL_PARTIAL, 5000,
 		"I only sent half. I thought that was clever.")
 	SessionState.record_reflection_milestone("First Report Filed", "Someone you called kept the number and passed it on.")
 	SessionState.prologue_end_reason = "Shift Ended Early"
@@ -154,7 +154,7 @@ func _capture_harmed_opening() -> void:
 	SessionState.reset_session()
 	SessionState.prologue_played = true
 	SessionState.detective_credibility = 80
-	SessionState.record_prologue_call("maria_santos", "Maria S.", SessionState.CALL_SUCCESS, 2200,
+	SessionState.record_prologue_call("maria_santos", "Maria S.", SessionState.CALL_SUCCESS, 18500,
 		"I trusted the caller because they sounded like bank staff. Now I am trying to figure out how to cover medicine and groceries.")
 	SessionState.pending_case_path = CASE_MARIA
 	var view: Node = load(INTERVIEW_SCENE).instantiate()

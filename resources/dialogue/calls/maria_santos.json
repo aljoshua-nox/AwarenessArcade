@@ -224,16 +224,16 @@
 			}
 		},
 		"paid": {
-			"prompt": "You can hear her holding the phone away to read it. \"Four, seven, one -\" She reads all six, carefully, the way she would have read a check number across a counter. \"Is that it? Is it safe now?\" You tell her it is. Somewhere on the floor, two thousand two hundred goes out against that code - the money she keeps in the savings for medicine and the month's food.",
+			"prompt": "You can hear her holding the phone away to read it. \"Four, seven, one -\" She reads all six, carefully, the way she would have read a check number across a counter. \"Is that it? Is it safe now?\" You tell her it is. Somewhere on the floor, eighteen thousand five hundred goes out against that code - the savings account, near enough all of it: the medicine money, the month's food, and the cushion she kept under both.",
 			"outcome": "success",
 			"consequence": "He sounded like the bank. He even knew about the text. I read the code out like I was helping, and it was my medicine money going out the door while I was saying thank you.",
-			"payout": 2200
+			"payout": 18500
 		},
 		"paid_part": {
-			"prompt": "\"A holding account.\" She turns it over. \"I can do seven hundred. Not the rest - the rest is spoken for, I've got the pharmacy on Thursday.\" She reads the account number off her own card, slowly, and authorizes it, and you let her think seven hundred is the bank being careful with her.",
+			"prompt": "\"A holding account.\" She turns it over. \"I can do three thousand. Not the rest - the rest is spoken for, I've got the pharmacy on Thursday.\" She reads the account number off her own card, slowly, and authorizes it, and you let her think three thousand is the bank being careful with her.",
 			"outcome": "partial",
-			"consequence": "I only sent part of it. I told myself that was me being careful. Seven hundred is still the pharmacy money, and it's still gone, and I still said thank you.",
-			"payout": 700
+			"consequence": "I only sent part of it. I told myself that was me being careful. Three thousand is still the pharmacy money, and it's still gone, and I still said thank you.",
+			"payout": 3000
 		},
 		"refused": {
 			"prompt": "\"No.\" Quiet, and then firmer. \"No. The bank wrote to me and it said they would never ask. I have the letter. It's on the fridge.\" The kettle clicks off. \"I'm going to hang up now, and I'm going to ring the number on the back of my card.\" She does both. She gives them the time, your number, and everything you said.",

@@ -42,6 +42,20 @@ const MARK_AFTERMATH := "AFTER THE CALL"
 static var _speech_regex: RegEx
 
 
+## Money, the way every screen prints it: "P18,500". The prologue, its summary
+## and the office ledger all show the same payouts, so they share one formatter.
+static func currency(amount: int) -> String:
+	var digits := str(absi(amount))
+	var out := ""
+	var count := 0
+	for i in range(digits.length() - 1, -1, -1):
+		out = digits[i] + out
+		count += 1
+		if count % 3 == 0 and i > 0:
+			out = "," + out
+	return "%sP%s" % ["-" if amount < 0 else "", out]
+
+
 static func _regex() -> RegEx:
 	if _speech_regex == null:
 		_speech_regex = RegEx.new()

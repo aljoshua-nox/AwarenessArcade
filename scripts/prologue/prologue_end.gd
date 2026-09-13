@@ -225,15 +225,7 @@ func _on_main_menu_pressed() -> void:
 
 
 func _format_currency(amount: int) -> String:
-	var digits := str(absi(amount))
-	var out := ""
-	var count := 0
-	for i in range(digits.length() - 1, -1, -1):
-		out = digits[i] + out
-		count += 1
-		if count % 3 == 0 and i > 0:
-			out = "," + out
-	return "P%s" % out
+	return TextStyle.currency(amount)
 
 
 func _get_random_harm_message() -> String:

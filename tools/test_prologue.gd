@@ -399,7 +399,7 @@ func _test_endings_record_what_they_declare() -> void:
 		"the consequence logged is the ending's own, not a random pool line")
 	_check(SessionState.profit == int(paid.get("payout", -1)), "the shift total is the sum of payouts")
 	_check(SessionState.reports_filed == 0, "someone who paid did not report you")
-	_check(_box(view).contains("P2,200"), "the call-ended line prints the amount")
+	_check(_box(view).contains(view._format_currency(int(paid.get("payout", 0)))), "the call-ended line prints the amount")
 	_check(SessionState.get_victim_disposition("maria_santos") == SessionState.DISPOSITION_HARMED,
 		"the investigation will read her as harmed")
 

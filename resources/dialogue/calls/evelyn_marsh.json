@@ -117,13 +117,13 @@
 			"prompt": "\"Four hundred twelve thousand.\" She says it flat, like a figure being entered in a ledger, and then, because she cannot help it, there is a small pause afterwards. \"And what is it you need from me?\" The pen is waiting.",
 			"choices": [
 				{
-					"text": "There's a release fee on winnings over a hundred thousand - it covers the transfer insurance. Four thousand eight hundred, and once it's paid the sum is released the same day.",
+					"text": "There's a release fee on winnings over a hundred thousand - it covers the transfer insurance. Twenty-four thousand five hundred, and once it's paid the sum is released the same day.",
 					"next": "fee_check",
 					"doubt": 10,
 					"tactic_id": "advance_fee"
 				},
 				{
-					"text": "Just the release fee - four thousand eight hundred, it's a fixed charge - and I'll need it today, because the draw closes at five.",
+					"text": "Just the release fee - twenty-four thousand five hundred, it's a fixed charge - and I'll need it today, because the draw closes at five.",
 					"next": "fee_check",
 					"doubt": 20,
 					"tactic_id": "advance_fee"
@@ -151,7 +151,7 @@
 					"doubt": 0
 				},
 				{
-					"text": "If it's easier, there's a senior citizen rate - two thousand two hundred - as long as it's settled on this call.",
+					"text": "If it's easier, there's a senior citizen rate - four thousand nine hundred - as long as it's settled on this call.",
 					"next": "paid_part",
 					"doubt": 0,
 					"tactic_id": "advance_fee"
@@ -162,7 +162,7 @@
 			"prompt": "\"A fee.\" The pen starts again. \"A fee, to be paid by me, in order to receive money that is owed to me.\" Perfectly polite. \"Say the amount again, slowly. I want it written down exactly as you said it.\"",
 			"choices": [
 				{
-					"text": "Mrs. Marsh, with respect, I have eleven other winners to reach before five. Four thousand eight hundred, or the sum is forfeit.",
+					"text": "Mrs. Marsh, with respect, I have eleven other winners to reach before five. Twenty-four thousand five hundred, or the sum is forfeit.",
 					"next": "last_check",
 					"doubt": 30,
 					"tactic_id": "manufactured_urgency"
@@ -188,16 +188,16 @@
 			}
 		},
 		"paid": {
-			"prompt": "She reads the card number out in groups of four, the way she'd read a check, and asks you to repeat it back, which you do. \"And the sum arrives this afternoon.\" It is not a question; it is a figure being entered. You tell her by five. Four thousand eight hundred leaves an account she has balanced to the centavo every month since 1989, and nothing arrives at five, or after.",
+			"prompt": "She reads the card number out in groups of four, the way she'd read a check, and asks you to repeat it back, which you do. \"And the sum arrives this afternoon.\" It is not a question; it is a figure being entered. You tell her by five. Twenty-four thousand five hundred leaves an account she has balanced to the centavo every month since 1989, and nothing arrives at five, or after.",
 			"outcome": "success",
 			"consequence": "I spent thirty years telling other people to check their figures. He read me a sum and I stopped checking. I'd written his number down before I paid, which is somehow the worst part.",
-			"payout": 4800
+			"payout": 24500
 		},
 		"paid_part": {
-			"prompt": "\"The senior citizen rate.\" A short breath that might, on another day, be a laugh. \"Well. There's a first.\" She pays it - two thousand two hundred, the card read in fours - and puts the pen down, and waits for five o'clock, and then for six.",
+			"prompt": "\"The senior citizen rate.\" A short breath that might, on another day, be a laugh. \"Well. There's a first.\" She pays it - four thousand nine hundred, the card read in fours - and puts the pen down, and waits for five o'clock, and then for six.",
 			"outcome": "partial",
-			"consequence": "He gave me a senior citizen discount on the fee. I remember thinking how considerate. Two thousand two hundred, and I sat by the phone until six.",
-			"payout": 2200
+			"consequence": "He gave me a senior citizen discount on the fee. I remember thinking how considerate. Four thousand nine hundred, and I sat by the phone until six.",
+			"payout": 4900
 		},
 		"refused": {
 			"prompt": "\"Winnings,\" says Evelyn Marsh, \"do not have an entry fee.\" She says it the way she has said it to nephews and neighbors. \"I've written down the number you called from, the time, and what you said, near enough word for word. Now - what did you say your name was?\" You hang up before she can finish the sentence. She finishes writing it anyway.",

@@ -150,9 +150,9 @@ func _test_opening_holds_the_prompt_back() -> void:
 
 	await _drain(view, "opening")
 
-	_check(view.transcript_lines[0].contains(TextStyle.MARK_DIALLING)
+	_check(view.transcript_lines[0].contains(TextStyle.MARK_DIALING)
 		and view.transcript_lines[0].contains(str(view.victims[0].get("name", ""))),
-		"the dialling line, naming the target, landed first")
+		"the dialing line, naming the target, landed first")
 	_check(view.transcript_lines[view.transcript_lines.size() - 1] == styled_prompt,
 		"the prompt lands last, once the line ahead of it is read")
 	_check(view.dialogue_value.visible_characters == view.dialogue_value.get_total_character_count(),
@@ -273,7 +273,7 @@ func _test_a_new_call_starts_a_new_transcript() -> void:
 	await _drain(view, "ending")
 
 	view._start_call(1)
-	_check(view.call_active, "a second number can be dialled")
+	_check(view.call_active, "a second number can be dialed")
 	_check(not _box(view).contains(first_name),
 		"the previous victim's call is cleared from the box")
 	_check(view.revealed_chars <= view.dialogue_value.get_total_character_count(),
@@ -432,7 +432,7 @@ func _test_reports_pull_the_line() -> void:
 	_check(not view.prologue_end_transition_started,
 		"...but waits for the closing lines of the call to be read")
 	view._start_call(_victim_index(view, "ramon_tolentino"))
-	_check(not view.call_active, "no new call can be dialled once the line is pulled")
+	_check(not view.call_active, "no new call can be dialed once the line is pulled")
 	view._finish_reveal()
 	_check(view.prologue_end_transition_started, "the shift ends once the queue drains")
 	_check(SessionState.prologue_end_reason == "Line Pulled", "...for the stated reason")
@@ -484,9 +484,9 @@ func _test_a_number_is_worked_once() -> void:
 	view._finish_reveal()
 	var calls_before: int = SessionState.calls_made
 	view._start_call(0)
-	_check(not view.call_active, "a victim already called this shift cannot be dialled again")
+	_check(not view.call_active, "a victim already called this shift cannot be dialed again")
 	_check(SessionState.calls_made == calls_before, "...and it does not count as a call")
-	_check(view.victim_list.is_item_disabled(view._row_for_victim_index(0)), "their row is greyed out")
+	_check(view.victim_list.is_item_disabled(view._row_for_victim_index(0)), "their row is grayed out")
 	_check(view.victim_list.get_item_text(view._row_for_victim_index(0)).ends_with("called"), "...and says so")
 	view._start_call(1)
 	_check(view.call_active, "the next number still dials")

@@ -4,7 +4,7 @@
 		"name": "Noah Paredes",
 		"age": 33,
 		"occupation": "Night-shift nurse",
-		"traits": "Night-shift nurse. Does an online course on a laptop that's been slow for a month. Ring after three - he'll agree to anything practical.",
+		"traits": "Night-shift nurse. Does an online course on a laptop that's been slow for a month. Call after three - he'll agree to anything practical.",
 		"portrait": "res://assets/art/portraits/fella 4.png",
 		"script": "Tech support callback",
 		"patience_seconds": 90,
@@ -18,11 +18,11 @@
 			"I paid for a scan that didn't need me to do anything. That was the selling point - I didn't have to do anything. Nothing changed. I don't know what I paid for."
 		],
 		"resistant": [
-			"I asked him why software would ring me and he didn't really have an answer. I told IT in the morning. They said it happens all the time, and to give them the number, so I did.",
+			"I asked him why software would call me and he didn't really have an answer. I told IT in the morning. They said it happens all the time, and to give them the number, so I did.",
 			"I let him talk longer than I should have because I was too tired to argue. Then I just hung up. I told the ward clerk in the morning and she'd had the same call."
 		],
 		"unfinished": [
-			"Somebody rang about my laptop at three in the morning and then hung up. I was so tired I half thought I'd dreamt it. I kept it off the wifi for a bit, just in case.",
+			"Somebody called about my laptop at three in the morning and then hung up. I was so tired I half thought I'd dreamed it. I kept it off the wifi for a bit, just in case.",
 			"I was too tired to chase it up. I've wondered about it since - whether something was actually wrong, and I just never found out."
 		]
 	},
@@ -31,7 +31,7 @@
 			"prompt": "It rings six times. \"...Hello?\" A voice on the wrong side of a fourteen-hour shift, somewhere with a vending machine humming. He has been awake for twenty hours and has a module due on Friday.",
 			"choices": [
 				{
-					"text": "Noah? Sorry to ring so late - it's the software support desk for your laptop. It's been sending us error reports for about a week and I thought I'd catch you before it locked you out.",
+					"text": "Noah? Sorry to call so late - it's the software support desk for your laptop. It's been sending us error reports for about a week and I thought I'd catch you before it locked you out.",
 					"next": "errors",
 					"doubt": 0,
 					"tactic_id": "authority_impersonation"
@@ -65,7 +65,7 @@
 					"tactic_id": "manufactured_urgency"
 				},
 				{
-					"text": "Actually - it can wait till you're awake. I'll put a note on the account.",
+					"text": "Actually - it can wait until you're awake. I'll put a note on the account.",
 					"next": "bail",
 					"doubt": 0
 				}
@@ -87,7 +87,7 @@
 					"tactic_id": "manufactured_fear"
 				},
 				{
-					"text": "Leave it off the wifi tonight. Someone will ring you in the morning.",
+					"text": "Leave it off the wifi tonight. Someone will call you in the morning.",
 					"next": "bail",
 					"doubt": 0
 				}
@@ -131,7 +131,7 @@
 			}
 		},
 		"balks": {
-			"prompt": "\"Hang on.\" The fan's still going. \"Why did you ring me? I didn't ring you. Software doesn't ring you.\" It isn't sharp. He's too tired for sharp. But it's the right question, and he's waiting for the answer.",
+			"prompt": "\"Hang on.\" The fan's still going. \"Why did you call me? I didn't call you. Software doesn't call you.\" It isn't sharp. He's too tired for sharp. But it's the right question, and he's waiting for the answer.",
 			"choices": [
 				{
 					"text": "Because it's a managed device - it came with a support plan through the retailer. Most people never hear from us. Yours has been shouting for a week.",
@@ -204,7 +204,7 @@
 		"refused": {
 			"prompt": "\"No.\" A long breath out. \"I'm going to ask IT. Sorry.\" He isn't, quite. \"What's this number, so I can tell them?\" You don't say. He reads it off his phone into the silence, slowly, so he'll remember it, and hangs up.",
 			"outcome": "refused",
-			"consequence": "I asked him why software would ring me and he didn't really have an answer. I told IT in the morning. They said it happens all the time, and to give them the number, so I did.",
+			"consequence": "I asked him why software would call me and he didn't really have an answer. I told IT in the morning. They said it happens all the time, and to give them the number, so I did.",
 			"reports": true
 		},
 		"hangs_up": {
@@ -216,7 +216,7 @@
 		"bail": {
 			"prompt": "\"...Hello?\" The line's gone. He looks at the laptop, which is open now, and slow, and then at the time, and closes it. In the morning he won't be sure it happened.",
 			"outcome": "aborted",
-			"consequence": "Somebody rang about my laptop at three in the morning and then hung up. I was so tired I half thought I'd dreamt it. I kept it off the wifi for a bit, just in case."
+			"consequence": "Somebody called about my laptop at three in the morning and then hung up. I was so tired I half thought I'd dreamed it. I kept it off the wifi for a bit, just in case."
 		}
 	}
 }

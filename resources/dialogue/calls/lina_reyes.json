@@ -18,12 +18,12 @@
 			"I priced it like a job. Fee against prize. That's how it's built - each one small enough to be worth the risk, once you've paid the last one."
 		],
 		"resistant": [
-			"I asked him to take the fee off the top and he rang off. I'd been writing quotes when he called and I just kept writing - number, time, what he said. I rang the supplier; they'd never heard of it.",
+			"I asked him to take the fee off the top and he hung up. I'd been writing quotes when he called and I just kept writing - number, time, what he said. I called the supplier; they'd never heard of it.",
 			"I've had three of those this month. He was the best of them - he knew about the machine. I wrote the time down and went back to work."
 		],
 		"unfinished": [
-			"A call about a prize, and then nothing. I've had three of those this month. They all ring off eventually. I don't think about them.",
-			"It rang off before he'd said what he wanted. I had a customer in. I've a number in the margin of a quote and no idea why I wrote it."
+			"A call about a prize, and then nothing. I've had three of those this month. They all hang up eventually. I don't think about them.",
+			"It cut off before he'd said what he wanted. I had a customer in. I have a number in the margin of a quote and no idea why I wrote it."
 		]
 	},
 	"nodes": {
@@ -53,18 +53,18 @@
 			"prompt": "\"Through the supplier.\" The pen keeps moving; she's still writing the quote. \"Which supplier? I've got three and I'm behind with two of them.\" Not hostile. Interested in a tired way, the way you'd be interested in a bill that might turn out to be a refund.",
 			"choices": [
 				{
-					"text": "The paper supplier - they enter every trade account in the annual draw. Yours came out. It's a hundred and fifty thousand, towards equipment.",
+					"text": "The paper supplier - they enter every trade account in the annual draw. Yours came out. It's a hundred fifty thousand, towards equipment.",
 					"next": "equipment",
 					"doubt": 0,
 					"tactic_id": "authority_impersonation"
 				},
 				{
-					"text": "Honestly, it'll be on the letter - I've just got the shortlist here. The important bit is the sum: a hundred and fifty thousand.",
+					"text": "Honestly, it'll be on the letter - I've just got the shortlist here. The important bit is the sum: a hundred fifty thousand.",
 					"next": "equipment",
 					"doubt": 15
 				},
 				{
-					"text": "Sorry - I've the wrong Reyes. Apologies for the interruption.",
+					"text": "Sorry - I have the wrong Reyes. Apologies for the interruption.",
 					"next": "bail",
 					"doubt": 0
 				}
@@ -74,13 +74,13 @@
 			"prompt": "\"I've got about half of one.\" The machine starts again behind her. \"Regional what? I didn't enter anything. I don't enter things.\"",
 			"choices": [
 				{
-					"text": "You wouldn't have - your paper supplier enters every trade account automatically. It's a hundred and fifty thousand, towards equipment.",
+					"text": "You wouldn't have - your paper supplier enters every trade account automatically. It's a hundred fifty thousand, towards equipment.",
 					"next": "equipment",
 					"doubt": -5,
 					"tactic_id": "authority_impersonation"
 				},
 				{
-					"text": "You didn't have to. Look - it closes today, that's why I'm ringing round. Do you want it or not?",
+					"text": "You didn't have to. Look - it closes today, that's why I'm calling around. Do you want it or not?",
 					"next": "equipment",
 					"doubt": 15,
 					"tactic_id": "manufactured_urgency"
@@ -96,7 +96,7 @@
 			"prompt": "The machine stops. \"Towards equipment.\" The pen has stopped too. \"...What kind of equipment?\" It is the first thing she has asked that she actually wants the answer to.",
 			"choices": [
 				{
-					"text": "Anything for the business - a machine, a fit-out. It's paid direct to you, not the supplier; you spend it how you like. There's one form and a release fee, and it's yours.",
+					"text": "Anything for the business - a machine, a renovation. It's paid direct to you, not the supplier; you spend it how you like. There's one form and a release fee, and it's yours.",
 					"next": "fee",
 					"doubt": 0
 				},
@@ -123,7 +123,7 @@
 					"tactic_id": "advance_fee"
 				},
 				{
-					"text": "Admin, basically. Two and a half, today, and the hundred and fifty goes out Monday. Or I move to the next name.",
+					"text": "Admin, basically. Two and a half, today, and the hundred fifty goes out Monday. Or I move to the next name.",
 					"next": "fee_check",
 					"doubt": 15,
 					"tactic_id": "manufactured_urgency"
@@ -151,7 +151,7 @@
 			}
 		},
 		"balks": {
-			"prompt": "\"Hang on.\" The pen is down now. \"If it's insurance on a payment to me, why am I paying it? Take it off the top.\" Behind her a customer comes in; she doesn't look up. \"Go on. Take it off the hundred and fifty and send me the rest.\"",
+			"prompt": "\"Hang on.\" The pen is down now. \"If it's insurance on a payment to me, why am I paying it? Take it off the top.\" Behind her a customer comes in; she doesn't look up. \"Go on. Take it off the hundred fifty and send me the rest.\"",
 			"choices": [
 				{
 					"text": "I'd love to - it's the bank's rule, not ours. The bond has to clear from the recipient's side or the transfer's flagged. It's a nuisance for everyone.",
@@ -188,13 +188,13 @@
 		"paid_part": {
 			"prompt": "\"Half.\" She thinks about the quote under her hand and the deposit she has been not-touching for two years. \"Twelve hundred. Fine. Now, and the rest when I see something.\" She pays it, and writes it down, and does not see anything.",
 			"outcome": "partial",
-			"consequence": "I only sent half. I thought that was clever - hold the rest till I saw something. Nothing came, and then a different man rang about the other half.",
+			"consequence": "I only sent half. I thought that was clever - hold the rest until I saw something. Nothing came, and then a different man called about the other half.",
 			"payout": 1200
 		},
 		"refused": {
-			"prompt": "\"Take it off the top or there's no fee.\" Perfectly reasonable, and perfectly final. \"And I'll want that in writing, from the supplier, on their letterhead - which I know, because I print it.\" She writes the time next to your number. \"I'll wait.\" You don't make her wait. You hang up, and she goes back to the quote, finishes it, and then rings the supplier.",
+			"prompt": "\"Take it off the top or there's no fee.\" Perfectly reasonable, and perfectly final. \"And I'll want that in writing, from the supplier, on their letterhead - which I know, because I print it.\" She writes the time next to your number. \"I'll wait.\" You don't make her wait. You hang up, and she goes back to the quote, finishes it, and then calls the supplier.",
 			"outcome": "refused",
-			"consequence": "I asked him to take the fee off the top and he rang off. I'd been writing quotes when he called and I just kept writing - number, time, what he said. I rang the supplier; they'd never heard of it.",
+			"consequence": "I asked him to take the fee off the top and he hung up. I'd been writing quotes when he called and I just kept writing - number, time, what he said. I called the supplier; they'd never heard of it.",
 			"reports": true
 		},
 		"hangs_up": {
@@ -206,7 +206,7 @@
 		"bail": {
 			"prompt": "\"Hello? -\" The line's gone. She holds the phone for a second, then puts it down and picks up the pen, and the quote she was writing has a number in the margin now that she doesn't remember writing.",
 			"outcome": "aborted",
-			"consequence": "A call about a prize, and then nothing. I've had three of those this month. They all ring off eventually. I don't think about them."
+			"consequence": "A call about a prize, and then nothing. I've had three of those this month. They all hang up eventually. I don't think about them."
 		}
 	}
 }

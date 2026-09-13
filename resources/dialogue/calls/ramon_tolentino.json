@@ -18,17 +18,17 @@
 			"I sent a test payment first. I thought that was smart. It's still money, and there was nothing to test - it went where he said and that was the last I heard."
 		],
 		"resistant": [
-			"He had a reference number and everything. I said I'd ring the bank and quote it, and I did, and they'd never heard of it. I gave them his number. I read it off my screen like a plate.",
-			"I gave him a minute more than I should have, because he sounded like he knew what he was doing. Then I put the phone down and wrote his number on the drop sheet."
+			"He had a reference number and everything. I said I'd call the bank and quote it, and I did, and they'd never heard of it. I gave them his number. I read it off my screen like a plate.",
+			"I gave him a minute more than I should have, because he sounded like he knew what he was doing. Then I hung up and wrote his number on the drop sheet."
 		],
 		"unfinished": [
-			"Someone rang about my card and then rang off before I'd got a reference out of him. I've been checking the statement every day since. There's nothing on it.",
+			"Someone called about my card and then hung up before I could get a reference out of him. I've been checking the statement every day since. There's nothing on it.",
 			"Nothing came of it, and somehow that left me more uneasy than if something had. I like a thing to have an end."
 		]
 	},
 	"nodes": {
 		"open": {
-			"prompt": "He answers on the second ring with the name of the courier firm, then, when you ask for him: \"Speaking. Make it quick, I've got eleven vans out.\" A radio crackles under his voice. He has a pen; he has a screen; he has, at most, four minutes.",
+			"prompt": "He answers on the second ring with the name of the courier company, then, when you ask for him: \"Speaking. Make it quick, I've got eleven vans out.\" A radio crackles under his voice. He has a pen; he has a screen; he has, at most, four minutes.",
 			"choices": [
 				{
 					"text": "Mr. Tolentino, this is the card fraud team at your bank. I'll be quick. There's a payment on your card from this morning that we've held - nine thousand eight hundred at an electronics retailer. Was that you?",
@@ -50,7 +50,7 @@
 			]
 		},
 		"not_me": {
-			"prompt": "\"Nine thousand -\" The radio gets muted. \"No. No, that's not me. I'm at work, I've been here since six.\" Something scrapes; he's sat up. \"Where was it? What shop?\"",
+			"prompt": "\"Nine thousand -\" The radio gets muted. \"No. No, that's not me. I'm at work, I've been here since six.\" Something scrapes; he's sitting up. \"Where was it? What shop?\"",
 			"choices": [
 				{
 					"text": "A branch in the city - online order, collect in store. It hasn't been collected yet, which is why we could hold it. I can cancel it and the card now, if you'll bear with me.",
@@ -87,14 +87,14 @@
 					"tactic_id": "manufactured_urgency"
 				},
 				{
-					"text": "I'll get the reference and ring you back.",
+					"text": "I'll get the reference and call you back.",
 					"next": "bail",
 					"doubt": 0
 				}
 			]
 		},
 		"which_bank": {
-			"prompt": "\"Which bank?\" Flat. He has asked drivers this question - which depot, which drop - a thousand times, and he waits for the answer the same way.",
+			"prompt": "\"Which bank?\" Flat. He has asked drivers this question - which hub, which drop - a thousand times, and he waits for the answer the same way.",
 			"choices": [
 				{
 					"text": "Sorry - card services, your main current account. There's a hold on a nine-thousand-eight-hundred payment from this morning. Was that you?",
@@ -108,7 +108,7 @@
 					"doubt": 20
 				},
 				{
-					"text": "You know what, I'll ring back with the file in front of me.",
+					"text": "You know what, I'll call back with the file in front of me.",
 					"next": "bail",
 					"doubt": 0
 				}
@@ -130,7 +130,7 @@
 					"tactic_id": "manufactured_fear"
 				},
 				{
-					"text": "Simplest is you ring the number on the back of your card and quote the reference. I'll leave the hold on till you do.",
+					"text": "Simplest is you call the number on the back of your card and quote the reference. I'll leave the hold on until you do.",
 					"next": "bail",
 					"doubt": 0
 				}
@@ -151,10 +151,10 @@
 			}
 		},
 		"balks": {
-			"prompt": "\"Hold on.\" The dispatcher's voice - the one that stops a driver mid-sentence. \"You rang me. You've got my name and my number. So you don't need me to prove who I am. You need to prove who you are.\" He waits.",
+			"prompt": "\"Hold on.\" The dispatcher's voice - the one that stops a driver mid-sentence. \"You called me. You've got my name and my number. So you don't need me to prove who I am. You need to prove who you are.\" He waits.",
 			"choices": [
 				{
-					"text": "Fair - and you should be careful. Ring the number on your card, quote CS-4471, and they'll put you back through to me. Or I finish it now and you're done in sixty seconds. Your call.",
+					"text": "Fair - and you should be careful. Call the number on your card, quote CS-4471, and they'll put you back through to me. Or I finish it now and you're done in sixty seconds. Your call.",
 					"next": "last_check",
 					"doubt": 0,
 					"tactic_id": "authority_impersonation"
@@ -166,7 +166,7 @@
 					"tactic_id": "manufactured_urgency"
 				},
 				{
-					"text": "Then ring them. I'll close the ticket.",
+					"text": "Then call them. I'll close the ticket.",
 					"next": "bail",
 					"doubt": 0
 				}
@@ -180,7 +180,7 @@
 			}
 		},
 		"paid": {
-			"prompt": "The text arrives on the phone in his other hand. He reads it out clearly, digit by digit, the way he'd read a postcode to a driver, and asks you to confirm it back, and you do. \"Right. Is it cancelled?\" It is not cancelled. Two thousand goes out of the account against that code before he has put the radio back on.",
+			"prompt": "The text arrives on the phone in his other hand. He reads it out clearly, digit by digit, the way he'd read an address to a driver, and asks you to confirm it back, and you do. \"Right. Is it canceled?\" It is not canceled. Two thousand goes out of the account against that code before he has put the radio back on.",
 			"outcome": "success",
 			"consequence": "He had a reference number. He had the shop, the amount, the lot. I read him the code like I was confirming a drop. I've been reading things back to people for thirty years and never once thought about who was on the other end.",
 			"payout": 2000
@@ -192,21 +192,21 @@
 			"payout": 800
 		},
 		"refused": {
-			"prompt": "\"Then I'll ring them.\" No heat in it. \"Reference CS-4471. I'll quote it.\" He reads your number back to you off his screen, the way he'd read a plate. \"That's you, is it? Good.\" The line goes. He rings the number on the back of his card from the depot, with the radio going, and the bank has never heard of the reference.",
+			"prompt": "\"Then I'll call them.\" No heat in it. \"Reference CS-4471. I'll quote it.\" He reads your number back to you off his screen, the way he'd read a plate. \"That's you, is it? Good.\" The line goes. He calls the number on the back of his card from the hub, with the radio going, and the bank has never heard of the reference.",
 			"outcome": "refused",
-			"consequence": "He had a reference number and everything. I said I'd ring the bank and quote it, and I did, and they'd never heard of it. I gave them his number. I read it off my screen like a plate.",
+			"consequence": "He had a reference number and everything. I said I'd call the bank and quote it, and I did, and they'd never heard of it. I gave them his number. I read it off my screen like a plate.",
 			"reports": true
 		},
 		"hangs_up": {
 			"prompt": "\"No. Done.\" The radio's back on before the phone's down. He writes the number on the dispatch log between two drops, because that is where he writes things down.",
 			"outcome": "hung_up",
-			"consequence": "I gave him a minute more than I should have, because he sounded like he knew what he was doing. Then I put the phone down and wrote his number on the drop sheet.",
+			"consequence": "I gave him a minute more than I should have, because he sounded like he knew what he was doing. Then I hung up and wrote his number on the drop sheet.",
 			"reports": true
 		},
 		"bail": {
-			"prompt": "\"- ring back. Right.\" He's already reaching for his wallet as the line goes. He rings the bank. They've no hold on anything. He sits with that for a second, then puts the radio back on.",
+			"prompt": "\"- call back. Right.\" He's already reaching for his wallet as the line goes. He calls the bank. They have no hold on anything. He sits with that for a second, then puts the radio back on.",
 			"outcome": "aborted",
-			"consequence": "Someone rang about my card and then rang off before I'd got a reference out of him. I've been checking the statement every day since. There's nothing on it."
+			"consequence": "Someone called about my card and then hung up before I could get a reference out of him. I've been checking the statement every day since. There's nothing on it."
 		}
 	}
 }

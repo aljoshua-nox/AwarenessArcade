@@ -33,7 +33,7 @@ const MARK_CONTRADICTION := "CONTRADICTION"
 ## The prologue's call floor talking: the line connecting, the tactic the player
 ## just used being named, the call closing, a report landing, and the victim's
 ## own words afterwards.
-const MARK_DIALLING := "DIALLING"
+const MARK_DIALING := "DIALING"
 const MARK_TACTIC_USED := "TACTIC USED"
 const MARK_CALL_ENDED := "CALL ENDED"
 const MARK_REPORTED := "REPORTED"
@@ -58,7 +58,7 @@ static func dialogue(raw: String) -> String:
 	return "[color=#%s]%s[/color]" % [COLOR_NARRATION, speech]
 
 
-## The case file speaking: monospaced and colour-coded, never mistakable for a
+## The case file speaking: monospaced and color-coded, never mistakable for a
 ## line of dialogue.
 static func system(marker: String, body: String, color: String) -> String:
 	return "[font=%s][color=#%s][b]%s[/b]  %s[/color][/font]" % [FONT_SYSTEM, color, marker, body]

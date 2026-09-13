@@ -14,7 +14,7 @@
     "dispositions": {
       "harmed": {
         "cooperation": 34,
-        "prompt": "Lina keeps working while you talk - trimming, stacking, not looking up. \"I've filled in the forms. Bank, police, the portal.\" The guillotine comes down. \"Nothing has come back from any of them, so you'll forgive me if I keep working.\"",
+        "prompt": "Lina keeps working while you talk - trimming, stacking, not looking up. \"I've filled in the forms. Bank, police, the portal.\" The paper cutter comes down. \"Nothing has come back from any of them, so you'll forgive me if I keep working.\"",
         "note": "You took money from this one, and she runs a business on the margin. Every form she filed after your call went unanswered, which is the ordinary experience and the reason people stop filing them."
       },
       "resistant": {
@@ -24,7 +24,7 @@
       },
       "unfinished": {
         "cooperation": 44,
-        "prompt": "Lina glances up from the counter. \"A call about a prize, and then nothing. It rang off.\" She goes back to the stack. \"I've had three of those this month. They all ring off eventually.\"",
+        "prompt": "Lina glances up from the counter. \"A call about a prize, and then nothing. It cut off.\" She goes back to the stack. \"I've had three of those this month. They all hang up eventually.\"",
         "note": "Your call to her never finished. She has absorbed these calls as background noise, which is what happens when they arrive often enough."
       }
     }
@@ -41,7 +41,7 @@
       "id": "ev_second_call_log",
       "tactic_id": "reused_victim_list",
       "label": "Callback Log",
-      "description": "Lina's phone log showing four further calls from different numbers in the fortnight after she paid.",
+      "description": "Lina's phone log showing four further calls from different numbers in the two weeks after she paid.",
       "tactic": "Paying marks a number as productive. The list is worth more once somebody on it has proved they will pay."
     },
     {
@@ -62,7 +62,7 @@
   "failure_node": "end_shutdown",
   "nodes": {
     "hesitant_intro": {
-      "prompt": "Lina looks at your identification longer than most people do, then hands it back. \"No offence meant. People have come in about this before and nothing came of it, and I've had a stranger use the word 'investigator' at me on the phone already this month.\"",
+      "prompt": "Lina looks at your identification longer than most people do, then hands it back. \"No offense meant. People have come in about this before and nothing came of it, and I've had a stranger use the word 'investigator' at me on the phone already this month.\"",
       "choices": [
         {
           "text": "None taken. I'll come back when I can show you the case is real.",
@@ -155,7 +155,7 @@
         "question": "Why does a scam like this ask three times instead of asking once for the whole amount?",
         "milestone": {
           "title": "Tactic Identified: The Escalating Fee",
-          "detail": "Recognised that the fee is split deliberately - each payment is small next to what has already been sunk, so the decision never feels like the large one it is."
+          "detail": "Recognized that the fee is split deliberately - each payment is small next to what has already been sunk, so the decision never feels like the large one it is."
         },
         "options": [
           {
@@ -203,7 +203,7 @@
         {
           "evidence_id": "ev_recovery_offer",
           "next": "ask_evidence",
-          "response": "She reads it and laughs once, without any humour in it. \"Pay us to get back the money you paid them. I nearly did. That is the part I would rather you didn't write down.\"",
+          "response": "She reads it and laughs once, without any humor in it. \"Pay us to get back the money you paid them. I nearly did. That is the part I would rather you didn't write down.\"",
           "cooperation": 6
         },
         {
@@ -226,7 +226,7 @@
       ]
     },
     "press_details": {
-      "prompt": "\"He stopped answering. And then a fortnight later somebody else rang about a completely different prize.\" She shrugs. \"So either it's a coincidence, or I'm worth more to them now than I was before.\"",
+      "prompt": "\"He stopped answering. And then two weeks later somebody else called about a completely different prize.\" She shrugs. \"So either it's a coincidence, or I'm worth more to them now than I was before.\"",
       "cooperation": 6,
       "choices": [
         {
@@ -272,7 +272,7 @@
       "choices": []
     },
     "end_shutdown": {
-      "prompt": "\"Right.\" Lina picks the stack back up, and the guillotine comes down on it. \"I've got a run to finish.\" She does not look up again. The receipts stay in the drawer, where they have been since the day she filed the report nobody read.",
+      "prompt": "\"Right.\" Lina picks the stack back up, and the paper cutter comes down on it. \"I've got a run to finish.\" She does not look up again. The receipts stay in the drawer, where they have been since the day she filed the report nobody read.",
       "outcome": "failure",
       "milestone": {
         "title": "Witness Lost",

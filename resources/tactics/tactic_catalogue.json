@@ -45,7 +45,7 @@
     {
       "id": "repeated_script",
       "name": "The same call, more than once",
-      "summary": "The identical wording turning up at a neighbour, a relative, a community group. Scripts are reused because they are cheap and they work.",
+      "summary": "The identical wording turning up at a neighbor, a relative, a community group. Scripts are reused because they are cheap and they work.",
       "spot_it": "Compare notes out loud. A call that felt uniquely targeted usually turns out to have reached half the street."
     },
     {
@@ -58,7 +58,7 @@
       "id": "verification_denial",
       "name": "Denying you time to check",
       "summary": "Different scripts, one shared mechanism: keep the person on the line and away from anyone who could confirm the story.",
-      "spot_it": "The single defence that works on every version of this - end the call and check independently. Any caller who resists that has told you what they are."
+      "spot_it": "The single defense that works on every version of this - end the call and check independently. Any caller who resists that has told you what they are."
     }
   ]
 }

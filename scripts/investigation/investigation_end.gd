@@ -29,7 +29,7 @@ const OUTCOME_MESSAGES := {
 # Whether the player could name the manipulation does not decide who gets
 # arrested - that is what the evidence is for, and gating justice behind a quiz
 # score would punish the wrong thing. What it decides is whether they leave able
-# to recognise the next one, which is the entire point of the game, so the
+# to recognize the next one, which is the entire point of the game, so the
 # ending has to say it out loud instead of leaving it in a scorecard.
 const AWARENESS_VERDICTS := {
 	"full_takedown": {
@@ -93,7 +93,7 @@ func _build_ui() -> void:
 		root_margin.add_theme_constant_override(side, 16)
 	add_child(root_margin)
 
-	# A fixed-width column centred by spacers, filling the available height, so
+	# A fixed-width column centered by spacers, filling the available height, so
 	# the reading measure stays comfortable and the panel has a real bottom to
 	# pin the buttons to.
 	var centring_row := HBoxContainer.new()
@@ -200,7 +200,7 @@ func _build_ui() -> void:
 	button_row.add_child(main_menu_button)
 
 
-# The themed fill is red, which reads as failure at any value. Colour it by
+# The themed fill is red, which reads as failure at any value. Color it by
 # tier instead so a strong reading looks like one.
 func _tint_awareness_bar() -> void:
 	var fill := StyleBoxFlat.new()

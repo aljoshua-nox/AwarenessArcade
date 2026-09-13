@@ -4,7 +4,7 @@
 		"name": "Evelyn Marsh",
 		"age": 74,
 		"occupation": "Retired bookkeeper",
-		"traits": "Retired bookkeeper. Entered a shop raffle for a hamper in March - that's where the name and the road came from. Writes things down. Do not give her time to.",
+		"traits": "Retired bookkeeper. Entered a store raffle for a gift basket in March - that's where the name and the road came from. Writes things down. Do not give her time to.",
 		"portrait": "res://assets/art/portraits/lady 2.png",
 		"script": "Prize draw desk",
 		"patience_seconds": 60,
@@ -18,11 +18,11 @@
 			"The fee sounded small next to the prize. That is the whole trick, and I knew the trick, and I paid it anyway."
 		],
 		"resistant": [
-			"I told him winnings don't have an entry fee and he rang off. Rather rude, in the end. I had it all written down by then - number, time, every word - and I've been waiting for someone to come and collect it.",
-			"I put the phone down on him, which I don't usually do. Then I wrote the whole thing out while it was fresh and kept it by the phone."
+			"I told him winnings don't have an entry fee and he hung up. Rather rude, in the end. I had it all written down by then - number, time, every word - and I've been waiting for someone to come and collect it.",
+			"I hung up on him, which I don't usually do. Then I wrote the whole thing out while it was fresh and kept it by the phone."
 		],
 		"unfinished": [
-			"Somebody rang about a prize and then rang off. I'd started writing it down out of habit. I put a question mark next to it and, I'm afraid, forgot about it.",
+			"Somebody called about a prize and then hung up. I'd started writing it down out of habit. I put a question mark next to it and, I'm afraid, forgot about it.",
 			"I assumed it was a wrong number that got bored. I did note the time. I note everything; it's not a virtue, it's a habit."
 		]
 	},
@@ -37,22 +37,22 @@
 					"tactic_id": "authority_impersonation"
 				},
 				{
-					"text": "Congratulations! Is this Evelyn? You've won! Four hundred and twelve thousand -",
+					"text": "Congratulations! Is this Evelyn? You've won! Four hundred twelve thousand -",
 					"next": "slow_down",
 					"doubt": 15
 				},
 				{
-					"text": "Mrs. Marsh, I'm following up on the raffle you entered at the shop on the parade in March. There's been a draw across all the entries.",
+					"text": "Mrs. Marsh, I'm following up on the raffle you entered at the hardware store on the main road in March. There's been a draw across all the entries.",
 					"next": "raffle",
 					"doubt": -10
 				}
 			]
 		},
 		"pleased": {
-			"prompt": "\"Have I.\" Not a question. \"Which draw, and what was the entry? I do like to have things in front of me.\" She is, you realise, writing.",
+			"prompt": "\"Have I.\" Not a question. \"Which draw, and what was the entry? I do like to have things in front of me.\" She is, you realize, writing.",
 			"choices": [
 				{
-					"text": "The regional promotional draw - it pools entries from participating retailers. Yours came through the shop on the parade, in March. The sum is four hundred and twelve thousand.",
+					"text": "The regional promotional draw - it pools entries from participating retailers. Yours came through the hardware store on the main road, in March. The sum is four hundred twelve thousand.",
 					"next": "sum",
 					"doubt": 0,
 					"tactic_id": "authority_impersonation"
@@ -92,10 +92,10 @@
 			]
 		},
 		"raffle": {
-			"prompt": "\"The hamper.\" A pause in which she is deciding whether to be pleased. \"I did put my name in for that. I don't recall being told it went into anything else.\" A pen, a page. \"Go on.\"",
+			"prompt": "\"The gift basket.\" A pause in which she is deciding whether to be pleased. \"I did put my name in for that. I don't recall being told it went into anything else.\" A pen, a page. \"Go on.\"",
 			"choices": [
 				{
-					"text": "It's in the small print on the slip - all the shop's entries go into the regional draw as well. Yours has come up. Four hundred and twelve thousand.",
+					"text": "It's in the small print on the slip - all the store's entries go into the regional draw as well. Yours has come up. Four hundred twelve thousand.",
 					"next": "sum",
 					"doubt": 5,
 					"tactic_id": "authority_impersonation"
@@ -107,14 +107,14 @@
 					"tactic_id": "manufactured_urgency"
 				},
 				{
-					"text": "Actually - I'm sorry, I've the wrong Marsh. Do forgive me.",
+					"text": "Actually - I'm sorry, I have the wrong Marsh. Forgive me.",
 					"next": "bail",
 					"doubt": 0
 				}
 			]
 		},
 		"sum": {
-			"prompt": "\"Four hundred and twelve thousand.\" She says it flat, like a figure being entered in a ledger, and then, because she cannot help it, there is a small pause afterwards. \"And what is it you need from me?\" The pen is waiting.",
+			"prompt": "\"Four hundred twelve thousand.\" She says it flat, like a figure being entered in a ledger, and then, because she cannot help it, there is a small pause afterwards. \"And what is it you need from me?\" The pen is waiting.",
 			"choices": [
 				{
 					"text": "There's a release fee on winnings over a hundred thousand - it covers the transfer insurance. Four thousand eight hundred, and once it's paid the sum is released the same day.",
@@ -129,7 +129,7 @@
 					"tactic_id": "advance_fee"
 				},
 				{
-					"text": "Nothing today, Mrs. Marsh. I'll put the paperwork in the post.",
+					"text": "Nothing today, Mrs. Marsh. I'll put the paperwork in the mail.",
 					"next": "bail",
 					"doubt": 0
 				}
@@ -143,7 +143,7 @@
 			}
 		},
 		"agrees": {
-			"prompt": "A longer silence than any so far. \"I see.\" The pen has stopped. \"Insurance on the transfer. Yes. That would be how it's done.\" Thirty years of telling other people to check their figures, and the figure in front of her is four hundred and twelve thousand. \"How do I pay it?\"",
+			"prompt": "A longer silence than any so far. \"I see.\" The pen has stopped. \"Insurance on the transfer. Yes. That would be how it's done.\" Thirty years of telling other people to check their figures, and the figure in front of her is four hundred twelve thousand. \"How do I pay it?\"",
 			"choices": [
 				{
 					"text": "By card is quickest - I'll take the number now and it's done, and the sum goes out this afternoon.",
@@ -151,7 +151,7 @@
 					"doubt": 0
 				},
 				{
-					"text": "If it's easier, there's a pensioner rate - two thousand two hundred - as long as it's settled on this call.",
+					"text": "If it's easier, there's a senior citizen rate - two thousand two hundred - as long as it's settled on this call.",
 					"next": "paid_part",
 					"doubt": 0,
 					"tactic_id": "advance_fee"
@@ -168,7 +168,7 @@
 					"tactic_id": "manufactured_urgency"
 				},
 				{
-					"text": "It's a standard release charge, Mrs. Marsh - the same as a solicitor's fee on a will. It's insurance on the transfer, not a charge for the prize.",
+					"text": "It's a standard release charge, Mrs. Marsh - the same as a notarial fee on a contract. It's insurance on the transfer, not a charge for the prize.",
 					"next": "last_check",
 					"doubt": 10,
 					"tactic_id": "authority_impersonation"
@@ -188,33 +188,33 @@
 			}
 		},
 		"paid": {
-			"prompt": "She reads the card number out in groups of four, the way she'd read a cheque, and asks you to repeat it back, which you do. \"And the sum arrives this afternoon.\" It is not a question; it is a figure being entered. You tell her by five. Four thousand eight hundred leaves an account she has balanced to the penny every month since 1989, and nothing arrives at five, or after.",
+			"prompt": "She reads the card number out in groups of four, the way she'd read a check, and asks you to repeat it back, which you do. \"And the sum arrives this afternoon.\" It is not a question; it is a figure being entered. You tell her by five. Four thousand eight hundred leaves an account she has balanced to the centavo every month since 1989, and nothing arrives at five, or after.",
 			"outcome": "success",
 			"consequence": "I spent thirty years telling other people to check their figures. He read me a sum and I stopped checking. I'd written his number down before I paid, which is somehow the worst part.",
 			"payout": 4800
 		},
 		"paid_part": {
-			"prompt": "\"The pensioner rate.\" A short breath that might, on another day, be a laugh. \"Well. There's a first.\" She pays it - two thousand two hundred, the card read in fours - and puts the pen down, and waits for five o'clock, and then for six.",
+			"prompt": "\"The senior citizen rate.\" A short breath that might, on another day, be a laugh. \"Well. There's a first.\" She pays it - two thousand two hundred, the card read in fours - and puts the pen down, and waits for five o'clock, and then for six.",
 			"outcome": "partial",
-			"consequence": "He gave me a pensioner's discount on the fee. I remember thinking how considerate. Two thousand two hundred, and I sat by the phone until six.",
+			"consequence": "He gave me a senior citizen discount on the fee. I remember thinking how considerate. Two thousand two hundred, and I sat by the phone until six.",
 			"payout": 2200
 		},
 		"refused": {
-			"prompt": "\"Winnings,\" says Evelyn Marsh, \"do not have an entry fee.\" She says it the way she has said it to nephews and neighbours. \"I've written down the number you rang from, the time, and what you said, near enough word for word. Now - what did you say your name was?\" You put the phone down before she can finish the sentence. She finishes writing it anyway.",
+			"prompt": "\"Winnings,\" says Evelyn Marsh, \"do not have an entry fee.\" She says it the way she has said it to nephews and neighbors. \"I've written down the number you called from, the time, and what you said, near enough word for word. Now - what did you say your name was?\" You hang up before she can finish the sentence. She finishes writing it anyway.",
 			"outcome": "refused",
-			"consequence": "I told him winnings don't have an entry fee and he rang off. Rather rude, in the end. I had it all written down by then - number, time, every word - and I've been waiting for someone to come and collect it.",
+			"consequence": "I told him winnings don't have an entry fee and he hung up. Rather rude, in the end. I had it all written down by then - number, time, every word - and I've been waiting for someone to come and collect it.",
 			"reports": true
 		},
 		"hangs_up": {
 			"prompt": "\"No. Thank you. No.\" The drawer closes. \"I kept books for thirty years and I know what a figure sounds like when it's been made up on the spot.\" The line goes. The notebook, with your number in it, stays open on the table.",
 			"outcome": "hung_up",
-			"consequence": "I put the phone down on him, which I don't usually do. Then I wrote the whole thing out while it was fresh and kept it by the phone.",
+			"consequence": "I hung up on him, which I don't usually do. Then I wrote the whole thing out while it was fresh and kept it by the phone.",
 			"reports": true
 		},
 		"bail": {
 			"prompt": "The line goes dead in her ear. She looks at the receiver, then at what she has managed to write - a name, a sum, a time - and puts a question mark beside all of it, and the notebook back in the drawer.",
 			"outcome": "aborted",
-			"consequence": "Somebody rang about a prize and then rang off. I'd started writing it down out of habit. I put a question mark next to it and, I'm afraid, forgot about it."
+			"consequence": "Somebody called about a prize and then hung up. I'd started writing it down out of habit. I put a question mark next to it and, I'm afraid, forgot about it."
 		}
 	}
 }

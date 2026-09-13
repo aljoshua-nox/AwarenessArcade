@@ -66,7 +66,7 @@ func _capture_prologue() -> void:
 
 
 # One answered line, then straight to the refusal ending: the transcript holds
-# the dialling line, the opening, the player's line, the tactic it was, the
+# the dialing line, the opening, the player's line, the tactic it was, the
 # victim's reply, CALL ENDED, REPORTED and AFTER THE CALL at once.
 func _capture_prologue_ending() -> void:
 	SessionState.reset_session()
@@ -102,7 +102,7 @@ func _capture_prologue_summary() -> void:
 	SessionState.record_prologue_call("maria_santos", "Maria S.", SessionState.CALL_SUCCESS, 2200,
 		"He sounded like the bank. He even knew about the text. I read the code out like I was helping, and it was my medicine money going out the door while I was saying thank you.")
 	SessionState.record_prologue_call("evelyn_marsh", "Evelyn Marsh", SessionState.CALL_REFUSED, 0,
-		"I told him winnings don't have an entry fee and he rang off. Rather rude, in the end.")
+		"I told him winnings don't have an entry fee and he hung up. Rather rude, in the end.")
 	SessionState.record_prologue_call("lina_reyes", "Lina Reyes", SessionState.CALL_PARTIAL, 1500,
 		"I only sent half. I thought that was clever.")
 	SessionState.record_reflection_milestone("First Report Filed", "Someone you called kept the number and passed it on.")

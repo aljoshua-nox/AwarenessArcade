@@ -50,7 +50,7 @@ license file bundled, or license terms require per-file checking).
 | Numbered character pack (`pack/pack/1.png`…) | `assets/art/characters/pack/` | ⚠️ unidentified — no bundled license found | ⚠️ unknown | ⚠️ needs source lookup |
 | Player detective sprite (idle/walk, 4 directions) | `assets/art/characters/player/` | ⚠️ unidentified — likely custom or from one of the packs above | ⚠️ unknown | ⚠️ needs source lookup |
 | Portrait Pack (`fella 1`, `fella 2`, `lady 1`, `lady 2`) | `assets/art/portraits/` | Calciumtrice — [OpenGameArt](https://opengameart.org/content/portrait-pack) (identified 2026-09-12; the "C" monogram bottom-right is the artist's) | **CC-BY 3.0** — attribution required. Author's notice: *"Portrait Pack by Calciumtrice, usable under Creative Commons Attribution 3.0 license."* | ✅ |
-| Portraits (`lady 3`, `lady 4`, `fella 3`, `fella 4`) | `assets/art/portraits/` | **AI-generated**, produced by the team (2026-09-09 to 2026-09-12); 1254x1254 RGB | No third-party licence — generated for this project. No attribution owed to anyone; the generator used is not recorded here | ✅ |
+| Portraits (`lady 3`, `lady 4`, `fella 3`, `fella 4`) | `assets/art/portraits/` | **AI-generated**, produced by the team (2026-09-09 to 2026-09-12); 1254x1254 RGB | No third-party license — generated for this project. No attribution owed to anyone; the generator used is not recorded here | ✅ |
 | UI/status icons (bell, clock, phone, shield, gear, user, etc.) | `assets/art/icons/` | **Font Awesome Free 7.2.0** — fontawesome.com (embedded in SVG headers) | CC BY 4.0 (icons) — attribution required | ✅ |
 | Background photos: Alesia Kazantceva | `assets/art/backgrounds/alesia-kazantceva-VWcPlbHglYc-unsplash.jpg` | Alesia Kazantceva — [Unsplash](https://unsplash.com/photos/VWcPlbHglYc) | Unsplash License (free, attribution appreciated not required) | ✅ |
 | Background photos: Copernico | `assets/art/backgrounds/copernico-p_kICQCOM4s-unsplash.jpg` | Copernico — [Unsplash](https://unsplash.com/photos/p_kICQCOM4s) | Unsplash License | ✅ |
@@ -75,8 +75,8 @@ must be checked individually at `freesound.org/s/<id>/` before shipping — do n
 
 **Verification status (checked 2026-09-08).** freesound.org could not be reached from
 tooling — the site is currently serving an expired TLS certificate, and web.archive.org
-is unavailable here too — so only the licence that surfaced in search results could be
-confirmed. The remaining three need someone to open the URL in a browser; the licence is
+is unavailable here too — so only the license that surfaced in search results could be
+confirmed. The remaining three need someone to open the URL in a browser; the license is
 printed on the sound's page. Every file listed below is referenced by the game.
 
 | Asset | Location | Freesound user | Freesound ID | License |

@@ -22,7 +22,7 @@
       },
       "unfinished": {
         "cooperation": 44,
-        "prompt": "\"Somebody rang about a prize and then the line went.\" Evelyn shrugs. \"I assumed it was a wrong number that got bored.\" She studies you. \"You've come a long way for a wrong number.\"",
+        "prompt": "\"Somebody called about a prize and then the line went dead.\" Evelyn shrugs. \"I assumed it was a wrong number that got bored.\" She studies you. \"You've come a long way for a wrong number.\"",
         "note": "Your call to her never finished. She has nothing to be frightened of and no reason to think this matters, which is its own kind of difficult."
       }
     }
@@ -45,8 +45,8 @@
     {
       "id": "ev_raffle_stub",
       "tactic_id": "reused_victim_list",
-      "label": "Shop Raffle Stub",
-      "description": "The counter-top raffle Evelyn entered at a hardware shop two months earlier, with her name, address and number written on the slip.",
+      "label": "Store Raffle Stub",
+      "description": "The counter-top raffle Evelyn entered at a hardware store two months earlier, with her name, address and number written on the slip.",
       "tactic": "Details given away for a small prize end up on a list. Being contacted is rarely coincidence."
     },
     {
@@ -103,7 +103,7 @@
       ]
     },
     "ask_wellbeing": {
-      "prompt": "\"I'm perfectly well. Cross, mainly.\" She sets down two cups anyway. \"My sister had one of these calls last year and she has never told anybody but me. That is what makes me cross.\"",
+      "prompt": "\"I'm perfectly well. Annoyed, mainly.\" She sets down two cups anyway. \"My sister had one of these calls last year and she has never told anybody but me. That is what makes me cross.\"",
       "cooperation": 8,
       "choices": [
         {
@@ -113,7 +113,7 @@
       ]
     },
     "ask_call": {
-      "prompt": "\"A very pleasant young man. I had won a regional draw - four hundred and some odd thousand. All that remained was a release fee, and could I settle it today, because the draw closed at five.\"",
+      "prompt": "\"A very pleasant young man. I had won a regional draw - four hundred-something thousand. All that remained was a release fee, and could I settle it today, because the draw closed at five.\"",
       "choices": [
         {
           "text": "Say the part about the fee again. Exactly as he said it.",
@@ -139,7 +139,7 @@
         "question": "One thing in that sentence is impossible rather than merely suspicious. Which?",
         "milestone": {
           "title": "Tactic Identified: Paying To Receive",
-          "detail": "Recognised that money flowing towards the winner is the whole idea of winning - a fee charged before a prize is released is the fraud, not a formality."
+          "detail": "Recognized that money flowing towards the winner is the whole idea of winning - a fee charged before a prize is released is the fraud, not a formality."
         },
         "options": [
           {
@@ -156,7 +156,7 @@
           {
             "text": "That the sum was oddly specific.",
             "cooperation": -8,
-            "feedback": "Specific figures are chosen precisely because they sound audited. A round number invites doubt; four hundred and some odd thousand sounds like it came off a spreadsheet."
+            "feedback": "Specific figures are chosen precisely because they sound audited. A round number invites doubt; four hundred-something thousand sounds like it came off a spreadsheet."
           },
           {
             "text": "That he was pleasant.",
@@ -175,7 +175,7 @@
         {
           "evidence_id": "ev_raffle_stub",
           "next": "confirm_list",
-          "response": "Evelyn goes very still. \"The hardware shop. A bowl of tickets by the till.\" She turns the stub over. \"I wrote my address on it myself. I handed it to them.\"",
+          "response": "Evelyn goes very still. \"The hardware store. A bowl of tickets by the cashier.\" She turns the stub over. \"I wrote my address on it myself. I handed it to them.\"",
           "cooperation": 20
         },
         {
@@ -224,11 +224,11 @@
       ]
     },
     "confirm_list": {
-      "prompt": "\"A prize draw to find out who wants prizes.\" Evelyn sets the stub down carefully, as though it might be needed later. \"They weren't fishing. They were working a list, and I put myself on it for a chance at a hamper.\"",
+      "prompt": "\"A prize draw to find out who wants prizes.\" Evelyn sets the stub down carefully, as though it might be needed later. \"They weren't fishing. They were working a list, and I put myself on it for a chance at a gift basket.\"",
       "cooperation": 10,
       "milestone": {
         "title": "Witness Secured: The List",
-        "detail": "Evelyn Marsh traced how the operation reached her - details volunteered for a shop raffle. The call was not random, and refusing it did not take her off the list."
+        "detail": "Evelyn Marsh traced how the operation reached her - details volunteered for a store raffle. The call was not random, and refusing it did not take her off the list."
       },
       "choices": [
         {

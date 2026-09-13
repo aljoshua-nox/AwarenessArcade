@@ -172,7 +172,7 @@ func _test_stations_exist() -> void:
 	SessionState.reset_prologue()
 	var view := await _open()
 	_check(view.stations.size() == 5, "four exhibits plus the director's door (got %d)" % view.stations.size())
-	for title in ["Script binders", "The call list", "Bonus board", "The shift rota", "Floor director's office"]:
+	for title in ["Script binders", "The call list", "Bonus board", "The shift schedule", "Floor director's office"]:
 		_check(not _station(view, title).is_empty(), "station present: %s" % title)
 	await _close(view)
 

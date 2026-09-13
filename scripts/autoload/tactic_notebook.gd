@@ -5,7 +5,7 @@ extends Node
 ## Every manipulation tactic in this game used to appear once and scroll away.
 ## The only durable record was a number on the end-of-case scorecard, which is a
 ## score rather than the content. What a player should leave holding is a list of
-## red flags they could recognise on a real phone call, so that list gets a home
+## red flags they could recognize on a real phone call, so that list gets a home
 ## they can open at any time.
 ##
 ## Built as an autoload overlay rather than a scene so it is reachable from the
@@ -121,7 +121,7 @@ func _build_ui() -> void:
 	column.add_child(progress_label)
 
 	var blurb := Label.new()
-	blurb.text = "What these calls actually do, and how to recognise it on a real one. Entries unlock as you meet them."
+	blurb.text = "What these calls actually do, and how to recognize it on a real one. Entries unlock as you meet them."
 	blurb.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	column.add_child(blurb)
 

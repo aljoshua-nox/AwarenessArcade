@@ -14,7 +14,7 @@
 	"hang_up_node": "hangs_up",
 	"perspective_variants": {
 		"harmed": [
-			"The guy sounded exactly like real support. I let him in, watched him type for six minutes and paid him to stop. I've no idea what he took while I was looking at my other screen.",
+			"The guy sounded exactly like real support. I let him in, watched him type for six minutes and paid him to stop. I have no idea what he took while I was looking at my other screen.",
 			"I've read about this happening to other people and always thought, how. Now I know how. You're tired, you're busy, and someone sounds like they know what they're doing."
 		],
 		"resistant": [
@@ -28,7 +28,7 @@
 	},
 	"nodes": {
 		"open": {
-			"prompt": "He picks up on the first ring, because he's the one who rang. Forty minutes ago a page took over his laptop - INFECTED, FILES AT RISK, a number to call immediately, and a countdown - and the number put him in a queue and promised a technician would call back. \"Hi - yeah - is this the support line? I've still got the thing on my screen, I haven't touched it.\" He's typing while he talks. Something else, on another machine.",
+			"prompt": "He picks up on the first ring, because he's the one who called. Forty minutes ago a page took over his laptop - INFECTED, FILES AT RISK, a number to call immediately, and a countdown - and the number put him in a queue and promised a technician would call back. \"Hi - yeah - is this the support line? I've still got the thing on my screen, I haven't touched it.\" He's typing while he talks. Something else, on another machine.",
 			"choices": [
 				{
 					"text": "This is Kevin? Hi, Kevin, I'm the technician on your ticket. Thanks for waiting. Let's take a look at what's on the screen.",
@@ -66,7 +66,7 @@
 					"tactic_id": "manufactured_urgency"
 				},
 				{
-					"text": "Honestly? Close the browser. If it comes back, ring us.",
+					"text": "Honestly? Close the browser. If it comes back, call us.",
 					"next": "bail",
 					"doubt": 0
 				}
@@ -110,7 +110,7 @@
 					"tactic_id": "manufactured_urgency"
 				},
 				{
-					"text": "You can bring it into a shop instead, if you'd rather. They'll charge you for the day and you'll be without it till Thursday.",
+					"text": "You can bring it to a repair shop instead, if you'd rather. They'll charge you for the day and you'll be without it until Thursday.",
 					"next": "remote_check",
 					"doubt": 5
 				}
@@ -186,7 +186,7 @@
 		"paid": {
 			"prompt": "\"Sixteen hundred.\" He does the sum of what that is against the rest of the month. \"Fine. Fine, just - do it, I need this thing back.\" He reads the card out with his eyes on the other screen. You leave the black window scrolling for a few minutes more, because that is the part that makes it feel like a repair. Six minutes in, a folder opens that has nothing to do with viruses, and he pulls the cable out of the wall. Too late for the sixteen hundred.",
 			"outcome": "success",
-			"consequence": "The guy sounded exactly like real support. I let him in, watched him type for six minutes and paid him to stop. I've no idea what he took while I was looking at my other screen.",
+			"consequence": "The guy sounded exactly like real support. I let him in, watched him type for six minutes and paid him to stop. I have no idea what he took while I was looking at my other screen.",
 			"payout": 1600
 		},
 		"paid_part": {
@@ -196,7 +196,7 @@
 			"payout": 350
 		},
 		"pulls_cable": {
-			"prompt": "\"Sixteen hundred.\" Silence, then a different kind of silence - the tool's window has stopped moving. \"You know what. No.\" A cable comes out of a wall. Your screen goes black. \"I've got your number, mate.\" The call ends from his side. He screenshots the warning, the timer and the number before he closes the browser.",
+			"prompt": "\"Sixteen hundred.\" Silence, then a different kind of silence - the tool's window has stopped moving. \"You know what. No.\" A cable comes out of a wall. Your screen goes black. \"I've got your number.\" The call ends from his side. He screenshots the warning, the timer and the number before he closes the browser.",
 			"outcome": "refused",
 			"consequence": "He was in for about six minutes and then he asked for sixteen hundred, and that was the bit that didn't sound like support. I pulled the cable. I've got the screenshot and I've got the number.",
 			"reports": true

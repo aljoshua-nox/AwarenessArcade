@@ -15,7 +15,7 @@
 	  "harmed": {
 		"cooperation": 34,
 		"prompt": "Kevin has the laptop with him, closed, and keeps one hand flat on the lid the whole time. \"I've read about this happening to other people. I always thought, how.\" He shrugs, tries a laugh, doesn't land it. \"Anyway. It's a lot of money to be stupid about.\"",
-		"note": "He paid you. The self-blame in this room is doing the caller's work for them - he will minimise what happened unless you make it safe not to."
+		"note": "He paid you. The self-blame in this room is doing the caller's work for them - he will minimize what happened unless you make it safe not to."
 	  },
 	  "resistant": {
 		"cooperation": 62,
@@ -127,7 +127,7 @@
 		  {
 			"text": "Real antivirus software never uses red warning banners.",
 			"cooperation": -8,
-			"feedback": "Plenty of legitimate security tools use alarming colours. Judging by appearance is exactly the trap - these pages are designed to look right. What gives it away is that a browser page has no ability to scan the machine at all."
+			"feedback": "Plenty of legitimate security tools use alarming colors. Judging by appearance is exactly the trap - these pages are designed to look right. What gives it away is that a browser page has no ability to scan the machine at all."
 		  },
 		  {
 			"text": "The message had a phone number instead of a support link.",

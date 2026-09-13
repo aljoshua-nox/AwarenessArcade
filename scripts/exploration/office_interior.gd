@@ -296,7 +296,7 @@ func _build_back_wall_fittings() -> void:
 	for x in [430.0, 620.0]:
 		_add_prop(OFFICE_WALLS, WALL_WINDOW, Vector2(x, WALL_BASE - 6.0), 1.9, -32)
 
-	# Noticeboards. The left one is the shift rota the player can read.
+	# Noticeboards. The left one is the shift schedule the player can read.
 	_add_prop(OFFICE_WALLS, WALL_PANEL, Vector2(300.0, WALL_BASE - 34.0), 2.0, -32)
 	_add_prop(OFFICE_WALLS, WALL_PANEL, Vector2(800.0, WALL_BASE - 34.0), 1.7, -32)
 
@@ -376,14 +376,14 @@ func _build_stations() -> void:
 	_add_prop(OFFICE_OBJECTS, OBJ_EASEL, Vector2(1000.0, 606.0), 2.4, -10)
 
 	_add_station({
-		"title": "The shift rota",
-		"prompt": "Examine the shift rota",
-		"body": "Forty desks. Forty headsets, most still warm. A printed rota is taped beside the door: the heaviest staffing runs late morning and early evening, with a thinner night shift marked SENIORS / SHIFT WORKERS.",
+		"title": "The shift schedule",
+		"prompt": "Examine the shift schedule",
+		"body": "Forty desks. Forty headsets, most still warm. A printed schedule is taped beside the door: the heaviest staffing runs late morning and early evening, with a thinner night shift marked SENIORS / SHIFT WORKERS.",
 		"note": "The hours are chosen the way the scripts are. Late morning finds retired people at home alone; the night shift finds people too tired to argue. Being targeted is not evidence of being careless - it is evidence of being reachable at a particular hour.",
 		"note_color": TextStyle.COLOR_HINT,
 		"marker": TextStyle.MARK_SCENE,
 		"milestone_title": "Forty Desks, Not One Caller",
-		"milestone_detail": "The operation runs forty stations on a rota timed to catch specific groups when they are most isolated or most tired.",
+		"milestone_detail": "The operation runs forty stations on a schedule timed to catch specific groups when they are most isolated or most tired.",
 	}, Vector2(300.0, 268.0))
 
 
@@ -512,7 +512,7 @@ func _add_tiled_rect(texture: Texture2D, top_left: Vector2, size: Vector2, tile_
 
 
 # Place an atlas sprite standing on the floor: base_position is where its
-# bottom edge sits, which makes laying furniture out far easier than centres.
+# bottom edge sits, which makes laying furniture out far easier than centers.
 func _add_prop(texture: Texture2D, region: Rect2, base_position: Vector2, prop_scale: float, z_index: int) -> void:
 	var sprite := Sprite2D.new()
 	sprite.texture = texture

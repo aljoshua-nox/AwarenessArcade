@@ -495,7 +495,7 @@ func _start_call(index: int) -> void:
 	current_call_time_left = current_call_time_limit
 	_show_card(victim)
 	_reset_transcript()
-	_queue_beats([TextStyle.system(TextStyle.MARK_DIALLING,
+	_queue_beats([TextStyle.system(TextStyle.MARK_DIALING,
 		"%s - %d, %s" % [str(victim.get("name", "Unknown")), int(victim.get("age", 0)), str(victim.get("occupation", "")).to_lower()],
 		TextStyle.COLOR_HINT)])
 	_load_node(str(victim.get("start_node", "")))
@@ -704,7 +704,7 @@ func _tactic_name(tactic_id: String) -> String:
 
 # The buttons are the gate on the reveal: you cannot answer a line that has not
 # finished arriving. A disabled Button still swallows mouse input, which would
-# eat the click-to-skip, so it stops accepting the mouse while it is greyed out.
+# eat the click-to-skip, so it stops accepting the mouse while it is grayed out.
 func _sync_choice_buttons() -> void:
 	var revealing := _is_revealing()
 	var choices: Array = current_node.get("choices", [])
@@ -799,7 +799,7 @@ func _render_and_reveal() -> void:
 func _on_beat_revealed() -> void:
 	# A tween still reports is_running() from inside its own final callback, so
 	# drop the reference first - otherwise the last beat of a reply would leave
-	# the choice buttons greyed out with nothing left to wait for.
+	# the choice buttons grayed out with nothing left to wait for.
 	beat_tween = null
 	revealed_chars = dialogue_value.get_total_character_count()
 	dialogue_value.visible_characters = revealed_chars

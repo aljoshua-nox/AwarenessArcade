@@ -164,7 +164,7 @@ func _test_layout_collisions() -> void:
 	for entry in view.BUILDING_ROW:
 		row_rects.append(Rect2(Vector2(float(entry["x"]), view.BUILDING_ROW_BOTTOM - row_size.y), row_size))
 
-	# The grass starts below the lower pavement; side streets run down through it.
+	# The grass starts below the lower sidewalk; side streets run down through it.
 	var sidewalk_top_end: float = view.BUILDING_ROW_BOTTOM + view.SIDEWALK_HEIGHT
 	var grass_top: float = sidewalk_top_end + view.ROAD_HEIGHT + view.SIDEWALK_HEIGHT
 	var street_rects: Array[Rect2] = []
@@ -347,7 +347,7 @@ func _test_street_stops() -> void:
 			orphaned += 1
 	_check(boards == 1, "there is exactly one noticeboard (%d)" % boards)
 	# A stop sitting on a door locked the player out of the building: both answer
-	# Enter, and the shopkeeper's zone covered the office portal completely, so
+	# Enter, and the store owner's zone covered the office portal completely, so
 	# standing at the door opened the shop dialogue instead. Doors win the
 	# keypress now, but an overlap would then hide the stop, so the geometry has
 	# to stay clear either way.

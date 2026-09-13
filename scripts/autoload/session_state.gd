@@ -25,7 +25,7 @@ const DISPOSITION_NEUTRAL := "neutral"        # you never called them at all
 
 # How well the player read the manipulation across the whole session. This is
 # folded into the ending: the case is closed by evidence, but whether the player
-# leaves able to recognise the next scam is a separate question, and the game
+# leaves able to recognize the next scam is a separate question, and the game
 # should answer it out loud.
 const AWARENESS_SHARP := "sharp"        # named every tactic put in front of them
 const AWARENESS_MIXED := "mixed"        # named some

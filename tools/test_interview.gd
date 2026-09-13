@@ -200,7 +200,7 @@ func _test_contradiction() -> void:
 	view._load_node("deny_node")
 	_check(view.prompt_value.text.contains("CLAIM ON RECORD"),
 		"the suspect's alibi is pinned where the player can aim at it")
-	_check(view.prompt_value.text.contains("seven till two"), "the claim is specific enough to be checkable")
+	_check(view.prompt_value.text.contains("seven to two"), "the claim is specific enough to be checkable")
 	_check(view.present_evidence_button.visible, "the existing evidence UI is what challenges it")
 
 	var log_index := _index_of(view, "ev_remote_access_log")
@@ -268,8 +268,8 @@ func _test_choice_costs() -> void:
 	view._on_choice_pressed(2)  # "you're one of several people I have to see today"
 	_check(view.cooperation == 36, "hostile opener costs 14 cooperation (got %d)" % view.cooperation)
 	_check(view.current_node_id == "rush_her", "hostile opener routes to rush_her")
-	view._on_choice_pressed(0)  # apologise
-	_check(view.cooperation > 36, "apologising recovers cooperation (got %d)" % view.cooperation)
+	view._on_choice_pressed(0)  # apologize
+	_check(view.cooperation > 36, "apologizing recovers cooperation (got %d)" % view.cooperation)
 	await _close(view)
 
 
@@ -402,7 +402,7 @@ func _test_text_voices() -> void:
 	view._on_choice_pressed(1)  # wrong answer
 	var wrong_text: String = view.prompt_value.text
 	_check(wrong_text.contains("MISREAD"), "a wrong read is marked MISREAD")
-	_check(wrong_text.contains("[color=#ff8368]"), "a wrong read is coloured as a miss")
+	_check(wrong_text.contains("[color=#ff8368]"), "a wrong read is colored as a miss")
 	_check(wrong_text.contains("[color=#a7b0bb]"), "the following dialogue keeps its own voice")
 	_check(view.present_evidence_button.visible, "evidence step reached")
 	_check(wrong_text.contains("CASE NOTE"), "the evidence hint renders as a case note")
@@ -414,13 +414,13 @@ func _test_text_voices() -> void:
 	view._on_choice_pressed(0)  # correct answer
 	var right_text: String = view.prompt_value.text
 	_check(right_text.contains("TACTIC READ"), "a correct read is marked TACTIC READ")
-	_check(right_text.contains("[color=#78d08b]"), "a correct read is coloured as a hit")
+	_check(right_text.contains("[color=#78d08b]"), "a correct read is colored as a hit")
 
 	# A successful evidence presentation appends the tactic in the system voice.
 	view._present_evidence_index(_index_of(view, "ev_phishing_text"))
 	var tactic_text: String = view.prompt_value.text
 	_check(tactic_text.contains("TACTIC IDENTIFIED"), "successful evidence names the tactic")
-	_check(tactic_text.contains("[color=#e8b454]"), "the tactic note uses the tactic colour")
+	_check(tactic_text.contains("[color=#e8b454]"), "the tactic note uses the tactic color")
 	await _close(view)
 
 

@@ -9,6 +9,11 @@ import json, glob, os, sys
 base = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 files = sorted(glob.glob(os.path.join(base, "resources", "cases", "interview_case_*.json")))
 
+# What a node's `dispositions` block may vary, mirrored from interview.gd.
+NODE_VARIANT_KEYS = {"harmed", "resistant", "unfinished"}
+NODE_OVERRIDE_KEYS = {"prompt", "choices", "evidence_hint", "evidence_prompt",
+                      "accepts_evidence", "milestone", "grants_evidence", "claim", "tactic_quiz"}
+
 # Evidence ids available across the whole session (seeded pools + granted testimony)
 global_evidence = set()
 parsed = {}
@@ -34,6 +39,7 @@ for f, data in parsed.items():
         elif target not in ids:
             errors.append(f"{name}: '{target}' -> missing node (at {where})")
 
+    data_own_ids = {item["id"] for item in data.get("evidence", [])}
     check(data.get("start_node"), "start_node")
     if "failure_node" in data:
         check(data["failure_node"], "failure_node")
@@ -109,10 +115,12 @@ for f, data in parsed.items():
             continue
         seen.add(n)
         node = nodes[n]
-        for c in node.get("choices", []):
-            stack.append(c.get("next"))
-        for e in node.get("accepts_evidence", []):
-            stack.append(e.get("next"))
+        variants = [node] + list(node.get("dispositions", {}).values())
+        for variant in variants:
+            for c in variant.get("choices", []):
+                stack.append(c.get("next"))
+            for e in variant.get("accepts_evidence", []):
+                stack.append(e.get("next"))
         ec = node.get("evidence_check")
         if ec:
             stack += [ec.get("next_if_met"), ec.get("next_if_not_met")]
@@ -123,6 +131,94 @@ for f, data in parsed.items():
     orphans = ids - seen
     if orphans:
         errors.append(f"{name}: unreachable nodes {sorted(orphans)}")
+
+    # --- Disposition variants on nodes and evidence --------------------------
+    # A node may carry `dispositions`: per-outcome overrides of the keys the
+    # engine lets a variant replace. The opening node's prompt belongs to the
+    # person block, so a node-level prompt there would be silently ignored.
+    for nid, node in nodes.items():
+        for key, override in node.get("dispositions", {}).items():
+            where = f"{name}: {nid}.dispositions['{key}']"
+            if key not in NODE_VARIANT_KEYS:
+                errors.append(f"{where} is not one of {sorted(NODE_VARIANT_KEYS)}")
+                continue
+            if not isinstance(override, dict) or not override:
+                errors.append(f"{where} must be a non-empty object")
+                continue
+            bad = set(override) - NODE_OVERRIDE_KEYS
+            if bad:
+                errors.append(f"{where} overrides {sorted(bad)} - the engine only applies {sorted(NODE_OVERRIDE_KEYS)}")
+            if nid == data.get("start_node") and "prompt" in override:
+                errors.append(f"{where} sets a prompt on the start node - the person block's disposition prompt owns that beat")
+            for tf in ("prompt", "evidence_hint"):
+                if "[color" in str(override.get(tf, "")) or "[font" in str(override.get(tf, "")):
+                    errors.append(f"{where}.{tf} carries markup - the engine styles case text")
+            choices = override.get("choices", [])
+            if "choices" in override and not choices:
+                errors.append(f"{where} replaces the choices with nothing - a dead end in that outcome")
+            if len(choices) > 4:
+                errors.append(f"{where} has >4 choices (UI has 4 buttons)")
+            for i, c in enumerate(choices):
+                check(c.get("next"), f"{nid}.dispositions['{key}'].choices[{i}]")
+            for i, e in enumerate(override.get("accepts_evidence", [])):
+                check(e.get("next"), f"{nid}.dispositions['{key}'].accepts_evidence[{i}]")
+                if e.get("evidence_id") not in global_evidence:
+                    errors.append(f"{where}.accepts_evidence[{i}] unknown evidence '{e.get('evidence_id')}'")
+            q = override.get("tactic_quiz")
+            if q is not None:
+                if not node.get("tactic_quiz"):
+                    errors.append(f"{where} overrides a quiz on a node that has none")
+                elif set(q) - {"setup", "question"}:
+                    errors.append(f"{where}.tactic_quiz may only reword setup/question - the options are the lesson")
+        for i, e in enumerate(node.get("accepts_evidence", [])):
+            for key in e.get("responses", {}):
+                if key not in NODE_VARIANT_KEYS:
+                    errors.append(f"{name}: {nid}.accepts_evidence[{i}].responses['{key}'] is not a disposition")
+
+    for i, item in enumerate(data.get("evidence", [])):
+        where = f"{name}: evidence[{i}] '{item.get('id')}'"
+        for key in item.get("only_for", []):
+            if key not in NODE_VARIANT_KEYS:
+                errors.append(f"{where}.only_for names '{key}', not a disposition")
+        for key, override in item.get("dispositions", {}).items():
+            if key not in NODE_VARIANT_KEYS:
+                errors.append(f"{where}.dispositions['{key}'] is not a disposition")
+                continue
+            if not isinstance(override, dict) or not override:
+                errors.append(f"{where}.dispositions['{key}'] must be a non-empty object")
+                continue
+            bad = set(override) - {"omit", "label", "description", "tactic", "tactic_id"}
+            if bad:
+                errors.append(f"{where}.dispositions['{key}'] overrides {sorted(bad)}")
+            if "omit" in override and override["omit"] is not True:
+                errors.append(f"{where}.dispositions['{key}'].omit must be true")
+        if item.get("only_for") and item.get("dispositions", {}).get("omit"):
+            errors.append(f"{where} uses both only_for and omit")
+
+    # Every outcome the prologue can hand this person must still leave an
+    # evidence step with something presentable. An item the variant omits, or a
+    # hit that only names an omitted item, is a witness who cannot be secured.
+    if person.get("dispositions"):
+        for outcome in sorted(NODE_VARIANT_KEYS) + ["neutral"]:
+            pool = set()
+            for item in data.get("evidence", []):
+                if "only_for" in item and outcome not in item["only_for"]:
+                    continue
+                if item.get("dispositions", {}).get(outcome, {}).get("omit"):
+                    continue
+                pool.add(item["id"])
+            for nid, node in nodes.items():
+                resolved = dict(node)
+                resolved.update(node.get("dispositions", {}).get(outcome, {}))
+                if not resolved.get("evidence_prompt"):
+                    continue
+                # Only a hit that moves the interview on counts; corroboration
+                # that loops back to the same node secures nobody.
+                hits = [e["evidence_id"] for e in resolved.get("accepts_evidence", [])
+                        if not e.get("wrong") and e.get("next") != nid]
+                if not any(h in pool or h not in data_own_ids for h in hits):
+                    errors.append(f"{name}: {nid} has no presentable hit that advances when the witness is "
+                                  f"'{outcome}' - every accepted item is omitted for that outcome")
     print(f"{name}: {len(ids)} nodes, {endings} endings, "
           f"{sum(1 for n in nodes.values() if n.get('tactic_quiz'))} quiz")
 

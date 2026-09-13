@@ -64,14 +64,14 @@
 					"tactic_id": "manufactured_urgency"
 				},
 				{
-					"text": "You've a very good memory, I'm sure, Mrs. Marsh - it'll be one of the ones you filled in at the shops. It doesn't matter which.",
+					"text": "You have a very good memory, I'm sure, Mrs. Marsh - it'll be one of the ones you filled in at the stores. It doesn't matter which.",
 					"next": "sum",
 					"doubt": 20
 				}
 			]
 		},
 		"slow_down": {
-			"prompt": "\"Young man.\" The two words do the work of a sentence. \"Slow down. I've not said who I am, and you've not said who you are.\" Paper. \"Start again, please, and start with your name.\"",
+			"prompt": "\"Young man.\" The two words do the work of a sentence. \"Slow down. I haven't said who I am, and you haven't said who you are.\" Paper. \"Start again, please, and start with your name.\"",
 			"choices": [
 				{
 					"text": "Of course - I'm sorry. Daniel, from the regional draw office. The entry is in the name of Evelyn Marsh, on the road - I won't read the number out over the phone.",
@@ -101,7 +101,7 @@
 					"tactic_id": "authority_impersonation"
 				},
 				{
-					"text": "That's the shop's doing, not mine - but the draw closes at five and yours is the only unclaimed winner.",
+					"text": "That's the store's doing, not mine - but the draw closes at five and yours is the only unclaimed winner.",
 					"next": "sum",
 					"doubt": 15,
 					"tactic_id": "manufactured_urgency"

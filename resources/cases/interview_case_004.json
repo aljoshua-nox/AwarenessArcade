@@ -16,28 +16,49 @@
     "start": {
       "prompt": "The office goes quiet as you move through the floor. Forty headsets. Forty scripts in plastic sleeves. A woman in a blazer steps out of a back room, phone already in her hand. \"I don't know what Marco told you, but whatever it was, it isn't the whole story.\"",
       "choices": [
-        { "text": "It's enough to shut this operation down. Marco already gave us the details.", "next": "pressure_node" },
-        { "text": "Forty desks. Say the number of people out loud for me.", "next": "scale_node" }
+        {
+          "text": "It's enough to shut this operation down. Marco already gave us the details.",
+          "next": "pressure_node"
+        },
+        {
+          "text": "Forty desks. Say the number of people out loud for me.",
+          "next": "scale_node"
+        }
       ]
     },
     "scale_node": {
       "prompt": "She doesn't blink. \"They're employees. They have quotas, like anyone.\" Behind her, a laminated card taped to a monitor reads: [i]IF THEY HESITATE, REMIND THEM OF THE DEADLINE.[/i] Not a suggestion. A procedure.",
       "choices": [
-        { "text": "That card isn't sales. It's a method for overriding someone's judgment.", "next": "pressure_node" }
+        {
+          "text": "That card isn't sales. It's a method for overriding someone's judgment.",
+          "next": "pressure_node"
+        }
       ]
     },
     "pressure_node": {
       "prompt": "\"You don't want to do this,\" she says, lowering her voice. \"I can make this a very expensive mistake for you to have made.\"",
       "choices": [
-        { "text": "Are you offering me money to walk away?", "next": "bribe_offer" },
-        { "text": "I'm not interested in whatever you're about to say. This ends today.", "next": "tactic_quiz_pattern" }
+        {
+          "text": "Are you offering me money to walk away?",
+          "next": "bribe_offer"
+        },
+        {
+          "text": "I'm not interested in whatever you're about to say. This ends today.",
+          "next": "tactic_quiz_pattern"
+        }
       ]
     },
     "bribe_offer": {
       "prompt": "\"Let's just call it... an inconvenience fee.\" She names a number that would change your life. \"Nobody in this room is going to remember this conversation differently than you do.\"",
       "choices": [
-        { "text": "Take the money and end the investigation here.", "next": "end_bribed" },
-        { "text": "No. Put it away.", "next": "tactic_quiz_pattern" }
+        {
+          "text": "Take the money and end the investigation here.",
+          "next": "end_bribed"
+        },
+        {
+          "text": "No. Put it away.",
+          "next": "tactic_quiz_pattern"
+        }
       ]
     },
     "tactic_quiz_pattern": {
@@ -74,7 +95,12 @@
     },
     "final_check": {
       "evidence_check": {
-        "required_evidence": ["test_maria_confirmed", "test_kevin_confirmed", "test_evelyn_confirmed", "test_lina_confirmed"],
+        "required_evidence": [
+          "test_maria_confirmed",
+          "test_kevin_confirmed",
+          "test_evelyn_confirmed",
+          "test_lina_confirmed"
+        ],
         "min_matching": 2,
         "next_if_met": "end_full_takedown",
         "next_if_not_met": "end_partial_justice"

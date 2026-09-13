@@ -14,7 +14,7 @@
 	"hang_up_node": "hangs_up",
 	"perspective_variants": {
 		"harmed": [
-			"He had a reference number. He had the shop, the amount, the lot. I read him the code like I was confirming a drop. I've been reading things back to people for thirty years and never once thought about who was on the other end.",
+			"He had a reference number. He had the store, the amount, all of it. I read him the code like I was confirming a drop. I've been reading things back to people for thirty years and never once thought about who was on the other end.",
 			"I sent a test payment first. I thought that was smart. It's still money, and there was nothing to test - it went where he said and that was the last I heard."
 		],
 		"resistant": [
@@ -50,10 +50,10 @@
 			]
 		},
 		"not_me": {
-			"prompt": "\"Nine thousand -\" The radio gets muted. \"No. No, that's not me. I'm at work, I've been here since six.\" Something scrapes; he's sitting up. \"Where was it? What shop?\"",
+			"prompt": "\"Nine thousand -\" The radio gets muted. \"No. No, that's not me. I'm at work, I've been here since six.\" Something scrapes; he's sitting up. \"Where was it? What store?\"",
 			"choices": [
 				{
-					"text": "A branch in the city - online order, collect in store. It hasn't been collected yet, which is why we could hold it. I can cancel it and the card now, if you'll bear with me.",
+					"text": "A branch in the city - online order, pick up in store. It hasn't been collected yet, which is why we could hold it. I can cancel it and the card now, if you'll bear with me.",
 					"next": "cancel",
 					"doubt": -5,
 					"tactic_id": "authority_impersonation"
@@ -182,11 +182,11 @@
 		"paid": {
 			"prompt": "The text arrives on the phone in his other hand. He reads it out clearly, digit by digit, the way he'd read an address to a driver, and asks you to confirm it back, and you do. \"Right. Is it canceled?\" It is not canceled. Twenty-one thousand four hundred goes out of the account against that code - most of the fifteenth's pay - before he has put the radio back on.",
 			"outcome": "success",
-			"consequence": "He had a reference number. He had the shop, the amount, the lot. I read him the code like I was confirming a drop. I've been reading things back to people for thirty years and never once thought about who was on the other end.",
+			"consequence": "He had a reference number. He had the store, the amount, all of it. I read him the code like I was confirming a drop. I've been reading things back to people for thirty years and never once thought about who was on the other end.",
 			"payout": 21400
 		},
 		"paid_part": {
-			"prompt": "\"I'm not sending the lot to an account I've never heard of.\" A pause; a decision. \"Two thousand. If I see it land, I'll send the rest.\" He sends the two thousand, reads the confirmation to you, and waits to see it land. It lands somewhere.",
+			"prompt": "\"I'm not sending all of it to an account I've never heard of.\" A pause; a decision. \"Two thousand. If I see it land, I'll send the rest.\" He sends the two thousand, reads the confirmation to you, and waits to see it land. It lands somewhere.",
 			"outcome": "partial",
 			"consequence": "I sent two thousand as a test. I thought that was smart. It's still two thousand, and there was nothing to test - it went where he said and that was the last I heard.",
 			"payout": 2000

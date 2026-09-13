@@ -371,7 +371,7 @@ func _build_stations() -> void:
 		"note_color": TextStyle.COLOR_WRONG,
 		"marker": TextStyle.MARK_HARM,
 		"milestone_title": "Distress Is A Performance Metric",
-		"milestone_detail": "The floor pays a doubled bonus rate for calls that escalate a victim into distress - harm is deliberately incentivised, not incidental.",
+		"milestone_detail": "The floor pays a doubled bonus rate for calls that escalate a victim into distress - harm is deliberately incentivized, not incidental.",
 	}, Vector2(1000.0, 612.0))
 	_add_prop(OFFICE_OBJECTS, OBJ_EASEL, Vector2(1000.0, 606.0), 2.4, -10)
 

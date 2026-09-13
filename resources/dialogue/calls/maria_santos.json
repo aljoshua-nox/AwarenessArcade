@@ -18,7 +18,7 @@
 			"I've worked with money my whole life and I handed it to a voice on the phone. My son keeps asking how I could not have noticed. I don't have an answer for him."
 		],
 		"resistant": [
-			"I came so close. I had the code in front of me. Something about the hurrying stopped me - a bank doesn't hurry you - and I've not trusted the phone since.",
+			"I came so close. I had the code in front of me. Something about the hurrying stopped me - a bank doesn't hurry you - and I haven't trusted the phone since.",
 			"I hung up on him and then I sat in the kitchen for an hour. I wrote the number on the back of an envelope. It's still on the fridge."
 		],
 		"unfinished": [
@@ -236,7 +236,7 @@
 			"payout": 3000
 		},
 		"refused": {
-			"prompt": "\"No.\" Quiet, and then firmer. \"No. The bank wrote to me and it said they would never ask. I have the letter. It's on the fridge.\" The kettle clicks off. \"I'm going to hang up now, and I'm going to ring the number on the back of my card.\" She does both. She gives them the time, your number, and everything you said.",
+			"prompt": "\"No.\" Quiet, and then firmer. \"No. The bank wrote to me and it said they would never ask. I have the letter. It's on the fridge.\" The kettle clicks off. \"I'm going to hang up now, and I'm going to call the number on the back of my card.\" She does both. She gives them the time, your number, and everything you said.",
 			"outcome": "refused",
 			"consequence": "I almost read it out. I had it in front of me. It was the letter on the fridge that stopped me - the bank said they would never ask. I called the real number and gave them everything, and I called my son.",
 			"reports": true
@@ -248,7 +248,7 @@
 			"reports": true
 		},
 		"bail": {
-			"prompt": "\"A letter?\" She sounds more puzzled than relieved. \"What about the login? Is it - hello?\" You have already put the phone down. She stands in her kitchen with a text about a suspended account and a call that ended before it explained itself.",
+			"prompt": "\"A letter?\" She sounds more puzzled than relieved. \"What about the login? Is it - hello?\" You have already hung up. She stands in her kitchen with a text about a suspended account and a call that ended before it explained itself.",
 			"outcome": "aborted",
 			"consequence": "They called, they frightened me, and then they just stopped. I've been checking the account every morning since. Nobody ever explained what it was."
 		}

@@ -12,6 +12,8 @@ const INTERVIEW_SCENE := "res://scenes/investigation/interview.tscn"
 const CASE_MARIA := "res://resources/cases/interview_case_001.json"
 const CASE_KEVIN := "res://resources/cases/interview_case_002.json"
 const CASE_MARCO := "res://resources/cases/interview_case_003.json"
+const CASE_EVELYN := "res://resources/cases/interview_case_005.json"
+const CASE_LINA := "res://resources/cases/interview_case_006.json"
 
 var failures: Array[String] = []
 var checks := 0
@@ -83,6 +85,7 @@ func _run() -> void:
 	await _test_prologue_coupling()
 	await _test_contradiction()
 	await _test_evidence_scoping()
+	await _test_disposition_variants()
 
 	print("\n%d checks, %d failed" % [checks, failures.size()])
 	for f in failures:
@@ -529,3 +532,119 @@ func _test_evidence_scoping() -> void:
 	view._on_evidence_chosen(0)
 	_check(view.cooperation == empty_before, "the placeholder row costs nothing if activated")
 	await _close(view)
+
+
+# Only the opening used to vary with the prologue. Evelyn's case was written as
+# a refusal, so a player who had taken her money was told, for the whole rest
+# of the interview, that she had lost nothing - and Marco was told the same.
+# Every node that states the premise now has a version for the other outcomes.
+func _test_disposition_variants() -> void:
+	print("
+[the whole interview follows the prologue]")
+
+	# Neutral is still the case exactly as written: refused, no receipt.
+	var view := await _open(CASE_EVELYN)
+	var lost_nothing := false
+	for button in view.choice_buttons:
+		if button.visible and button.text.contains("didn't lose any money"):
+			lost_nothing = true
+	_check(lost_nothing, "neutral Evelyn keeps the original choices")
+	_check(_index_of_quiet(view, "ev_release_receipt") < 0, "neutral Evelyn has no payment to show")
+	view._load_node("ask_evidence")
+	_check(view.prompt_value.text.contains("hung up on me"), "neutral Evelyn refused, as written")
+	await _close(view)
+
+	# Robbed: the same nodes, the other story.
+	view = await _open_after_prologue(CASE_EVELYN, "evelyn_marsh", "Evelyn Marsh", SessionState.CALL_SUCCESS)
+	_check(view.disposition == SessionState.DISPOSITION_HARMED, "Evelyn reads as harmed")
+	lost_nothing = false
+	var bookkeeper := false
+	for button in view.choice_buttons:
+		if button.visible and button.text.contains("didn't lose any money"):
+			lost_nothing = true
+		if button.visible and button.text.contains("bookkeeper paying"):
+			bookkeeper = true
+	_check(not lost_nothing, "a harmed Evelyn is not told she lost nothing")
+	_check(bookkeeper, "...the rude opening is rewritten for what actually happened")
+	view._load_node("ask_evidence")
+	_check(view.prompt_value.text.contains("I paid it anyway"), "the evidence beat says she paid")
+	_check(view.prompt_value.text.contains("She paid, so there is a transaction"), "the hint follows the disposition")
+	var receipt := _index_of(view, "ev_release_receipt")
+	_check(receipt >= 0, "a harmed Evelyn has the payment to show")
+	if receipt >= 0:
+		view._present_evidence_index(receipt)
+		_check(view.prompt_value.text.contains("balanced it that evening"), "...and reacts to it in her own voice")
+	var stub := _index_of(view, "ev_raffle_stub")
+	view._load_node("ask_evidence")
+	view._present_evidence_index(stub)
+	_check(view.current_node_id == "confirm_list", "the list route still works when harmed")
+	view._on_choice_pressed(0)
+	_check(view.current_node_id == "end_success", "...and reaches the success ending")
+	_check(view.prompt_value.text.contains("She paid"), "the ending says she paid")
+	var testimony: Dictionary = {}
+	for item in SessionState.investigation_inventory:
+		if str(item.get("id", "")) == "test_evelyn_confirmed":
+			testimony = item
+	_check(str(testimony.get("description", "")).contains("paid it"), "the testimony carried forward says so too")
+	_check(str(testimony.get("person_id", "")) == "evelyn_marsh", "testimony is stamped with the person it came from")
+	await _close(view)
+
+	# A Kevin who hung up has no remote session and no receipt - so no log for
+	# the suspect's alibi to break - but he does have the callback.
+	view = await _open_after_prologue(CASE_KEVIN, "kevin_d", "Kevin Dizon", SessionState.CALL_REFUSED, GATE_CLEAR)
+	_check(_index_of_quiet(view, "ev_remote_access_log") < 0, "a resistant Kevin has no remote-access log")
+	_check(_index_of_quiet(view, "ev_fee_receipt") < 0, "...and no fee receipt")
+	var callback := _index_of(view, "ev_callback_log")
+	_check(callback >= 0, "...but he has the callback log")
+	view._load_node("ask_evidence")
+	_check(view.prompt_value.text.contains("no session and no receipt"), "the hint tells the player what to look for instead")
+	view._present_evidence_index(callback)
+	_check(view.current_node_id == "confirm_access", "the callback is what secures him")
+	_check(view.prompt_value.text.contains("called me back"), "...in words about the callback, not a session")
+	_check(not view._presentable_ids().has("ev_remote_access_log"), "the log is not even in his presentable set")
+	await _close(view)
+
+	# The suspect reacts to WHOSE testimony it is and what happened to them.
+	SessionState.reset_session()
+	SessionState.prologue_played = true
+	SessionState.detective_credibility = GATE_CLEAR
+	SessionState.record_prologue_call("evelyn_marsh", "Evelyn Marsh", SessionState.CALL_SUCCESS, 24500, "quoted")
+	SessionState.add_evidence({"id": "test_evelyn_confirmed", "label": "Evelyn's Confirmed Testimony", "person_id": "evelyn_marsh"})
+	SessionState.pending_case_path = CASE_MARCO
+	var marco: Node = load(INTERVIEW_SCENE).instantiate()
+	add_child(marco)
+	await get_tree().process_frame
+	marco._load_node("deny_node")
+	marco._present_evidence_index(_index_of(marco, "test_evelyn_confirmed"))
+	_check(marco.prompt_value.text.contains("The bookkeeper paid"), "Marco reacts to a paid Evelyn as paid")
+	_check(not marco.prompt_value.text.contains("didn't even pay"), "...and not with the line written for a refusal")
+	await _close(marco)
+
+	SessionState.reset_session()
+	SessionState.detective_credibility = GATE_CLEAR
+	SessionState.add_evidence({"id": "test_evelyn_confirmed", "label": "Evelyn's Confirmed Testimony", "person_id": "evelyn_marsh"})
+	SessionState.pending_case_path = CASE_MARCO
+	marco = load(INTERVIEW_SCENE).instantiate()
+	add_child(marco)
+	await get_tree().process_frame
+	marco._load_node("deny_node")
+	marco._present_evidence_index(_index_of(marco, "test_evelyn_confirmed"))
+	_check(marco.prompt_value.text.contains("didn't even pay"), "with no prologue, Marco gets the line as written")
+	await _close(marco)
+
+	# A quiz keeps its options; only the framing changes for a call that never
+	# reached the fee.
+	view = await _open_after_prologue(CASE_LINA, "lina_reyes", "Lina Reyes", SessionState.CALL_TIMEOUT, GATE_CLEAR)
+	_check(_index_of_quiet(view, "ev_transfer_receipts") < 0, "an unfinished Lina has no transfer receipts")
+	_check(_index_of(view, "ev_quote_notes") >= 0, "...but she has the note she was writing")
+	view._load_node("tactic_quiz_escalation")
+	_check(view.prompt_value.text.contains("cut off before the fee"), "the quiz is reframed for a call that cut off")
+	_check(view.choice_buttons[0].text.contains("each new fee looks small"), "...with the same options, because they are the lesson")
+	await _close(view)
+
+
+func _index_of_quiet(_view: Node, evidence_id: String) -> int:
+	for i in range(SessionState.investigation_inventory.size()):
+		if str(SessionState.investigation_inventory[i].get("id", "")) == evidence_id:
+			return i
+	return -1

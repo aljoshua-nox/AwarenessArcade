@@ -35,21 +35,56 @@
       "tactic_id": "advance_fee",
       "label": "Three Transfer Receipts",
       "description": "Three outgoing transfers over nine days - a release fee, then a tax charge, then a courier bond - each one described as the last payment required.",
-      "tactic": "Advance fee, repeated: every payment buys only the right to be asked for the next one."
+      "tactic": "Advance fee, repeated: every payment buys only the right to be asked for the next one.",
+      "dispositions": {
+        "resistant": {
+          "omit": true
+        },
+        "unfinished": {
+          "omit": true
+        }
+      }
+    },
+    {
+      "id": "ev_quote_notes",
+      "only_for": [
+        "resistant",
+        "unfinished"
+      ],
+      "label": "Lina's Quote Sheet",
+      "description": "The margin of a customer quote: the caller's number, the time, and his phrases in order, written while she kept working.",
+      "tactic": "A script written down while it is being read is the one record that can be matched, word for word, to the next call.",
+      "tactic_id": "repeated_script"
     },
     {
       "id": "ev_second_call_log",
       "tactic_id": "reused_victim_list",
       "label": "Callback Log",
       "description": "Lina's phone log showing four further calls from different numbers in the two weeks after she paid.",
-      "tactic": "Paying marks a number as productive. The list is worth more once somebody on it has proved they will pay."
+      "tactic": "Paying marks a number as productive. The list is worth more once somebody on it has proved they will pay.",
+      "dispositions": {
+        "resistant": {
+          "description": "Lina's phone log showing four further calls from different numbers in the two weeks after she hung up."
+        },
+        "unfinished": {
+          "description": "Lina's phone log showing four further calls from different numbers in the two weeks after the call cut off."
+        }
+      }
     },
     {
       "id": "ev_recovery_offer",
       "tactic_id": "verification_denial",
       "label": "Recovery Offer Message",
       "description": "A later message offering to recover Lina's lost money for an upfront administration fee.",
-      "tactic": "The second scam sold to the victims of the first, and the one that gets the least sympathy and the least reporting."
+      "tactic": "The second scam sold to the victims of the first, and the one that gets the least sympathy and the least reporting.",
+      "dispositions": {
+        "resistant": {
+          "omit": true
+        },
+        "unfinished": {
+          "omit": true
+        }
+      }
     },
     {
       "id": "ev_printer_quote",
@@ -91,7 +126,43 @@
           "next": "blame_her",
           "cooperation": -14
         }
-      ]
+      ],
+      "dispositions": {
+        "resistant": {
+          "choices": [
+            {
+              "text": "I have. Start wherever it starts for you.",
+              "next": "ask_wellbeing"
+            },
+            {
+              "text": "Take me through the call, start to finish.",
+              "next": "ask_call"
+            },
+            {
+              "text": "I'll be straight with you - someone who prices jobs for a living should have hung up sooner.",
+              "next": "blame_her",
+              "cooperation": -14
+            }
+          ]
+        },
+        "unfinished": {
+          "choices": [
+            {
+              "text": "I have. Start wherever it starts for you.",
+              "next": "ask_wellbeing"
+            },
+            {
+              "text": "Take me through the call, as far as it got.",
+              "next": "ask_call"
+            },
+            {
+              "text": "I'll be straight with you - a call that cut off isn't much to go on.",
+              "next": "blame_her",
+              "cooperation": -14
+            }
+          ]
+        }
+      }
     },
     "blame_her": {
       "prompt": "Her face closes. \"It is. It's a lot.\" She picks the stack back up. \"The first one was small enough to be worth the risk. So was the second, once I'd sent the first. That's how it's built. But you've decided already, so.\"",
@@ -106,7 +177,39 @@
           "next": "ask_call_cold",
           "cooperation": -8
         }
-      ]
+      ],
+      "dispositions": {
+        "resistant": {
+          "prompt": "Her face closes. \"Should I.\" She picks the stack back up. \"I hung up when I'd heard enough to write it down. That was the plan. But you've decided already, so.\"",
+          "choices": [
+            {
+              "text": "You're right, and I asked that badly. You hung up with his number in your hand - that's more than most.",
+              "next": "recover",
+              "cooperation": 8
+            },
+            {
+              "text": "I haven't decided anything. The call, please.",
+              "next": "ask_call_cold",
+              "cooperation": -8
+            }
+          ]
+        },
+        "unfinished": {
+          "prompt": "Her face closes. \"It isn't.\" She picks the stack back up. \"It's the third one this month, and you're the first person to ask. But you've decided already, so.\"",
+          "choices": [
+            {
+              "text": "You're right, and I asked that badly. Three in a month is exactly the point.",
+              "next": "recover",
+              "cooperation": 8
+            },
+            {
+              "text": "I haven't decided anything. The call, please.",
+              "next": "ask_call_cold",
+              "cooperation": -8
+            }
+          ]
+        }
+      }
     },
     "recover": {
       "prompt": "She sets the stack down again. \"Nobody's said that part back to me before. They just ask why I sent the third one.\"",
@@ -116,7 +219,27 @@
           "text": "Because the third one was small too. Tell me about the first.",
           "next": "ask_call"
         }
-      ]
+      ],
+      "dispositions": {
+        "resistant": {
+          "prompt": "She sets the stack down again. \"Nobody's said that part back to me before. They just ask why I stayed on the line.\"",
+          "choices": [
+            {
+              "text": "Because you were writing it down. Tell me about the call.",
+              "next": "ask_call"
+            }
+          ]
+        },
+        "unfinished": {
+          "prompt": "She sets the stack down again. \"Nobody's said that part back to me before. They just tell me to block the number.\"",
+          "choices": [
+            {
+              "text": "Blocking one number does nothing. Tell me about the call.",
+              "next": "ask_call"
+            }
+          ]
+        }
+      }
     },
     "ask_wellbeing": {
       "prompt": "\"Trading. Just about.\" She gestures at the shop. \"It was the deposit for the new machine. I'd been putting it aside for two years, so I'm running the old one until it dies, and then I don't know.\"",
@@ -126,7 +249,27 @@
           "text": "I'm sorry. Take me through how the payments started.",
           "next": "ask_call"
         }
-      ]
+      ],
+      "dispositions": {
+        "resistant": {
+          "prompt": "\"Trading. Just about.\" She gestures at the shop. \"He knew about the machine, that's the thing. The new press I've been saving for. I've told maybe four people that.\"",
+          "choices": [
+            {
+              "text": "Then someone told him. Take me through the call.",
+              "next": "ask_call"
+            }
+          ]
+        },
+        "unfinished": {
+          "prompt": "\"Trading. Just about.\" She gestures at the shop. \"It's the third one this month. They don't bother me. They bother my afternoon.\"",
+          "choices": [
+            {
+              "text": "Then let's not waste more of it. Take me through the call.",
+              "next": "ask_call"
+            }
+          ]
+        }
+      }
     },
     "ask_call": {
       "prompt": "\"A release fee. Small - I checked the amount twice, it was less than a print run. Then a tax charge, because the sum had cleared into a holding account. Then a courier bond, because it was being sent physically.\" She looks up. \"Every single time, that was the last thing.\"",
@@ -135,7 +278,27 @@
           "text": "Say that last part again. Every time it was the last thing.",
           "next": "tactic_quiz_escalation"
         }
-      ]
+      ],
+      "dispositions": {
+        "resistant": {
+          "prompt": "\"A prize. A trade draw through my paper supplier - a hundred fifty thousand, towards equipment. And a release fee to be paid today, which he called a bond and said would come back to me with the sum.\" She looks up. \"I asked him to take it off the top. He hung up.\"",
+          "choices": [
+            {
+              "text": "Say that part again. It would come back to you with the sum.",
+              "next": "tactic_quiz_escalation"
+            }
+          ]
+        },
+        "unfinished": {
+          "prompt": "\"A prize. A trade draw through the supplier, a hundred fifty thousand, towards equipment. He was getting to what he needed from me when the line went.\" She shrugs. \"They all cut off eventually.\"",
+          "choices": [
+            {
+              "text": "The next sentence was going to be a fee. Let's look at how that goes.",
+              "next": "tactic_quiz_escalation"
+            }
+          ]
+        }
+      }
     },
     "ask_call_cold": {
       "prompt": "\"Release fee. Tax charge. Courier bond.\" She counts them off without warmth. \"Nine days. Each one presented as the final step.\"",
@@ -145,7 +308,27 @@
           "text": "Say that last part again. Each one presented as the final step.",
           "next": "tactic_quiz_escalation"
         }
-      ]
+      ],
+      "dispositions": {
+        "resistant": {
+          "prompt": "\"Prize. Supplier draw. Release fee, today.\" She counts them off without warmth. \"I said take it off the top. He was gone.\"",
+          "choices": [
+            {
+              "text": "Say that part again. The fee, today.",
+              "next": "tactic_quiz_escalation"
+            }
+          ]
+        },
+        "unfinished": {
+          "prompt": "\"Prize. Supplier draw. Then nothing.\" She counts them off without warmth. \"That's the whole thing.\"",
+          "choices": [
+            {
+              "text": "The next sentence was going to be a fee. Let's look at how that goes.",
+              "next": "tactic_quiz_escalation"
+            }
+          ]
+        }
+      }
     },
     "tactic_quiz_escalation": {
       "tactic_quiz": {
@@ -175,12 +358,24 @@
             "feedback": "It is not a cost they are tolerating - it is the design. More contacts is more commitment, not more risk, because the person paying now has a reason to want it to be real."
           },
           {
-            "text": "Because she asked to pay in instalments.",
+            "text": "Because she asked to pay in installments.",
             "cooperation": -6,
-            "feedback": "She did not. The instalments were offered, and they were offered because a sequence of small decisions is far easier to obtain than one large one."
+            "feedback": "She did not. The installments were offered, and they were offered because a sequence of small decisions is far easier to obtain than one large one."
           }
         ],
         "next": "ask_evidence"
+      },
+      "dispositions": {
+        "resistant": {
+          "tactic_quiz": {
+            "setup": "She hung up at the first fee. The script she was on - you have it from the other files - goes on to a tax charge and then a courier bond: three payments in nine days, each one described, at the time, as the only thing standing between her and the money: [i]\"That clears it. Once this is settled the transfer goes out today.\"[/i]"
+          }
+        },
+        "unfinished": {
+          "tactic_quiz": {
+            "setup": "The call cut off before the fee. The script she was on - you have it from the other files - asks for a release fee, then a tax charge, then a courier bond: three payments in nine days, each one described, at the time, as the only thing standing between her and the money: [i]\"That clears it. Once this is settled the transfer goes out today.\"[/i]"
+          }
+        }
       }
     },
     "ask_evidence": {
@@ -223,7 +418,77 @@
           "text": "Thank you. I have enough to work with.",
           "next": "end_partial"
         }
-      ]
+      ],
+      "dispositions": {
+        "resistant": {
+          "prompt": "\"Sunk cost.\" She says it like a word from her own trade. \"I price jobs for a living. I know what that is. That's why I hung up at the first one.\"",
+          "choices": [
+            {
+              "text": "What happened after you hung up?",
+              "next": "press_details"
+            },
+            {
+              "text": "Thank you. I have enough to work with.",
+              "next": "end_partial"
+            }
+          ],
+          "evidence_hint": "She hung up, so there is no money to follow. What matters is what she wrote down while he was talking, and what happened to her number afterwards.",
+          "accepts_evidence": [
+            {
+              "evidence_id": "ev_quote_notes",
+              "next": "confirm_transfers",
+              "response": "She turns the quote around so you can read the margin. \"Number, ten past two, and everything he said, in order. I never stopped writing.\"",
+              "cooperation": 10
+            },
+            {
+              "evidence_id": "ev_second_call_log",
+              "next": "ask_evidence",
+              "response": "\"Four more, after. Different numbers, same shape of thing.\" She scrolls back through it. \"Hanging up doesn't get you off the list. Apparently it gets you a better caller.\""
+            },
+            {
+              "evidence_id": "ev_printer_quote",
+              "next": "ask_evidence",
+              "response": "\"That's a customer who hasn't paid me. Different problem, and not one you can help with.\"",
+              "cooperation": -8,
+              "wrong": true
+            }
+          ]
+        },
+        "unfinished": {
+          "prompt": "\"Sunk cost.\" She turns the word over. \"I price jobs for a living. I'd have seen it by the second one. I hope.\"",
+          "choices": [
+            {
+              "text": "What happened after the line went?",
+              "next": "press_details"
+            },
+            {
+              "text": "Thank you. I have enough to work with.",
+              "next": "end_partial"
+            }
+          ],
+          "evidence_hint": "The call never finished, so there is nothing to follow. What matters is what she wrote down while it was live, and what happened to her number afterwards.",
+          "accepts_evidence": [
+            {
+              "evidence_id": "ev_quote_notes",
+              "next": "confirm_transfers",
+              "response": "She turns the quote around so you can read the margin. \"Number, ten past two, and everything he said, in order. I never stopped writing.\"",
+              "cooperation": 10
+            },
+            {
+              "evidence_id": "ev_second_call_log",
+              "next": "ask_evidence",
+              "response": "\"Four more, after. Different numbers, same shape of thing.\" She scrolls back through it. \"Hanging up doesn't get you off the list. Apparently it gets you a better caller.\""
+            },
+            {
+              "evidence_id": "ev_printer_quote",
+              "next": "ask_evidence",
+              "response": "\"That's a customer who hasn't paid me. Different problem, and not one you can help with.\"",
+              "cooperation": -8,
+              "wrong": true
+            }
+          ]
+        }
+      }
     },
     "press_details": {
       "prompt": "\"He stopped answering. And then two weeks later somebody else called about a completely different prize.\" She shrugs. \"So either it's a coincidence, or I'm worth more to them now than I was before.\"",
@@ -237,7 +502,35 @@
           "text": "Thank you. I have enough to work with.",
           "next": "end_partial"
         }
-      ]
+      ],
+      "dispositions": {
+        "resistant": {
+          "prompt": "\"Two weeks later somebody else called about a completely different prize.\" She shrugs. \"So either it's a coincidence, or hanging up on them doesn't take you off the list.\"",
+          "choices": [
+            {
+              "text": "It isn't a coincidence. Can you show me what you wrote down?",
+              "next": "ask_evidence"
+            },
+            {
+              "text": "Thank you. I have enough to work with.",
+              "next": "end_partial"
+            }
+          ]
+        },
+        "unfinished": {
+          "prompt": "\"Two weeks later somebody else called about a completely different prize.\" She shrugs. \"They call in batches. I've stopped answering the landline after the second one.\"",
+          "choices": [
+            {
+              "text": "It isn't random. Can you show me what you wrote down?",
+              "next": "ask_evidence"
+            },
+            {
+              "text": "Thank you. I have enough to work with.",
+              "next": "end_partial"
+            }
+          ]
+        }
+      }
     },
     "confirm_transfers": {
       "prompt": "The dates do the work on their own - each call timed to arrive once the last payment had stopped stinging. \"I want it on a record somewhere,\" Lina says. \"Not for the money. I know that's gone. I want it written down that it was a system and not me being a fool.\"",
@@ -251,7 +544,35 @@
           "text": "It was a system. It's written down now.",
           "next": "end_success"
         }
-      ]
+      ],
+      "dispositions": {
+        "resistant": {
+          "prompt": "The margin does the work on its own - his number, the time, and his phrases in her handwriting, written while the paper cutter was still going. \"I want it on a record somewhere,\" Lina says. \"Not because I lost anything. Because I saw it coming, and next time I might not.\"",
+          "choices": [
+            {
+              "text": "It's on the record. It was a script, and you caught it.",
+              "next": "end_success"
+            }
+          ],
+          "milestone": {
+            "title": "Key Witness Secured: The Script In Writing",
+            "detail": "Lina Reyes wrote the caller's words down while he was still talking. No money moved, and the operation's own phrasing is on paper."
+          }
+        },
+        "unfinished": {
+          "prompt": "The margin does the work on its own - his number, the time, and the opening line in her handwriting. \"I want it on a record somewhere,\" Lina says. \"They cut off, they call back, they cut off. Somebody should be writing it down.\"",
+          "choices": [
+            {
+              "text": "It's on the record now. Somebody is.",
+              "next": "end_success"
+            }
+          ],
+          "milestone": {
+            "title": "Key Witness Secured: The Number In Writing",
+            "detail": "Lina Reyes wrote the number and the opening down before the call cut off. Three dropped calls in a month, and hers is the only record of any of them."
+          }
+        }
+      }
     },
     "end_success": {
       "prompt": "Three dated transfers, a callback log, and a recovery offer aimed at the same victim. This is the strongest documentary evidence in the case - and the only place the operation's money can be traced.",
@@ -264,12 +585,44 @@
           "tactic": "A victim who paid leaves a trail. It is the hardest testimony to obtain and the hardest to argue with."
         }
       ],
-      "choices": []
+      "choices": [],
+      "dispositions": {
+        "resistant": {
+          "prompt": "Lina's notes, written while the call was live, and the callbacks that followed. No money moved, so there is nothing to trace - but it is the clearest record of the script anyone has given you.",
+          "grants_evidence": [
+            {
+              "id": "test_lina_confirmed",
+              "label": "Lina's Confirmed Testimony",
+              "description": "Lina Reyes wrote the advance-fee script down as it was read to her and refused it; her callback log shows the number was worked again afterwards.",
+              "tactic": "A script written down as it was read is the one record that can be matched, word for word, to the next call."
+            }
+          ]
+        },
+        "unfinished": {
+          "prompt": "Lina's note of the number, and the callbacks that followed. Nothing was taken and nothing can be traced - but three dropped calls in a month, all logged, is a pattern on paper.",
+          "grants_evidence": [
+            {
+              "id": "test_lina_confirmed",
+              "label": "Lina's Confirmed Testimony",
+              "description": "Lina Reyes logged a prize call that cut off and the calls that followed from other numbers - the same list, worked in batches.",
+              "tactic": "Three dropped calls in one month, all logged, show a list being worked in batches - the pattern is the evidence."
+            }
+          ]
+        }
+      }
     },
     "end_partial": {
       "prompt": "You have the shape of what happened to her, but not the receipts that would let anyone follow the money. She has them. She simply has not been asked for them.",
       "outcome": "partial",
-      "choices": []
+      "choices": [],
+      "dispositions": {
+        "resistant": {
+          "prompt": "You have the shape of what happened to her, but not the sheet she wrote it on. She has it. She simply has not been asked for it."
+        },
+        "unfinished": {
+          "prompt": "You have the shape of what happened to her, but not the sheet she wrote it on. She has it. She simply has not been asked for it."
+        }
+      }
     },
     "end_shutdown": {
       "prompt": "\"Right.\" Lina picks the stack back up, and the paper cutter comes down on it. \"I've got a run to finish.\" She does not look up again. The receipts stay in the drawer, where they have been since the day she filed the report nobody read.",
@@ -278,7 +631,15 @@
         "title": "Witness Lost",
         "detail": "Lina Reyes went back to work. She had already reported this once to no effect; a second dead end is what teaches a victim that reporting is not worth the afternoon."
       },
-      "choices": []
+      "choices": [],
+      "dispositions": {
+        "resistant": {
+          "prompt": "\"Right.\" Lina picks the stack back up, and the paper cutter comes down on it. \"I've got a run to finish.\" She does not look up again. The quote with his number in the margin goes back under the counter, where it has been since nobody asked for it."
+        },
+        "unfinished": {
+          "prompt": "\"Right.\" Lina picks the stack back up, and the paper cutter comes down on it. \"I've got a run to finish.\" She does not look up again. The quote with his number in the margin goes back under the counter, where it has been since nobody asked for it."
+        }
+      }
     }
   }
 }

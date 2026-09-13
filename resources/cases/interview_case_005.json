@@ -12,7 +12,7 @@
     "dispositions": {
       "harmed": {
         "cooperation": 34,
-        "prompt": "Evelyn has the kettle on and does not offer you any. \"I'd rather not go through it again, if it's all the same.\" She sits with her hands in her lap. \"I spent thirty years telling other people to check their figures.\"",
+        "prompt": "Evelyn has the kettle on and does not offer you a cup. \"I'd rather not go through it again, if it's all the same.\" She sits with her hands in her lap. \"I spent thirty years telling other people to check their figures.\"",
         "note": "You took money from this one. A person who audited other people's books for a living now has to say out loud that she was caught - which is why she would rather say nothing."
       },
       "resistant": {
@@ -36,17 +36,32 @@
       "tactic": "Advance fee: money demanded before money is delivered, which is never how winnings work."
     },
     {
+      "id": "ev_release_receipt",
+      "only_for": [
+        "harmed"
+      ],
+      "label": "Release Fee Payment",
+      "description": "Evelyn's card statement: the 'release fee' paid the afternoon of the call, to an account that no longer exists.",
+      "tactic": "Advance fee: money demanded before money is delivered, which is never how winnings work.",
+      "tactic_id": "advance_fee"
+    },
+    {
       "id": "ev_call_note",
       "tactic_id": "repeated_script",
       "label": "Evelyn's Handwritten Note",
       "description": "A notebook page with the caller's number, the date and time, and several of his phrases copied down as he said them.",
-      "tactic": "Written-down wording is what lets one call be matched to another. Scripts repeat; memories do not."
+      "tactic": "Written-down wording is what lets one call be matched to another. Scripts repeat; memories do not.",
+      "dispositions": {
+        "unfinished": {
+          "description": "A notebook page with two lines - a name, a sum - and a question mark, written before the line went dead."
+        }
+      }
     },
     {
       "id": "ev_raffle_stub",
       "tactic_id": "reused_victim_list",
       "label": "Store Raffle Stub",
-      "description": "The counter-top raffle Evelyn entered at a hardware store two months earlier, with her name, address and number written on the slip.",
+      "description": "The countertop raffle Evelyn entered at a hardware store two months earlier, with her name, address and number written on the slip.",
       "tactic": "Details given away for a small prize end up on a list. Being contacted is rarely coincidence."
     },
     {
@@ -75,7 +90,43 @@
           "next": "dismiss_her",
           "cooperation": -14
         }
-      ]
+      ],
+      "dispositions": {
+        "harmed": {
+          "choices": [
+            {
+              "text": "I am. And I'd like to hear all of it, in your own order.",
+              "next": "ask_wellbeing"
+            },
+            {
+              "text": "Tell me what the caller actually said.",
+              "next": "ask_call"
+            },
+            {
+              "text": "I'll be honest - a bookkeeper paying a release fee is the part I don't understand.",
+              "next": "dismiss_her",
+              "cooperation": -14
+            }
+          ]
+        },
+        "unfinished": {
+          "choices": [
+            {
+              "text": "I am. And I'd like to hear all of it, in your own order.",
+              "next": "ask_wellbeing"
+            },
+            {
+              "text": "Tell me what the caller actually said.",
+              "next": "ask_call"
+            },
+            {
+              "text": "A wrong number and a dropped line. Let's keep this brief.",
+              "next": "dismiss_her",
+              "cooperation": -14
+            }
+          ]
+        }
+      }
     },
     "dismiss_her": {
       "prompt": "The warmth goes out of her face. \"No. I didn't lose any money.\" A pause with an edge on it. \"Is that the entry requirement? Should I have paid, so you'd write it down?\"",
@@ -90,7 +141,39 @@
           "next": "ask_call_cold",
           "cooperation": -8
         }
-      ]
+      ],
+      "dispositions": {
+        "harmed": {
+          "prompt": "The warmth goes out of her face. \"No. Nor do I.\" A pause with an edge on it. \"Is that what you came for? To have it explained to you?\"",
+          "choices": [
+            {
+              "text": "That was badly put. You wrote his number down before you paid him. Nobody else did that.",
+              "next": "recover",
+              "cooperation": 8
+            },
+            {
+              "text": "I only meant it should be quick. Let's start with the call.",
+              "next": "ask_call_cold",
+              "cooperation": -8
+            }
+          ]
+        },
+        "unfinished": {
+          "prompt": "The warmth goes out of her face. \"A wrong number.\" A pause with an edge on it. \"Then why, precisely, are you at my door?\"",
+          "choices": [
+            {
+              "text": "That was badly put. You noted the time of a call that went nowhere. Nobody else did that.",
+              "next": "recover",
+              "cooperation": 8
+            },
+            {
+              "text": "I only meant it should be quick. Let's start with the call.",
+              "next": "ask_call_cold",
+              "cooperation": -8
+            }
+          ]
+        }
+      }
     },
     "recover": {
       "prompt": "She considers that, then nods once. \"No. It's a fair point badly made. Nobody wants the statement of the woman who was fine.\"",
@@ -100,17 +183,42 @@
           "text": "The people who saw it coming are exactly who I need. Go on.",
           "next": "ask_call"
         }
-      ]
+      ],
+      "dispositions": {
+        "harmed": {
+          "prompt": "She considers that, then nods once. \"No. It's a fair point badly made. Nobody wants the statement of the woman who should have known better.\"",
+          "choices": [
+            {
+              "text": "The people it worked on are exactly who I need. Go on.",
+              "next": "ask_call"
+            }
+          ]
+        },
+        "unfinished": {
+          "prompt": "She considers that, then nods once. \"No. It's a fair point badly made. Nobody wants the statement of the woman nothing happened to.\"",
+          "choices": [
+            {
+              "text": "The people it didn't finish with are exactly who I need. Go on.",
+              "next": "ask_call"
+            }
+          ]
+        }
+      }
     },
     "ask_wellbeing": {
-      "prompt": "\"I'm perfectly well. Annoyed, mainly.\" She sets down two cups anyway. \"My sister had one of these calls last year and she has never told anybody but me. That is what makes me cross.\"",
+      "prompt": "\"I'm perfectly well. Annoyed, mainly.\" She sets down two cups anyway. \"My sister had one of these calls last year and she has never told anybody but me. That is what makes me angry.\"",
       "cooperation": 8,
       "choices": [
         {
           "text": "That silence is most of the problem. Walk me through your call.",
           "next": "ask_call"
         }
-      ]
+      ],
+      "dispositions": {
+        "harmed": {
+          "prompt": "\"Well enough. Angry, mainly - with myself.\" She sets down two cups anyway. \"My sister had one of these calls last year and told nobody but me, and I thought less of her for it. I've had to revise that.\""
+        }
+      }
     },
     "ask_call": {
       "prompt": "\"A very pleasant young man. I had won a regional draw - four hundred-something thousand. All that remained was a release fee, and could I settle it today, because the draw closed at five.\"",
@@ -119,7 +227,15 @@
           "text": "Say the part about the fee again. Exactly as he said it.",
           "next": "tactic_quiz_advance_fee"
         }
-      ]
+      ],
+      "dispositions": {
+        "harmed": {
+          "prompt": "\"A very pleasant young man. I had won a regional draw - four hundred-something thousand. There was a release fee, and it had to be settled today, because the draw closed at five.\" She folds her hands. \"I settled it.\""
+        },
+        "unfinished": {
+          "prompt": "\"A very pleasant young man. I had won a regional draw, and he was coming to what was needed to release it when the line went.\" She frowns. \"I've had a week to think about what the next sentence was going to be. My sister had one of these calls. I know what it was.\""
+        }
+      }
     },
     "ask_call_cold": {
       "prompt": "She gives it flatly, like a statement being read into a record. \"Regional draw. Large sum. A release fee, payable today, or the draw closed at five.\"",
@@ -129,7 +245,15 @@
           "text": "Say the part about the fee again. Exactly as he said it.",
           "next": "tactic_quiz_advance_fee"
         }
-      ]
+      ],
+      "dispositions": {
+        "harmed": {
+          "prompt": "She gives it flatly, like a statement being read into a record. \"Regional draw. Large sum. A release fee, payable today, or the draw closed at five.\" A beat. \"Paid.\""
+        },
+        "unfinished": {
+          "prompt": "She gives it flatly, like a statement being read into a record. \"Regional draw. Large sum. Line went dead.\""
+        }
+      }
     },
     "tactic_quiz_advance_fee": {
       "tactic_quiz": {
@@ -165,6 +289,13 @@
           }
         ],
         "next": "ask_evidence"
+      },
+      "dispositions": {
+        "unfinished": {
+          "tactic_quiz": {
+            "setup": "You write down what her sister was told last year, which Evelyn can recite: [i]\"Your prize is confirmed. There is only the release fee to settle before we can transfer it, and the draw closes at five.\"[/i]"
+          }
+        }
       }
     },
     "ask_evidence": {
@@ -193,7 +324,7 @@
         {
           "evidence_id": "ev_shopping_list",
           "next": "ask_evidence",
-          "response": "She looks at the list, then at you. \"Unless the tinned tomatoes are implicated, I'm not sure what you want me to say.\"",
+          "response": "She looks at the list, then at you. \"Unless the canned tomatoes are implicated, I'm not sure what you want me to say.\"",
           "cooperation": -8,
           "wrong": true
         }
@@ -207,7 +338,77 @@
           "text": "Thank you. This is more than most people can give me.",
           "next": "end_partial"
         }
-      ]
+      ],
+      "dispositions": {
+        "harmed": {
+          "prompt": "\"So it was the fee.\" She sits very still. \"I know that winnings do not have an entry fee. I have said it to nephews. I paid it anyway, because I had written the sum down and I wanted it to be true.\"",
+          "evidence_hint": "She paid, so there is a transaction - but the money is gone and the account it went to is not. What matters is how they reached her in the first place.",
+          "accepts_evidence": [
+            {
+              "evidence_id": "ev_raffle_stub",
+              "next": "confirm_list",
+              "response": "Evelyn goes very still. \"The hardware store. A bowl of tickets by the cashier.\" She turns the stub over. \"I wrote my address on it myself. I handed it to them.\"",
+              "cooperation": 20
+            },
+            {
+              "evidence_id": "ev_release_receipt",
+              "next": "ask_evidence",
+              "response": "She does not look at it. \"I know what it says. I balanced it that evening, the way I balance everything.\"",
+              "cooperation": 4
+            },
+            {
+              "evidence_id": "ev_call_note",
+              "next": "ask_evidence",
+              "response": "\"My own handwriting. Number, time, what he said.\" She looks at the page. \"I wrote all of that down, and then I paid him. Make of that what you like.\"",
+              "cooperation": 8
+            },
+            {
+              "evidence_id": "ev_prize_notice",
+              "next": "ask_evidence",
+              "response": "\"That arrived the evening before.\" She reads it again. \"Softening me up, I suppose. It worked on my curiosity, if nothing else.\"",
+              "cooperation": 6
+            },
+            {
+              "evidence_id": "ev_shopping_list",
+              "next": "ask_evidence",
+              "response": "She looks at the list, then at you. \"Unless the canned tomatoes are implicated, I'm not sure what you want me to say.\"",
+              "cooperation": -8,
+              "wrong": true
+            }
+          ]
+        },
+        "unfinished": {
+          "prompt": "\"So it would have been a fee.\" She nods slowly. \"That is what my sister was asked for. I'd have said no.\" A pause. \"I think I would have said no.\"",
+          "evidence_hint": "The call never finished, so there is nothing to follow. What matters is how they reached her in the first place.",
+          "accepts_evidence": [
+            {
+              "evidence_id": "ev_raffle_stub",
+              "next": "confirm_list",
+              "response": "Evelyn goes very still. \"The hardware store. A bowl of tickets by the cashier.\" She turns the stub over. \"I wrote my address on it myself. I handed it to them.\"",
+              "cooperation": 20
+            },
+            {
+              "evidence_id": "ev_call_note",
+              "next": "ask_evidence",
+              "response": "\"Two lines and a question mark. I'd started out of habit, and then there was nothing left to write.\"",
+              "cooperation": 8
+            },
+            {
+              "evidence_id": "ev_prize_notice",
+              "next": "ask_evidence",
+              "response": "\"That arrived the evening before.\" She reads it again. \"Softening me up, I suppose. It worked on my curiosity, if nothing else.\"",
+              "cooperation": 6
+            },
+            {
+              "evidence_id": "ev_shopping_list",
+              "next": "ask_evidence",
+              "response": "She looks at the list, then at you. \"Unless the canned tomatoes are implicated, I'm not sure what you want me to say.\"",
+              "cooperation": -8,
+              "wrong": true
+            }
+          ]
+        }
+      }
     },
     "press_details": {
       "prompt": "\"He had my name. My full name, and the road, though not the number.\" She frowns. \"I did wonder how. I assumed the phone book, but nobody's been in the phone book for twenty years.\"",
@@ -235,7 +436,33 @@
           "text": "That's the part nobody reports, because nothing was stolen. Thank you.",
           "next": "end_success"
         }
-      ]
+      ],
+      "dispositions": {
+        "harmed": {
+          "choices": [
+            {
+              "text": "That's the part nobody reports, because it doesn't look like the crime. Thank you.",
+              "next": "end_success"
+            }
+          ],
+          "milestone": {
+            "title": "Witness Secured: The List",
+            "detail": "Evelyn Marsh traced how the operation reached her - details volunteered for a store raffle. The call was not random, and paying did not take her off the list; it moved her up it."
+          }
+        },
+        "unfinished": {
+          "choices": [
+            {
+              "text": "That's the part nobody reports, because nothing happened yet. Thank you.",
+              "next": "end_success"
+            }
+          ],
+          "milestone": {
+            "title": "Witness Secured: The List",
+            "detail": "Evelyn Marsh traced how the operation reached her - details volunteered for a store raffle. The call was not random, and a line that dropped did not take her off the list."
+          }
+        }
+      }
     },
     "end_success": {
       "prompt": "Evelyn's notes, the raffle stub and the release-fee script line up with the same operation the other calls came from. She lost nothing, and she has given you the clearest account of how the list is built.",
@@ -248,7 +475,31 @@
           "tactic": "A witness who refused still proves the operation exists - refusal is testimony, not a missing crime."
         }
       ],
-      "choices": []
+      "choices": [],
+      "dispositions": {
+        "harmed": {
+          "prompt": "Evelyn's notes, the raffle stub and the release-fee script line up with the same operation the other calls came from. She paid, and she has still given you the clearest account of how the list is built - which is the part that outlasts the money.",
+          "grants_evidence": [
+            {
+              "id": "test_evelyn_confirmed",
+              "label": "Evelyn's Confirmed Testimony",
+              "description": "Evelyn Marsh confirmed the advance-fee script word for word, paid it, and traced how the operation obtained her details.",
+              "tactic": "A witness who paid and can still say how she was found proves the operation is a list, not a lucky call."
+            }
+          ]
+        },
+        "unfinished": {
+          "prompt": "Evelyn's notes, the raffle stub and what she knows of the script line up with the same operation the other calls came from. Nothing was taken, and she has given you the clearest account of how the list is built.",
+          "grants_evidence": [
+            {
+              "id": "test_evelyn_confirmed",
+              "label": "Evelyn's Confirmed Testimony",
+              "description": "Evelyn Marsh confirmed the advance-fee script from a call that cut off and traced how the operation obtained her details.",
+              "tactic": "A witness whose call never finished still proves the operation exists - the list reached her, and it will again."
+            }
+          ]
+        }
+      }
     },
     "end_partial": {
       "prompt": "You have her account of the call and nothing that shows how they found her. It corroborates the script, but it does not move the case forward on its own.",
@@ -262,7 +513,15 @@
         "title": "Witness Lost",
         "detail": "Evelyn Marsh withdrew. The people who spot these calls and record them are the cheapest evidence an investigation will ever get, and they stop offering once it is clear nobody wants it."
       },
-      "choices": []
+      "choices": [],
+      "dispositions": {
+        "harmed": {
+          "prompt": "\"I think you have what you came for.\" Evelyn stands and holds the door. \"I was the one who didn't see it coming, and I don't intend to have that read back to me. Good day.\" The notebook stays on the table, closed."
+        },
+        "unfinished": {
+          "prompt": "\"I think you have what you came for.\" Evelyn stands and holds the door. \"Nothing happened to me, and I have somehow still managed to waste your afternoon. Good day.\" The notebook stays on the table, closed."
+        }
+      }
     }
   }
 }

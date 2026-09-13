@@ -60,11 +60,22 @@ var disposition_opening: String = ""
 var disposition_note: String = ""
 var opening_node_id: String = ""
 
+# The keys a node's `dispositions` block may override. Only the opening beat
+# used to vary with the prologue; everything after it was the case as written
+# for one fixed premise (Evelyn refused, Lina paid three times), so a player
+# who had done the opposite as the scammer spent the rest of the interview
+# being told they had not. Any node may now carry per-disposition overrides of
+# these keys, applied when the node loads. Neutral never has an entry, so a
+# skip-the-prologue run is still the case exactly as written.
+const NODE_OVERRIDE_KEYS := ["prompt", "choices", "evidence_hint", "evidence_prompt",
+	"accepts_evidence", "milestone", "grants_evidence", "claim"]
+
 
 func _ready() -> void:
 	_build_ui()
 	_load_case()
 	_apply_disposition()
+	_resolve_evidence()
 	_refresh_person_panel()
 	credibility_value.text = "Detective Credibility: %d" % SessionState.detective_credibility
 	var start_node := _determine_start_node()
@@ -125,6 +136,59 @@ func _apply_disposition() -> void:
 			disposition_note = quoted
 		else:
 			disposition_note = "%s  %s" % [quoted, disposition_note]
+
+
+# The node as this disposition sees it. A quiz keeps its options - only the
+# framing around them can change - because the options are the lesson.
+func _resolve_node(raw: Dictionary) -> Dictionary:
+	var override: Dictionary = (raw.get("dispositions", {}) as Dictionary).get(disposition, {})
+	if override.is_empty():
+		return raw
+	var node := raw.duplicate()
+	for key in NODE_OVERRIDE_KEYS:
+		if override.has(key):
+			node[key] = override[key]
+	if override.has("tactic_quiz") and raw.has("tactic_quiz"):
+		var quiz: Dictionary = (raw["tactic_quiz"] as Dictionary).duplicate()
+		var quiz_override: Dictionary = override["tactic_quiz"]
+		for key in quiz_override:
+			quiz[key] = quiz_override[key]
+		node["tactic_quiz"] = quiz
+	return node
+
+
+# The evidence this person can actually produce, given what happened to them.
+# An item can be reworded per disposition, or omitted outright: a Kevin who hung
+# up has no remote-access log, and presenting one to the suspect would break an
+# alibi with a document that does not exist. Every item is stamped with the
+# person it came from, so a later interview can react to WHOSE testimony it is
+# being shown and what happened to them.
+func _resolve_evidence() -> void:
+	evidence_items.clear()
+	for raw in case_data.get("evidence", []):
+		if not raw is Dictionary:
+			continue
+		# `only_for` lists the dispositions an item exists in at all - a bank
+		# statement showing the transfer only exists if there was a transfer.
+		if raw.has("only_for") and not (raw["only_for"] as Array).has(disposition):
+			continue
+		var override: Dictionary = (raw.get("dispositions", {}) as Dictionary).get(disposition, {})
+		if bool(override.get("omit", false)):
+			continue
+		var item: Dictionary = raw.duplicate()
+		item.erase("dispositions")
+		item.erase("only_for")
+		for key in override:
+			if key != "omit":
+				item[key] = override[key]
+		evidence_items.append(_stamp_source(item))
+
+
+func _stamp_source(item: Dictionary) -> Dictionary:
+	var stamped := item.duplicate()
+	if not stamped.has("person_id"):
+		stamped["person_id"] = str(person.get("person_id", ""))
+	return stamped
 
 
 func _determine_start_node() -> String:
@@ -352,7 +416,7 @@ func _refresh_person_panel() -> void:
 
 func _load_node(node_id: String, lead_in: String = "") -> void:
 	current_node_id = node_id
-	current_node = nodes.get(node_id, {})
+	current_node = _resolve_node(nodes.get(node_id, {}))
 	if current_node.is_empty():
 		return
 
@@ -387,7 +451,7 @@ func _load_node(node_id: String, lead_in: String = "") -> void:
 
 	for granted_item in current_node.get("grants_evidence", []):
 		if granted_item is Dictionary:
-			SessionState.add_evidence(granted_item)
+			SessionState.add_evidence(_stamp_source(granted_item))
 
 	var outcome := str(current_node.get("outcome", ""))
 
@@ -626,7 +690,7 @@ func _presentable_ids() -> Dictionary:
 	for item in evidence_items:
 		ids[str(item.get("id", ""))] = true
 	for node_id in nodes:
-		var node: Dictionary = nodes[node_id]
+		var node: Dictionary = _resolve_node(nodes[node_id])
 		for entry in node.get("accepts_evidence", []):
 			ids[str(entry.get("evidence_id", ""))] = true
 	return ids
@@ -690,7 +754,17 @@ func _present_evidence_index(index: int) -> void:
 	var accepts: Array = current_node.get("accepts_evidence", [])
 	for entry in accepts:
 		if str(entry.get("evidence_id", "")) == item_id:
-			var response := _style_dialogue(str(entry.get("response", "")))
+			# A suspect shown Evelyn's testimony should not say "she didn't even
+			# pay" to a player who took her money. `responses` is keyed by the
+			# disposition of the person the item came from, with `response` as
+			# the line for anyone it does not name.
+			var response_text := str(entry.get("response", ""))
+			var by_source: Dictionary = entry.get("responses", {})
+			if not by_source.is_empty():
+				var source_disposition := SessionState.get_victim_disposition(str(item.get("person_id", "")))
+				if by_source.has(source_disposition):
+					response_text = str(by_source[source_disposition])
+			var response := _style_dialogue(response_text)
 			var tactic := str(item.get("tactic", ""))
 			var is_wrong := bool(entry.get("wrong", false))
 			# Presenting corroboration teaches "keep your records". Catching a

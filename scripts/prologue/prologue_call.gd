@@ -515,7 +515,7 @@ func _load_node(node_id: String) -> void:
 	var node: Dictionary = _current_nodes().get(node_id, {})
 	if node.is_empty():
 		push_error("Call script has no node '%s'" % node_id)
-		_end_current_call(SessionState.CALL_ABORTED, {}, "The script runs out. You put the phone down.")
+		_end_current_call(SessionState.CALL_ABORTED, {}, "The script runs out. You hang up.")
 		return
 
 	var doubt_check: Dictionary = node.get("doubt_check", {})
@@ -875,7 +875,7 @@ func _on_end_prologue_pressed() -> void:
 	if prologue_end_transition_started:
 		return
 	if call_active:
-		_end_current_call(SessionState.CALL_ABORTED, {}, "You put the phone down mid-sentence and log off.")
+		_end_current_call(SessionState.CALL_ABORTED, {}, "You hang up mid-sentence and log off.")
 	_start_prologue_end_transition("Shift Ended Early",
 		"You logged off the floor to see what the calls left behind.")
 

@@ -20,7 +20,7 @@ const OUTCOME_MESSAGES := {
 	"partial": "You have a rough picture of what happened, but nothing yet that ties it to the wider operation. The case needs more.",
 	"whistleblower": "The suspect agreed to identify the wider operation. The case against the call center is no longer circumstantial.",
 	"failure": "This lead has gone cold. The person you spoke with wasn't willing to give you anything more.",
-	"full_takedown": "Every testimony you gathered held up. The operation is being dismantled from the top down, not just the callers who made the calls.",
+	"full_takedown": "Every testimony you gathered held up. The operation is being dismantled from the top down, not just the people who made the calls.",
 	"partial_justice": "The callers face consequences, but the case wasn't strong enough to reach whoever was really running things.",
 	"bribed": "The investigation ends here - not because the evidence ran out, but because it stopped being pursued.",
 	"insufficient_evidence": "The file closes with nobody charged. The calls are documented, the people who took them are on record, and the operation that made them is still a phone number nobody can attach a name to.",
@@ -48,7 +48,7 @@ const AWARENESS_VERDICTS := {
 		"blind": "Nothing was proved and nothing was understood. The operation is still working, the scripts are still on the desk, and the only record of any of it is a file that says a number of people received calls.",
 	},
 	"bribed": {
-		"sharp": "You named every tactic correctly. You understood exactly what was done to Maria and to Kevin. Then you were offered money, and it turned out that understanding was never the thing standing in the way.",
+		"sharp": "You named every tactic correctly. You understood exactly what was done to every person you sat across from. Then you were offered money, and it turned out that understanding was never the thing standing in the way.",
 		"mixed": "You saw some of it clearly. It made no difference to what you did with the envelope.",
 		"blind": "You never named what they were doing, and then you took their money. The two are not unrelated - it is easier to accept payment for something you have declined to describe.",
 	},

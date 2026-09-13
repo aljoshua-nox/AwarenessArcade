@@ -151,7 +151,7 @@ func _build_summary_text() -> String:
 	for tactic_id in SessionState.prologue_tactics_used:
 		tactic_names.append(_tactic_name(str(tactic_id)))
 	if not tactic_names.is_empty():
-		lines.append("[b]From the binder, you used:[/b] %s" % ", ".join(tactic_names))
+		lines.append("[b]Tactics used:[/b] %s" % ", ".join(tactic_names))
 	return "\n".join(lines)
 
 

@@ -54,7 +54,7 @@ var reports_filed: int = 0
 # the summary reports it as the victims' losses.
 var profit: int = 0
 var time_left: float = 240.0
-# Catalogue tactic ids the player used from the binder, in first-use order.
+# Catalogue tactic ids the player used on the calls, in first-use order.
 # Recorded for the summary; deliberately does NOT unlock the notebook - the
 # investigation is where a tactic is named, the prologue is where it is used.
 var prologue_tactics_used: Array[String] = []

@@ -30,11 +30,11 @@ const MARK_HARM := "HARM ON RECORD"
 const MARK_CLAIM := "CLAIM ON RECORD"
 ## That assertion failing against something the player is carrying.
 const MARK_CONTRADICTION := "CONTRADICTION"
-## The prologue's call floor talking: the line connecting, the binder naming the
-## move the player just made, the call closing, a report landing, and the
-## victim's own words afterwards.
+## The prologue's call floor talking: the line connecting, the tactic the player
+## just used being named, the call closing, a report landing, and the victim's
+## own words afterwards.
 const MARK_DIALLING := "DIALLING"
-const MARK_BINDER := "BINDER"
+const MARK_TACTIC_USED := "TACTIC USED"
 const MARK_CALL_ENDED := "CALL ENDED"
 const MARK_REPORTED := "REPORTED"
 const MARK_AFTERMATH := "AFTER THE CALL"

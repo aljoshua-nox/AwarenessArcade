@@ -8,7 +8,7 @@ extends Node
 ## Writes prologue_preview.png, prologue_ending_preview.png,
 ## prologue_summary_preview.png, evidence_preview.png and harm_preview.png under
 ## user://. The second is the densest a call gets: a
-## paid ending, with the binder line, the call-ended line, a report and the
+## paid ending, with the tactic-used line, the call-ended line, a report and the
 ## victim afterwards all in the box. The last is the densest an interview
 ## opening gets: a harmed victim's own words quoted off the call record, on top
 ## of the authored case note.
@@ -66,7 +66,7 @@ func _capture_prologue() -> void:
 
 
 # One answered line, then straight to the refusal ending: the transcript holds
-# the dialling line, the opening, the player's line, the binder naming it, the
+# the dialling line, the opening, the player's line, the tactic it was, the
 # victim's reply, CALL ENDED, REPORTED and AFTER THE CALL at once.
 func _capture_prologue_ending() -> void:
 	SessionState.reset_session()

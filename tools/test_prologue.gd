@@ -163,8 +163,8 @@ func _test_opening_holds_the_prompt_back() -> void:
 	await _close(view)
 
 
-# A choice's reply is separate beats - what the player said, the binder naming
-# the move, and the victim's answer - not one block joined with newlines.
+# A choice's reply is separate beats - what the player said, the tactic it
+# was, and the victim's answer - not one block joined with newlines.
 func _test_choice_queues_one_beat_per_line() -> void:
 	print("\n[answering a choice]")
 	var view := await _open()
@@ -188,7 +188,7 @@ func _test_choice_queues_one_beat_per_line() -> void:
 		arrived.append(view.transcript_lines[i])
 	_check(arrived.size() >= 3, "each line of the reply is its own transcript beat")
 	_check(arrived[0].contains(chosen_text), "the player's own line lands first")
-	_check(arrived[1].contains(TextStyle.MARK_BINDER), "the binder names the move second")
+	_check(arrived[1].contains(TextStyle.MARK_TACTIC_USED), "the tactic used is named second")
 	_check(arrived[arrived.size() - 1] == TextStyle.dialogue(view.current_prompt_text),
 		"the victim's answer lands last, after the line it answers")
 	_check(not view.choice_buttons[0].disabled, "choices reopen once the reply is read")
@@ -549,7 +549,7 @@ func _test_a_refused_call_is_recorded_and_shown() -> void:
 
 
 func _test_tactic_use_is_recorded() -> void:
-	print("\n[the binder]")
+	print("\n[tactics used]")
 	var view := await _open()
 	view._start_call(0)
 	view._finish_reveal()
@@ -564,7 +564,7 @@ func _test_tactic_use_is_recorded() -> void:
 	view._on_choice_pressed(pressed)
 	view._finish_reveal()
 	_check(SessionState.prologue_tactics_used.has(tactic_id), "using a tactic records it for the summary")
-	_check(_box(view).contains(view._tactic_name(tactic_id)), "the binder names it in the transcript")
+	_check(_box(view).contains(view._tactic_name(tactic_id)), "the transcript names the tactic used")
 	_check(not SessionState.has_learned_tactic(tactic_id),
 		"using a tactic does not unlock it in the notebook - naming it is the investigation's job")
 	await _close(view)

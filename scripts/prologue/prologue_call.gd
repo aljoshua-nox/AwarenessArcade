@@ -546,13 +546,13 @@ func _on_choice_pressed(choice_index: int) -> void:
 		return
 	var choice: Dictionary = choices[choice_index]
 
-	# The player's line, then the binder naming the move - the same amber the
+	# The player's line, then the tactic it was, named - the same amber the
 	# interview uses when the detective names it from the other side.
 	var beats: Array[String] = [TextStyle.dialogue("You: \"%s\"" % str(choice.get("text", "")))]
 	var tactic_id := str(choice.get("tactic_id", ""))
 	if not tactic_id.is_empty():
 		SessionState.record_tactic_used(tactic_id)
-		beats.append(TextStyle.system(TextStyle.MARK_BINDER, _tactic_name(tactic_id), TextStyle.COLOR_TACTIC))
+		beats.append(TextStyle.system(TextStyle.MARK_TACTIC_USED, _tactic_name(tactic_id), TextStyle.COLOR_TACTIC))
 	_queue_beats(beats)
 
 	doubt = clampi(doubt + int(choice.get("doubt", 0)), 0, DOUBT_CEILING)

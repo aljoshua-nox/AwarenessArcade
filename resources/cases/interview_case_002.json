@@ -46,7 +46,7 @@
       ],
       "label": "Kevin's Callback Log",
       "description": "A screenshot of his phone's call history: the number he dialed off the pop-up, and the callback nineteen minutes later from the number on the community notice.",
-      "tactic": "A 'support line' that has to call you back is a queue of victims being worked in turn, not a help desk.",
+      "tactic": "A 'support line' that has to call you back is a line of victims being worked in turn, not a help desk.",
       "tactic_id": "reused_victim_list"
     },
     {
@@ -186,7 +186,7 @@
       ]
     },
     "ask_call": {
-      "prompt": "\"A pop-up filled the whole screen. Said my laptop was infected, that my files were at risk, and gave a support number to call immediately. I called it, got a hold queue, and a 'technician' called me back.\" He rubs his eyes. \"He sounded exactly like real tech support, so I let him remote in to 'fix' it.\"",
+      "prompt": "\"A pop-up filled the whole screen. Said my laptop was infected, that my files were at risk, and gave a support number to call immediately. I called it, got put on hold, and a 'technician' called me back.\" He rubs his eyes. \"He sounded exactly like real tech support, so I let him remote in to 'fix' it.\"",
       "choices": [
         {
           "text": "Hold on. Let's look at that pop-up itself.",
@@ -195,10 +195,10 @@
       ],
       "dispositions": {
         "resistant": {
-          "prompt": "\"A pop-up filled the whole screen. Said my laptop was infected, that my files were at risk, and gave a support number to call immediately. I called it, got a hold queue, and a 'technician' called me back.\" He shakes his head. \"He wanted to remote in to 'fix' it. I hung up before he got what he wanted.\""
+          "prompt": "\"A pop-up filled the whole screen. Said my laptop was infected, that my files were at risk, and gave a support number to call immediately. I called it, got put on hold, and a 'technician' called me back.\" He shakes his head. \"He wanted to remote in to 'fix' it. I hung up before he got what he wanted.\""
         },
         "unfinished": {
-          "prompt": "\"A pop-up filled the whole screen. Said my laptop was infected, that my files were at risk, and gave a support number to call immediately. I called it, got a hold queue, and a 'technician' called me back.\" He shrugs. \"And then the line dropped. That's it. I never found out what he wanted.\""
+          "prompt": "\"A pop-up filled the whole screen. Said my laptop was infected, that my files were at risk, and gave a support number to call immediately. I called it, got put on hold, and a 'technician' called me back.\" He shrugs. \"And then the line dropped. That's it. I never found out what he wanted.\""
         }
       }
     },
@@ -383,7 +383,7 @@
       ],
       "dispositions": {
         "resistant": {
-          "prompt": "\"A 'support tool'. He wanted it on the laptop so he could remote in.\" He shakes his head. \"I said no, and then I thought - hang on, I never gave the queue my name. They had it before I said a word.\""
+          "prompt": "\"A 'support tool'. He wanted it on the laptop so he could remote in.\" He shakes his head. \"I said no, and then I thought - hang on, I never gave the hotline my name. They had it before I said a word.\""
         },
         "unfinished": {
           "prompt": "\"He didn't get to ask for anything. He was still telling me how bad it was when the line dropped.\" He shrugs. \"Anticlimactic. I sat there with the timer going for a while.\""
@@ -405,14 +405,14 @@
       ],
       "dispositions": {
         "resistant": {
-          "prompt": "\"They called me back. From a number that's on a notice board down the road.\" Kevin pushes the phone across the table. \"I saved it because I wanted to know who had my name. Turns out a lot of people do.\"",
+          "prompt": "\"They called me back. From a number that's on a bulletin board down the road.\" Kevin pushes the phone across the table. \"I saved it because I wanted to know who had my name. Turns out a lot of people do.\"",
           "milestone": {
             "title": "Second Witness Secured",
             "detail": "Kevin Dizon confirmed the callback and the number it came from - a different opening script, the same line."
           }
         },
         "unfinished": {
-          "prompt": "\"They called me back. From a number that's on a notice board down the road.\" Kevin pushes the phone across the table. \"I saved it because I wanted to know who had my name. Turns out a lot of people do.\"",
+          "prompt": "\"They called me back. From a number that's on a bulletin board down the road.\" Kevin pushes the phone across the table. \"I saved it because I wanted to know who had my name. Turns out a lot of people do.\"",
           "milestone": {
             "title": "Second Witness Secured",
             "detail": "Kevin Dizon confirmed the callback and the number it came from - a different opening script, the same line."

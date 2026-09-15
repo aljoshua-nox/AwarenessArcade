@@ -19,7 +19,7 @@
 			"It was the fifteenth's money. The money that goes home. I told them the site held the pay back a week. I am still telling them that."
 		],
 		"resistant": [
-			"I rang the real office from the site phone while he was still talking on mine. A woman laughed at me, and then she stopped laughing and took the number down.",
+			"I called the real office from the site phone while he was still talking on mine. A woman laughed at me, and then she stopped laughing and took the number down.",
 			"Nobody from the government has ever called me in my life. They send letters. That was the whole of it, in the end - he called."
 		],
 		"unfinished": [
@@ -117,7 +117,7 @@
 			]
 		},
 		"hurried": {
-			"prompt": "\"Four o'clock.\" A pause with the whole site in it. \"You lot never call. You send letters. Nobody from the government has ever telephoned me in my life.\" Quieter: \"Why now?\"",
+			"prompt": "\"Four o'clock.\" A pause with the whole site in it. \"You lot never call. You send letters. Nobody from the government has ever called me in my life.\" Quieter: \"Why now?\"",
 			"choices": [
 				{
 					"text": "Because a letter takes three weeks and a warrant takes an afternoon, sir. I'm trying to give you the afternoon.",
@@ -160,7 +160,7 @@
 			]
 		},
 		"verify": {
-			"prompt": "\"All right.\" The mixer is gone; he has walked out to the road. \"What do I owe, and how do I make it go away. Today. I can't lose a day to this.\" A marker pen clicks. He is going to write the number on the back of his hand.",
+			"prompt": "\"All right.\" The mixer is gone; he has walked out to the road. \"What do I owe, and how do I make it go away. Today. I can't lose a day to this.\" A marker clicks. He is going to write the number on the back of his hand.",
 			"choices": [
 				{
 					"text": "Sixteen thousand settles it in full, sir. It can be paid by transfer to the desk's account, or as a cash-in at any remittance counter - I'll stay on the line and read you the reference so it's filed right.",
@@ -237,9 +237,9 @@
 			"payout": 5000
 		},
 		"refused": {
-			"prompt": "\"No.\" And then, over the top of you: \"I rang the actual office on the site phone while you were talking. There's no case. There's no desk. There's a woman who laughed at me, and then she stopped laughing and wrote your number down.\" The line does not go dead straight away. \"So do I. I've got your number.\"",
+			"prompt": "\"No.\" And then, over the top of you: \"I called the actual office on the site phone while you were talking. There's no case. There's no desk. There's a woman who laughed at me, and then she stopped laughing and wrote your number down.\" The line does not go dead straight away. \"So do I. I've got your number.\"",
 			"outcome": "refused",
-			"consequence": "I rang the real office from the site phone while he was still talking on mine. A woman laughed at me, and then she stopped laughing and took the number down.",
+			"consequence": "I called the real office from the site phone while he was still talking on mine. A woman laughed at me, and then she stopped laughing and took the number down.",
 			"reports": true
 		},
 		"hangs_up": {
@@ -249,7 +249,7 @@
 			"reports": true
 		},
 		"bail": {
-			"prompt": "\"Wait - what reference? Hello?\" You have already gone. He stands on the road with a marker pen and half a number on the back of his hand, and then he goes back to the pour, and the pour is fine, and he is not.",
+			"prompt": "\"Wait - what reference? Hello?\" You have already gone. He stands on the road with a marker and half a number on the back of his hand, and then he goes back to the pour, and the pour is fine, and he is not.",
 			"outcome": "aborted",
 			"consequence": "Somebody said warrant and then the line went. I stood on the road for ten minutes waiting for it to ring again. I have been waiting for a letter since. Nothing has come."
 		}

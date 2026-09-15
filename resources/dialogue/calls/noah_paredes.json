@@ -104,7 +104,7 @@
 					"tactic_id": "authority_impersonation"
 				},
 				{
-					"text": "Noah, I've got a queue and you've got a laptop that's about to lock. Link's in your email. Click it.",
+					"text": "Noah, I've got other calls waiting and you've got a laptop that's about to lock. Link's in your email. Click it.",
 					"next": "remote_check",
 					"doubt": 20,
 					"tactic_id": "manufactured_urgency"

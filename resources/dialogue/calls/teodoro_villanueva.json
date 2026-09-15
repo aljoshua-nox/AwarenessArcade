@@ -19,11 +19,11 @@
 			"It was the funeral plan. I had it so that nobody would have to. I have not told my daughter the amount and I am not going to."
 		],
 		"resistant": [
-			"I telephoned my daughter on the other line while he was still talking. Paolo was in a mathematics lesson. It took four minutes to find that out, and he had told me there was not time.",
+			"I called my daughter on the other line while he was still talking. Paolo was in a mathematics lesson. It took four minutes to find that out, and he had told me there was not time.",
 			"I taught boys for forty years. Nobody who was telling the truth ever needed me to hurry."
 		],
 		"unfinished": [
-			"A man said my grandson's name and then the line went dead. I telephoned my daughter and he was at school. I have been waiting for them to ring back and explain, and I know now that they never will.",
+			"A man said my grandson's name and then the line went dead. I called my daughter and he was at school. I have been waiting for them to call back and explain, and I know now that they never will.",
 			"I sat in the hall with the pencil in my hand for an hour. I did not know what I was waiting for. I still do not."
 		]
 	},
@@ -138,7 +138,7 @@
 			]
 		},
 		"mother_snag": {
-			"prompt": "\"His mother? My daughter?\" Something changes in the hallway. \"She was here on Sunday. She would have telephoned me herself before she let a stranger do it.\" A pause. \"What did you say your office was?\"",
+			"prompt": "\"His mother? My daughter?\" Something changes in the hallway. \"She was here on Sunday. She would have called me herself before she let a stranger do it.\" A pause. \"What did you say your office was?\"",
 			"choices": [
 				{
 					"text": "I may have that wrong, sir - the note here only says a family member was contacted. Let's set it aside. Paolo is the thing.",
@@ -195,7 +195,7 @@
 			}
 		},
 		"balks": {
-			"prompt": "\"Twenty-two thousand.\" He says it slowly, and you hear the pencil stop. \"That is the funeral plan.\" A long moment. \"Before I go anywhere, I am going to telephone his mother. You will wait, if you are who you say you are.\"",
+			"prompt": "\"Twenty-two thousand.\" He says it slowly, and you hear the pencil stop. \"That is the funeral plan.\" A long moment. \"Before I go anywhere, I am going to call his mother. You will wait, if you are who you say you are.\"",
 			"choices": [
 				{
 					"text": "Of course, sir. But she'll only be able to tell you what I have, and every minute we're not on this he's still in that room. Let's get him out, and then we'll call her together.",
@@ -210,7 +210,7 @@
 					"tactic_id": "manufactured_fear"
 				},
 				{
-					"text": "Then telephone her, sir. I'll put a note on the file. Good afternoon.",
+					"text": "Then call her, sir. I'll put a note on the file. Good afternoon.",
 					"next": "bail",
 					"doubt": 0
 				}
@@ -236,21 +236,21 @@
 			"payout": 4000
 		},
 		"refused": {
-			"prompt": "\"No.\" Not loud. \"I have telephoned my daughter on the other line while you were talking, and Paolo is at school. He is sitting in a classroom.\" The pencil goes down. \"I taught boys like you. I had hoped they grew out of it.\" He writes your number under the time and gives both to the police - the real ones.",
+			"prompt": "\"No.\" Not loud. \"I have called my daughter on the other line while you were talking, and Paolo is at school. He is sitting in a classroom.\" The pencil goes down. \"I taught boys like you. I had hoped they grew out of it.\" He writes your number under the time and gives both to the police - the real ones.",
 			"outcome": "refused",
-			"consequence": "I telephoned my daughter on the other line while he was still talking. Paolo was in a mathematics lesson. It took four minutes to find that out, and he had told me there was not time.",
+			"consequence": "I called my daughter on the other line while he was still talking. Paolo was in a mathematics lesson. It took four minutes to find that out, and he had told me there was not time.",
 			"reports": true
 		},
 		"hangs_up": {
-			"prompt": "\"I don't believe you.\" It is not anger. It is worse than anger; it is disappointment, the particular kind a teacher keeps for a boy who could have done better. The line goes dead. He sits in the hall with the pencil for a while, and then he writes the number down, and then he telephones his daughter to hear Paolo's voice.",
+			"prompt": "\"I don't believe you.\" It is not anger. It is worse than anger; it is disappointment, the particular kind a teacher keeps for a boy who could have done better. The line goes dead. He sits in the hall with the pencil for a while, and then he writes the number down, and then he calls his daughter to hear Paolo's voice.",
 			"outcome": "hung_up",
-			"consequence": "I did not believe him, in the end. But I let him say my grandson's name three times before I stopped him, and I telephoned my daughter afterwards just to hear the boy breathing.",
+			"consequence": "I did not believe him, in the end. But I let him say my grandson's name three times before I stopped him, and I called my daughter afterward just to hear the boy breathing.",
 			"reports": true
 		},
 		"bail": {
-			"prompt": "\"Hello? Attorney?\" You have already gone. He sits by the telephone for an hour in case it rings again, and then he telephones his daughter, who tells him Paolo is fine, and then he does not sleep.",
+			"prompt": "\"Hello? Attorney?\" You have already gone. He sits by the telephone for an hour in case it rings again, and then he calls his daughter, who tells him Paolo is fine, and then he does not sleep.",
 			"outcome": "aborted",
-			"consequence": "A man said my grandson's name and then the line went dead. I telephoned my daughter and he was at school. I have been waiting for them to ring back and explain, and I know now that they never will."
+			"consequence": "A man said my grandson's name and then the line went dead. I called my daughter and he was at school. I have been waiting for them to call back and explain, and I know now that they never will."
 		}
 	}
 }

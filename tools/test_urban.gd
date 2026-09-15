@@ -16,7 +16,7 @@ const TERMINAL_SCENE := "res://scenes/exploration/terminal_road.tscn"
 # Every walkable district, with what its street is expected to carry. A new
 # district is a row here; the layout, door and stop checks then cover it.
 const DISTRICTS := [
-	{"scene": URBAN_SCENE, "name": "the terrace", "boards": 1, "min_stops": 5, "cites": "number"},
+	{"scene": URBAN_SCENE, "name": "Sampaguita Street", "boards": 1, "min_stops": 5, "cites": "number"},
 	{"scene": TERMINAL_SCENE, "name": "Terminal Road", "boards": 0, "min_stops": 2, "cites": "name"},
 ]
 
@@ -326,7 +326,7 @@ func _test_transit() -> void:
 	await _close(road)
 
 	SessionState.reset_session()
-	_check(SessionState.urban_return_scene == URBAN_SCENE, "a fresh session starts on the terrace")
+	_check(SessionState.urban_return_scene == URBAN_SCENE, "a fresh session starts on Sampaguita Street")
 
 
 func _test_credibility_economy() -> void:

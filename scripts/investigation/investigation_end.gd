@@ -371,7 +371,7 @@ func _build_milestones_text() -> String:
 
 
 func _on_continue_pressed() -> void:
-	# Back to whichever street the player came in from - the terrace unless a
+	# Back to whichever street the player came in from - Sampaguita Street unless a
 	# district set otherwise when its door was used.
 	SessionState.go_to_scene(SessionState.urban_return_scene)
 

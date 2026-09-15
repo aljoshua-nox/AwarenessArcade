@@ -110,7 +110,7 @@ const NPC_SPOTS := [
 # way `cites_number` prints the operation's number on the terrace, the call
 # floor's bonus board will print it too, and reading both earns the pattern
 # milestone. The rest arrive with the people whose stories they set up: the
-# cafe owner and the neighbour with Trish and Bea. Nothing points anything out.
+# cafe owner and the neighbor with Trish and Bea. Nothing points anything out.
 const TOWER_STOP_POSITION := Vector2(1120.0, 262.0)
 const STREET_STOPS := [
 	{
@@ -118,7 +118,7 @@ const STREET_STOPS := [
 		"is_fixture": true,
 		"title": "Reception",
 		"prompt": "Look in at the reception",
-		"body": "Glass doors, a marble floor, a desk with nobody at it and a sign on an easel: %s - RECEPTION - CLOSED TO THE PUBLIC. Behind the desk a directory lists the floors by number and says nothing about what is on them. The lift needs a card.",
+		"body": "Glass doors, a marble floor, a desk with nobody at it and a sign on an easel: %s - RECEPTION - CLOSED TO THE PUBLIC. Behind the desk a directory lists the floors by number and says nothing about what is on them. The elevator needs a card.",
 		"note": "A business that scams people still has a lobby. The name on the door is real; it is the description of the business that is not.",
 		"note_color": TextStyle.COLOR_HINT,
 		"marker": TextStyle.MARK_HINT,
@@ -129,10 +129,10 @@ const STREET_STOPS := [
 	{
 		"position": Vector2(1130.0, 535.0),
 		"is_fixture": true,
-		"title": "Site hoarding",
-		"prompt": "Read the hoarding",
+		"title": "Site billboard",
+		"prompt": "Read the billboard",
 		"body": "A painted board on the site fence, sun-faded at one corner: ANOTHER DEVELOPMENT BY %s. Under it, smaller, a completion date that has already passed. Beyond the fence a half-poured floor and a stack of crates that has been there long enough to grow a tarpaulin.",
-		"note": "The same name is on a building down the road. A company that puts its name on a hoarding is asking to be looked up - and a company that puts it on a locked door is asking not to be.",
+		"note": "The same name is on a building down the road. A company that puts its name on a billboard is asking to be looked up - and a company that puts it on a locked door is asking not to be.",
 		"note_color": TextStyle.COLOR_TACTIC,
 		"marker": TextStyle.MARK_TACTIC,
 		"cites_name": true,
@@ -165,8 +165,8 @@ const STREET_STOPS := [
 	},
 	{
 		"position": Vector2(1660.0, 780.0),
-		"title": "Neighbour on the grass",
-		"prompt": "Talk to the neighbour",
+		"title": "Neighbor on the grass",
+		"prompt": "Talk to the neighbor",
 		"body": "\"The Lim girl?\" A glance at the pink house and then away from it. \"Paid for a job that wasn't there. Everyone on this row knows and nobody says it in front of her mother.\" A shrug that is not unkind. \"My nephew nearly did the same last year. Same ad. He only didn't because he didn't have the two thousand.\"",
 		"note": "What a scam costs a street is never the number of reports. Being too poor to pay the fee is not the same as seeing through it, and the ones who could pay are the ones who stop talking.",
 		"note_color": TextStyle.COLOR_WRONG,
@@ -177,13 +177,13 @@ const STREET_STOPS := [
 ]
 
 const PATTERN_MILESTONE := "One Name, More Than One Sign"
-const PATTERN_DETAIL := "The company on the tower's locked door is the company on the site hoarding down the road - the same name, on the building you cannot enter and the ground it is buying."
+const PATTERN_DETAIL := "The company on the tower's locked door is the company on the site billboard down the road - the same name, on the building you cannot enter and the ground it is buying."
 
 # The arrival street's portal, at its head; the terrace's exit is the same
 # street's foot. Arriving puts the player just below it, facing into the district.
 const TRANSIT := {
 	"position": Vector2(1448.0, 60.0),
-	"prompt": "Back up the side street to the terrace",
+	"prompt": "Back up the side street to Sampaguita Street",
 	"target": "res://scenes/exploration/urban_exterior.tscn",
 	"arrival": Vector2(1448.0, 950.0),
 }

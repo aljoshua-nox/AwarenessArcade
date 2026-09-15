@@ -57,9 +57,9 @@ const STREET_STOPS := [
 	{
 		"position": NOTICEBOARD_POSITION,
 		"is_noticeboard": true,
-		"title": "Community noticeboard",
-		"prompt": "Read the noticeboard",
-		"body": "A cork board on a post outside the terrace, behind cracked perspex. Under a bus timetable and a card for guitar lessons, a barangay notice has been pinned square in the middle and laminated against the weather.\n\nWARNING - TELEPHONE FRAUD IN THIS AREA. Callers claim to be from your bank's fraud desk, a device support line, or a prize office. Reported number: %s. They will ask you to stay on the line. Hang up. Call your bank on the number printed on your own card. No bank, agency or prize office will ever ask you to read out a one-time code.",
+		"title": "Community bulletin board",
+		"prompt": "Read the bulletin board",
+		"body": "A cork board on a post at the end of the row, behind cracked plastic. Under a bus schedule and a card for guitar lessons, a barangay notice has been pinned square in the middle and laminated against the weather.\n\nWARNING - TELEPHONE FRAUD IN THIS AREA. Callers claim to be from your bank's fraud desk, a device support line, or a prize office. Reported number: %s. They will ask you to stay on the line. Hang up. Call your bank on the number printed on your own card. No bank, agency or prize office will ever ask you to read out a one-time code.",
 		"note": "That last line is the one worth carrying out of the game. A code sent to your phone is the bank checking it is you. Reading it aloud to a caller hands them the check.",
 		"note_color": TextStyle.COLOR_HINT,
 		"marker": TextStyle.MARK_HINT,
@@ -70,15 +70,15 @@ const STREET_STOPS := [
 	},
 	{
 		"position": Vector2(700.0, 600.0),
-		"title": "Neighbour on the terrace",
-		"prompt": "Talk to the neighbour",
-		"body": "Someone is out on the step with a mug, watching you work down the row. \"You're asking about the calls.\" A nod at the houses either side. \"I got the same one. Fraud desk, account compromised, stay on the line while they secure it.\" A shrug. \"I put the phone down. Then I asked next door. Next door got it too, word for word.\"",
+		"title": "Neighbor on the row",
+		"prompt": "Talk to the neighbor",
+		"body": "Someone is out on the step with a mug, watching you work down the row. \"You're asking about the calls.\" A nod at the houses either side. \"I got the same one. Fraud desk, account compromised, stay on the line while they secure it.\" A shrug. \"I hung up. Then I asked next door. Next door got it too, word for word.\"",
 		"note": "Three households, one script, delivered to each as though it had been written for them. A call that feels personally aimed is usually a form letter read aloud.",
 		"note_color": TextStyle.COLOR_TACTIC,
 		"marker": TextStyle.MARK_TACTIC,
 		"tactic_id": "repeated_script",
 		"milestone_title": "Word For Word, Three Doors Apart",
-		"milestone_detail": "Neighbours on one row received identical wording, which is what makes it a script rather than a targeted approach.",
+		"milestone_detail": "Neighbors on one row received identical wording, which is what makes it a script rather than a targeted approach.",
 	},
 	{
 		"position": Vector2(330.0, 216.0),
@@ -94,19 +94,19 @@ const STREET_STOPS := [
 	},
 	{
 		"position": Vector2(740.0, 216.0),
-		"title": "Shopkeeper",
-		"prompt": "Talk to the shopkeeper",
-		"body": "\"That your poster?\" A tip of the head down the road towards the noticeboard. \"I put the number up in my window as well. Big, where you can't miss it. %s.\" They straighten a stack of receipts. \"Four people came in this month to ask me if it was real. Four that came in. I've no idea how many just paid it.\"",
+		"title": "Store owner",
+		"prompt": "Talk to the store owner",
+		"body": "\"That your poster?\" A tip of the head down the road toward the bulletin board. \"I put the number up in my window as well. Big, where you can't miss it. %s.\" They straighten a stack of receipts. \"Four people came in this month to ask me if it was real. Four that came in. I've no idea how many just paid it.\"",
 		"note": "The people who come in to ask are the ones who did not lose anything. What a scam costs a street is never the number of reports - it is the silence around them.",
 		"note_color": TextStyle.COLOR_WRONG,
 		"marker": TextStyle.MARK_HARM,
 		"cites_number": true,
 		"milestone_title": "Four Asked. Nobody Counted The Rest.",
-		"milestone_detail": "A shopkeeper posted the number and fielded four queries in a month - the questions asked out loud are a fraction of the actual contact.",
+		"milestone_detail": "A store owner posted the number and fielded four questions in a month - the questions asked out loud are a fraction of the actual contact.",
 	},
 	{
 		"position": Vector2(1200.0, 408.0),
-		"title": "Waiting at the kerb",
+		"title": "Waiting at the curb",
 		"prompt": "Talk to the person waiting",
 		"body": "\"Scam calls?\" A short laugh. \"You'd have to be pretty gullible, wouldn't you. My grandmother, maybe. Not me - I'd hear it coming a mile off.\" A pause, and the laugh goes out of it. \"...Why? What is it they say?\"",
 		"note": "Everyone believes they would hear it coming, and that belief is the thing the scripts are built around. Being busy, tired or halfway out the door does more work than being credulous ever did. The question at the end is the honest part.",
@@ -190,7 +190,7 @@ const TRANSIT := {
 
 
 func _init() -> void:
-	map_title = "The Terrace"
+	map_title = "Sampaguita Street"
 	map_hint = "Move with WASD or arrow keys. Press Enter at a door to interact."
 
 

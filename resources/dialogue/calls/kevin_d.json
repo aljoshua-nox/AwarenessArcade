@@ -4,7 +4,7 @@
 		"name": "Kevin Dizon",
 		"age": 24,
 		"occupation": "Office worker",
-		"traits": "Called the number on the pop-up himself, got the queue. Working late on something else. Wants it gone more than he wants it explained.",
+		"traits": "Called the number on the pop-up himself, got put on hold. Working late on something else. Wants it gone more than he wants it explained.",
 		"portrait": "res://assets/art/portraits/fella 3.png",
 		"script": "Tech support callback",
 		"script_id": "tech_support",
@@ -19,7 +19,7 @@
 			"I've read about this happening to other people and always thought, how. Now I know how. You're tired, you're busy, and someone sounds like they know what they're doing."
 		],
 		"resistant": [
-			"I nearly ran it. I had the link open. Then I thought - hang on, I never gave the queue my name. They had my name. That's the bit I can't get past.",
+			"I nearly ran it. I had the link open. Then I thought - hang on, I never gave the hotline my name. They had my name. That's the bit I can't get past.",
 			"The more he pushed, the more it sounded like a sales call. I hung up and then I actually looked at the pop-up properly. Thirty-one infections. It hadn't scanned anything."
 		],
 		"unfinished": [
@@ -29,7 +29,7 @@
 	},
 	"nodes": {
 		"open": {
-			"prompt": "He picks up on the first ring, because he's the one who called. Forty minutes ago a page took over his laptop - INFECTED, FILES AT RISK, a number to call immediately, and a countdown - and the number put him in a queue and promised a technician would call back. \"Hi - yeah - is this the support line? I've still got the thing on my screen, I haven't touched it.\" He's typing while he talks. Something else, on another machine.",
+			"prompt": "He picks up on the first ring, because he's the one who called. Forty minutes ago a page took over his laptop - INFECTED, FILES AT RISK, a number to call immediately, and a countdown - and the number put him on hold and promised a technician would call back. \"Hi - yeah - is this the support line? I've still got the thing on my screen, I haven't touched it.\" He's typing while he talks. Something else, on another machine.",
 			"choices": [
 				{
 					"text": "This is Kevin? Hi, Kevin, I'm the technician on your ticket. Thanks for waiting. Let's take a look at what's on the screen.",
@@ -203,9 +203,9 @@
 			"reports": true
 		},
 		"refused": {
-			"prompt": "\"Nah.\" The typing on the other machine has stopped. \"Nah, I'm not paying for anything and I'm not installing anything. My IT guy would kill me.\" A beat, and then, more awake than he has been all call: \"How'd you get my name, actually? I didn't give the queue my name.\" You don't answer that. He hangs up first.",
+			"prompt": "\"Nah.\" The typing on the other machine has stopped. \"Nah, I'm not paying for anything and I'm not installing anything. My IT guy would kill me.\" A beat, and then, more awake than he has been all call: \"How'd you get my name, actually? I didn't give the hold line my name.\" You don't answer that. He hangs up first.",
 			"outcome": "refused",
-			"consequence": "I nearly ran it. I had the link open. Then I thought - hang on, I never gave the queue my name. They had my name. That's the bit I can't get past.",
+			"consequence": "I nearly ran it. I had the link open. Then I thought - hang on, I never gave the hotline my name. They had my name. That's the bit I can't get past.",
 			"reports": true
 		},
 		"hangs_up": {

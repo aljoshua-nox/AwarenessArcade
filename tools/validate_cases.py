@@ -1030,6 +1030,129 @@ for f, data in parsed.items():
                             lint_scan(name, f"{nid}.accepts_evidence[{i}] ({e['evidence_id']}, {owner[1]})",
                                       text, d, allow, LINT_FORBID[d] + list(extra.get(d, [])))
 
+# --- Register lint: the game is set in the Philippines and reads like it -----
+# The first four cases and the terrace's stops were written in British English
+# (realise, kerb, noticeboard, perspex) while the setting names barangays,
+# pesos and Lolo, and the expansion inherited the register before anyone
+# noticed. Player-facing text is Philippine English: American spelling,
+# everyday American vocabulary, and the local words where they are the natural
+# ones (barangay, sari-sari store, cash-in, remittance, Lolo, the 15th). This
+# scans every string a player can read for the British forms that crept in.
+# `register_allow` on a case lists substrings to ignore, for the rare line
+# where the word is right (a character quoting a sign, a proper noun).
+REGISTER_FORBID = [
+    # spelling
+    (r"\b(real|recogn|organ|apolog|memor|author|minim|maxim|emphas|summar|capital|normal|priorit|special|sympath|util|critic|civil|stabil|scrutin|penal|patron|hospital|final|legal|vocal|mobil|neutral|symbol|equal|formal)i[sz]?(se|sed|ses|sing|sation|sations)\b", "-ize / -ization spelling"),
+    (r"\b(analy|paraly)se[sd]?\b", "-yze spelling"),
+    (r"\b(col|neighb|behavi|fav|hon|lab|hum|flav|harb|rum|arm|vap|od|sav|end|dem)our\w*", "-or spelling"),
+    (r"\b(cent|met|theat|lit|fib|calib)re\b|\b(cent|met|theat|lit|fib)res\b", "-er spelling"),
+    (r"\b(licence|defence|offence|pretence)\b", "-se spelling"),
+    (r"\bpractis(e|ed|es|ing)\b", "practice (verb, US)"),
+    (r"\b(cheque|programme|grey|tyre|kerb|storey|pyjama|aluminium|jewellery|catalogue|cancelled|cancelling|travelled|travelling|modelling|pencilled|marvellous|labelled|labelling|counsellor|learnt|spelt|dreamt|burnt|smelt|whilst|amongst)\w*", "British spelling"),
+    # vocabulary
+    (r"\bpavements?\b", "sidewalk"),
+    (r"\bnotice ?boards?\b", "bulletin board"),
+    (r"\bhoardings?\b", "billboard"),
+    (r"\bterraces?\b", "row / street (the district is Sampaguita Street)"),
+    (r"\bshopkeepers?\b", "store owner"),
+    (r"\bqueues?\b|\bqueue[ds]\b|\bqueuing\b", "line / on hold"),
+    (r"\bfortnight\w*", "two weeks"),
+    (r"\bmums?\b|\bmummy\b", "mom / Nanay"),
+    (r"\bperspex\b", "plastic / acrylic"),
+    (r"\btimetables?\b", "schedule"),
+    (r"\bholidays?\b", "vacation"),
+    (r"\blorr(y|ies)\b", "truck"),
+    (r"\bbiscuits?\b", "cookie / cracker"),
+    (r"\brubbish\b", "trash / garbage"),
+    (r"\bcar parks?\b", "parking lot"),
+    (r"\bpetrol\b", "gas"),
+    (r"\bpostcodes?\b", "zip code"),
+    (r"\bthe lift\b|\blifts? (needs?|to|door)\b", "elevator"),
+    (r"\ba flat\b(?! (tone|voice|no|refusal))|\bmy flat\b|\bher flat\b|\bhis flat\b|\bthe flat\b(?! (of|on)\b)|\bflat (in|near|above|upstairs)\b", "apartment"),
+    (r"\bthe till\b", "the register"),
+    (r"\bpost(ed|ing)? (it|the letter|a letter|the form|him|her|them) (to|back|off)\b|\bin the post\b|\bby post\b", "mail"),
+    (r"\b(I|we|he|she|they) rang\b|\brang (the|him|her|them|me|it|my|his|her|off|back)\b|\bring (the|him|her|them|me|my|his|back)\b|\brings? (him|her|them|me|you|off)\b", "call / phone (rang -> called)"),
+    (r"\btelephoned\b|\btelephoning\b|\bI telephone\b|\bto telephone\b", "phone / call (the verb - the noun is fine)"),
+    (r"\bput the (phone|receiver) down\b", "hung up"),
+    (r"\bsort(ed|ing)? (it|that|this|the rest) out\b|\bI'll sort\b|\bsort the rest\b", "fix / take care of"),
+    (r"\bhi-vis\b", "safety vest / reflective vest"),
+    (r"\bmarker pen\b", "marker"),
+    (r"\bkettle\b", "coffee / water on the stove (British idiom)"),
+    (r"\bmate\b(?<!batch-mate)(?<!batchmate)", "friend / batchmate"),
+    (r"\bbatch-mate\b", "batchmate (one word, PH usage)"),
+    (r"\bmobile\b(?= (phone|number))", "cellphone / cell number"),
+    (r"\bdustbin\b|\bbins?\b(?= (bag|man|men))", "trash can"),
+    (r"\bskip\b(?= (at|on|in|behind|by)\b)", "dumpster"),
+]
+
+# Where player-facing prose lives outside the JSON: the stop tables and HUD
+# strings in the district scripts, the office's stations, the summaries.
+REGISTER_SCRIPTS = [
+    "scripts/exploration/district_exterior.gd",
+    "scripts/exploration/urban_exterior.gd",
+    "scripts/exploration/terminal_road.gd",
+    "scripts/exploration/office_interior.gd",
+    "scripts/investigation/investigation_end.gd",
+    "scripts/investigation/interview.gd",
+    "scripts/prologue/prologue_call.gd",
+    "scripts/prologue/prologue_end.gd",
+    "scripts/autoload/tactic_notebook.gd",
+    "scripts/autoload/session_state.gd",
+    "scripts/ui/main_menu.gd",
+]
+
+
+def register_scan(where, text, allow):
+    if not isinstance(text, str):
+        return
+    for pattern, suggestion in REGISTER_FORBID:
+        for hit in re.finditer(pattern, text, re.IGNORECASE):
+            if any(a.lower() in text.lower() for a in allow):
+                return
+            errors.append(f"{where}: \"{hit.group(0)}\" is not Philippine English - {suggestion}")
+            return
+
+
+def register_walk(obj, where, allow):
+    if isinstance(obj, dict):
+        for k, v in obj.items():
+            if k in ("portrait", "id", "evidence_id", "next", "person_id", "tactic_id", "script", "script_id",
+                     "start_node", "hang_up_node", "failure_node", "case_id", "lint_allow", "register_allow"):
+                continue
+            register_walk(v, f"{where}.{k}", allow)
+    elif isinstance(obj, list):
+        for i, v in enumerate(obj):
+            register_walk(v, f"{where}[{i}]", allow)
+    elif isinstance(obj, str):
+        register_scan(where, obj, allow)
+
+
+for f, data in parsed.items():
+    register_walk(data, os.path.basename(f), data.get("register_allow", []))
+for v in victims:
+    register_walk(v, f"{v.get('person_id', '?')}.json", v.get("register_allow", []))
+catalogue_path = os.path.join(base, "resources", "tactics", "tactic_catalogue.json")
+if os.path.exists(catalogue_path):
+    with open(catalogue_path, encoding="utf-8") as fh:
+        register_walk(json.load(fh), "tactic_catalogue.json", [])
+
+# String literals only: a British comment is nobody's business but the
+# author's, a British line on screen is the game's.
+STRING_LITERAL = re.compile(r'"((?:[^"\\]|\\.)*)"')
+for rel in REGISTER_SCRIPTS:
+    path = os.path.join(base, *rel.split("/"))
+    if not os.path.exists(path):
+        continue
+    with open(path, encoding="utf-8") as fh:
+        for number, line in enumerate(fh, 1):
+            stripped = line.strip()
+            if stripped.startswith("#") or "push_error(" in line or "printerr(" in line:
+                continue  # comments and developer messages are not the game
+            for literal in STRING_LITERAL.findall(line):
+                if len(literal) < 12 or "res://" in literal or "%" == literal.strip():
+                    continue
+                register_scan(f"{rel}:{number}", literal, [])
+
 print()
 if errors:
     print("FAILURES:")

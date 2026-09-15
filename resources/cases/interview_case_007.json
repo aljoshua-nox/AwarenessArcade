@@ -20,12 +20,12 @@
       },
       "resistant": {
         "cooperation": 62,
-        "prompt": "\"Sit, sit.\" Teodoro has two cups out already. \"I telephoned my daughter on the other line while he was still talking. Paolo was in a mathematics lesson.\" He is almost pleased. \"I have the number written down. I write everything down.\"",
+        "prompt": "\"Sit, sit.\" Teodoro has two cups out already. \"I called my daughter on the other line while he was still talking. Paolo was in a mathematics lesson.\" He is almost pleased. \"I have the number written down. I write everything down.\"",
         "note": "He refused the call you made, and he checked - which is the whole lesson in one sentence. Nothing was taken, so there is nothing to trace; what he has is a very good memory and a note in pencil."
       },
       "unfinished": {
         "cooperation": 44,
-        "prompt": "\"Somebody rang about Paolo, and then the line went dead.\" Teodoro says it carefully, as if it might still turn out to be true. \"I telephoned my daughter. He was at school. I have been waiting for them to ring back and explain.\"",
+        "prompt": "\"Somebody rang about Paolo, and then the line went dead.\" Teodoro says it carefully, as if it might still turn out to be true. \"I called my daughter. He was at school. I have been waiting for them to call back and explain.\"",
         "note": "Your call to him never finished. He does not know it was a scam - he knows a stranger said his grandson's name and then vanished, and he has been frightened since."
       }
     }
@@ -35,7 +35,7 @@
       "id": "ev_teddy_call_note",
       "tactic_id": "authority_impersonation",
       "label": "Teodoro's Call Note",
-      "description": "A pencilled note from the hall table: the time, the caller's name and office - Attorney Salcedo, public attorney's office - and the number, written while the man was still talking.",
+      "description": "A penciled note from the hall table: the time, the caller's name and office - Attorney Salcedo, public attorney's office - and the number, written while the man was still talking.",
       "tactic": "Impersonating an authority: an office and a title, offered before anything could be checked, so that the name did the checking."
     },
     {
@@ -214,7 +214,7 @@
           {
             "text": "That the call came from a real office - only an office would have the family details.",
             "cooperation": -6,
-            "feedback": "The details an office has are the details a bought list has, and the list is cheaper. An office that needed money from him would write, and would not mind being telephoned back. A caller who minds being checked is telling you what he is."
+            "feedback": "The details an office has are the details a bought list has, and the list is cheaper. An office that needed money from him would write, and would not mind being called back. A caller who minds being checked is telling you what he is."
           },
           {
             "text": "That his bank had leaked his records.",
@@ -286,7 +286,7 @@
           ],
           "choices": [
             {
-              "text": "What made you put the telephone down and pick up the other one?",
+              "text": "What made you hang up and pick up the other phone?",
               "next": "press_method"
             },
             {
@@ -346,7 +346,7 @@
       ],
       "dispositions": {
         "resistant": {
-          "prompt": "\"He wanted me to walk to the counter on the corner with him still on the line. I said I would telephone my daughter first, and he said there was not time.\" Teodoro shakes his head, once. \"There is always time. I taught for forty years. There was always time.\""
+          "prompt": "\"He wanted me to walk to the counter on the corner with him still on the line. I said I would call my daughter first, and he said there was not time.\" Teodoro shakes his head, once. \"There is always time. I taught for forty years. There was always time.\""
         },
         "unfinished": {
           "prompt": "\"He had got as far as the amount. Twenty-two thousand. I had the pencil in my hand.\" Teodoro looks at the hand. \"And then nothing. I said hello three times. I sat there until the light went.\""
@@ -368,14 +368,14 @@
       ],
       "dispositions": {
         "resistant": {
-          "prompt": "\"Four minutes,\" Teodoro says. \"That is what it took. One telephone call to the person the story was about.\" He lays the pencilled note beside his daughter's phone. \"Write that down. Four minutes.\"",
+          "prompt": "\"Four minutes,\" Teodoro says. \"That is what it took. One telephone call to the person the story was about.\" He lays the penciled note beside his daughter's phone. \"Write that down. Four minutes.\"",
           "milestone": {
             "title": "Witness Secured: The Name On The List",
             "detail": "Teodoro Villanueva put a name, a number and a four-minute check on the same afternoon - the family-emergency script, and the list it was read from."
           }
         },
         "unfinished": {
-          "prompt": "\"Four minutes,\" Teodoro says. \"That is what it took to find out he was at school. Nobody rang back to tell me.\" He lays the pencilled note beside his daughter's phone. \"Write that down. Somebody should have.\"",
+          "prompt": "\"Four minutes,\" Teodoro says. \"That is what it took to find out he was at school. Nobody called back to tell me.\" He lays the penciled note beside his daughter's phone. \"Write that down. Somebody should have.\"",
           "milestone": {
             "title": "Witness Secured: The Name On The List",
             "detail": "Teodoro Villanueva put a name, a number and a four-minute check on the same afternoon - the family-emergency script, and the list it was read from."
@@ -384,7 +384,7 @@
       }
     },
     "end_success": {
-      "prompt": "Teodoro's passbook and his pencilled note put a name, a number and twenty-two thousand pesos on one afternoon - the family-emergency script, read off the same list as every other call.",
+      "prompt": "Teodoro's passbook and his penciled note put a name, a number and twenty-two thousand pesos on one afternoon - the family-emergency script, read off the same list as every other call.",
       "outcome": "success",
       "grants_evidence": [
         {
@@ -397,7 +397,7 @@
       "choices": [],
       "dispositions": {
         "resistant": {
-          "prompt": "Teodoro's pencilled note and his daughter's call log put a name, a number and a four-minute check on one afternoon - the family-emergency script, read off the same list as every other call.",
+          "prompt": "Teodoro's penciled note and his daughter's call log put a name, a number and a four-minute check on one afternoon - the family-emergency script, read off the same list as every other call.",
           "grants_evidence": [
             {
               "id": "test_teddy_confirmed",
@@ -408,7 +408,7 @@
           ]
         },
         "unfinished": {
-          "prompt": "Teodoro's pencilled note and his daughter's call log put a name, a number and a four-minute check on one afternoon - the family-emergency script, read off the same list as every other call.",
+          "prompt": "Teodoro's penciled note and his daughter's call log put a name, a number and a four-minute check on one afternoon - the family-emergency script, read off the same list as every other call.",
           "grants_evidence": [
             {
               "id": "test_teddy_confirmed",
@@ -435,10 +435,10 @@
       "choices": [],
       "dispositions": {
         "resistant": {
-          "prompt": "Teodoro stands, slowly, and holds the door with the courtesy of a man ending a lesson early. \"I think we have done what we can.\" The pencilled note goes back into the hall drawer, and the drawer is closed, and you understand that it will not be opened for you again."
+          "prompt": "Teodoro stands, slowly, and holds the door with the courtesy of a man ending a lesson early. \"I think we have done what we can.\" The penciled note goes back into the hall drawer, and the drawer is closed, and you understand that it will not be opened for you again."
         },
         "unfinished": {
-          "prompt": "Teodoro stands, slowly, and holds the door with the courtesy of a man ending a lesson early. \"I think we have done what we can.\" The pencilled note goes back into the hall drawer, and the drawer is closed, and you understand that it will not be opened for you again."
+          "prompt": "Teodoro stands, slowly, and holds the door with the courtesy of a man ending a lesson early. \"I think we have done what we can.\" The penciled note goes back into the hall drawer, and the drawer is closed, and you understand that it will not be opened for you again."
         }
       }
     }

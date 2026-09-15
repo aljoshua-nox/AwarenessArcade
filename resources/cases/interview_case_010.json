@@ -15,12 +15,12 @@
     "dispositions": {
       "harmed": {
         "cooperation": 34,
-        "prompt": "Joel meets you at the site gate in a hi-vis vest and does not take it off. \"Twenty minutes. Then I've got a pour.\" He looks at the road rather than at you. \"I know what it was. I knew about an hour after. You don't need to tell me what it was.\"",
+        "prompt": "Joel meets you at the site gate in a safety vest and does not take it off. \"Twenty minutes. Then I've got a pour.\" He looks at the road rather than at you. \"I know what it was. I knew about an hour after. You don't need to tell me what it was.\"",
         "note": "You took the money he sends home. He is angrier at himself than at the caller, and he has decided the way to carry it is to have no time for it."
       },
       "resistant": {
         "cooperation": 62,
-        "prompt": "\"You're the detective.\" Joel walks you in past the mixer with the number still faintly on the back of his hand in marker. \"I rang the real office from the site phone while he was still talking on mine. A woman laughed at me. Then she took the number down.\" He is almost cheerful about it.",
+        "prompt": "\"You're the detective.\" Joel walks you in past the mixer with the number still faintly on the back of his hand in marker. \"I called the real office from the site phone while he was still talking on mine. A woman laughed at me. Then she took the number down.\" He is almost cheerful about it.",
         "note": "He refused the call you made and checked in the same minute. There is nothing to trace, and a good deal to say."
       },
       "unfinished": {
@@ -171,7 +171,7 @@
       ]
     },
     "ask_call": {
-      "prompt": "\"Enforcement desk, revenue office. He had a case number - it's there, on the bag. He had my tax number. He had the contractor's name.\" Joel counts them off on his fingers. \"And an officer coming to the site at four. That was the bit. Not the money. An officer at the gate in front of the crew.\" He looks up. \"Nobody from the government has ever telephoned me in my life. I knew that. I knew it while he was talking.\"",
+      "prompt": "\"Enforcement desk, revenue office. He had a case number - it's there, on the bag. He had my tax number. He had the contractor's name.\" Joel counts them off on his fingers. \"And an officer coming to the site at four. That was the bit. Not the money. An officer at the gate in front of the crew.\" He looks up. \"Nobody from the government has ever called me in my life. I knew that. I knew it while he was talking.\"",
       "choices": [
         {
           "text": "Stay on the officer at four for a moment.",
@@ -207,7 +207,7 @@
             "feedback": "That is the line no office crosses. A real assessment arrives in writing, names a counter or a bank, and gives you a way to dispute it - weeks, not minutes. Everything else in the call is cheap to fake: a reference number is a string of digits, a tax number and an employer are on any bought list. The deadline is the tell, because a real process is slow on purpose."
           },
           {
-            "text": "Telephone a taxpayer at his place of work.",
+            "text": "Call a taxpayer at his place of work.",
             "cooperation": -6,
             "feedback": "Rare, and worth suspicion, but not impossible - and a caller can always say it was a courtesy. What settles it is not the call but what the call wants: money, now, by a route no office uses."
           },
@@ -267,7 +267,7 @@
             {
               "evidence_id": "ev_joel_site_phone_log",
               "next": "confirm",
-              "response": "\"Three twelve. Four minutes.\" He taps the log. \"He said the desk could only hold it while we were talking. So I kept him talking on one phone and rang the real one on the other.\"",
+              "response": "\"Three twelve. Four minutes.\" He taps the log. \"He said the desk could only hold it while we were talking. So I kept him talking on one phone and called the real one on the other.\"",
               "cooperation": 10
             },
             {
@@ -301,7 +301,7 @@
             {
               "evidence_id": "ev_joel_site_phone_log",
               "next": "confirm",
-              "response": "\"Three twelve. Four minutes.\" He taps the log. \"After the line went I rang the real one from the site phone. A woman laughed at me. I didn't know what I was asking her.\"",
+              "response": "\"Three twelve. Four minutes.\" He taps the log. \"After the line went I called the real one from the site phone. A woman laughed at me. I didn't know what I was asking her.\"",
               "cooperation": 10
             },
             {
@@ -332,7 +332,7 @@
       }
     },
     "press_method": {
-      "prompt": "\"Cash-in. Any counter. He'd stay on the line and read me the reference so it was filed right.\" Joel turns the marker pen over in his fingers. \"He was very helpful. That's the bit I keep coming back to. He was so helpful.\"",
+      "prompt": "\"Cash-in. Any counter. He'd stay on the line and read me the reference so it was filed right.\" Joel turns the marker over in his fingers. \"He was very helpful. That's the bit I keep coming back to. He was so helpful.\"",
       "cooperation": 6,
       "choices": [
         {
@@ -375,7 +375,7 @@
           }
         },
         "unfinished": {
-          "prompt": "\"Four minutes,\" Joel says. \"Site phone to the real office, after. She laughed at me and I still didn't know what I was asking.\" He lays the log beside the cement bag. \"Put down that nobody rang back. Somebody should have.\"",
+          "prompt": "\"Four minutes,\" Joel says. \"Site phone to the real office, after. She laughed at me and I still didn't know what I was asking.\" He lays the log beside the cement bag. \"Put down that nobody called back. Somebody should have.\"",
           "milestone": {
             "title": "Witness Secured: The Warrant That Never Existed",
             "detail": "Joel Abad put a reference number, a deadline and a four-minute check on the same afternoon - the government-warrant script, the fourth one the floor runs, with a face on it at last."

@@ -13,7 +13,7 @@
     "dispositions": {
       "harmed": {
         "cooperation": 34,
-        "prompt": "Evelyn has the kettle on and does not offer you a cup. \"I'd rather not go through it again, if it's all the same.\" She sits with her hands in her lap. \"I spent thirty years telling other people to check their figures.\"",
+        "prompt": "Evelyn has coffee on the stove and does not offer you a cup. \"I'd rather not go through it again, if it's all the same.\" She sits with her hands in her lap. \"I spent thirty years telling other people to check their figures.\"",
         "note": "You took money from this one. A person who audited other people's books for a living now has to say out loud that she was caught - which is why she would rather say nothing."
       },
       "resistant": {

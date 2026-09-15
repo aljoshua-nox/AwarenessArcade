@@ -203,7 +203,7 @@
       "cooperation": 10,
       "milestone": {
         "title": "Witness Secured: The Job That Cost Money",
-        "detail": "Trish Lim put an advertisement, a chat-only recruiter and a cash-in to a personal account on the same week - the job-offer script, and the name of a batch-mate it hired instead of robbing."
+        "detail": "Trish Lim put an advertisement, a chat-only recruiter and a cash-in to a personal account on the same week - the job-offer script, and the name of a batchmate it hired instead of robbing."
       },
       "choices": [
         {
@@ -213,7 +213,7 @@
       ]
     },
     "end_success": {
-      "prompt": "Trish's receipt, the chat and the advertisement put a recruiter, a fee and a personal account on one week - the job-offer script, and a batch-mate who answered the same advertisement and was hired by it.",
+      "prompt": "Trish's receipt, the chat and the advertisement put a recruiter, a fee and a personal account on one week - the job-offer script, and a batchmate who answered the same advertisement and was hired by it.",
       "outcome": "success",
       "grants_evidence": [
         {

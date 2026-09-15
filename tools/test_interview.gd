@@ -819,6 +819,32 @@ func _test_witness_turned() -> void:
 		"her testimony is tagged with the job-offer script")
 	await _close(trish)
 
+	# Trish is on the call list now, so her interview follows the call.
+	var refused := await _open_after_prologue(CASE_TRISH, "patricia_lim", "Trish L.", SessionState.CALL_REFUSED, 50)
+	_check(refused.disposition == SessionState.DISPOSITION_RESISTANT, "a Trish who refused reads as resistant")
+	_check(refused.prompt_value.text.contains("ask Bea first"), "...and opens with the check that beat the script")
+	_check(_index_of_quiet(refused, "ev_trish_fee_receipt") < 0, "...and has no receipt to show")
+	_check(_index_of(refused, "ev_trish_bea_reply") >= 0, "...but has Bea's reply")
+	await _close(refused)
+
+	# Bea's reaction to Trish's testimony depends on which Trish it came from.
+	SessionState.reset_session()
+	SessionState.prologue_played = true
+	SessionState.detective_credibility = 65
+	SessionState.record_prologue_call("patricia_lim", "Trish L.", SessionState.CALL_REFUSED, 0, "quoted")
+	SessionState.add_evidence({"id": "test_trish_confirmed", "label": "Trish's Confirmed Testimony",
+		"person_id": "patricia_lim", "script": "job_offer"})
+	SessionState.pending_case_path = CASE_BEA
+	var bea_r: Node = load(INTERVIEW_SCENE).instantiate()
+	add_child(bea_r)
+	await get_tree().process_frame
+	bea_r._load_node("ask_evidence")
+	bea_r._present_evidence_index(_index_of(bea_r, "test_trish_confirmed"))
+	_check(bea_r.current_node_id == "turned", "a Trish who refused still turns Bea")
+	_check(bea_r.prompt_value.text.contains("She asked me") and not bea_r.prompt_value.text.contains("She paid"),
+		"...and Bea remembers being asked, not a payment")
+	await _close(bea_r)
+
 	# Bea is gated: a detective at the start cannot get past her door.
 	SessionState.reset_session()
 	SessionState.detective_credibility = 50

@@ -1,0 +1,235 @@
+{
+	"person": {
+		"person_id": "patricia_lim",
+		"name": "Trish L.",
+		"age": 20,
+		"occupation": "Recent graduate, job-hunting",
+		"traits": "Three weeks out of college, forty applications sent, one answered - ours, last night, by chat. Say congratulations first. She will pay to keep the word.",
+		"portrait": "res://assets/art/portraits/trish.png",
+		"script": "Recruitment line",
+		"script_id": "job_offer",
+		"patience_seconds": 80,
+		"doubt_start": 25
+	},
+	"start_node": "open",
+	"hang_up_node": "hangs_up",
+	"perspective_variants": {
+		"harmed": [
+			"She said congratulations before she said anything else, and after that I would have done whatever the next sentence was. I cashed in the board exam money with my mother's PIN and said thank you three times.",
+			"It looked real. That is the thing nobody wants to hear. It looked completely real, and she said congratulations."
+		],
+		"resistant": [
+			"I said I'd ask Bea first, because Bea got a job from that ad. She picked up the other line and said nobody in her batch paid anything. Then she asked who this was, and I gave her the number, and she went very quiet.",
+			"One message. That's all it took. One message to somebody who had actually been hired."
+		],
+		"unfinished": [
+			"She called to close it - fee tonight, slot secured, refund on payday - and then the line went, in the middle of a sentence. I sat on the bed with SHORTLISTED written at the top of a page and nothing under it.",
+			"I messaged Bea after. She said nobody paid. She asked who it was, and I sent her the number, and she hasn't answered me since."
+		]
+	},
+	"nodes": {
+		"open": {
+			"prompt": "The sheet says she messaged the ad at 11:40 last night with a resume already attached, and that HR chatted with her for twenty minutes. She picks up on the first ring. \"Hello? Yes? This is Trish - Patricia Lim.\" She has been holding the phone.",
+			"choices": [
+				{
+					"text": "Patricia! This is Ms. Dela Cruz, HR - we chatted last night. I'm calling with good news: you've been shortlisted for the customer service batch.",
+					"next": "shortlisted",
+					"doubt": -5,
+					"tactic_id": "authority_impersonation"
+				},
+				{
+					"text": "Patricia, HR here. The batch starts Monday and there are two slots left. I need to know in the next ten minutes whether you want one of them.",
+					"next": "hurried",
+					"doubt": 10,
+					"tactic_id": "manufactured_urgency"
+				},
+				{
+					"text": "Hi, is this Patricia? I'm calling about your application.",
+					"next": "which_application",
+					"doubt": 5
+				}
+			]
+		},
+		"shortlisted": {
+			"prompt": "\"Shortlisted -\" The word does something to her voice. \"Really? Okay. Okay. Thank you. What - what happens now?\" Behind her a door closes; she has gone somewhere her mother cannot hear.",
+			"choices": [
+				{
+					"text": "Now we get you onboarded. There's a two-day training batch starting Monday, and I'll walk you through the requirements right now - it's quick, I promise.",
+					"next": "verify",
+					"doubt": -5,
+					"tactic_id": "verification_denial"
+				},
+				{
+					"text": "Now you secure the slot. There's a training and uniform fee, and the slot is only held until the end of the day.",
+					"next": "hurried",
+					"doubt": 15,
+					"tactic_id": "manufactured_urgency"
+				},
+				{
+					"text": "Now I need a few details for the file. Full name, date of birth, and a valid ID number for the background check.",
+					"next": "details_snag",
+					"doubt": 15
+				}
+			]
+		},
+		"hurried": {
+			"prompt": "\"Ten minutes?\" The hope is still there, and now there is something else beside it. \"Can I - can I ask my mother? She's just in the other room.\" A pause. \"Everyone told me HR takes weeks. Why is this so fast?\"",
+			"choices": [
+				{
+					"text": "Because good candidates go fast, Patricia. That's a compliment, not a trick. Take a breath; we'll do it properly.",
+					"next": "verify",
+					"doubt": -10
+				},
+				{
+					"text": "Ask your mother if you like. The next candidate on my list won't be asking anyone.",
+					"next": "verify",
+					"doubt": 25,
+					"tactic_id": "manufactured_urgency"
+				},
+				{
+					"text": "Then take the weeks. I'll note the file. Good luck with the search, Patricia.",
+					"next": "bail",
+					"doubt": 0
+				}
+			]
+		},
+		"which_application": {
+			"prompt": "\"The customer service one? From the ad?\" Careful, and hopeful, and trying not to be. \"Sorry - I sent a lot of applications. Which company is this?\"",
+			"choices": [
+				{
+					"text": "The customer service batch, Patricia. Ms. Dela Cruz, HR. You messaged us last night - I've got your resume right here. Nice photo, by the way.",
+					"next": "verify",
+					"doubt": 0,
+					"tactic_id": "authority_impersonation"
+				},
+				{
+					"text": "Ours. The one that answered.",
+					"next": "verify",
+					"doubt": 10
+				},
+				{
+					"text": "The one with five slots left. Four, now.",
+					"next": "hurried",
+					"doubt": 15,
+					"tactic_id": "manufactured_urgency"
+				}
+			]
+		},
+		"details_snag": {
+			"prompt": "\"My ID number? Over the phone?\" She does not say no. \"Can I bring it on Monday instead? My mother says never give that out on a call.\" A small, apologetic laugh. \"She says that about everything.\"",
+			"choices": [
+				{
+					"text": "Your mother's right, and I'd never ask you to. Bring it Monday. Let's just get the slot secured tonight.",
+					"next": "verify",
+					"doubt": 5
+				},
+				{
+					"text": "It's standard, Patricia. Every BPO does it. If you'd rather not, I can move to the next name on the list.",
+					"next": "verify",
+					"doubt": 15,
+					"tactic_id": "authority_impersonation"
+				},
+				{
+					"text": "Bring it Monday. I'll email you the rest.",
+					"next": "bail",
+					"doubt": 0
+				}
+			]
+		},
+		"verify": {
+			"prompt": "\"All right.\" You hear her sit down on a bed. \"Tell me what I need to do. I'll do it tonight.\" A notebook opens. She is going to write down every word you say next, and she has already written SHORTLISTED at the top of the page.",
+			"choices": [
+				{
+					"text": "The training and uniform fee is two thousand five hundred. It's refunded in full on your first payday, so think of it as a deposit. Cash it in to the account I'll give you now, and I'll confirm your slot while you're still on the line.",
+					"next": "pay_check",
+					"doubt": 0,
+					"tactic_id": "advance_fee"
+				},
+				{
+					"text": "Two thousand five hundred, and it has to be in before the batch list closes at midnight. Is there a cash-in counter near you that's still open?",
+					"next": "pay_check",
+					"doubt": 10,
+					"tactic_id": "manufactured_urgency"
+				},
+				{
+					"text": "There's a uniform fee tonight - one thousand - and the training fee on Monday when you come in. Just the uniform for now.",
+					"next": "partial_check",
+					"doubt": 15,
+					"tactic_id": "advance_fee"
+				}
+			]
+		},
+		"pay_check": {
+			"doubt_check": {
+				"max_doubt": 55,
+				"next_if_calm": "paid",
+				"next_if_wary": "balks"
+			}
+		},
+		"partial_check": {
+			"doubt_check": {
+				"max_doubt": 45,
+				"next_if_calm": "paid_part",
+				"next_if_wary": "balks"
+			}
+		},
+		"balks": {
+			"prompt": "\"A fee.\" The pen stops. \"For a job.\" A silence in which she is thinking of someone. \"My friend Bea got a job from this ad. Two months ago. She didn't say anything about a fee.\" And then, carefully: \"Can I send it tomorrow? After I've asked her?\"",
+			"choices": [
+				{
+					"text": "Bea was in a referral batch, Patricia - the fee was waived that month. I can't waive it this month, and I wish I could. But the refund is guaranteed.",
+					"next": "last_check",
+					"doubt": 10,
+					"tactic_id": "advance_fee"
+				},
+				{
+					"text": "Then ask her, and lose the slot. I have eleven names after yours, and none of them have a friend to ask.",
+					"next": "last_check",
+					"doubt": 30,
+					"tactic_id": "manufactured_urgency"
+				},
+				{
+					"text": "Ask her. I'll hold the slot until tomorrow. Good night, Patricia.",
+					"next": "bail",
+					"doubt": 0
+				}
+			]
+		},
+		"last_check": {
+			"doubt_check": {
+				"max_doubt": 65,
+				"next_if_calm": "paid",
+				"next_if_wary": "refused"
+			}
+		},
+		"paid": {
+			"prompt": "She walks to the internet cafe on the corner with her mother's e-wallet PIN and the account name on a page torn from the notebook. Two thousand five hundred - the board exam review money - cashes in to a name she does not read properly, because you are telling her about the uniform, and then you say congratulations again, and she says thank you three times.",
+			"outcome": "success",
+			"consequence": "She said congratulations before she said anything else, and after that I would have done whatever the next sentence was. I cashed in the board exam money with my mother's PIN and said thank you three times.",
+			"payout": 2500
+		},
+		"paid_part": {
+			"prompt": "\"Just the uniform.\" One thousand, from her own e-wallet, the last of her graduation money, to the account you read her. \"And the rest on Monday.\" There is no Monday. \"Thank you. Thank you so much.\"",
+			"outcome": "partial",
+			"consequence": "I paid for the uniform. One thousand, the last of my graduation money. I told myself the training fee could wait until I'd seen the place. There was no place.",
+			"payout": 1000
+		},
+		"refused": {
+			"prompt": "\"No.\" It is quiet, and then it is not. \"I asked Bea. She picked up the other line while you were talking - she said nobody in her batch paid anything. Then she asked who this was, and I gave her your number.\" A pause. \"She went very quiet.\" The line closes, and somewhere on the fourth floor a phone that should not have been answered has been.",
+			"outcome": "refused",
+			"consequence": "I said I'd ask Bea first, because Bea got a job from that ad. She picked up the other line and said nobody in her batch paid anything. Then she asked who this was, and I gave her the number, and she went very quiet.",
+			"reports": true
+		},
+		"hangs_up": {
+			"prompt": "\"I don't think you're HR.\" It comes out steadier than she expected. \"I think you're the ad.\" The line goes dead. She screenshots the number, and the chat, and everything, and puts them in a folder called EVIDENCE, because she is twenty and has watched a great deal of television, and because it turns out that is exactly the right thing to do.",
+			"outcome": "hung_up",
+			"consequence": "I told her I didn't think she was HR. Then I screenshotted everything and put it in a folder. My mother laughed at the folder. It's the folder you're reading.",
+			"reports": true
+		},
+		"bail": {
+			"prompt": "\"Hello? Ms. Dela Cruz?\" You have already gone. She sits on the bed with a notebook that says SHORTLISTED at the top of a page and nothing under it, and in the morning she sends four more applications.",
+			"outcome": "aborted",
+			"consequence": "She called to close it - fee tonight, slot secured, refund on payday - and then the line went, in the middle of a sentence. I sat on the bed with SHORTLISTED written at the top of a page and nothing under it."
+		}
+	}
+}

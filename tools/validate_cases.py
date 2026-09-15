@@ -425,6 +425,7 @@ EXPECTED_LINKS = {
     "lina_reyes": "interview_case_006.json",
     "teodoro_villanueva": "interview_case_007.json",
     "joel_abad": "interview_case_010.json",
+    "patricia_lim": "interview_case_008.json",
 }
 
 # Mirror of SessionState's closed call vocabulary and its outcome -> disposition

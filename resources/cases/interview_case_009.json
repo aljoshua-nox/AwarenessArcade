@@ -152,7 +152,11 @@
           "evidence_id": "test_trish_confirmed",
           "next": "turned",
           "response": "She reads the name before she reads anything else. \"Trish.\" And then the rest, slowly, and then again. \"Two and a half thousand. She paid them two and a half thousand and they - \" She stops. \"Same ad. Same HR. Same [i]week.[/i] I got the job and she got a receipt.\" The sleeves come off her hands.",
-          "cooperation": 20
+          "cooperation": 20,
+          "responses": {
+            "resistant": "She reads the name before she reads anything else. \"Trish.\" And then the rest, slowly. \"She asked me. Eleven fifty-two, that night - is this real, did you pay. And I said nobody paid, and I asked who it was, and she sent me a number I dial from that desk.\" She stops. \"I never answered her again. I couldn't.\" The sleeves come off her hands.",
+            "unfinished": "She reads the name before she reads anything else. \"Trish.\" And then the rest, slowly. \"She messaged me after. Is this real, did you pay. I said nobody paid. She sent me the number.\" She looks at the headset. \"It was our number. I never answered her again.\" The sleeves come off her hands."
+          }
         },
         {
           "evidence_id": "ev_bea_script_card",

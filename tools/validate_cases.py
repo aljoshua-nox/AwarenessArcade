@@ -9,6 +9,60 @@ import json, glob, os, sys
 base = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 files = sorted(glob.glob(os.path.join(base, "resources", "cases", "interview_case_*.json")))
 
+# Script is the fourth half of identity, and the one the investigation routes
+# on: a suspect answers for the scripts their floor runs (`accepts_scripts` on a
+# row, `required_scripts` on a check), and a victim's testimony carries the
+# script that hit them. So every victim's case says which one (`person.script`),
+# every call script says the same (`person.script_id` - `script` there is the
+# card's display name, "Bank fraud desk"), the two must agree for a linked
+# victim, and every id must come from this closed vocabulary. Add to it when a
+# new script is written; a typo would otherwise be a testimony no suspect can
+# ever accept - which the coverage checks below would then also report.
+SCRIPT_IDS = {"bank_fraud", "tech_support", "lottery", "family_emergency",
+              "government", "job_offer", "utility"}
+
+
+def check_script_set(sids, where):
+    """A list of script ids, or ["*"] for every script."""
+    if not isinstance(sids, list) or not sids:
+        errors.append(f"{where} must be a non-empty list of script ids, or [\"*\"]")
+        return False
+    ok = True
+    for sid in sids:
+        if sid != "*" and sid not in SCRIPT_IDS:
+            errors.append(f"{where} names '{sid}', not one of {sorted(SCRIPT_IDS)}")
+            ok = False
+    if "*" in sids and len(sids) > 1:
+        errors.append(f"{where}: \"*\" already means every script - list nothing beside it")
+        ok = False
+    return ok
+
+
+def set_covers(sids, script):
+    return bool(script) and isinstance(sids, list) and ("*" in sids or script in sids)
+
+
+# An accepts_evidence row either names one item or accepts every testimony from
+# victims of a set of scripts. Named rows win at runtime, so a specific reaction
+# is never flattened into the generic one; the script row is the floor.
+def check_accepts_row(e, where):
+    named = "evidence_id" in e
+    routed = "accepts_scripts" in e
+    if named == routed:
+        errors.append(f"{where} must carry an evidence_id or an accepts_scripts set - not both, not neither")
+        return
+    if named:
+        if e["evidence_id"] not in global_evidence:
+            errors.append(f"{where} unknown evidence '{e['evidence_id']}'")
+        return
+    if not check_script_set(e["accepts_scripts"], f"{where}.accepts_scripts"):
+        return
+    if e.get("wrong") or e.get("contradicts"):
+        errors.append(f"{where}: a script row cannot be a decoy or a contradiction - name the item instead")
+    if not str(e.get("response", "")).strip():
+        errors.append(f"{where}: a script row needs a response - it is the line for every witness nobody wrote one for")
+
+
 # What a node's `dispositions` block may vary, mirrored from interview.gd.
 NODE_VARIANT_KEYS = {"harmed", "resistant", "unfinished"}
 NODE_OVERRIDE_KEYS = {"prompt", "choices", "evidence_hint", "evidence_prompt",
@@ -59,16 +113,23 @@ for f, data in parsed.items():
             errors.append(f"{name}: {nid} has >4 choices (UI has 4 buttons)")
         for i, e in enumerate(node.get("accepts_evidence", [])):
             check(e.get("next"), f"{nid}.accepts_evidence[{i}]")
-            eid = e.get("evidence_id")
-            if eid not in global_evidence:
-                errors.append(f"{name}: {nid}.accepts_evidence[{i}] unknown evidence '{eid}'")
+            check_accepts_row(e, f"{name}: {nid}.accepts_evidence[{i}]")
         ec = node.get("evidence_check")
         if ec:
             check(ec.get("next_if_met"), f"{nid}.evidence_check.next_if_met")
             check(ec.get("next_if_not_met"), f"{nid}.evidence_check.next_if_not_met")
+            by_id = "required_evidence" in ec
+            by_script = "required_scripts" in ec
+            if by_id == by_script:
+                errors.append(f"{name}: {nid}.evidence_check must carry required_evidence or required_scripts - not both, not neither")
             for eid in ec.get("required_evidence", []):
                 if eid not in global_evidence:
                     errors.append(f"{name}: {nid}.evidence_check unknown evidence '{eid}'")
+            if by_script:
+                check_script_set(ec["required_scripts"], f"{name}: {nid}.evidence_check.required_scripts")
+                if not isinstance(ec.get("min_matching"), int) or ec["min_matching"] < 1:
+                    errors.append(f"{name}: {nid}.evidence_check.required_scripts needs min_matching >= 1"
+                                  f" - 'every testimony of these scripts' is not a thing a player can be asked to hold")
         q = node.get("tactic_quiz")
         if q:
             opts = q.get("options", [])
@@ -162,8 +223,7 @@ for f, data in parsed.items():
                 check(c.get("next"), f"{nid}.dispositions['{key}'].choices[{i}]")
             for i, e in enumerate(override.get("accepts_evidence", [])):
                 check(e.get("next"), f"{nid}.dispositions['{key}'].accepts_evidence[{i}]")
-                if e.get("evidence_id") not in global_evidence:
-                    errors.append(f"{where}.accepts_evidence[{i}] unknown evidence '{e.get('evidence_id')}'")
+                check_accepts_row(e, f"{where}.accepts_evidence[{i}]")
             q = override.get("tactic_quiz")
             if q is not None:
                 if not node.get("tactic_quiz"):
@@ -214,7 +274,7 @@ for f, data in parsed.items():
                     continue
                 # Only a hit that moves the interview on counts; corroboration
                 # that loops back to the same node secures nobody.
-                hits = [e["evidence_id"] for e in resolved.get("accepts_evidence", [])
+                hits = [e.get("evidence_id", "") for e in resolved.get("accepts_evidence", [])
                         if not e.get("wrong") and e.get("next") != nid]
                 if not any(h in pool or h not in data_own_ids for h in hits):
                     errors.append(f"{name}: {nid} has no presentable hit that advances when the witness is "
@@ -601,16 +661,6 @@ for pid, case_file in EXPECTED_LINKS.items():
             f"{case_file}: {case_name} is '{case_job}' but the prologue has"
             f" {pro_name} as '{pro_job}' - the same person changes job between the two halves")
 
-# Script is the fourth half of identity, and the one the investigation will
-# route on: a suspect answers for the scripts their floor runs, and a victim's
-# testimony carries the script that hit them. So every victim's case says which
-# one (`person.script`), every call script says the same (`person.script_id` -
-# `script` there is the card's display name, "Bank fraud desk"), the two must
-# agree for a linked victim, and the id must come from this closed vocabulary.
-# Add to it when a new script is written; a typo here would otherwise be a
-# testimony no suspect can ever accept.
-SCRIPT_IDS = {"bank_fraud", "tech_support", "lottery", "family_emergency"}
-
 for f, data in parsed.items():
     name = os.path.basename(f)
     person = data.get("person", {})
@@ -697,6 +747,100 @@ linked = sorted(pid for pid in EXPECTED_LINKS if pid in prologue_ids
                 and case_ids.get(EXPECTED_LINKS[pid]) == pid)
 print(f"call_content.json: {len(prologue_ids)} call scripts, "
       f"{len(linked)} linked to an interview ({', '.join(linked) if linked else 'none'})")
+
+# --- Coverage: routing must leave nobody stranded ----------------------------
+# A testimony is a granted item; it carries the script of the victim it came
+# from (the granting case's `person.script`, or its own `script` when the case
+# is not a victim's). Four things must hold once suspects accept by script:
+#   1. every testimony is accepted by someone - a witness nobody can use is
+#      decorative, which is the bug `min_matching` was introduced to kill;
+#   2. every suspect can be cracked by something that exists;
+#   3. every script-based check can actually be met by the testimonies written;
+#   4. every suspect has a witness gated at or below the starting 50, so a
+#      player who fails early still has a way into every floor.
+# And a suspect who names a witness by id must answer for that witness's
+# script, or he is reacting by name to a floor he supposedly knows nothing of.
+testimonies = {}
+for f, data in parsed.items():
+    name = os.path.basename(f)
+    person = data.get("person", {})
+    for nid, node in data.get("nodes", {}).items():
+        for variant in [node] + list(node.get("dispositions", {}).values()):
+            for g in variant.get("grants_evidence", []):
+                script = g.get("script") or person.get("script")
+                if not script:
+                    errors.append(f"{name}: {nid} grants '{g.get('id')}' with no script - a case that is not a"
+                                  f" victim's must tag the item itself")
+                    continue
+                if script not in SCRIPT_IDS:
+                    errors.append(f"{name}: {nid} grants '{g.get('id')}' tagged '{script}', not one of {sorted(SCRIPT_IDS)}")
+                    continue
+                testimonies[g["id"]] = {"script": script, "case": name,
+                                        "gate": int(person.get("min_credibility") or 0)}
+
+
+def accepted_by(data):
+    """(named ids, script sets) this case answers - its non-decoy rows across
+    every variant, and its evidence checks, which is how a confrontation
+    (Elena) uses testimony without ever being shown it."""
+    named, sets = set(), []
+    for node in data.get("nodes", {}).values():
+        for variant in [node] + list(node.get("dispositions", {}).values()):
+            for e in variant.get("accepts_evidence", []):
+                if e.get("wrong"):
+                    continue
+                if "evidence_id" in e:
+                    named.add(e["evidence_id"])
+                elif "accepts_scripts" in e:
+                    sets.append(e["accepts_scripts"])
+        ec = node.get("evidence_check", {})
+        named.update(ec.get("required_evidence", []))
+        if isinstance(ec.get("required_scripts"), list):
+            sets.append(ec["required_scripts"])
+    return named, sets
+
+
+acceptance = {os.path.basename(f): accepted_by(d) for f, d in parsed.items()}
+
+for tid, t in testimonies.items():
+    takers = [n for n, (named, sets) in acceptance.items()
+              if tid in named or any(set_covers(ss, t["script"]) for ss in sets)]
+    if not takers:
+        errors.append(f"{t['case']}: testimony '{tid}' ({t['script']}) is accepted by nobody"
+                      f" - a witness no interview can use is decorative")
+
+for f, data in parsed.items():
+    name = os.path.basename(f)
+    if data.get("person", {}).get("role") != "Suspect":
+        continue
+    named, sets = acceptance[name]
+    crackers = {tid for tid, t in testimonies.items()
+                if tid in named or any(set_covers(ss, t["script"]) for ss in sets)}
+    if not crackers:
+        errors.append(f"{name}: no testimony that exists can crack this suspect")
+    elif not any(testimonies[tid]["gate"] <= 50 for tid in crackers):
+        errors.append(f"{name}: every witness who can crack this suspect is gated above the starting 50"
+                      f" - a player who fails early has no way in ({sorted(crackers)})")
+    for nid, node in data.get("nodes", {}).items():
+        for variant in [node] + list(node.get("dispositions", {}).values()):
+            rows = variant.get("accepts_evidence", [])
+            node_sets = [e["accepts_scripts"] for e in rows if "accepts_scripts" in e]
+            if not node_sets:
+                continue
+            for e in rows:
+                tid = e.get("evidence_id")
+                if tid in testimonies and not e.get("wrong") and \
+                        not any(set_covers(ss, testimonies[tid]["script"]) for ss in node_sets):
+                    errors.append(f"{name}: {nid} names '{tid}' ({testimonies[tid]['script']}) but its script"
+                                  f" rows answer for {node_sets} - a suspect reacting by name to a floor he"
+                                  f" does not answer for")
+        ec = node.get("evidence_check", {})
+        if "required_scripts" in ec and isinstance(ec.get("min_matching"), int):
+            available = sum(1 for t in testimonies.values() if set_covers(ec["required_scripts"], t["script"]))
+            if available < ec["min_matching"]:
+                errors.append(f"{name}: {nid}.evidence_check asks for {ec['min_matching']} testimonies from"
+                              f" {ec['required_scripts']} but only {available} exist")
+
 
 # --- Prose lint: the interview must not contradict the prologue --------------
 # The engine varies a case per disposition node by node, and the checks above
@@ -867,6 +1011,14 @@ for f, data in parsed.items():
             variants = [node] + list(node.get("dispositions", {}).values())
             for variant in variants:
                 for i, e in enumerate(variant.get("accepts_evidence", [])):
+                    if "accepts_scripts" in e:
+                        by_source = e.get("responses", {})
+                        for d in sorted(VALID_DISPOSITIONS):
+                            text = by_source.get(d, e.get("response", ""))
+                            if text:
+                                lint_scan(name, f"{nid}.accepts_evidence[{i}] (any of {e['accepts_scripts']})",
+                                          text, d, allow, LINT_FORBID[d] + list(extra.get(d, [])))
+                        continue
                     owner = testimony_owner.get(e.get("evidence_id", ""))
                     if not owner or owner[0] not in linked_cases:
                         continue

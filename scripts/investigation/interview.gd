@@ -191,6 +191,29 @@ func _stamp_source(item: Dictionary) -> Dictionary:
 	return stamped
 
 
+# A granted testimony also carries the script that hit the person it came from,
+# because that is what a suspect answers for: Marco accepts anything from a
+# victim of a floor-3 script, whether or not his case ever names them. A case
+# that is not a victim's (Bea's) tags the item itself. Only granted items get
+# this - a victim's own evidence pool never routes to a suspect by script.
+func _stamp_testimony(item: Dictionary) -> Dictionary:
+	var stamped := _stamp_source(item)
+	if not stamped.has("script") and person.has("script"):
+		stamped["script"] = str(person.get("script", ""))
+	return stamped
+
+
+# `accepted` is an Array of script ids, or one containing "*" for every script.
+func _script_set_covers(accepted: Variant, script: String) -> bool:
+	if script.is_empty():
+		return false
+	if accepted is String:
+		return accepted == "*" or accepted == script
+	if accepted is Array:
+		return accepted.has("*") or accepted.has(script)
+	return false
+
+
 func _determine_start_node() -> String:
 	var default_start := str(case_data.get("start_node", ""))
 	var min_credibility_variant: Variant = person.get("min_credibility", null)
@@ -422,18 +445,28 @@ func _load_node(node_id: String, lead_in: String = "") -> void:
 
 	var evidence_check: Dictionary = current_node.get("evidence_check", {})
 	if not evidence_check.is_empty():
-		var required: Array = evidence_check.get("required_evidence", [])
 		var held := 0
-		for required_id in required:
-			if SessionState.has_evidence(str(required_id)):
-				held += 1
-		# `min_matching` lets a check ask for "any N of these" instead of all of
-		# them. The endings need it: once there is more than one pair of
-		# witnesses who could carry a case, demanding two *named* testimonies
-		# would make every witness after the second one decorative.
-		var needed := required.size()
-		if evidence_check.has("min_matching"):
-			needed = clampi(int(evidence_check["min_matching"]), 1, required.size())
+		var needed := 0
+		if evidence_check.has("required_scripts"):
+			# "Any N testimonies from victims of these scripts." This is how a
+			# confrontation stays reachable by witnesses written after it - a
+			# check that named ids would have to be edited for every new victim.
+			for item in SessionState.investigation_inventory:
+				if _script_set_covers(evidence_check["required_scripts"], str(item.get("script", ""))):
+					held += 1
+			needed = maxi(1, int(evidence_check.get("min_matching", 1)))
+		else:
+			var required: Array = evidence_check.get("required_evidence", [])
+			for required_id in required:
+				if SessionState.has_evidence(str(required_id)):
+					held += 1
+			# `min_matching` lets a check ask for "any N of these" instead of all
+			# of them. The endings need it: once there is more than one pair of
+			# witnesses who could carry a case, demanding two *named* testimonies
+			# would make every witness after the second one decorative.
+			needed = required.size()
+			if evidence_check.has("min_matching"):
+				needed = clampi(int(evidence_check["min_matching"]), 1, required.size())
 		var met := held >= needed
 		var branch_target := str(evidence_check.get("next_if_met", "")) if met else str(evidence_check.get("next_if_not_met", ""))
 		_load_node(branch_target, lead_in)
@@ -451,7 +484,7 @@ func _load_node(node_id: String, lead_in: String = "") -> void:
 
 	for granted_item in current_node.get("grants_evidence", []):
 		if granted_item is Dictionary:
-			SessionState.add_evidence(_stamp_source(granted_item))
+			SessionState.add_evidence(_stamp_testimony(granted_item))
 
 	var outcome := str(current_node.get("outcome", ""))
 
@@ -689,10 +722,25 @@ func _presentable_ids() -> Dictionary:
 	var ids: Dictionary = {}
 	for item in evidence_items:
 		ids[str(item.get("id", ""))] = true
+	var script_sets: Array = []
 	for node_id in nodes:
 		var node: Dictionary = _resolve_node(nodes[node_id])
 		for entry in node.get("accepts_evidence", []):
-			ids[str(entry.get("evidence_id", ""))] = true
+			if entry.has("accepts_scripts"):
+				script_sets.append(entry["accepts_scripts"])
+			else:
+				ids[str(entry.get("evidence_id", ""))] = true
+	# A row that accepts by script lists every testimony the player holds from
+	# a victim of one of those scripts - including witnesses this case never
+	# names, which is the point. The list is still exactly what this person can
+	# be confronted with; it never says which node accepts what.
+	if not script_sets.is_empty():
+		for item in SessionState.investigation_inventory:
+			var script := str(item.get("script", ""))
+			for accepted in script_sets:
+				if _script_set_covers(accepted, script):
+					ids[str(item.get("id", ""))] = true
+					break
 	return ids
 
 
@@ -751,55 +799,73 @@ func _present_evidence_index(index: int) -> void:
 	var item_id := str(item.get("id", ""))
 	evidence_panel.visible = false
 
+	var entry := _accepting_entry(item)
+	if not entry.is_empty():
+		# A suspect shown Evelyn's testimony should not say "she didn't even
+		# pay" to a player who took her money. `responses` is keyed by the
+		# disposition of the person the item came from, with `response` as
+		# the line for anyone it does not name.
+		var response_text := str(entry.get("response", ""))
+		var by_source: Dictionary = entry.get("responses", {})
+		if not by_source.is_empty():
+			var source_disposition := SessionState.get_victim_disposition(str(item.get("person_id", "")))
+			if by_source.has(source_disposition):
+				response_text = str(by_source[source_disposition])
+		var response := _style_dialogue(response_text)
+		var tactic := str(item.get("tactic", ""))
+		var is_wrong := bool(entry.get("wrong", false))
+		# Presenting corroboration teaches "keep your records". Catching a
+		# lie teaches the sharper thing - a scam story does not survive
+		# cross-checking - so it gets its own marker rather than being
+		# reported as one more successful piece of evidence.
+		if bool(entry.get("contradicts", false)):
+			var broke := str(entry.get("contradiction_note", ""))
+			if broke.is_empty():
+				broke = "That account does not survive the record you are holding."
+			response = "%s\n\n%s" % [response, _system_line(
+				TextStyle.MARK_CONTRADICTION, broke, TextStyle.COLOR_CORRECT)]
+		if not tactic.is_empty():
+			var mark: String = TextStyle.MARK_WRONG if is_wrong else TextStyle.MARK_TACTIC
+			var tone: String = TextStyle.COLOR_WRONG if is_wrong else TextStyle.COLOR_TACTIC
+			response = "%s\n\n%s" % [response, _system_line(mark, tactic, tone)]
+			# Reading a tactic off a piece of evidence is how most of them are
+			# met, so that is where most notebook entries come from. A decoy
+			# presented wrongly teaches nothing and unlocks nothing.
+			if not is_wrong:
+				SessionState.record_tactic_learned(str(item.get("tactic_id", "")),
+					"From %s, shown to %s" % [str(item.get("label", "evidence")), str(person.get("name", "a witness"))])
+		var presentation_key := "%s|%s" % [current_node_id, item_id]
+		var repeated := presented_evidence.has(presentation_key)
+		presented_evidence[presentation_key] = true
+		var cooperation_delta := 0 if repeated else int(entry.get("cooperation", 0))
+		_apply_cooperation(cooperation_delta)
+		_play_sting(not is_wrong and cooperation_delta >= 0)
+		if is_wrong and not repeated:
+			evidence_misses += 1
+		var next_node := str(entry.get("next", current_node_id))
+		_load_node(next_node, response)
+		return
+
+	_handle_evidence_miss(item)
+
+
+# The row this node answers an item with: one that names the item, or failing
+# that, one that accepts the script of the victim the item came from. Named rows
+# win so a specific reaction ("The bookkeeper paid?") is never flattened into the
+# generic one; the script row is the floor beneath them.
+func _accepting_entry(item: Dictionary) -> Dictionary:
+	var item_id := str(item.get("id", ""))
 	var accepts: Array = current_node.get("accepts_evidence", [])
 	for entry in accepts:
 		if str(entry.get("evidence_id", "")) == item_id:
-			# A suspect shown Evelyn's testimony should not say "she didn't even
-			# pay" to a player who took her money. `responses` is keyed by the
-			# disposition of the person the item came from, with `response` as
-			# the line for anyone it does not name.
-			var response_text := str(entry.get("response", ""))
-			var by_source: Dictionary = entry.get("responses", {})
-			if not by_source.is_empty():
-				var source_disposition := SessionState.get_victim_disposition(str(item.get("person_id", "")))
-				if by_source.has(source_disposition):
-					response_text = str(by_source[source_disposition])
-			var response := _style_dialogue(response_text)
-			var tactic := str(item.get("tactic", ""))
-			var is_wrong := bool(entry.get("wrong", false))
-			# Presenting corroboration teaches "keep your records". Catching a
-			# lie teaches the sharper thing - a scam story does not survive
-			# cross-checking - so it gets its own marker rather than being
-			# reported as one more successful piece of evidence.
-			if bool(entry.get("contradicts", false)):
-				var broke := str(entry.get("contradiction_note", ""))
-				if broke.is_empty():
-					broke = "That account does not survive the record you are holding."
-				response = "%s\n\n%s" % [response, _system_line(
-					TextStyle.MARK_CONTRADICTION, broke, TextStyle.COLOR_CORRECT)]
-			if not tactic.is_empty():
-				var mark: String = TextStyle.MARK_WRONG if is_wrong else TextStyle.MARK_TACTIC
-				var tone: String = TextStyle.COLOR_WRONG if is_wrong else TextStyle.COLOR_TACTIC
-				response = "%s\n\n%s" % [response, _system_line(mark, tactic, tone)]
-				# Reading a tactic off a piece of evidence is how most of them are
-				# met, so that is where most notebook entries come from. A decoy
-				# presented wrongly teaches nothing and unlocks nothing.
-				if not is_wrong:
-					SessionState.record_tactic_learned(str(item.get("tactic_id", "")),
-						"From %s, shown to %s" % [str(item.get("label", "evidence")), str(person.get("name", "a witness"))])
-			var presentation_key := "%s|%s" % [current_node_id, item_id]
-			var repeated := presented_evidence.has(presentation_key)
-			presented_evidence[presentation_key] = true
-			var cooperation_delta := 0 if repeated else int(entry.get("cooperation", 0))
-			_apply_cooperation(cooperation_delta)
-			_play_sting(not is_wrong and cooperation_delta >= 0)
-			if is_wrong and not repeated:
-				evidence_misses += 1
-			var next_node := str(entry.get("next", current_node_id))
-			_load_node(next_node, response)
-			return
-
-	_handle_evidence_miss(item)
+			return entry
+	var script := str(item.get("script", ""))
+	if script.is_empty():
+		return {}
+	for entry in accepts:
+		if entry.has("accepts_scripts") and _script_set_covers(entry["accepts_scripts"], script):
+			return entry
+	return {}
 
 
 # An unlisted piece of evidence used to be a free retry. Now it costs the room's

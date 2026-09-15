@@ -14,6 +14,8 @@ const CASE_KEVIN := "res://resources/cases/interview_case_002.json"
 const CASE_MARCO := "res://resources/cases/interview_case_003.json"
 const CASE_EVELYN := "res://resources/cases/interview_case_005.json"
 const CASE_LINA := "res://resources/cases/interview_case_006.json"
+const CASE_ELENA := "res://resources/cases/interview_case_004.json"
+const CASE_TEDDY := "res://resources/cases/interview_case_007.json"
 
 var failures: Array[String] = []
 var checks := 0
@@ -32,7 +34,7 @@ func _check(condition: bool, label: String) -> void:
 		print("  ok    %s" % label)
 
 
-## Credibility that clears every witness gate (highest is Lina at 70). Tests
+## Credibility that clears every witness gate (highest is Teddy at 75). Tests
 ## that are about the engine rather than the gates open with this; the gates
 ## have their own tests further down.
 const GATE_CLEAR := 75
@@ -86,6 +88,7 @@ func _run() -> void:
 	await _test_contradiction()
 	await _test_evidence_scoping()
 	await _test_disposition_variants()
+	await _test_testimony_routing()
 
 	print("\n%d checks, %d failed" % [checks, failures.size()])
 	for f in failures:
@@ -648,3 +651,127 @@ func _index_of_quiet(_view: Node, evidence_id: String) -> int:
 		if str(SessionState.investigation_inventory[i].get("id", "")) == evidence_id:
 			return i
 	return -1
+
+
+# A suspect answers for the scripts his floor runs, not for a list of names. A
+# testimony carries the script of the victim it came from; a row that accepts
+# by script is the floor beneath the named rows; a check can ask for "any two
+# from these scripts". This is what stops every new victim from needing a row
+# in every suspect - and what makes bringing the right witness to the wrong
+# floor a thing that cannot happen by accident.
+func _test_testimony_routing() -> void:
+	print("\n[testimony routes by script]")
+
+	# Granting stamps the script, so the item knows which floor it implicates.
+	var teddy := await _open(CASE_TEDDY)
+	teddy._load_node("end_success")
+	var granted := _index_of(teddy, "test_teddy_confirmed")
+	_check(granted >= 0, "Teddy's confirmed testimony is granted")
+	if granted >= 0:
+		_check(str(SessionState.investigation_inventory[granted].get("script", "")) == "family_emergency",
+			"...and carries the script that hit him (%s)" % SessionState.investigation_inventory[granted].get("script", ""))
+	await _close(teddy)
+
+	# A witness no row names by id still flips Marco, through the script row.
+	SessionState.reset_session()
+	SessionState.detective_credibility = GATE_CLEAR
+	SessionState.add_evidence({"id": "test_teddy_confirmed", "label": "Teodoro's Confirmed Testimony",
+		"person_id": "teodoro_villanueva", "script": "family_emergency"})
+	SessionState.pending_case_path = CASE_MARCO
+	var marco: Node = load(INTERVIEW_SCENE).instantiate()
+	add_child(marco)
+	await get_tree().process_frame
+	_check(marco._presentable_ids().has("test_teddy_confirmed"),
+		"a script row lists a testimony no node of his names")
+	marco._load_node("half_crack")
+	var before: int = marco.cooperation
+	marco._present_evidence_index(_index_of(marco, "test_teddy_confirmed"))
+	_check(marco.current_node_id == "full_crack",
+		"presenting it at half_crack flips him (landed on %s)" % marco.current_node_id)
+	_check(marco.cooperation == before + 25, "...for the row's cooperation (%d -> %d)" % [before, marco.cooperation])
+	_check(marco.evidence_misses == 0, "...and it is not a miss")
+	await _close(marco)
+
+	# A witness written after him - a script he answers for, an id he has never
+	# seen - cracks him exactly like the ones he was written with.
+	SessionState.reset_session()
+	SessionState.detective_credibility = GATE_CLEAR
+	SessionState.add_evidence({"id": "test_joel_confirmed", "label": "Joel's Confirmed Testimony",
+		"person_id": "joel_abad", "script": "government"})
+	SessionState.pending_case_path = CASE_MARCO
+	marco = load(INTERVIEW_SCENE).instantiate()
+	add_child(marco)
+	await get_tree().process_frame
+	marco._load_node("deny_node")
+	before = marco.cooperation
+	marco._present_evidence_index(_index_of(marco, "test_joel_confirmed"))
+	_check(marco.current_node_id == "half_crack",
+		"a testimony from a case that does not exist yet still cracks him (landed on %s)" % marco.current_node_id)
+	_check(marco.cooperation == before + 20, "...for the script row's cooperation")
+	_check(marco.prompt_value.text.contains("Maybe that one call"), "...with the generic line")
+	await _close(marco)
+
+	# A named row wins over the script row, so a written reaction survives.
+	SessionState.reset_session()
+	SessionState.prologue_played = true
+	SessionState.detective_credibility = GATE_CLEAR
+	SessionState.record_prologue_call("evelyn_marsh", "Evelyn Marsh", SessionState.CALL_SUCCESS, 24500, "quoted")
+	SessionState.add_evidence({"id": "test_evelyn_confirmed", "label": "Evelyn's Confirmed Testimony",
+		"person_id": "evelyn_marsh", "script": "lottery"})
+	SessionState.pending_case_path = CASE_MARCO
+	marco = load(INTERVIEW_SCENE).instantiate()
+	add_child(marco)
+	await get_tree().process_frame
+	marco._load_node("deny_node")
+	marco._present_evidence_index(_index_of(marco, "test_evelyn_confirmed"))
+	_check(marco.prompt_value.text.contains("The bookkeeper paid"),
+		"a named row beats the script row - Evelyn still gets her own line")
+	await _close(marco)
+
+	# A testimony from a floor he does not answer for is not offered, and if
+	# forced, is the ordinary unlisted-evidence miss - never a crack.
+	SessionState.reset_session()
+	SessionState.detective_credibility = GATE_CLEAR
+	SessionState.add_evidence({"id": "test_trish_confirmed", "label": "Trish's Confirmed Testimony",
+		"person_id": "patricia_lim", "script": "job_offer"})
+	SessionState.pending_case_path = CASE_MARCO
+	marco = load(INTERVIEW_SCENE).instantiate()
+	add_child(marco)
+	await get_tree().process_frame
+	_check(not marco._presentable_ids().has("test_trish_confirmed"),
+		"a testimony from the other floor is not in his list")
+	marco._load_node("deny_node")
+	before = marco.cooperation
+	marco._present_evidence_index(_index_of(marco, "test_trish_confirmed"))
+	_check(marco.current_node_id == "deny_node", "forcing it does not move him")
+	_check(marco.evidence_misses == 1 and marco.cooperation < before, "...and costs the usual miss")
+	await _close(marco)
+
+	# The confrontation counts testimonies by script: any two from floor 3.
+	SessionState.reset_session()
+	SessionState.detective_credibility = GATE_CLEAR
+	SessionState.suspect_flipped = true
+	SessionState.add_evidence({"id": "test_teddy_confirmed", "label": "T", "person_id": "teodoro_villanueva", "script": "family_emergency"})
+	SessionState.add_evidence({"id": "test_joel_confirmed", "label": "J", "person_id": "joel_abad", "script": "government"})
+	SessionState.pending_case_path = CASE_ELENA
+	var elena: Node = load(INTERVIEW_SCENE).instantiate()
+	add_child(elena)
+	await get_tree().process_frame
+	elena._load_node("final_check")
+	_check(elena.current_node_id == "end_full_takedown",
+		"two floor-3 testimonies - neither written when she was - meet her check (landed on %s)" % elena.current_node_id)
+	await _close(elena)
+
+	SessionState.reset_session()
+	SessionState.detective_credibility = GATE_CLEAR
+	SessionState.suspect_flipped = true
+	SessionState.add_evidence({"id": "test_teddy_confirmed", "label": "T", "person_id": "teodoro_villanueva", "script": "family_emergency"})
+	SessionState.add_evidence({"id": "test_trish_confirmed", "label": "P", "person_id": "patricia_lim", "script": "job_offer"})
+	SessionState.pending_case_path = CASE_ELENA
+	elena = load(INTERVIEW_SCENE).instantiate()
+	add_child(elena)
+	await get_tree().process_frame
+	elena._load_node("final_check")
+	_check(elena.current_node_id == "end_partial_justice",
+		"one floor-3 testimony and one from upstairs do not (landed on %s)" % elena.current_node_id)
+	await _close(elena)

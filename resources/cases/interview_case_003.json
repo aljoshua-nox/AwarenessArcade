@@ -120,6 +120,12 @@
           }
         },
         {
+          "accepts_scripts": ["bank_fraud", "lottery", "tech_support", "family_emergency", "government", "utility"],
+          "next": "half_crack",
+          "response": "He reads the name at the top of the statement and his jaw tightens. \"...Okay. Maybe that one call.\" He does not look up. \"That still doesn't prove it was me running things.\"",
+          "cooperation": 20
+        },
+        {
           "evidence_id": "ev_phishing_text",
           "next": "deny_node",
           "response": "He barely glances at it. \"A text message. From a number that isn't mine, to a person I've never met.\" He's right, and he knows it: a document with no witness attached to it doesn't put him in the room.",
@@ -238,9 +244,9 @@
           "cooperation": 25
         },
         {
-          "evidence_id": "test_teddy_confirmed",
+          "accepts_scripts": ["bank_fraud", "lottery", "tech_support", "family_emergency", "government", "utility"],
           "next": "full_crack",
-          "response": "\"The grandfather as well.\" He looks at the two statements side by side and stops pretending they are unrelated. \"Different scripts. Same sheet.\" His arms drop.",
+          "response": "He looks at the two statements side by side and stops pretending they are unrelated. \"Different scripts. Same sheet.\" His arms drop.",
           "cooperation": 25
         }
       ],

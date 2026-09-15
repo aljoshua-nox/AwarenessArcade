@@ -1,0 +1,446 @@
+{
+  "case_id": "interview_case_010",
+  "title": "The Warrant That Never Existed",
+  "person": {
+    "person_id": "joel_abad",
+    "name": "Joel Abad",
+    "age": 36,
+    "occupation": "Construction foreman",
+    "role": "Victim",
+    "script": "government",
+    "portrait": "res://assets/art/portraits/joel.png",
+    "traits": "Six months into a site contract, sends the fifteenth's pay home. Angrier at himself than at the caller. Gives you exactly the time he said he would.",
+    "min_credibility": 55,
+    "hesitant_start": "hesitant_intro",
+    "dispositions": {
+      "harmed": {
+        "cooperation": 34,
+        "prompt": "Joel meets you at the site gate in a hi-vis vest and does not take it off. \"Twenty minutes. Then I've got a pour.\" He looks at the road rather than at you. \"I know what it was. I knew about an hour after. You don't need to tell me what it was.\"",
+        "note": "You took the money he sends home. He is angrier at himself than at the caller, and he has decided the way to carry it is to have no time for it."
+      },
+      "resistant": {
+        "cooperation": 62,
+        "prompt": "\"You're the detective.\" Joel walks you in past the mixer with the number still faintly on the back of his hand in marker. \"I rang the real office from the site phone while he was still talking on mine. A woman laughed at me. Then she took the number down.\" He is almost cheerful about it.",
+        "note": "He refused the call you made and checked in the same minute. There is nothing to trace, and a good deal to say."
+      },
+      "unfinished": {
+        "cooperation": 44,
+        "prompt": "\"Somebody said warrant, and then the line went.\" Joel says it at the gate, not quite letting you in. \"I've been waiting for a letter. Nothing's come.\" He looks at you as if you might be the letter.",
+        "note": "Your call to him never finished. He half believes there is a case, and he has been braced for a knock at the gate for weeks."
+      }
+    }
+  },
+  "evidence": [
+    {
+      "id": "ev_joel_reference_note",
+      "tactic_id": "authority_impersonation",
+      "label": "The Reference Number",
+      "description": "Copied off the back of his hand onto a cement bag in the site office: 2024-0417, and under it the name of the desk the caller gave and the account it was to be paid to.",
+      "tactic": "Impersonating an authority: a reference number sounds like a file, and a file sounds like an office - it cost the caller nothing to invent."
+    },
+    {
+      "id": "ev_joel_cashin_slip",
+      "tactic_id": "manufactured_fear",
+      "label": "Cash-in Slip",
+      "description": "From the remittance counter on the corner: P16,000 to an account in a personal name, 3:41 that afternoon - nineteen minutes before the officer was due at the site.",
+      "tactic": "Manufactured fear: an officer at the gate in front of his crew, with a deadline measured in minutes, so that paying felt cheaper than checking.",
+      "dispositions": {
+        "resistant": {
+          "omit": true
+        },
+        "unfinished": {
+          "omit": true
+        }
+      }
+    },
+    {
+      "id": "ev_joel_site_phone_log",
+      "only_for": [
+        "resistant",
+        "unfinished"
+      ],
+      "tactic_id": "verification_denial",
+      "label": "Site Office Phone Log",
+      "description": "The site phone's log for that afternoon: an outgoing call to the revenue office's published number at 3:12, four minutes long, while his own phone was still on the other line.",
+      "tactic": "Denying time to check: the check that ended it took four minutes on a second phone - which is why the caller said the desk could only hold the warrant while they were talking."
+    },
+    {
+      "id": "ev_joel_payslip",
+      "label": "Site Payslip",
+      "description": "His payslip for the fifteenth, from the contractor: the amount, the deductions, the tax paid through the company.",
+      "tactic": ""
+    }
+  ],
+  "start_node": "intro",
+  "failure_node": "end_shutdown",
+  "nodes": {
+    "hesitant_intro": {
+      "prompt": "Joel does not stop walking. \"I told the barangay. They wrote it down and nothing happened. I'm not doing it twice for nothing.\" At the site gate he turns. \"Come back when it's going somewhere. I'll still be here. Six-month contract.\"",
+      "choices": [
+        {
+          "text": "Fair enough. I'll come back when I can show you it is.",
+          "next": "end_partial_hesitant"
+        }
+      ]
+    },
+    "end_partial_hesitant": {
+      "prompt": "Joel has reported this once to no effect and will not spend a break on it again for someone who cannot show him it will matter. Standing with the other witnesses first might change that.",
+      "outcome": "partial",
+      "choices": []
+    },
+    "intro": {
+      "prompt": "Joel gives you exactly the twenty minutes he said, in the site office, with the door open so he can see the pour. \"Go on, then.\" He has the reference number written on a cement bag on the desk, and he does not look at it.",
+      "choices": [
+        {
+          "text": "Start with the call. Who did he say he was?",
+          "next": "ask_call"
+        },
+        {
+          "text": "Whatever you've decided you should have done - there were thirty-two men and a pour. That's the whole reason it worked.",
+          "next": "reassure",
+          "cooperation": 8
+        },
+        {
+          "text": "You sent sixteen thousand to a stranger because he said the word warrant. Take me through that.",
+          "next": "shame_him",
+          "cooperation": -14
+        }
+      ],
+      "dispositions": {
+        "resistant": {
+          "choices": [
+            {
+              "text": "Start with the call. Who did he say he was?",
+              "next": "ask_call"
+            },
+            {
+              "text": "Whatever you've decided you should have done - there were thirty-two men and a pour. That's the whole reason it nearly worked.",
+              "next": "reassure",
+              "cooperation": 8
+            },
+            {
+              "text": "You nearly walked to a counter with sixteen thousand because a stranger said the word warrant. Take me through that.",
+              "next": "shame_him",
+              "cooperation": -14
+            }
+          ]
+        },
+        "unfinished": {
+          "choices": [
+            {
+              "text": "Start with the call. Who did he say he was?",
+              "next": "ask_call"
+            },
+            {
+              "text": "Whatever you've decided you should have done - there were thirty-two men and a pour. That's the whole reason it nearly worked.",
+              "next": "reassure",
+              "cooperation": 8
+            },
+            {
+              "text": "A stranger said the word warrant and you walked to the road with your wallet out. Take me through that.",
+              "next": "shame_him",
+              "cooperation": -14
+            }
+          ]
+        }
+      }
+    },
+    "reassure": {
+      "prompt": "\"Thirty-two.\" He says it to the pour. \"Thirty-two men, and a mixer you can't stop once it's started.\" A breath. \"Nobody else has said that. Everyone else has said the word gullible without saying it. Go on.\"",
+      "cooperation": 4,
+      "choices": [
+        {
+          "text": "The call, then. Who did he say he was?",
+          "next": "ask_call"
+        }
+      ]
+    },
+    "shame_him": {
+      "prompt": "\"Yeah.\" He does not rise to it, which is worse. \"That's what happened. I'm the foreman. I'm supposed to be the one who doesn't.\" He looks at the cement bag. \"Was there a question in that, or was that the whole visit?\"",
+      "choices": [
+        {
+          "text": "That was out of line, and I'm sorry. The word warrant is exactly what I want to understand.",
+          "next": "reassure",
+          "cooperation": 8
+        },
+        {
+          "text": "The call. Who did he say he was?",
+          "next": "ask_call_cold",
+          "cooperation": -8
+        }
+      ]
+    },
+    "ask_call": {
+      "prompt": "\"Enforcement desk, revenue office. He had a case number - it's there, on the bag. He had my tax number. He had the contractor's name.\" Joel counts them off on his fingers. \"And an officer coming to the site at four. That was the bit. Not the money. An officer at the gate in front of the crew.\" He looks up. \"Nobody from the government has ever telephoned me in my life. I knew that. I knew it while he was talking.\"",
+      "choices": [
+        {
+          "text": "Stay on the officer at four for a moment.",
+          "next": "tactic_quiz_warrant"
+        }
+      ]
+    },
+    "ask_call_cold": {
+      "prompt": "\"Enforcement desk. Case number. My tax number, the contractor's name.\" Flat, and to the door. \"Officer at the site at four. That's the whole of it.\"",
+      "cooperation": -6,
+      "choices": [
+        {
+          "text": "The officer at four. Stay on that.",
+          "next": "tactic_quiz_warrant"
+        }
+      ]
+    },
+    "tactic_quiz_warrant": {
+      "tactic_quiz": {
+        "setup": "You read the call back to him the way he told it: an enforcement desk, a reference number, his own tax number, and [i]an officer is dispatched to your site at four unless it is settled by phone before then.[/i]",
+        "tactic_id": "authority_impersonation",
+        "tactic": "The office that never calls",
+        "question": "Which part of that would a real government office never do?",
+        "milestone": {
+          "title": "Tactic Identified: The Office That Never Calls",
+          "detail": "Recognized that a genuine authority writes, gives you a way to contest, and takes payment only at its own counters - a fine payable by phone, to a personal account, on a deadline of hours, is the impersonation, whatever number it quotes."
+        },
+        "options": [
+          {
+            "text": "Take payment over the phone, to a personal account, on a deadline measured in hours.",
+            "correct": true,
+            "cooperation": 12,
+            "feedback": "That is the line no office crosses. A real assessment arrives in writing, names a counter or a bank, and gives you a way to dispute it - weeks, not minutes. Everything else in the call is cheap to fake: a reference number is a string of digits, a tax number and an employer are on any bought list. The deadline is the tell, because a real process is slow on purpose."
+          },
+          {
+            "text": "Telephone a taxpayer at his place of work.",
+            "cooperation": -6,
+            "feedback": "Rare, and worth suspicion, but not impossible - and a caller can always say it was a courtesy. What settles it is not the call but what the call wants: money, now, by a route no office uses."
+          },
+          {
+            "text": "Quote a reference number.",
+            "cooperation": -8,
+            "feedback": "Real offices quote reference numbers constantly - which is exactly why a fake one works. A number is the cheapest thing to invent. Judge the call by what it asks for, never by how official it sounds."
+          },
+          {
+            "text": "Threaten enforcement.",
+            "cooperation": -6,
+            "feedback": "Governments do enforce, and they say so - in writing, after notices, with a way to appeal. The threat is not what was wrong. The threat with a phone payment attached and an afternoon to comply is."
+          }
+        ],
+        "next": "ask_evidence"
+      }
+    },
+    "ask_evidence": {
+      "prompt": "\"Four o'clock.\" Joel looks at the site clock, a habit. \"He didn't say it once. He said it every third sentence. Like a countdown.\"",
+      "evidence_prompt": true,
+      "evidence_hint": "He remembers the reference number to the digit. What you need is where the money went, and when.",
+      "accepts_evidence": [
+        {
+          "evidence_id": "ev_joel_cashin_slip",
+          "next": "confirm",
+          "response": "He takes the slip out of the vest pocket without being asked. \"Three forty-one. Nineteen minutes to spare.\" He puts it on the cement bag next to the number.",
+          "cooperation": 20
+        },
+        {
+          "evidence_id": "ev_joel_reference_note",
+          "next": "ask_evidence",
+          "response": "\"That's the number. I wrote it down twice so I'd get it right for him.\" He almost laughs. It puts a name and a desk on the afternoon; it does not put the money anywhere.",
+          "cooperation": 6
+        },
+        {
+          "evidence_id": "ev_joel_payslip",
+          "next": "ask_evidence",
+          "response": "\"That's what I earn. I know what I earn.\" He pushes it back. It proves the money existed, which nobody doubts, and nothing about who took it.",
+          "cooperation": -8,
+          "wrong": true
+        }
+      ],
+      "choices": [
+        {
+          "text": "How was the money supposed to move?",
+          "next": "press_method"
+        },
+        {
+          "text": "That's enough to be going on with. Thank you.",
+          "next": "end_partial"
+        }
+      ],
+      "dispositions": {
+        "resistant": {
+          "evidence_hint": "Nothing was paid, so there is nothing to trace. What matters is the four minutes it took the real office to laugh - and that he made the call.",
+          "accepts_evidence": [
+            {
+              "evidence_id": "ev_joel_site_phone_log",
+              "next": "confirm",
+              "response": "\"Three twelve. Four minutes.\" He taps the log. \"He said the desk could only hold it while we were talking. So I kept him talking on one phone and rang the real one on the other.\"",
+              "cooperation": 10
+            },
+            {
+              "evidence_id": "ev_joel_reference_note",
+              "next": "ask_evidence",
+              "response": "\"That's the number. I wrote it down twice so I'd get it right for him.\" He almost laughs. It puts a name and a desk on the afternoon; it does not put the money anywhere.",
+              "cooperation": 6
+            },
+            {
+              "evidence_id": "ev_joel_payslip",
+              "next": "ask_evidence",
+              "response": "\"That's what I earn. I know what I earn.\" He pushes it back. It proves the money existed, which nobody doubts, and nothing about who took it.",
+              "cooperation": -8,
+              "wrong": true
+            }
+          ],
+          "choices": [
+            {
+              "text": "What made you pick up the site phone?",
+              "next": "press_method"
+            },
+            {
+              "text": "That's enough to be going on with. Thank you.",
+              "next": "end_partial"
+            }
+          ]
+        },
+        "unfinished": {
+          "evidence_hint": "The call never finished, so there is nothing to trace. What matters is the four minutes it took the real office to laugh - and that he made the call.",
+          "accepts_evidence": [
+            {
+              "evidence_id": "ev_joel_site_phone_log",
+              "next": "confirm",
+              "response": "\"Three twelve. Four minutes.\" He taps the log. \"After the line went I rang the real one from the site phone. A woman laughed at me. I didn't know what I was asking her.\"",
+              "cooperation": 10
+            },
+            {
+              "evidence_id": "ev_joel_reference_note",
+              "next": "ask_evidence",
+              "response": "\"That's the number. I wrote it down twice so I'd get it right for him.\" He almost laughs. It puts a name and a desk on the afternoon; it does not put the money anywhere.",
+              "cooperation": 6
+            },
+            {
+              "evidence_id": "ev_joel_payslip",
+              "next": "ask_evidence",
+              "response": "\"That's what I earn. I know what I earn.\" He pushes it back. It proves the money existed, which nobody doubts, and nothing about who took it.",
+              "cooperation": -8,
+              "wrong": true
+            }
+          ],
+          "choices": [
+            {
+              "text": "How far had he got when the line went?",
+              "next": "press_method"
+            },
+            {
+              "text": "That's enough to be going on with. Thank you.",
+              "next": "end_partial"
+            }
+          ]
+        }
+      }
+    },
+    "press_method": {
+      "prompt": "\"Cash-in. Any counter. He'd stay on the line and read me the reference so it was filed right.\" Joel turns the marker pen over in his fingers. \"He was very helpful. That's the bit I keep coming back to. He was so helpful.\"",
+      "cooperation": 6,
+      "choices": [
+        {
+          "text": "Can you show me anything from that afternoon?",
+          "next": "ask_evidence"
+        },
+        {
+          "text": "That's enough to be going on with. Thank you.",
+          "next": "end_partial"
+        }
+      ],
+      "dispositions": {
+        "resistant": {
+          "prompt": "\"He said don't hang up - the desk can only hold the warrant while we're talking.\" Joel shrugs. \"So I didn't hang up. I picked up the other phone.\" A pause. \"That's the whole trick, isn't it. Two phones.\""
+        },
+        "unfinished": {
+          "prompt": "\"He'd got to the amount. Sixteen thousand. I had the pen out.\" Joel looks at the back of his hand. \"Then nothing. I stood on the road for ten minutes in case it rang again. It didn't.\""
+        }
+      }
+    },
+    "confirm": {
+      "prompt": "Joel puts his finger on the slip. \"Sixteen thousand. That's the fifteenth. That's what goes home.\" He takes the finger away. \"Put it down. All of it. And put down that I checked afterwards. An hour afterwards. Put that down too.\"",
+      "cooperation": 10,
+      "milestone": {
+        "title": "Witness Secured: The Warrant That Never Existed",
+        "detail": "Joel Abad put a reference number, a deadline and a cash-in on the same afternoon - the government-warrant script, the fourth one the floor runs, with a face on it at last."
+      },
+      "choices": [
+        {
+          "text": "This matches the pattern from the other calls. Thank you.",
+          "next": "end_success"
+        }
+      ],
+      "dispositions": {
+        "resistant": {
+          "prompt": "\"Four minutes,\" Joel says. \"Site phone to the real office. She laughed, and then she stopped laughing and took the number.\" He lays the log beside the cement bag. \"Put down that it took four minutes. Somebody should know it only takes four minutes.\"",
+          "milestone": {
+            "title": "Witness Secured: The Warrant That Never Existed",
+            "detail": "Joel Abad put a reference number, a deadline and a four-minute check on the same afternoon - the government-warrant script, the fourth one the floor runs, with a face on it at last."
+          }
+        },
+        "unfinished": {
+          "prompt": "\"Four minutes,\" Joel says. \"Site phone to the real office, after. She laughed at me and I still didn't know what I was asking.\" He lays the log beside the cement bag. \"Put down that nobody rang back. Somebody should have.\"",
+          "milestone": {
+            "title": "Witness Secured: The Warrant That Never Existed",
+            "detail": "Joel Abad put a reference number, a deadline and a four-minute check on the same afternoon - the government-warrant script, the fourth one the floor runs, with a face on it at last."
+          }
+        }
+      }
+    },
+    "end_success": {
+      "prompt": "Joel's cash-in slip and the number on the cement bag put a desk, a deadline and sixteen thousand pesos on one afternoon - the government-warrant script, read off the same list as every other call.",
+      "outcome": "success",
+      "grants_evidence": [
+        {
+          "id": "test_joel_confirmed",
+          "label": "Joel's Confirmed Testimony",
+          "description": "Joel Abad confirmed the government-warrant script - an enforcement desk, a reference number, an officer at four - and the cash-in it produced.",
+          "tactic": "A victim who paid leaves a trail. His is the script that uses a badge instead of a prize."
+        }
+      ],
+      "choices": [],
+      "dispositions": {
+        "resistant": {
+          "prompt": "Joel's site phone log and the number on the cement bag put a desk, a deadline and a four-minute check on one afternoon - the government-warrant script, read off the same list as every other call.",
+          "grants_evidence": [
+            {
+              "id": "test_joel_confirmed",
+              "label": "Joel's Confirmed Testimony",
+              "description": "Joel Abad confirmed the government-warrant script - an enforcement desk, a reference number, an officer at four - and that one call to the real office ended it.",
+              "tactic": "A witness who checked still proves the operation exists - and proves the check takes four minutes."
+            }
+          ]
+        },
+        "unfinished": {
+          "prompt": "Joel's site phone log and the number on the cement bag put a desk, a deadline and a four-minute check on one afternoon - the government-warrant script, read off the same list as every other call.",
+          "grants_evidence": [
+            {
+              "id": "test_joel_confirmed",
+              "label": "Joel's Confirmed Testimony",
+              "description": "Joel Abad confirmed the government-warrant script - an enforcement desk, a reference number, an officer at four - and that the line dropped before it finished.",
+              "tactic": "A call that never resolved still proves the script was running, and who it was aimed at."
+            }
+          ]
+        }
+      }
+    },
+    "end_partial": {
+      "prompt": "You have Joel's account, but nothing yet that ties it to the wider operation.",
+      "outcome": "partial",
+      "choices": []
+    },
+    "end_shutdown": {
+      "prompt": "Joel looks at the site clock, and then at the pour. \"Time.\" He is on his feet and out of the door before the word has finished. The slip stays in the vest pocket, and the vest stays on him, and you understand that the twenty minutes were the whole offer.",
+      "outcome": "failure",
+      "milestone": {
+        "title": "Witness Lost",
+        "detail": "Joel Abad went back to the pour. Working-age victims report least of all - not from shame, but because the report costs a day they cannot lose, which is the same reason the script worked."
+      },
+      "choices": [],
+      "dispositions": {
+        "resistant": {
+          "prompt": "Joel looks at the site clock, and then at the pour. \"Time.\" He is on his feet and out of the door before the word has finished. The number on the back of his hand goes with him, and you understand that the twenty minutes were the whole offer."
+        },
+        "unfinished": {
+          "prompt": "Joel looks at the site clock, and then at the pour. \"Time.\" He is on his feet and out of the door before the word has finished. The number on the back of his hand goes with him, and you understand that the twenty minutes were the whole offer."
+        }
+      }
+    }
+  }
+}

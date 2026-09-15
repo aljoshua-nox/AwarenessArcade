@@ -198,6 +198,18 @@ func obstacle_rects() -> Array[Rect2]:
 	return rects
 
 
+# How many buildings a row kind has, for the door tables and the test. "street"
+# and "block" are every district's; a district with a building outside those
+# tables (Terminal Road's site office) names a row of its own and answers for it.
+func slot_count(row: String) -> int:
+	match row:
+		"street":
+			return building_row().size()
+		"block":
+			return block_buildings().size()
+	return 0
+
+
 func has_office() -> bool:
 	return office_row_index() >= 0
 

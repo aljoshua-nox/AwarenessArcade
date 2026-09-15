@@ -127,17 +127,16 @@ func _test_doors(district: Dictionary) -> void:
 	var expected: int = view.interviewees().size()
 	_check(view.interview_portals.size() == expected,
 		"a portal exists for every interviewee (%d of %d)" % [view.interview_portals.size(), expected])
-	var block_doors := 0
-	var street_doors := 0
+	# Every row the doors name must have a building per door - and the shop row
+	# one more, for the office, where there is one.
+	var doors_per_row := {}
 	for entry in view.interviewees():
-		if str(entry.get("row", "")) == "street":
-			street_doors += 1
-		else:
-			block_doors += 1
-	_check(view.block_buildings().size() >= block_doors,
-		"the residential row has a house per door (%d houses, %d doors)" % [view.block_buildings().size(), block_doors])
-	_check(view.building_row().size() > street_doors or (street_doors == 0 and view.building_row().size() >= 0),
-		"the shop row has a building per door plus the office (%d buildings, %d doors)" % [view.building_row().size(), street_doors])
+		var row := str(entry.get("row", ""))
+		doors_per_row[row] = int(doors_per_row.get(row, 0)) + 1
+	for row in doors_per_row:
+		var needed: int = int(doors_per_row[row]) + (1 if row == "street" and view.has_office() else 0)
+		_check(view.slot_count(row) >= needed,
+			"row '%s' has a building per door (%d buildings, %d needed)" % [row, view.slot_count(row), needed])
 
 	# Every door must lead somewhere, and somewhere different.
 	var seen_cases := {}
@@ -232,8 +231,7 @@ func _test_layout_collisions(district: Dictionary) -> void:
 	for entry in view.interviewees():
 		var row := str(entry.get("row", ""))
 		var slot := int(entry.get("slot", -1))
-		var count: int = view.building_row().size() if row == "street" else view.block_buildings().size()
-		if slot < 0 or slot >= count:
+		if slot < 0 or slot >= view.slot_count(row):
 			missing += 1
 		if row == "street" and slot == view.office_row_index():
 			missing += 1

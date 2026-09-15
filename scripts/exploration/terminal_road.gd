@@ -15,14 +15,18 @@ const BUSES_TEXTURE: Texture2D = preload("res://assets/art/maps/urban/buses_cars
 
 const CASE_TRISH := "res://resources/cases/interview_case_008.json"
 const CASE_BEA := "res://resources/cases/interview_case_009.json"
+const CASE_JOEL := "res://resources/cases/interview_case_010.json"
 
 # Who lives behind which door. Trish in the first house on the grass, the one
 # home on this map; Bea in the boarding house at the head of the frontage row,
-# two doors from the canteen she eats at. The rest of the slots are named in
-# the comments on the building tables below and fill as their people are written.
+# two doors from the canteen she eats at; Joel at the site office on the plot -
+# interviewed at work, which is where the call found him. "site" is this
+# district's own row: one building, placed in _build_buildings. The rest of the
+# slots are named in the comments on the building tables below.
 const INTERVIEWEES := [
 	{"case": CASE_TRISH, "label": "TRISH", "prompt": "Speak with Patricia Lim", "row": "block", "slot": 0},
 	{"case": CASE_BEA, "label": "BEA", "prompt": "Speak with Bea Santiago", "row": "street", "slot": 0},
+	{"case": CASE_JOEL, "label": "JOEL", "prompt": "Speak with Joel Abad", "row": "site", "slot": 0},
 ]
 
 # Kenney sheet coordinates for the ground and props this district adds.
@@ -72,7 +76,7 @@ const TOWER_TOP_LEFT := Vector2(1010.0, -80.0)
 const TOWER_SCALE := Vector2(4.6, 2.92)
 const TOWER_LABEL_Y := 120.0
 
-# The site office: a squat unit on the plot, Joel's door when he is written.
+# The site office: a squat unit on the plot - Joel's door, row "site" slot 0.
 const SITE_OFFICE_TOP_LEFT := Vector2(760.0, 560.0)
 const SITE_OFFICE_SCALE := Vector2(3.4, 1.15)
 const SITE_FENCE_Y := 428.0
@@ -146,6 +150,18 @@ const STREET_STOPS := [
 		"tactic_id": "advance_fee",
 		"milestone_title": "The Ad On The Board",
 		"milestone_detail": "The same job advertisement has hung in the internet cafe for months - applicants pay the fee at the counter under it, and the counter takes its cut either way.",
+	},
+	{
+		"position": Vector2(972.0, 470.0),
+		"title": "Worker at the site gate",
+		"prompt": "Talk to the worker",
+		"body": "He is leaning on the gatepost with a cigarette he has not lit. \"The foreman? Took a call in the middle of a pour. Middle of it.\" He shakes his head. \"Case number, warrant, an officer coming to the gate at four - he went white. I've seen him take a beam on the shoulder and not go white.\" The cigarette goes behind his ear. \"He walked off to the road. Came back twenty minutes later and finished the pour like nothing. Then he didn't talk for a week.\"",
+		"note": "Fear is the lever, and it is aimed at what a person cannot afford to lose - not the money, the day. A man who cannot leave a pour will pay to be left alone, and the script knows that before it dials.",
+		"note_color": TextStyle.COLOR_TACTIC,
+		"marker": TextStyle.MARK_TACTIC,
+		"tactic_id": "manufactured_fear",
+		"milestone_title": "He Went White Mid-Pour",
+		"milestone_detail": "A site worker watched the foreman take the warrant call - the fear was aimed at the day he could not lose, not at the money.",
 	},
 	{
 		"position": Vector2(1660.0, 780.0),
@@ -231,6 +247,12 @@ func transit() -> Dictionary:
 	return TRANSIT
 
 
+func slot_count(row: String) -> int:
+	if row == "site":
+		return 1
+	return super(row)
+
+
 # The arrival street counts as ground nothing may be built on, like the two
 # below the road.
 func obstacle_rects() -> Array[Rect2]:
@@ -293,6 +315,7 @@ func _build_buildings() -> void:
 	_add_shop_door(tower)
 	_add_building_label(tower, SessionState.COMPANY_NAME.split(" ")[0], TOWER_LABEL_Y)
 
-	# The site office, inside the fence.
+	# The site office, inside the fence. Its door is a row of its own.
 	var site_office := _add_building(SITE_OFFICE_TOP_LEFT, ROOF_OLIVE_X, SITE_OFFICE_SCALE)
-	_add_shop_door(site_office)
+	var site_door := _add_shop_door(site_office)
+	_place_interviewee_door("site", 0, site_office, site_door)

@@ -16,6 +16,8 @@ const CASE_EVELYN := "res://resources/cases/interview_case_005.json"
 const CASE_LINA := "res://resources/cases/interview_case_006.json"
 const CASE_ELENA := "res://resources/cases/interview_case_004.json"
 const CASE_TEDDY := "res://resources/cases/interview_case_007.json"
+const CASE_TRISH := "res://resources/cases/interview_case_008.json"
+const CASE_BEA := "res://resources/cases/interview_case_009.json"
 
 var failures: Array[String] = []
 var checks := 0
@@ -89,6 +91,7 @@ func _run() -> void:
 	await _test_evidence_scoping()
 	await _test_disposition_variants()
 	await _test_testimony_routing()
+	await _test_witness_turned()
 
 	print("\n%d checks, %d failed" % [checks, failures.size()])
 	for f in failures:
@@ -775,3 +778,74 @@ func _test_testimony_routing() -> void:
 	_check(elena.current_node_id == "end_partial_justice",
 		"one floor-3 testimony and one from upstairs do not (landed on %s)" % elena.current_node_id)
 	await _close(elena)
+
+
+# The second floor's route in. Trish's testimony is what turns Bea, and Bea
+# turning is what opens Rowena's door - the way Marco's flip opens Elena's.
+func _test_witness_turned() -> void:
+	print("\n[a witness who turns]")
+
+	# Trish is ungated and her testimony carries the fourth floor's script.
+	SessionState.reset_session()
+	SessionState.detective_credibility = 50
+	SessionState.pending_case_path = CASE_TRISH
+	var trish: Node = load(INTERVIEW_SCENE).instantiate()
+	add_child(trish)
+	await get_tree().process_frame
+	_check(trish.current_node_id == "intro", "Trish talks to a detective with no standing (%s)" % trish.current_node_id)
+	trish._load_node("end_success")
+	var granted := _index_of(trish, "test_trish_confirmed")
+	_check(granted >= 0 and str(SessionState.investigation_inventory[granted].get("script", "")) == "job_offer",
+		"her testimony is tagged with the job-offer script")
+	await _close(trish)
+
+	# Bea is gated: a detective at the start cannot get past her door.
+	SessionState.reset_session()
+	SessionState.detective_credibility = 50
+	SessionState.pending_case_path = CASE_BEA
+	var bea: Node = load(INTERVIEW_SCENE).instantiate()
+	add_child(bea)
+	await get_tree().process_frame
+	_check(bea.current_node_id == "hesitant_intro", "Bea will not talk at the starting credibility (%s)" % bea.current_node_id)
+	await _close(bea)
+
+	# With standing and Trish's statement in hand, she turns.
+	SessionState.reset_session()
+	SessionState.detective_credibility = 65
+	SessionState.add_evidence({"id": "test_trish_confirmed", "label": "Trish's Confirmed Testimony",
+		"person_id": "patricia_lim", "script": "job_offer"})
+	SessionState.pending_case_path = CASE_BEA
+	bea = load(INTERVIEW_SCENE).instantiate()
+	add_child(bea)
+	await get_tree().process_frame
+	_check(bea.current_node_id == "intro", "Bea opens the door at 65 (%s)" % bea.current_node_id)
+	_check(bea._presentable_ids().has("test_trish_confirmed"), "Trish's statement is something Bea can be shown")
+	bea._load_node("ask_evidence")
+	var before: int = bea.cooperation
+	bea._present_evidence_index(_index_of(bea, "test_trish_confirmed"))
+	_check(bea.current_node_id == "turned", "the other end of her own advertisement turns her (%s)" % bea.current_node_id)
+	# The row pays 20 and the node she lands on pays 10 more on first entry.
+	_check(bea.cooperation == before + 30, "...and it counts for something (%d -> %d)" % [before, bea.cooperation])
+	_check(not SessionState.witness_flipped, "the flag waits for the ending")
+	var credibility_before: int = SessionState.detective_credibility
+	bea._load_node("end_turned")
+	_check(SessionState.witness_flipped, "a turned witness opens the second floor")
+	_check(SessionState.detective_credibility == credibility_before + 15,
+		"turning a witness is worth what a confirmed one is (%d -> %d)" % [credibility_before, SessionState.detective_credibility])
+	_check(SessionState.investigation_outcome == "turned", "the ending records the outcome (%s)" % SessionState.investigation_outcome)
+	await _close(bea)
+
+	# Without the statement she stays a job she is defending.
+	SessionState.reset_session()
+	SessionState.detective_credibility = 65
+	SessionState.pending_case_path = CASE_BEA
+	bea = load(INTERVIEW_SCENE).instantiate()
+	add_child(bea)
+	await get_tree().process_frame
+	bea._load_node("end_partial")
+	_check(not SessionState.witness_flipped, "leaving without turning her opens nothing")
+	await _close(bea)
+
+	SessionState.witness_flipped = true
+	SessionState.reset_session()
+	_check(not SessionState.witness_flipped, "a fresh session starts with the second floor closed")

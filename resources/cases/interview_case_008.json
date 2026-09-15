@@ -1,0 +1,243 @@
+{
+  "case_id": "interview_case_008",
+  "title": "The Job That Cost Money",
+  "person": {
+    "person_id": "patricia_lim",
+    "name": "Patricia Lim",
+    "age": 20,
+    "occupation": "Recent graduate, job-hunting",
+    "role": "Victim",
+    "script": "job_offer",
+    "portrait": "res://assets/art/portraits/trish.png",
+    "traits": "Earnest and a little embarrassed. Has the whole thing saved on her phone. Wants to be told it was not a stupid mistake."
+  },
+  "evidence": [
+    {
+      "id": "ev_trish_job_ad",
+      "tactic_id": "manufactured_urgency",
+      "label": "The Job Advertisement",
+      "description": "A screenshot of the post: CUSTOMER SERVICE REPRESENTATIVES - NO EXPERIENCE - TRAINING PROVIDED - 5 SLOTS LEFT, BATCH STARTS MONDAY. Apply by message; a number, no office.",
+      "tactic": "Manufactured urgency: five slots and a Monday start, so that the applicant decides before she checks."
+    },
+    {
+      "id": "ev_trish_fee_receipt",
+      "tactic_id": "advance_fee",
+      "label": "Cash-in Receipt",
+      "description": "An e-wallet receipt from the internet cafe's counter: P2,500 to an account in a personal name, memo TRAINING AND UNIFORM, dated the day before the batch that never started.",
+      "tactic": "Advance fee: money demanded before the thing it is supposedly for, which is never how employment works."
+    },
+    {
+      "id": "ev_trish_chat_log",
+      "tactic_id": "verification_denial",
+      "label": "Recruiter Chat Log",
+      "description": "The whole conversation with HR MS. DELA CRUZ: apply here, not the office; the fee is refunded on your first payday; do not call, the lines are for clients. After the payment, the account is gone.",
+      "tactic": "Denying time to check: every way of confirming the job was closed off in advance, politely."
+    },
+    {
+      "id": "ev_trish_resume",
+      "label": "Trish's Resume",
+      "description": "The resume she sent them - two pages, carefully formatted, a photo in the corner.",
+      "tactic": ""
+    }
+  ],
+  "start_node": "intro",
+  "failure_node": "end_shutdown",
+  "nodes": {
+    "intro": {
+      "prompt": "Patricia - \"Trish, please\" - has her phone out before you have sat down, the screenshot already up. \"I know how it looks. I've had the talk from my mother.\" She turns the phone so you can see it. \"It looked real. That's the thing nobody wants to hear. It looked completely real.\"",
+      "choices": [
+        {
+          "text": "Then show me what real looked like. Start with the advertisement.",
+          "next": "ask_ad"
+        },
+        {
+          "text": "It was built to look real by people who do this all day. Nothing about that is on you.",
+          "next": "reassure",
+          "cooperation": 8
+        },
+        {
+          "text": "You paid a stranger to give you a job. Walk me through the moment that seemed sensible.",
+          "next": "shame_her",
+          "cooperation": -14
+        }
+      ]
+    },
+    "reassure": {
+      "prompt": "Something in her shoulders lets go. \"Everyone else has been very kind about how I should have known.\" She looks at the phone. \"Okay. From the top.\"",
+      "cooperation": 4,
+      "choices": [
+        {
+          "text": "From the top. The advertisement.",
+          "next": "ask_ad"
+        }
+      ]
+    },
+    "shame_her": {
+      "prompt": "Her face closes, politely. \"I was three weeks out of college and I had sent forty applications and this one answered.\" She puts the phone face down. \"That was the moment. Was there anything else?\"",
+      "choices": [
+        {
+          "text": "That was unfair, and I'm sorry. Forty applications and one answer is exactly what they look for.",
+          "next": "reassure",
+          "cooperation": 8
+        },
+        {
+          "text": "The advertisement. Let's see it.",
+          "next": "ask_ad_cold",
+          "cooperation": -8
+        }
+      ]
+    },
+    "ask_ad": {
+      "prompt": "\"Customer service. No experience needed, training provided, five slots left, batch starts Monday.\" She reads it off the screen in the voice of someone who has read it a hundred times since. \"I messaged the number and HR Ms. Dela Cruz replied in four minutes. Four minutes. I'd been waiting weeks for anyone.\" A breath. \"She asked for my resume, and then she said congratulations, I was shortlisted, and there was a training and uniform fee. Refundable on the first payday.\"",
+      "choices": [
+        {
+          "text": "Stay on that word. Refundable.",
+          "next": "tactic_quiz_fee"
+        }
+      ]
+    },
+    "ask_ad_cold": {
+      "prompt": "\"Customer service. No experience. Five slots. Batch Monday.\" She does not look up from the screen. \"HR messaged back in four minutes, said I was shortlisted, said there was a training fee. Refundable.\"",
+      "cooperation": -6,
+      "choices": [
+        {
+          "text": "Refundable. Stay on that.",
+          "next": "tactic_quiz_fee"
+        }
+      ]
+    },
+    "tactic_quiz_fee": {
+      "tactic_quiz": {
+        "setup": "You read the recruiter's message on Trish's phone: [i]\"Congratulations! You are shortlisted. Please settle the training and uniform fee (P2,500) to secure your slot. This is refunded in full on your first payday.\"[/i]",
+        "tactic_id": "advance_fee",
+        "tactic": "Paying to be hired",
+        "question": "What is the one thing this message asks for that no real employer ever does?",
+        "milestone": {
+          "title": "Tactic Identified: Paying To Be Hired",
+          "detail": "Recognized that a job which asks the applicant to pay anything before they start is not a job - the fee is the product, and the refund is the story that sells it."
+        },
+        "options": [
+          {
+            "text": "Money from the applicant before she has started work.",
+            "correct": true,
+            "cooperation": 12,
+            "feedback": "That is the whole scam in one line. An employer pays you; you never pay an employer, not for training, not for a uniform, not for a background check, not to 'secure a slot'. The promised refund is what makes the fee feel like a deposit rather than a purchase - and it was never going to arrive, because there was never going to be a payday."
+          },
+          {
+            "text": "A resume with a photo on it.",
+            "cooperation": -6,
+            "feedback": "Plenty of real postings ask for that, and it cost her nothing. What it did was make the exchange feel like an application - a form, a photo, a shortlist - so that the fee at the end felt like the next step in a process rather than what it was."
+          },
+          {
+            "text": "A quick reply - real HR takes weeks.",
+            "cooperation": -6,
+            "feedback": "Speed is a tell, but not proof; some real recruiters do answer fast. What settles it is not how quickly they replied but what they asked for. Four minutes was there to keep her from having time to wonder about the fee."
+          },
+          {
+            "text": "A uniform for a customer service job.",
+            "cooperation": -8,
+            "feedback": "Some call floors do have a dress code, and some issue a uniform. The uniform is not the problem. Being asked to pay for it in advance is - and that is the same problem whatever the word after 'fee' is."
+          }
+        ],
+        "next": "ask_evidence"
+      }
+    },
+    "ask_evidence": {
+      "prompt": "Trish scrolls to the end of the chat. \"After I paid, she said welcome to the team and the training details would follow. They didn't. On Monday the account was gone. Not blocked - gone. Like she'd never existed.\"",
+      "evidence_prompt": true,
+      "evidence_hint": "The chat proves what she was promised. What ties it to an operation is where the money went.",
+      "accepts_evidence": [
+        {
+          "evidence_id": "ev_trish_fee_receipt",
+          "next": "confirm",
+          "response": "She has the receipt saved next to the chat. \"A person's name. Not a company. I noticed that after.\" She says [i]after[/i] the way people do.",
+          "cooperation": 20
+        },
+        {
+          "evidence_id": "ev_trish_job_ad",
+          "next": "ask_evidence",
+          "response": "\"Five slots left.\" She almost laughs. \"It said that for three weeks. I checked.\" It is the bait, and it proves what drew her in, not what happened next.",
+          "cooperation": 6
+        },
+        {
+          "evidence_id": "ev_trish_chat_log",
+          "next": "ask_evidence",
+          "response": "\"Don't call the office, the lines are for clients.\" She reads it aloud. \"I thought that was professional.\" It proves the promise; it does not prove the money moved.",
+          "cooperation": 6
+        },
+        {
+          "evidence_id": "ev_trish_resume",
+          "next": "ask_evidence",
+          "response": "\"That's just my resume.\" A small frown. It proves she applied, which nobody disputes, and nothing about who took her money.",
+          "cooperation": -8,
+          "wrong": true
+        }
+      ],
+      "choices": [
+        {
+          "text": "Did anyone else from your batch pay?",
+          "next": "press_batch"
+        },
+        {
+          "text": "That's enough to be going on with. Thank you.",
+          "next": "end_partial"
+        }
+      ]
+    },
+    "press_batch": {
+      "prompt": "\"There were two of us I knew of. Me, and a girl from the same graduating class - Bea. Bea Santiago.\" Trish turns the phone over in her hands. \"She got the job. Actually got it. She's been there two months.\" A pause. \"She doesn't answer my messages any more. I thought she was embarrassed for me.\"",
+      "cooperation": 6,
+      "choices": [
+        {
+          "text": "Can you show me anything from that week?",
+          "next": "ask_evidence"
+        },
+        {
+          "text": "That's enough to be going on with. Thank you.",
+          "next": "end_partial"
+        }
+      ]
+    },
+    "confirm": {
+      "prompt": "\"Two and a half thousand.\" Trish says the number like it is not very much, which is how she has decided to survive it. \"It was the money for my board exam review.\" She looks up. \"Write down that it looked real. Please. Somebody else is going to think it looks real.\"",
+      "cooperation": 10,
+      "milestone": {
+        "title": "Witness Secured: The Job That Cost Money",
+        "detail": "Trish Lim put an advertisement, a chat-only recruiter and a cash-in to a personal account on the same week - the job-offer script, and the name of a batch-mate it hired instead of robbing."
+      },
+      "choices": [
+        {
+          "text": "This matches the pattern from the other calls. Thank you.",
+          "next": "end_success"
+        }
+      ]
+    },
+    "end_success": {
+      "prompt": "Trish's receipt, the chat and the advertisement put a recruiter, a fee and a personal account on one week - the job-offer script, and a batch-mate who answered the same advertisement and was hired by it.",
+      "outcome": "success",
+      "grants_evidence": [
+        {
+          "id": "test_trish_confirmed",
+          "label": "Trish's Confirmed Testimony",
+          "description": "Trish Lim confirmed the job-offer script - an advertisement, a chat-only recruiter, a refundable training fee that was neither - and named Bea Santiago as hired off the same advertisement.",
+          "tactic": "A victim who paid leaves a trail, and this one leads to the floor's recruiting, not only its calls."
+        }
+      ],
+      "choices": []
+    },
+    "end_partial": {
+      "prompt": "You have Trish's account, but nothing yet that ties it to the wider operation.",
+      "outcome": "partial",
+      "choices": []
+    },
+    "end_shutdown": {
+      "prompt": "Trish locks the phone and stands. \"I've got another interview at three. A real one, I think.\" She says it to the door rather than to you. \"I hope.\" The receipt, the chat and the name of the girl who got the job go back into her pocket.",
+      "outcome": "failure",
+      "milestone": {
+        "title": "Witness Lost",
+        "detail": "Trish Lim disengaged. The youngest victims are told they should have known, and stop saying it happened - which is how the same advertisement keeps running."
+      },
+      "choices": []
+    }
+  }
+}

@@ -560,6 +560,8 @@ func _load_node(node_id: String, lead_in: String = "") -> void:
 			SessionState.case_locked = true
 		if outcome == "whistleblower":
 			SessionState.suspect_flipped = true
+		if outcome == "turned":
+			SessionState.witness_flipped = true
 		if outcome == "failure":
 			_play_sting(false)
 

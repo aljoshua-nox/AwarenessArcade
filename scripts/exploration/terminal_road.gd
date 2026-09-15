@@ -13,6 +13,18 @@ extends "res://scripts/exploration/district_exterior.gd"
 
 const BUSES_TEXTURE: Texture2D = preload("res://assets/art/maps/urban/buses_cars.png")
 
+const CASE_TRISH := "res://resources/cases/interview_case_008.json"
+const CASE_BEA := "res://resources/cases/interview_case_009.json"
+
+# Who lives behind which door. Trish in the first house on the grass, the one
+# home on this map; Bea in the boarding house at the head of the frontage row,
+# two doors from the canteen she eats at. The rest of the slots are named in
+# the comments on the building tables below and fill as their people are written.
+const INTERVIEWEES := [
+	{"case": CASE_TRISH, "label": "TRISH", "prompt": "Speak with Patricia Lim", "row": "block", "slot": 0},
+	{"case": CASE_BEA, "label": "BEA", "prompt": "Speak with Bea Santiago", "row": "street", "slot": 0},
+]
+
 # Kenney sheet coordinates for the ground and props this district adds.
 const TILE_DIRT := Vector2i(14, 26)
 const TILE_FENCE := Vector2i(21, 14)
@@ -89,11 +101,12 @@ const NPC_SPOTS := [
 	{"x": 1660.0, "y": 780.0, "kind": "a", "tint": Color(0.85, 1.0, 0.85, 1)},
 ]
 
-# The district's own two stops, the ones that need no character: the company's
-# name on the tower and on the site hoarding. `cites_name` prints
-# SessionState.COMPANY_NAME the way `cites_number` prints the operation's number
-# on the terrace; the call floor's bonus board will print it too. Reading both
-# earns the pattern milestone. Nothing points the repetition out.
+# The street's stops. Two need no character - the company's name on the tower
+# and on the site hoarding; `cites_name` prints SessionState.COMPANY_NAME the
+# way `cites_number` prints the operation's number on the terrace, the call
+# floor's bonus board will print it too, and reading both earns the pattern
+# milestone. The rest arrive with the people whose stories they set up: the
+# cafe owner and the neighbour with Trish and Bea. Nothing points anything out.
 const TOWER_STOP_POSITION := Vector2(1120.0, 262.0)
 const STREET_STOPS := [
 	{
@@ -122,6 +135,29 @@ const STREET_STOPS := [
 		"milestone_title": "The Name On The Fence",
 		"milestone_detail": "The construction site on Terminal Road is branded with the same company as the tower - the operation has more than one address.",
 	},
+	{
+		"position": Vector2(620.0, 216.0),
+		"title": "Internet cafe owner",
+		"prompt": "Talk to the cafe owner",
+		"body": "He is wiping down a keyboard with the door propped open for the heat. \"The job ad? It's on my board. Been on my board since March.\" A tilt of the head at a corkboard inside, layered three deep. \"Customer service, no experience, training provided. Kids photograph it. Then they come back and cash in the fee at my counter, because the ad says to, and I take my cut of the cash-in like I do for anyone.\" He puts the keyboard down. \"I'm not proud of it. I also don't know which ones are real.\"",
+		"note": "Nobody pays to be hired. A fee before the first day - for training, a uniform, a background check, a slot - is the product being sold, and the job is the packaging.",
+		"note_color": TextStyle.COLOR_TACTIC,
+		"marker": TextStyle.MARK_TACTIC,
+		"tactic_id": "advance_fee",
+		"milestone_title": "The Ad On The Board",
+		"milestone_detail": "The same job advertisement has hung in the internet cafe for months - applicants pay the fee at the counter under it, and the counter takes its cut either way.",
+	},
+	{
+		"position": Vector2(1660.0, 780.0),
+		"title": "Neighbour on the grass",
+		"prompt": "Talk to the neighbour",
+		"body": "\"The Lim girl?\" A glance at the pink house and then away from it. \"Paid for a job that wasn't there. Everyone on this row knows and nobody says it in front of her mother.\" A shrug that is not unkind. \"My nephew nearly did the same last year. Same ad. He only didn't because he didn't have the two thousand.\"",
+		"note": "What a scam costs a street is never the number of reports. Being too poor to pay the fee is not the same as seeing through it, and the ones who could pay are the ones who stop talking.",
+		"note_color": TextStyle.COLOR_WRONG,
+		"marker": TextStyle.MARK_HARM,
+		"milestone_title": "Nobody Says It In Front Of Her Mother",
+		"milestone_detail": "A whole row knows about a young woman's lost fee and keeps it from her family - the silence around a scam is part of how it keeps running.",
+	},
 ]
 
 const PATTERN_MILESTONE := "One Name, More Than One Sign"
@@ -141,6 +177,10 @@ func _init() -> void:
 	map_title = "Terminal Road"
 	map_hint = "Move with WASD or arrow keys. Press Enter at a door to interact."
 	player_spawn = Vector2(1448.0, 120.0)
+
+
+func interviewees() -> Array:
+	return INTERVIEWEES
 
 
 func building_row() -> Array:

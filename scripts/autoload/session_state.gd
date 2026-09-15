@@ -103,6 +103,10 @@ var has_urban_return_spawn: bool = false
 const DEFAULT_STREET_SCENE := "res://scenes/exploration/urban_exterior.tscn"
 var urban_return_scene: String = DEFAULT_STREET_SCENE
 var suspect_flipped: bool = false
+# The second floor's equivalent: a witness who works there and has agreed to
+# say so. Set by Bea's `turned` outcome; it is what opens Rowena's door, the
+# way suspect_flipped opens Elena's.
+var witness_flipped: bool = false
 # Set when an interview ends on a node marked `locks_case`. Losing Marco means
 # nobody will ever name the floor above him, so the confrontation can never
 # happen - without this the player simply wanders a street with nothing left to
@@ -113,7 +117,7 @@ var case_locked: bool = false
 func record_interview_outcome(person_id: String, outcome: String) -> void:
 	if not interviewed_people.has(person_id):
 		interviewed_people.append(person_id)
-	if outcome == "success" or outcome == "whistleblower":
+	if outcome == "success" or outcome == "whistleblower" or outcome == "turned":
 		detective_credibility = clampi(detective_credibility + 15, 0, 100)
 	elif outcome == "partial":
 		detective_credibility = clampi(detective_credibility + 5, 0, 100)
@@ -348,6 +352,7 @@ func reset_investigation() -> void:
 	has_urban_return_spawn = false
 	urban_return_scene = DEFAULT_STREET_SCENE
 	suspect_flipped = false
+	witness_flipped = false
 	case_locked = false
 	investigation_inventory.clear()
 	investigation_case_title = ""

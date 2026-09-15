@@ -99,7 +99,8 @@
           "test_maria_confirmed",
           "test_kevin_confirmed",
           "test_evelyn_confirmed",
-          "test_lina_confirmed"
+          "test_lina_confirmed",
+          "test_teddy_confirmed"
         ],
         "min_matching": 2,
         "next_if_met": "end_full_takedown",

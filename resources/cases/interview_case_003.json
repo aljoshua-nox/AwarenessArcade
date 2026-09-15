@@ -110,6 +110,16 @@
           "cooperation": 20
         },
         {
+          "evidence_id": "test_teddy_confirmed",
+          "next": "half_crack",
+          "response": "He reads the name at the top. \"Villanueva.\" Something moves behind his face and is put away again. \"That one had a grandson's name next to it on the sheet. I remember thinking that was a lot of detail for a list.\"",
+          "cooperation": 20,
+          "responses": {
+            "resistant": "He reads the name at the top. \"Villanueva. The one who rang his daughter.\" A short laugh with nothing in it. \"The note came back DO NOT RECONTACT - CHECKS. You don't get many of those.\"",
+            "unfinished": "He reads the name at the top. \"Villanueva.\" He frowns. \"That one dropped. Somebody logged off mid-call.\" A beat. \"There was a grandson's name next to it on the sheet. I remember that.\""
+          }
+        },
+        {
           "evidence_id": "ev_phishing_text",
           "next": "deny_node",
           "response": "He barely glances at it. \"A text message. From a number that isn't mine, to a person I've never met.\" He's right, and he knows it: a document with no witness attached to it doesn't put him in the room.",
@@ -226,6 +236,12 @@
           "next": "full_crack",
           "response": "\"...Two of them. Two separate people telling you the same thing.\" His arms drop.",
           "cooperation": 25
+        },
+        {
+          "evidence_id": "test_teddy_confirmed",
+          "next": "full_crack",
+          "response": "\"The grandfather as well.\" He looks at the two statements side by side and stops pretending they are unrelated. \"Different scripts. Same sheet.\" His arms drop.",
+          "cooperation": 25
         }
       ],
       "choices": [
@@ -241,7 +257,7 @@
       "choices": []
     },
     "full_crack": {
-      "prompt": "Marco finally deflates. \"Okay - okay. It's not just me. There's a whole floor running four different scripts. We get bonuses on the ones who cry.\" He hears himself say it. \"I can give you names if it keeps me out of the worst of this.\"",
+      "prompt": "Marco finally deflates. \"Okay - okay. It's not just me. There's a whole floor running five different scripts. We get bonuses on the ones who cry.\" He hears himself say it. \"I can give you names if it keeps me out of the worst of this.\"",
       "milestone": {
         "title": "Whistleblower Secured",
         "detail": "Marco Navarro agreed to identify the wider call-center operation once confronted with two independent victim testimonies."

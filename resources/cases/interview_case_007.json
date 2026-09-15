@@ -1,0 +1,446 @@
+{
+  "case_id": "interview_case_007",
+  "title": "The Name On The List",
+  "person": {
+    "person_id": "teodoro_villanueva",
+    "name": "Teodoro Villanueva",
+    "age": 81,
+    "occupation": "Retired schoolteacher",
+    "role": "Victim",
+    "script": "family_emergency",
+    "portrait": "res://assets/art/portraits/teddy.png",
+    "traits": "Widower; lives alone. Courteous to a fault. Talks about his grandson before he talks about the money.",
+    "min_credibility": 75,
+    "hesitant_start": "hesitant_intro",
+    "dispositions": {
+      "harmed": {
+        "cooperation": 34,
+        "prompt": "Teodoro has laid the passbook on the kitchen table between you, open at the last line, and does not look at it. \"I have not told my daughter the amount.\" He folds his hands. \"She thinks it was a few thousand. Let her think that.\"",
+        "note": "You took the money he had set aside for his own funeral. He is not ashamed of being fooled - he is ashamed of what the money was for, and he will protect his daughter from the number before he protects himself."
+      },
+      "resistant": {
+        "cooperation": 62,
+        "prompt": "\"Sit, sit.\" Teodoro has two cups out already. \"I telephoned my daughter on the other line while he was still talking. Paolo was in a mathematics lesson.\" He is almost pleased. \"I have the number written down. I write everything down.\"",
+        "note": "He refused the call you made, and he checked - which is the whole lesson in one sentence. Nothing was taken, so there is nothing to trace; what he has is a very good memory and a note in pencil."
+      },
+      "unfinished": {
+        "cooperation": 44,
+        "prompt": "\"Somebody rang about Paolo, and then the line went dead.\" Teodoro says it carefully, as if it might still turn out to be true. \"I telephoned my daughter. He was at school. I have been waiting for them to ring back and explain.\"",
+        "note": "Your call to him never finished. He does not know it was a scam - he knows a stranger said his grandson's name and then vanished, and he has been frightened since."
+      }
+    }
+  },
+  "evidence": [
+    {
+      "id": "ev_teddy_call_note",
+      "tactic_id": "authority_impersonation",
+      "label": "Teodoro's Call Note",
+      "description": "A pencilled note from the hall table: the time, the caller's name and office - Attorney Salcedo, public attorney's office - and the number, written while the man was still talking.",
+      "tactic": "Impersonating an authority: an office and a title, offered before anything could be checked, so that the name did the checking."
+    },
+    {
+      "id": "ev_teddy_passbook",
+      "tactic_id": "manufactured_urgency",
+      "label": "Passbook Entry",
+      "description": "The last line of a savings passbook: a transfer of P22,000 to an account in a stranger's name, forty minutes after the call began.",
+      "tactic": "Manufactured urgency: the whole decision - a grandson, a cell, a deadline - was made inside one telephone call.",
+      "dispositions": {
+        "resistant": {
+          "omit": true
+        },
+        "unfinished": {
+          "omit": true
+        }
+      }
+    },
+    {
+      "id": "ev_teddy_daughter_call",
+      "only_for": [
+        "resistant",
+        "unfinished"
+      ],
+      "tactic_id": "verification_denial",
+      "label": "Daughter's Call Log",
+      "description": "His daughter's phone: a call from her father at 3:12 that afternoon, four minutes long, and the first thing he asked - is Paolo with you?",
+      "tactic": "Denying time to check: the check that beat the script took four minutes, which is exactly why the caller said there was no time for it."
+    },
+    {
+      "id": "ev_teddy_school_slip",
+      "label": "School Attendance Slip",
+      "description": "A slip from Paolo's school confirming he was in class that afternoon.",
+      "tactic": ""
+    }
+  ],
+  "start_node": "intro",
+  "failure_node": "end_shutdown",
+  "nodes": {
+    "hesitant_intro": {
+      "prompt": "Teodoro reads the identification, hands it back, and does not open the door any further. \"I have told the story once, to a policeman who wrote nothing down.\" It is said without heat. \"Come back when it is being taken seriously. I will still be here.\"",
+      "choices": [
+        {
+          "text": "That's fair. I'll come back when I can show you it is.",
+          "next": "end_partial_hesitant"
+        }
+      ]
+    },
+    "end_partial_hesitant": {
+      "prompt": "Teodoro is not ready to go through it again for someone who cannot show him it will matter. Standing with the other witnesses first might change his mind.",
+      "outcome": "partial",
+      "choices": []
+    },
+    "intro": {
+      "prompt": "Teodoro shows you to the kitchen table and waits until you are sitting before he sits. \"You are here about the telephone call.\" He says it the way he might once have said you are here about your son's marks - kindly, and expecting the worst.",
+      "choices": [
+        {
+          "text": "Start with the call itself, if you would. Who did he say he was?",
+          "next": "ask_call"
+        },
+        {
+          "text": "Before anything else - Paolo is fine, and none of this was your doing.",
+          "next": "reassure",
+          "cooperation": 8
+        },
+        {
+          "text": "You sent money to a stranger for a grandson you never spoke to. Take me through that.",
+          "next": "shame_him",
+          "cooperation": -14
+        }
+      ],
+      "dispositions": {
+        "resistant": {
+          "choices": [
+            {
+              "text": "Start with the call itself, if you would. Who did he say he was?",
+              "next": "ask_call"
+            },
+            {
+              "text": "Before anything else - Paolo is fine, and none of this was your doing.",
+              "next": "reassure",
+              "cooperation": 8
+            },
+            {
+              "text": "You very nearly paid a stranger's bail for a grandson you never spoke to. Take me through that.",
+              "next": "shame_him",
+              "cooperation": -14
+            }
+          ]
+        },
+        "unfinished": {
+          "choices": [
+            {
+              "text": "Start with the call itself, if you would. Who did he say he was?",
+              "next": "ask_call"
+            },
+            {
+              "text": "Before anything else - Paolo is fine, and none of this was your doing.",
+              "next": "reassure",
+              "cooperation": 8
+            },
+            {
+              "text": "A stranger said your grandson's name and you went to find the passbook. Take me through that.",
+              "next": "shame_him",
+              "cooperation": -14
+            }
+          ]
+        }
+      }
+    },
+    "reassure": {
+      "prompt": "He looks at you for a moment, and then at the table. \"I know he is fine. I have seen him since.\" A pause. \"Thank you for saying it anyway. Nobody else has thought to.\"",
+      "cooperation": 4,
+      "choices": [
+        {
+          "text": "Then let's start with the man on the telephone. Who did he say he was?",
+          "next": "ask_call"
+        }
+      ]
+    },
+    "shame_him": {
+      "prompt": "He does not flinch; he has been spoken to like that by parents, and he answers the way he answered them. \"Yes. That is what happened. I am eighty-one, and a man said my grandson's name.\" He waits. \"Was there a question?\"",
+      "choices": [
+        {
+          "text": "That was badly put, and I'm sorry. The name is exactly what I want to understand.",
+          "next": "reassure",
+          "cooperation": 8
+        },
+        {
+          "text": "Only what he said. Go on.",
+          "next": "ask_call_cold",
+          "cooperation": -8
+        }
+      ]
+    },
+    "ask_call": {
+      "prompt": "\"He said he was an attorney. Salcedo, from the public attorney's office - he gave the office before I asked.\" Teodoro turns his cup a quarter turn. \"And he said Paolo. Before anything else. My grandson's name, in the first sentence, from a man I had never heard of.\" He looks up. \"A stranger who knows the name of your grandson is not a stranger. That is what I thought. That is what I was meant to think.\"",
+      "choices": [
+        {
+          "text": "Let's stay on that first sentence for a moment.",
+          "next": "tactic_quiz_name"
+        }
+      ]
+    },
+    "ask_call_cold": {
+      "prompt": "\"An attorney. Salcedo. The public attorney's office.\" Short, correct, and nothing more. \"He said Paolo's name before I had said anything at all. That is the whole of it.\"",
+      "cooperation": -6,
+      "choices": [
+        {
+          "text": "The name. Let's stay on that.",
+          "next": "tactic_quiz_name"
+        }
+      ]
+    },
+    "tactic_quiz_name": {
+      "tactic_quiz": {
+        "setup": "You think about that first sentence: a title, an office, and then [i]Paolo[/i] - a grandson's name from a stranger, before Teodoro had said a word.",
+        "tactic_id": "reused_victim_list",
+        "tactic": "A name is not proof",
+        "question": "What did the caller knowing his grandson's name actually prove?",
+        "milestone": {
+          "title": "Tactic Identified: A Name Is Not Proof",
+          "detail": "Recognized that a caller knowing a personal detail proves only that the detail was on a list beside the number - not who they are, and not that the story is true."
+        },
+        "options": [
+          {
+            "text": "That the name was written down somewhere beside his telephone number - nothing more.",
+            "correct": true,
+            "cooperation": 12,
+            "feedback": "That is all it proves. A grandson's first name is on a raffle slip, a delivery form, a church newsletter, a relative's social media - and once it is beside a number on a list, every caller who buys the list has it. The detail felt like verification. It was the cheapest thing on the sheet."
+          },
+          {
+            "text": "That the caller had actually spoken to Paolo.",
+            "cooperation": -8,
+            "feedback": "Nothing in the call came from Paolo. Notice what the caller did not have: the boy's voice, where he was, anything only Paolo could have said. A name is the one thing you can know about someone without ever having met them."
+          },
+          {
+            "text": "That the call came from a real office - only an office would have the family details.",
+            "cooperation": -6,
+            "feedback": "The details an office has are the details a bought list has, and the list is cheaper. An office that needed money from him would write, and would not mind being telephoned back. A caller who minds being checked is telling you what he is."
+          },
+          {
+            "text": "That his bank had leaked his records.",
+            "cooperation": -6,
+            "feedback": "It rarely takes a bank. Lists are assembled from everywhere - a slip with a name and a number on it, a form, a directory twenty years old - and then sold on with whatever notes the last caller added. The lesson is not where the name came from. It is that a name is not a credential."
+          }
+        ],
+        "next": "ask_evidence"
+      }
+    },
+    "ask_evidence": {
+      "prompt": "\"A list.\" Teodoro says the word as if he is putting it on a shelf. \"So he did not know Paolo at all. He knew a line on a page.\"",
+      "evidence_prompt": true,
+      "evidence_hint": "He remembers everything the man said. What you need is what the man got.",
+      "accepts_evidence": [
+        {
+          "evidence_id": "ev_teddy_passbook",
+          "next": "confirm",
+          "response": "He turns the passbook the right way round for you without being asked. \"That line. Forty minutes after he said hello.\"",
+          "cooperation": 20
+        },
+        {
+          "evidence_id": "ev_teddy_call_note",
+          "next": "ask_evidence",
+          "response": "\"I wrote it while he was talking. Old habit.\" It puts a name, an office and a number on the afternoon, but a note of what a man said is not proof of what he did.",
+          "cooperation": 6
+        },
+        {
+          "evidence_id": "ev_teddy_school_slip",
+          "next": "ask_evidence",
+          "response": "\"I know where he was. I do not need a slip to tell me.\" He pushes it back, gently. Proving the story was false is not the same as proving who told it.",
+          "cooperation": -8,
+          "wrong": true
+        }
+      ],
+      "choices": [
+        {
+          "text": "How did he say the money had to be sent?",
+          "next": "press_method"
+        },
+        {
+          "text": "That's enough to be going on with. Thank you.",
+          "next": "end_partial"
+        }
+      ],
+      "dispositions": {
+        "resistant": {
+          "evidence_hint": "Nothing was paid, so there is nothing to trace. What matters is the four minutes it took him to find out the truth - and who he asked.",
+          "accepts_evidence": [
+            {
+              "evidence_id": "ev_teddy_daughter_call",
+              "next": "confirm",
+              "response": "\"Four minutes.\" He looks at his daughter's screen. \"He told me there was not time. There was time for that.\"",
+              "cooperation": 10
+            },
+            {
+              "evidence_id": "ev_teddy_call_note",
+              "next": "ask_evidence",
+              "response": "\"I wrote it while he was talking. Old habit.\" It puts a name, an office and a number on the afternoon, but a note of what a man said is not proof of what he did.",
+              "cooperation": 6
+            },
+            {
+              "evidence_id": "ev_teddy_school_slip",
+              "next": "ask_evidence",
+              "response": "\"I know where he was. I do not need a slip to tell me.\" He pushes it back, gently. Proving the story was false is not the same as proving who told it.",
+              "cooperation": -8,
+              "wrong": true
+            }
+          ],
+          "choices": [
+            {
+              "text": "What made you put the telephone down and pick up the other one?",
+              "next": "press_method"
+            },
+            {
+              "text": "That's enough to be going on with. Thank you.",
+              "next": "end_partial"
+            }
+          ]
+        },
+        "unfinished": {
+          "evidence_hint": "The call never finished, so there is nothing to trace. What matters is the four minutes it took him to find out the truth - and who he asked.",
+          "accepts_evidence": [
+            {
+              "evidence_id": "ev_teddy_daughter_call",
+              "next": "confirm",
+              "response": "\"Four minutes.\" He looks at his daughter's screen. \"I did not know what I was checking. I only knew I had to hear the boy.\"",
+              "cooperation": 10
+            },
+            {
+              "evidence_id": "ev_teddy_call_note",
+              "next": "ask_evidence",
+              "response": "\"I wrote it while he was talking. Old habit.\" It puts a name, an office and a number on the afternoon, but a note of what a man said is not proof of what he did.",
+              "cooperation": 6
+            },
+            {
+              "evidence_id": "ev_teddy_school_slip",
+              "next": "ask_evidence",
+              "response": "\"I know where he was. I do not need a slip to tell me.\" He pushes it back, gently. Proving the story was false is not the same as proving who told it.",
+              "cooperation": -8,
+              "wrong": true
+            }
+          ],
+          "choices": [
+            {
+              "text": "How far had he got when the line went?",
+              "next": "press_method"
+            },
+            {
+              "text": "That's enough to be going on with. Thank you.",
+              "next": "end_partial"
+            }
+          ]
+        }
+      }
+    },
+    "press_method": {
+      "prompt": "\"A transfer, to an account he read out to me. Or a cash-in at the counter on the corner - he said either would do.\" Teodoro turns the cup again. \"He stayed on the line so that I would not have to do it alone. I thought that was kind.\"",
+      "cooperation": 6,
+      "choices": [
+        {
+          "text": "Can you show me anything from that afternoon?",
+          "next": "ask_evidence"
+        },
+        {
+          "text": "That's enough to be going on with. Thank you.",
+          "next": "end_partial"
+        }
+      ],
+      "dispositions": {
+        "resistant": {
+          "prompt": "\"He wanted me to walk to the counter on the corner with him still on the line. I said I would telephone my daughter first, and he said there was not time.\" Teodoro shakes his head, once. \"There is always time. I taught for forty years. There was always time.\""
+        },
+        "unfinished": {
+          "prompt": "\"He had got as far as the amount. Twenty-two thousand. I had the pencil in my hand.\" Teodoro looks at the hand. \"And then nothing. I said hello three times. I sat there until the light went.\""
+        }
+      }
+    },
+    "confirm": {
+      "prompt": "Teodoro closes the passbook. \"That was the funeral plan. I had it so that nobody would have to.\" He rests his hand on the cover. \"If it helps somebody else's grandfather, then write it down. All of it.\"",
+      "cooperation": 10,
+      "milestone": {
+        "title": "Witness Secured: The Name On The List",
+        "detail": "Teodoro Villanueva put a name, a number and a transfer on the same afternoon - the family-emergency script, and the list it was read from."
+      },
+      "choices": [
+        {
+          "text": "This matches the pattern from the other calls. Thank you.",
+          "next": "end_success"
+        }
+      ],
+      "dispositions": {
+        "resistant": {
+          "prompt": "\"Four minutes,\" Teodoro says. \"That is what it took. One telephone call to the person the story was about.\" He lays the pencilled note beside his daughter's phone. \"Write that down. Four minutes.\"",
+          "milestone": {
+            "title": "Witness Secured: The Name On The List",
+            "detail": "Teodoro Villanueva put a name, a number and a four-minute check on the same afternoon - the family-emergency script, and the list it was read from."
+          }
+        },
+        "unfinished": {
+          "prompt": "\"Four minutes,\" Teodoro says. \"That is what it took to find out he was at school. Nobody rang back to tell me.\" He lays the pencilled note beside his daughter's phone. \"Write that down. Somebody should have.\"",
+          "milestone": {
+            "title": "Witness Secured: The Name On The List",
+            "detail": "Teodoro Villanueva put a name, a number and a four-minute check on the same afternoon - the family-emergency script, and the list it was read from."
+          }
+        }
+      }
+    },
+    "end_success": {
+      "prompt": "Teodoro's passbook and his pencilled note put a name, a number and twenty-two thousand pesos on one afternoon - the family-emergency script, read off the same list as every other call.",
+      "outcome": "success",
+      "grants_evidence": [
+        {
+          "id": "test_teddy_confirmed",
+          "label": "Teodoro's Confirmed Testimony",
+          "description": "Teodoro Villanueva confirmed the family-emergency script - a fake attorney, a grandson's name off a list, a bail deadline - and the transfer it produced.",
+          "tactic": "A victim who paid leaves a trail. His is the script that uses love as the lever."
+        }
+      ],
+      "choices": [],
+      "dispositions": {
+        "resistant": {
+          "prompt": "Teodoro's pencilled note and his daughter's call log put a name, a number and a four-minute check on one afternoon - the family-emergency script, read off the same list as every other call.",
+          "grants_evidence": [
+            {
+              "id": "test_teddy_confirmed",
+              "label": "Teodoro's Confirmed Testimony",
+              "description": "Teodoro Villanueva confirmed the family-emergency script - a fake attorney, a grandson's name off a list, a bail deadline - and that one call to his daughter ended it.",
+              "tactic": "A witness who checked still proves the operation exists - and proves the check works."
+            }
+          ]
+        },
+        "unfinished": {
+          "prompt": "Teodoro's pencilled note and his daughter's call log put a name, a number and a four-minute check on one afternoon - the family-emergency script, read off the same list as every other call.",
+          "grants_evidence": [
+            {
+              "id": "test_teddy_confirmed",
+              "label": "Teodoro's Confirmed Testimony",
+              "description": "Teodoro Villanueva confirmed the family-emergency script - a fake attorney, a grandson's name off a list, a bail deadline - and that the line dropped before it finished.",
+              "tactic": "A call that never resolved still proves the script was running, and who it was aimed at."
+            }
+          ]
+        }
+      }
+    },
+    "end_partial": {
+      "prompt": "You have Teodoro's account, but nothing yet that ties it to the wider operation.",
+      "outcome": "partial",
+      "choices": []
+    },
+    "end_shutdown": {
+      "prompt": "Teodoro stands, slowly, and holds the door with the courtesy of a man ending a lesson early. \"I think we have done what we can.\" The passbook goes back into the hall drawer, and the drawer is closed, and you understand that it will not be opened for you again.",
+      "outcome": "failure",
+      "milestone": {
+        "title": "Witness Lost",
+        "detail": "Teodoro Villanueva ended the interview. The oldest victims report least - not because they are confused, but because they have learned what being asked how it happened feels like."
+      },
+      "choices": [],
+      "dispositions": {
+        "resistant": {
+          "prompt": "Teodoro stands, slowly, and holds the door with the courtesy of a man ending a lesson early. \"I think we have done what we can.\" The pencilled note goes back into the hall drawer, and the drawer is closed, and you understand that it will not be opened for you again."
+        },
+        "unfinished": {
+          "prompt": "Teodoro stands, slowly, and holds the door with the courtesy of a man ending a lesson early. \"I think we have done what we can.\" The pencilled note goes back into the hall drawer, and the drawer is closed, and you understand that it will not be opened for you again."
+        }
+      }
+    }
+  }
+}

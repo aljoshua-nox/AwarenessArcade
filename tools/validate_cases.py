@@ -363,6 +363,7 @@ EXPECTED_LINKS = {
     "kevin_d": "interview_case_002.json",
     "evelyn_marsh": "interview_case_005.json",
     "lina_reyes": "interview_case_006.json",
+    "teodoro_villanueva": "interview_case_007.json",
 }
 
 # Mirror of SessionState's closed call vocabulary and its outcome -> disposition
@@ -608,7 +609,7 @@ for pid, case_file in EXPECTED_LINKS.items():
 # agree for a linked victim, and the id must come from this closed vocabulary.
 # Add to it when a new script is written; a typo here would otherwise be a
 # testimony no suspect can ever accept.
-SCRIPT_IDS = {"bank_fraud", "tech_support", "lottery"}
+SCRIPT_IDS = {"bank_fraud", "tech_support", "lottery", "family_emergency"}
 
 for f, data in parsed.items():
     name = os.path.basename(f)

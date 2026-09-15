@@ -1,7 +1,7 @@
 extends "res://scripts/exploration/district_exterior.gd"
 
 ## The terrace: the first district, and the one the case starts on. A shop row
-## with the office in it along the top, three houses on the grass below the
+## with the office in it along the top, four houses on the grass below the
 ## road, two side streets, and the street stops that teach the reused list.
 ## Everything that makes a district walkable lives in district_exterior.gd;
 ## this file is the tables that say what stands where.
@@ -11,6 +11,7 @@ const CASE_KEVIN := "res://resources/cases/interview_case_002.json"
 const CASE_MARCO := "res://resources/cases/interview_case_003.json"
 const CASE_EVELYN := "res://resources/cases/interview_case_005.json"
 const CASE_LINA := "res://resources/cases/interview_case_006.json"
+const CASE_TEDDY := "res://resources/cases/interview_case_007.json"
 
 # The cast, and which building each one lives in. Portals used to be three
 # hand-placed nodes in the scene file, which capped the cast at three and made
@@ -19,7 +20,7 @@ const CASE_LINA := "res://resources/cases/interview_case_006.json"
 # `row` picks the terrace: "block" is the residential row on the grass below the
 # road, "street" is the shop row the office stands in. `slot` is an index into
 # that row's building list. Doors are not all in one row on purpose - the
-# residential row has room for three without crowding the trees and the side
+# residential row has room for four without crowding the trees and the side
 # streets, and the two who work out of premises rather than homes (Lina's print
 # shop, Marco at the call centre) belong on the commercial row anyway.
 #
@@ -30,6 +31,7 @@ const INTERVIEWEES := [
 	{"case": CASE_EVELYN, "label": "EVELYN", "prompt": "Speak with Evelyn Marsh", "row": "block", "slot": 0},
 	{"case": CASE_MARIA, "label": "MARIA", "prompt": "Speak with Maria Santos", "row": "block", "slot": 1},
 	{"case": CASE_KEVIN, "label": "KEVIN", "prompt": "Speak with Kevin Dizon", "row": "block", "slot": 2},
+	{"case": CASE_TEDDY, "label": "TEDDY", "prompt": "Speak with Teodoro Villanueva", "row": "block", "slot": 3},
 	{"case": CASE_LINA, "label": "LINA", "prompt": "Speak with Lina Reyes", "row": "street", "slot": 1},
 	{"case": CASE_MARCO, "label": "MARCO", "prompt": "Interrogate Marco Navarro", "row": "street", "slot": 4},
 ]
@@ -148,11 +150,14 @@ const OFFICE_ROW_INDEX := 3
 # each entry occupies [x, x + 124.8] at y 520-702.4, and that band already
 # contains the two side streets ([520,616] and [1400,1496]), the trees at y 600
 # (x 400, 1000, 1550) and a pedestrian at x 700. An earlier five-across layout
-# put one house in the middle of a side street and another through a tree.
+# put one house in the middle of a side street and another through a tree. The
+# fourth house sits in the right-hand pocket past the second side street, clear
+# of the tree at 1550 (which ends at 1567.6) and the resident at (1750, 950).
 const BLOCK_BUILDINGS := [
 	{"x": 140.0, "color": ROOF_ROSE_X},
 	{"x": 780.0, "color": ROOF_TAN_X},
 	{"x": 1150.0, "color": ROOF_MAUVE_X},
+	{"x": 1620.0, "color": ROOF_BRICK_X},
 ]
 
 const CAR_SPOTS := [300.0, 650.0, 1250.0, 1600.0, 1800.0]

@@ -105,20 +105,20 @@ func _test_doors() -> void:
 	SessionState.reset_session()
 	var view := await _open()
 
-	var expected: int = view.INTERVIEWEES.size()
+	var expected: int = view.interviewees().size()
 	_check(view.interview_portals.size() == expected,
 		"a portal exists for every interviewee (%d of %d)" % [view.interview_portals.size(), expected])
 	var block_doors := 0
 	var street_doors := 0
-	for entry in view.INTERVIEWEES:
+	for entry in view.interviewees():
 		if str(entry.get("row", "")) == "street":
 			street_doors += 1
 		else:
 			block_doors += 1
-	_check(view.BLOCK_BUILDINGS.size() >= block_doors,
-		"the residential row has a house per door (%d houses, %d doors)" % [view.BLOCK_BUILDINGS.size(), block_doors])
-	_check(view.BUILDING_ROW.size() > street_doors,
-		"the shop row has a building per door plus the office (%d buildings, %d doors)" % [view.BUILDING_ROW.size(), street_doors])
+	_check(view.block_buildings().size() >= block_doors,
+		"the residential row has a house per door (%d houses, %d doors)" % [view.block_buildings().size(), block_doors])
+	_check(view.building_row().size() > street_doors,
+		"the shop row has a building per door plus the office (%d buildings, %d doors)" % [view.building_row().size(), street_doors])
 
 	# Every door must lead somewhere, and somewhere different.
 	var seen_cases := {}
@@ -158,23 +158,23 @@ func _test_layout_collisions() -> void:
 	var row_size := Vector2(48.0 * view.ROW_BUILDING_SCALE.x, 96.0 * view.ROW_BUILDING_SCALE.y)
 
 	var block_rects: Array[Rect2] = []
-	for entry in view.BLOCK_BUILDINGS:
-		block_rects.append(Rect2(Vector2(float(entry["x"]), 520.0), block_size))
+	for entry in view.block_buildings():
+		block_rects.append(Rect2(Vector2(float(entry["x"]), view.BLOCK_ROW_TOP), block_size))
 	var row_rects: Array[Rect2] = []
-	for entry in view.BUILDING_ROW:
+	for entry in view.building_row():
 		row_rects.append(Rect2(Vector2(float(entry["x"]), view.BUILDING_ROW_BOTTOM - row_size.y), row_size))
 
 	# The grass starts below the lower sidewalk; side streets run down through it.
 	var sidewalk_top_end: float = view.BUILDING_ROW_BOTTOM + view.SIDEWALK_HEIGHT
 	var grass_top: float = sidewalk_top_end + view.ROAD_HEIGHT + view.SIDEWALK_HEIGHT
 	var street_rects: Array[Rect2] = []
-	for street_x in view.SIDE_STREET_X_POSITIONS:
+	for street_x in view.side_street_x_positions():
 		street_rects.append(Rect2(Vector2(float(street_x), grass_top),
-			Vector2(view.SIDE_STREET_WIDTH, 1080.0 - grass_top)))
+			Vector2(view.SIDE_STREET_WIDTH, view.MAP_HEIGHT - grass_top)))
 
 	var tree_extent := 16.0 * 2.2 * 0.5
 	var tree_rects: Array[Rect2] = []
-	for spot in view.TREE_SPOTS:
+	for spot in view.tree_spots():
 		tree_rects.append(Rect2(spot - Vector2(tree_extent, tree_extent),
 			Vector2(tree_extent * 2.0, tree_extent * 2.0)))
 
@@ -203,13 +203,13 @@ func _test_layout_collisions() -> void:
 
 	var off_map := 0
 	for rect in block_rects + row_rects:
-		if rect.position.x < 0.0 or rect.position.x + rect.size.x > 1920.0:
+		if rect.position.x < 0.0 or rect.position.x + rect.size.x > view.MAP_WIDTH:
 			off_map += 1
 	_check(off_map == 0, "every building is inside the map (%d off)" % off_map)
 
 	# A pedestrian standing inside a wall looks like a bug even though nothing breaks.
 	var buried := 0
-	for spot in view.NPC_SPOTS:
+	for spot in view.npc_spots():
 		var point := Vector2(float(spot["x"]), float(spot["y"]))
 		for rect in block_rects + row_rects:
 			if rect.has_point(point):
@@ -218,13 +218,13 @@ func _test_layout_collisions() -> void:
 
 	# Every interviewee must have a building to be placed on.
 	var missing := 0
-	for entry in view.INTERVIEWEES:
+	for entry in view.interviewees():
 		var row := str(entry.get("row", ""))
 		var slot := int(entry.get("slot", -1))
-		var count: int = view.BUILDING_ROW.size() if row == "street" else view.BLOCK_BUILDINGS.size()
+		var count: int = view.building_row().size() if row == "street" else view.block_buildings().size()
 		if slot < 0 or slot >= count:
 			missing += 1
-		if row == "street" and slot == view.OFFICE_ROW_INDEX:
+		if row == "street" and slot == view.office_row_index():
 			missing += 1
 	_check(missing == 0, "every interviewee has a building slot that exists and is not the office (%d bad)" % missing)
 
@@ -235,7 +235,7 @@ func _test_credibility_economy() -> void:
 	print("\n[the credibility economy]")
 	var view := await _open()
 	var gates := {}
-	for entry in view.INTERVIEWEES:
+	for entry in view.interviewees():
 		gates[str(entry["label"])] = _gate_of(str(entry["case"]))
 	await _close(view)
 
@@ -302,17 +302,17 @@ func _test_street_stops() -> void:
 	var block_size := Vector2(48.0 * view.BLOCK_BUILDING_SCALE.x, 96.0 * view.BLOCK_BUILDING_SCALE.y)
 	var row_size := Vector2(48.0 * view.ROW_BUILDING_SCALE.x, 96.0 * view.ROW_BUILDING_SCALE.y)
 	var building_rects: Array[Rect2] = []
-	for entry in view.BLOCK_BUILDINGS:
-		building_rects.append(Rect2(Vector2(float(entry["x"]), 520.0), block_size))
-	for entry in view.BUILDING_ROW:
+	for entry in view.block_buildings():
+		building_rects.append(Rect2(Vector2(float(entry["x"]), view.BLOCK_ROW_TOP), block_size))
+	for entry in view.building_row():
 		building_rects.append(Rect2(Vector2(float(entry["x"]), view.BUILDING_ROW_BOTTOM - row_size.y), row_size))
 
 	var sidewalk_top_end: float = view.BUILDING_ROW_BOTTOM + view.SIDEWALK_HEIGHT
 	var grass_top: float = sidewalk_top_end + view.ROAD_HEIGHT + view.SIDEWALK_HEIGHT
 	var street_rects: Array[Rect2] = []
-	for street_x in view.SIDE_STREET_X_POSITIONS:
+	for street_x in view.side_street_x_positions():
 		street_rects.append(Rect2(Vector2(float(street_x), grass_top),
-			Vector2(view.SIDE_STREET_WIDTH, 1080.0 - grass_top)))
+			Vector2(view.SIDE_STREET_WIDTH, view.MAP_HEIGHT - grass_top)))
 
 	var bounds: Rect2 = view.movement_bounds
 	var buried := 0
@@ -336,7 +336,7 @@ func _test_street_stops() -> void:
 	# Every stop that is not the noticeboard stands on an actual pedestrian, or
 	# the player walks up to a prompt with nobody attached to it.
 	var npc_points: Array[Vector2] = []
-	for spot in view.NPC_SPOTS:
+	for spot in view.npc_spots():
 		npc_points.append(Vector2(float(spot["x"]), float(spot["y"])))
 	var orphaned := 0
 	var boards := 0
@@ -439,7 +439,7 @@ func _test_street_stops_record() -> void:
 	_check(view.player.is_physics_processing(), "the player can move again")
 
 	# One source naming the number is not a pattern. Two is.
-	_check(not SessionState.has_reflection_milestone(view.PATTERN_MILESTONE),
+	_check(not SessionState.has_reflection_milestone(view.pattern_milestone_title()),
 		"one source naming the number is not yet a pattern")
 	var cited := 0
 	for stop in view.street_stops:
@@ -451,7 +451,7 @@ func _test_street_stops_record() -> void:
 		if cited == 2:
 			break
 	_check(cited == 2, "two sources citing the number were read (%d)" % cited)
-	_check(SessionState.has_reflection_milestone(view.PATTERN_MILESTONE),
+	_check(SessionState.has_reflection_milestone(view.pattern_milestone_title()),
 		"two sources naming the same number records the pattern")
 
 	await _close(view)

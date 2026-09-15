@@ -16,17 +16,20 @@ const BUSES_TEXTURE: Texture2D = preload("res://assets/art/maps/urban/buses_cars
 const CASE_TRISH := "res://resources/cases/interview_case_008.json"
 const CASE_BEA := "res://resources/cases/interview_case_009.json"
 const CASE_JOEL := "res://resources/cases/interview_case_010.json"
+const CASE_CARMEN := "res://resources/cases/interview_case_012.json"
 
 # Who lives behind which door. Trish in the first house on the grass, the one
 # home on this map; Bea in the boarding house at the head of the frontage row,
 # two doors from the canteen she eats at; Joel at the site office on the plot -
-# interviewed at work, which is where the call found him. "site" is this
-# district's own row: one building, placed in _build_buildings. The rest of the
-# slots are named in the comments on the building tables below.
+# interviewed at work, which is where the call found him; Carmen at the canteen,
+# in her kitchen doorway. "site" is this district's own row: one building,
+# placed in _build_buildings. The rest of the slots are named in the comments
+# on the building tables below.
 const INTERVIEWEES := [
 	{"case": CASE_TRISH, "label": "TRISH", "prompt": "Speak with Patricia Lim", "row": "block", "slot": 0},
 	{"case": CASE_BEA, "label": "BEA", "prompt": "Speak with Bea Santiago", "row": "street", "slot": 0},
 	{"case": CASE_JOEL, "label": "JOEL", "prompt": "Speak with Joel Abad", "row": "site", "slot": 0},
+	{"case": CASE_CARMEN, "label": "CARMEN", "prompt": "Speak with Carmen Salazar", "row": "street", "slot": CANTEEN_ROW_INDEX},
 ]
 
 # Kenney sheet coordinates for the ground and props this district adds.
@@ -56,10 +59,10 @@ const SIDE_STREET_X_POSITIONS := [560.0, 1300.0]
 # at the same x as the terrace's second side street: it is the same street.
 const ARRIVAL_STREET_X := 1400.0
 
-# The frontage row. Slots 0 (boarding house) and 1 (canteen) are Bea's and
-# Carmen's doors when they are written; 2 and 3 are the internet cafe and the
-# remittance counter, whose stops stand outside; 4 and 5 are past the arrival
-# street, one of them spare. The tower is not a row unit - see _build_buildings.
+# The frontage row. Slot 0 is the boarding house (Bea), slot 1 the canteen
+# (Carmen); 2 and 3 are the internet cafe and the remittance counter, whose
+# stops stand outside; 4 and 5 are past the arrival street, one of them spare.
+# The tower is not a row unit - see _build_buildings.
 const BUILDING_ROW := [
 	{"x": 90.0, "color": ROOF_MAUVE_X},
 	{"x": 320.0, "color": ROOF_BRICK_X},
@@ -110,7 +113,8 @@ const NPC_SPOTS := [
 # way `cites_number` prints the operation's number on the terrace, the call
 # floor's bonus board will print it too, and reading both earns the pattern
 # milestone. The rest arrive with the people whose stories they set up: the
-# cafe owner and the neighbor with Trish and Bea. Nothing points anything out.
+# cafe owner and the neighbor with Trish and Bea, the site worker with Joel,
+# the remittance clerk with Carmen. Nothing points anything out.
 const TOWER_STOP_POSITION := Vector2(1120.0, 262.0)
 const STREET_STOPS := [
 	{
@@ -150,6 +154,18 @@ const STREET_STOPS := [
 		"tactic_id": "advance_fee",
 		"milestone_title": "The Ad On The Board",
 		"milestone_detail": "The same job advertisement has hung in the internet cafe for months - applicants pay the fee at the counter under it, and the counter takes its cut either way.",
+	},
+	{
+		"position": Vector2(860.0, 216.0),
+		"title": "Remittance clerk",
+		"prompt": "Talk to the clerk",
+		"body": "She has the window half open and a fan going behind it. \"The cook from the canteen? I remember. Six o'clock, in her apron, phone on her shoulder.\" She counts out somebody else's change while she talks. \"I asked her three times if she knew the name on the account. She said it was the electric company. I said the electric company's counter is two streets that way and it's open till seven. She said there wasn't time.\" The change goes across. \"I sent it. It's not my money. I ask three times and then I send it.\"",
+		"note": "The fee is the invention; the deadline is what stops anyone noticing. A real bill has a counter and a company name on it. A fee that has to be paid to a personal account in the next thirty minutes is a fee for nothing, and thirty minutes is there so you never look.",
+		"note_color": TextStyle.COLOR_TACTIC,
+		"marker": TextStyle.MARK_TACTIC,
+		"tactic_id": "invented_fee",
+		"milestone_title": "She Asked Three Times",
+		"milestone_detail": "The remittance clerk asks every customer who the money is for, and sends it anyway - the last check before a scam completes is a counter that is not allowed to say no.",
 	},
 	{
 		"position": Vector2(972.0, 470.0),

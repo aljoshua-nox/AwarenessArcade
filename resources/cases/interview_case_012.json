@@ -1,0 +1,259 @@
+{
+  "case_id": "interview_case_012",
+  "title": "Thirty Minutes To Six",
+  "person": {
+    "person_id": "carmen_salazar",
+    "name": "Carmen Salazar",
+    "age": 49,
+    "occupation": "Canteen cook",
+    "role": "Victim",
+    "script": "utility",
+    "portrait": "res://assets/art/portraits/carmen.png",
+    "traits": "Runs a canteen and a household of five. Sharp, not naive - the script was built for exactly her evening. Keeps serving while she talks and expects you to eat.",
+    "min_credibility": 60,
+    "hesitant_start": "hesitant_intro"
+  },
+  "evidence": [
+    {
+      "id": "ev_carmen_notice",
+      "tactic_id": "manufactured_urgency",
+      "label": "The Disconnection Text",
+      "description": "The message, saved on her phone: FINAL NOTICE. YOUR ELECTRIC SERVICE WILL BE DISCONNECTED IN 30 MINUTES FOR NON-PAYMENT. TO AVOID DISCONNECTION SETTLE THE RECONNECTION FEE OF P1,850 NOW. A number to call, an e-wallet account, no company name anywhere on it.",
+      "tactic": "Manufactured urgency: thirty minutes is shorter than the time it takes to find the last bill, which is the whole point of choosing thirty."
+    },
+    {
+      "id": "ev_carmen_cashin_receipt",
+      "tactic_id": "invented_fee",
+      "label": "Cash-in Receipt",
+      "description": "From the remittance counter two doors down: P1,850 to an account in a personal name, memo RECONNECTION, 6:12 that evening.",
+      "tactic": "A fee to fix an invented problem: the service was never cut, so the 'reconnection' bought nothing except the end of the call."
+    },
+    {
+      "id": "ev_carmen_bill",
+      "tactic_id": "authority_impersonation",
+      "label": "The Actual Electric Bill",
+      "description": "The real bill for that month, paid at the company's own counter the week before, stamped. An account number, a company name, a due date three weeks away, and a printed line: we will never ask for payment by phone.",
+      "tactic": "Impersonating an authority: the real company writes, names itself, gives you weeks and a counter - the message did none of that, and only the account number, copied off this bill, made it sound like it could."
+    },
+    {
+      "id": "ev_carmen_budget",
+      "label": "Household Budget Notebook",
+      "description": "The notebook she runs five people on: rent, rice, school, electric, in a column that never adds up to much left over.",
+      "tactic": ""
+    }
+  ],
+  "start_node": "intro",
+  "failure_node": "end_shutdown",
+  "nodes": {
+    "hesitant_intro": {
+      "prompt": "Carmen does not stop serving. \"The barangay took a statement. Nothing happened.\" A plate goes down in front of a customer, then another. \"I've got a line, and I've told it once. Come back when it's worth the rice going cold.\"",
+      "choices": [
+        {
+          "text": "That's fair. I'll come back when I can show you it is.",
+          "next": "end_partial_hesitant"
+        }
+      ]
+    },
+    "end_partial_hesitant": {
+      "prompt": "Carmen has told this once to no effect and has a canteen to run. Standing with the other witnesses first might make it worth her afternoon.",
+      "outcome": "partial",
+      "choices": []
+    },
+    "intro": {
+      "prompt": "Two o'clock, between lunch and dinner, and the canteen is empty except for the rice cooker ticking. Carmen wipes the counter in front of you and puts a plate down whether you want it or not. \"You're the one going door to door. Sit. Eat something.\" She does not sit. \"Thirty minutes, they said. Thirty minutes and the lights go out. I've got three kids doing homework at that table at six o'clock.\"",
+      "choices": [
+        {
+          "text": "Start with the message. What did it say, exactly?",
+          "next": "ask_call"
+        },
+        {
+          "text": "Thirty minutes and three kids at the table. That's not a mistake, that's the trap working.",
+          "next": "reassure",
+          "cooperation": 8
+        },
+        {
+          "text": "You paid a stranger to keep the lights on without looking at a bill you'd already paid. Take me through that.",
+          "next": "shame_her",
+          "cooperation": -14
+        }
+      ]
+    },
+    "reassure": {
+      "prompt": "\"Everyone's told me I should have checked.\" She stacks plates without looking at them. \"I did check. Afterward. It took two minutes.\" The stack goes down. \"I didn't have two minutes at six o'clock. That's what they knew.\"",
+      "cooperation": 4,
+      "choices": [
+        {
+          "text": "Then start with the message. What did it say?",
+          "next": "ask_call"
+        }
+      ]
+    },
+    "shame_her": {
+      "prompt": "\"Yes. I did.\" She does not stop wiping. \"You want to know why? Ask me why. Ask me what six o'clock looks like in this house with the lights off and three kids and the rice half done.\" The cloth stops. \"Or ask me about the message. Your choice.\"",
+      "choices": [
+        {
+          "text": "That was out of line, and I'm sorry. Six o'clock is exactly what I want to understand.",
+          "next": "reassure",
+          "cooperation": 8
+        },
+        {
+          "text": "The message.",
+          "next": "ask_call_cold",
+          "cooperation": -8
+        }
+      ]
+    },
+    "ask_call": {
+      "prompt": "\"A text first. FINAL NOTICE, capital letters, thirty minutes. Then the call, a minute after - a man, very polite, very sorry, the system was automatic and he couldn't stop it himself unless the reconnection fee was settled while he was on the line.\" She sets a glass down harder than she means to. \"Reconnection. It hadn't been disconnected. He said the fee is what stops the disconnection. At six o'clock, with the rice on, that made sense. It made complete sense.\"",
+      "choices": [
+        {
+          "text": "Stay on six o'clock for a moment.",
+          "next": "tactic_quiz_fear"
+        }
+      ]
+    },
+    "ask_call_cold": {
+      "prompt": "\"A text. Thirty minutes. Then a man, polite, the system was automatic, pay the reconnection fee on the line or the lights go.\" Flat, and to the counter. \"It hadn't been disconnected. He said the fee stops it. That's all.\"",
+      "cooperation": -6,
+      "choices": [
+        {
+          "text": "Six o'clock. Stay on that.",
+          "next": "tactic_quiz_fear"
+        }
+      ]
+    },
+    "tactic_quiz_fear": {
+      "tactic_quiz": {
+        "setup": "You put the message beside what she told you: [i]FINAL NOTICE - 30 MINUTES[/i], a polite man who was very sorry, and six o'clock in this house with the lights off, three kids and the rice half done.",
+        "tactic_id": "manufactured_fear",
+        "tactic": "The picture you supply yourself",
+        "question": "What was the caller actually threatening her with?",
+        "milestone": {
+          "title": "Tactic Identified: The Picture You Supply Yourself",
+          "detail": "Recognized that the caller threatened nothing he could do - the fear was six o'clock in the dark with children at the table, and the victim supplied that picture herself, which is why it was aimed at a mother at dinnertime."
+        },
+        "options": [
+          {
+            "text": "Nothing he could do. The threat was the picture of six o'clock in the dark, and she supplied that picture herself.",
+            "correct": true,
+            "cooperation": 12,
+            "feedback": "That is the mechanism. He could not touch her electricity; the account was paid. What he had was a time - thirty minutes - and a word - disconnected - and she did the rest, because she knows what that evening looks like better than he ever could. Fear scripts are aimed at what a person cannot afford to lose, and they let the person fill in the details. A caller who makes you picture the worst is a caller who has nothing else."
+          },
+          {
+            "text": "A disconnection the company was about to carry out.",
+            "cooperation": -8,
+            "feedback": "The company was not about to do anything; the bill was paid, and the real company does not cut power in thirty minutes by text. The disconnection existed only in the message. The picture of it existed in her - which is where the script needed it."
+          },
+          {
+            "text": "A late fee on next month's bill.",
+            "cooperation": -6,
+            "feedback": "A late fee would have been a nuisance, and nobody pays a stranger in thirty minutes over a nuisance. The script did not threaten money. It threatened an evening."
+          },
+          {
+            "text": "Reporting her to the barangay for non-payment.",
+            "cooperation": -6,
+            "feedback": "Nothing in the message or the call mentioned anyone but the 'system'. The threat was not a person coming; it was the lights going. The fear that works is the one the victim can see, and she could see six o'clock."
+          }
+        ],
+        "next": "ask_evidence"
+      }
+    },
+    "ask_evidence": {
+      "prompt": "\"I paid it at the counter two doors down. Eighteen fifty.\" Carmen says the number as three days of stock, which is what it is. \"Then I went home and the lights were on, and I thought, good. It worked.\" A pause. \"It worked.\"",
+      "evidence_prompt": true,
+      "evidence_hint": "She remembers the message to the capital letter. What you need is where the fee went.",
+      "accepts_evidence": [
+        {
+          "evidence_id": "ev_carmen_cashin_receipt",
+          "next": "confirm",
+          "response": "She takes it out of the cash box without being asked. \"Six twelve. Eighteen minutes to spare.\" It goes on the counter next to the plate.",
+          "cooperation": 20
+        },
+        {
+          "evidence_id": "ev_carmen_notice",
+          "next": "ask_evidence",
+          "response": "\"Capital letters.\" She reads it again off your screen. \"No company. I see that now.\" It is the bait; it proves what frightened her, not what was taken.",
+          "cooperation": 6
+        },
+        {
+          "evidence_id": "ev_carmen_bill",
+          "next": "ask_evidence",
+          "response": "\"Paid. The week before. Stamped.\" She taps the printed line at the bottom. \"We will never ask for payment by phone. It says it on the bill.\" It proves the story was false; it does not prove who told it.",
+          "cooperation": 6
+        },
+        {
+          "evidence_id": "ev_carmen_budget",
+          "next": "ask_evidence",
+          "response": "\"That's how I know what I can't lose.\" She closes it. It proves what the money was for, which nobody disputes, and nothing about where it went.",
+          "cooperation": -8,
+          "wrong": true
+        }
+      ],
+      "choices": [
+        {
+          "text": "Who did the man say he was?",
+          "next": "press_caller"
+        },
+        {
+          "text": "That's enough to be going on with. Thank you.",
+          "next": "end_partial"
+        }
+      ]
+    },
+    "press_caller": {
+      "prompt": "\"The electric company. He knew my account number - that's what did it. He read it to me before I'd said a word.\" She picks the cloth back up. \"I found out after: the account number's on the bill, the bill's in the mailbox, and the mailbox is on the street.\" She almost laughs. \"Anyone could have my account number. Anyone did.\"",
+      "cooperation": 6,
+      "choices": [
+        {
+          "text": "Can you show me anything from that evening?",
+          "next": "ask_evidence"
+        },
+        {
+          "text": "That's enough to be going on with. Thank you.",
+          "next": "end_partial"
+        }
+      ]
+    },
+    "confirm": {
+      "prompt": "Carmen puts one finger on the receipt. \"Eighteen fifty. Three days of stock.\" She takes the finger away. \"Put it down. And put down that the lights were never going off. I want that written somewhere by someone whose job it is.\"",
+      "cooperation": 10,
+      "milestone": {
+        "title": "Witness Secured: Thirty Minutes To Six",
+        "detail": "Carmen Salazar put a thirty-minute notice, a polite caller with her account number and a cash-in on the same evening - the utility-disconnection script, aimed at a household at dinnertime."
+      },
+      "choices": [
+        {
+          "text": "This matches the pattern from the other calls. Thank you.",
+          "next": "end_success"
+        }
+      ]
+    },
+    "end_success": {
+      "prompt": "Carmen's receipt, the message and the real bill put a fake notice, a real account number and eighteen hundred and fifty pesos on one evening - the utility-disconnection script, read off the same list as every other call.",
+      "outcome": "success",
+      "grants_evidence": [
+        {
+          "id": "test_carmen_confirmed",
+          "label": "Carmen's Confirmed Testimony",
+          "description": "Carmen Salazar confirmed the utility-disconnection script - a thirty-minute notice, a polite caller with her account number, a 'reconnection fee' for a service that was never cut - and the cash-in it produced.",
+          "tactic": "A victim who paid leaves a trail. Hers is the script that threatens an evening, not a fortune."
+        }
+      ],
+      "choices": []
+    },
+    "end_partial": {
+      "prompt": "You have Carmen's account, but nothing yet that ties it to the wider operation.",
+      "outcome": "partial",
+      "choices": []
+    },
+    "end_shutdown": {
+      "prompt": "\"Line.\" Carmen nods at the door, where there isn't one yet, and picks up the plate you did not eat from. The receipt goes back into the cash box, and the cash box goes under the counter, and the afternoon goes back to being hers.",
+      "outcome": "failure",
+      "milestone": {
+        "title": "Witness Lost",
+        "detail": "Carmen Salazar went back to her canteen. A victim who runs a household and a business reports once, if at all - the second telling costs an afternoon she does not have."
+      },
+      "choices": []
+    }
+  }
+}

@@ -7,6 +7,7 @@
 		"traits": "Print shop, trading on the margin. Previous desk noted: saving for a new press, two years. Talks while she works. The machine is the hook.",
 		"portrait": "res://assets/art/portraits/lady 3.png",
 		"script": "Prize draw desk",
+		"script_id": "lottery",
 		"patience_seconds": 90,
 		"doubt_start": 30
 	},

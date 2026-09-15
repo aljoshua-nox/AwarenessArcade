@@ -7,6 +7,7 @@
     "age": 67,
     "occupation": "Retired clerk",
     "role": "Victim",
+    "script": "bank_fraud",
     "portrait": "res://assets/art/portraits/lady 1.png",
     "traits": "Worried about her savings. Trusts formal-sounding language. Embarrassed about what happened.",
     "min_credibility": 55,

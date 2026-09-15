@@ -8,6 +8,7 @@
     "age": 41,
     "occupation": "Owns a small print shop",
     "role": "Victim",
+    "script": "lottery",
     "portrait": "res://assets/art/portraits/lady 3.png",
     "traits": "Under financial pressure. Keeps trading while she talks. Has stopped expecting help.",
     "min_credibility": 70,

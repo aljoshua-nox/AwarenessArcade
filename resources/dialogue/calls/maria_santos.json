@@ -7,6 +7,7 @@
 		"traits": "Retired clerk. Reads every letter the bank sends her and keeps them. Sound like one of those letters.",
 		"portrait": "res://assets/art/portraits/lady 1.png",
 		"script": "Bank fraud desk",
+		"script_id": "bank_fraud",
 		"patience_seconds": 90,
 		"doubt_start": 25
 	},

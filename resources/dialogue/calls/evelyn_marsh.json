@@ -7,6 +7,7 @@
 		"traits": "Retired bookkeeper. Entered a store raffle for a gift basket in March - that's where the name and the road came from. Writes things down. Do not give her time to.",
 		"portrait": "res://assets/art/portraits/lady 2.png",
 		"script": "Prize draw desk",
+		"script_id": "lottery",
 		"patience_seconds": 60,
 		"doubt_start": 45
 	},

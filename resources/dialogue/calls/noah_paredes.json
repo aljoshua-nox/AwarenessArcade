@@ -7,6 +7,7 @@
 		"traits": "Night-shift nurse. Does an online course on a laptop that's been slow for a month. Call after three - he'll agree to anything practical.",
 		"portrait": "res://assets/art/portraits/fella 4.png",
 		"script": "Tech support callback",
+		"script_id": "tech_support",
 		"patience_seconds": 90,
 		"doubt_start": 20
 	},

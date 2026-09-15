@@ -7,6 +7,7 @@
 		"traits": "Dispatcher. Checks everything, reads everything back. But he's always at work, and at work he wants problems closed.",
 		"portrait": "res://assets/art/portraits/fella 1.png",
 		"script": "Bank fraud desk",
+		"script_id": "bank_fraud",
 		"patience_seconds": 60,
 		"doubt_start": 40
 	},

@@ -7,6 +7,7 @@
 		"traits": "Called the number on the pop-up himself, got the queue. Working late on something else. Wants it gone more than he wants it explained.",
 		"portrait": "res://assets/art/portraits/fella 3.png",
 		"script": "Tech support callback",
+		"script_id": "tech_support",
 		"patience_seconds": 100,
 		"doubt_start": 20
 	},

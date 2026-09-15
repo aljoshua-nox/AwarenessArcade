@@ -600,6 +600,51 @@ for pid, case_file in EXPECTED_LINKS.items():
             f"{case_file}: {case_name} is '{case_job}' but the prologue has"
             f" {pro_name} as '{pro_job}' - the same person changes job between the two halves")
 
+# Script is the fourth half of identity, and the one the investigation will
+# route on: a suspect answers for the scripts their floor runs, and a victim's
+# testimony carries the script that hit them. So every victim's case says which
+# one (`person.script`), every call script says the same (`person.script_id` -
+# `script` there is the card's display name, "Bank fraud desk"), the two must
+# agree for a linked victim, and the id must come from this closed vocabulary.
+# Add to it when a new script is written; a typo here would otherwise be a
+# testimony no suspect can ever accept.
+SCRIPT_IDS = {"bank_fraud", "tech_support", "lottery"}
+
+for f, data in parsed.items():
+    name = os.path.basename(f)
+    person = data.get("person", {})
+    if person.get("role") != "Victim":
+        if "script" in person:
+            errors.append(f"{name}: only a victim's case carries `script` - a suspect answers for scripts, not one")
+        continue
+    sid = person.get("script")
+    if not sid:
+        errors.append(f"{name}: a victim's case must say which script hit them (`person.script`)")
+    elif sid not in SCRIPT_IDS:
+        errors.append(f"{name}: script '{sid}' is not one of {sorted(SCRIPT_IDS)}")
+
+for v in victims:
+    sid = v.get("script_id")
+    if not sid:
+        errors.append(f"{v.get('person_id', '?')}: call script must carry `script_id`")
+    elif sid not in SCRIPT_IDS:
+        errors.append(f"{v.get('person_id', '?')}: script_id '{sid}' is not one of {sorted(SCRIPT_IDS)}")
+
+case_scripts = {os.path.basename(f): (d.get("person", {}).get("name", "?"),
+                                      d.get("person", {}).get("script"))
+                for f, d in parsed.items()}
+prologue_scripts = {v.get("person_id", ""): (v.get("name", "?"), v.get("script_id"))
+                    for v in victims}
+for pid, case_file in EXPECTED_LINKS.items():
+    if case_file not in case_scripts or pid not in prologue_scripts:
+        continue
+    case_name, case_sid = case_scripts[case_file]
+    pro_name, pro_sid = prologue_scripts[pid]
+    if case_sid != pro_sid:
+        errors.append(
+            f"{case_file}: {case_name} was hit by '{case_sid}' but the prologue runs"
+            f" '{pro_sid}' on {pro_name} - the same person is scammed two different ways")
+
 # Portraits. Two rules, both of them learned from shipped bugs.
 #
 # 1. A character has ONE face. Evelyn was drawn as lady 2 in her interview and

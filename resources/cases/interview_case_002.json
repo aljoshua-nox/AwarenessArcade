@@ -7,6 +7,7 @@
     "age": 24,
     "occupation": "Office worker",
     "role": "Victim",
+    "script": "tech_support",
     "portrait": "res://assets/art/portraits/fella 3.png",
     "traits": "Busy and distracted. Embarrassed he let a stranger into his laptop.",
     "min_credibility": 60,

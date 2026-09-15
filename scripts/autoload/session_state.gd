@@ -39,6 +39,12 @@ const AWARENESS_UNTESTED := "untested"  # never reached a tactic quiz
 # works if there is one copy of it.
 const OPERATION_NUMBER := "0917-555-0142"
 
+# The second district's version of the same trick. The company that owns the
+# floors is named on the tower the player cannot get past the lobby of, on the
+# hoarding of the site down the road, and - once the boss exists - on the call
+# floor's own bonus board. Same rule: one copy, and nothing points it out.
+const COMPANY_NAME := "VALDERRAMA HOLDINGS"
+
 # The prologue's only session-level pressure besides the shift clock. A victim
 # who catches on and keeps the number files a report; this many and the floor
 # pulls the line. The old trust/suspicion/reputation meters lived here - they
@@ -91,6 +97,11 @@ var interviewed_people: Array[String] = []
 var pending_case_path: String = ""
 var urban_return_spawn: Vector2 = Vector2.ZERO
 var has_urban_return_spawn: bool = false
+# Which street the player left from. There is more than one now, and the
+# interview's "Return to the Street" has to go back to the one with the door
+# they walked in through, not always the terrace. Set alongside the spawn.
+const DEFAULT_STREET_SCENE := "res://scenes/exploration/urban_exterior.tscn"
+var urban_return_scene: String = DEFAULT_STREET_SCENE
 var suspect_flipped: bool = false
 # Set when an interview ends on a node marked `locks_case`. Losing Marco means
 # nobody will ever name the floor above him, so the confrontation can never
@@ -335,6 +346,7 @@ func reset_session() -> void:
 # The detective half only. Leaves the prologue's call history alone.
 func reset_investigation() -> void:
 	has_urban_return_spawn = false
+	urban_return_scene = DEFAULT_STREET_SCENE
 	suspect_flipped = false
 	case_locked = false
 	investigation_inventory.clear()

@@ -178,8 +178,19 @@ const NPC_SPOTS := [
 ]
 
 
+# The second side street runs off the bottom of the map. It used to go
+# nowhere; it goes to Terminal Road. The portal sits in its 64 px road strip,
+# inside movement_bounds, clear of every stop.
+const TRANSIT := {
+	"position": Vector2(1448.0, 1010.0),
+	"prompt": "Follow the side street to Terminal Road",
+	"target": "res://scenes/exploration/terminal_road.tscn",
+	"arrival": Vector2(1448.0, 120.0),
+}
+
+
 func _init() -> void:
-	map_title = "Urban Block"
+	map_title = "The Terrace"
 	map_hint = "Move with WASD or arrow keys. Press Enter at a door to interact."
 
 
@@ -233,3 +244,7 @@ func pattern_milestone_title() -> String:
 
 func pattern_milestone_detail() -> String:
 	return PATTERN_DETAIL
+
+
+func transit() -> Dictionary:
+	return TRANSIT

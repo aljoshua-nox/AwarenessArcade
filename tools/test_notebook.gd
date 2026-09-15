@@ -151,6 +151,7 @@ func _test_overlay() -> void:
 	_check(not TacticNotebook.shows_button_in("res://scenes/main_menu/main_menu.tscn"),
 		"the notebook button stays off the main menu")
 	for scene in ["res://scenes/exploration/urban_exterior.tscn",
+			"res://scenes/exploration/terminal_road.tscn",
 			"res://scenes/exploration/office_interior.tscn",
 			"res://scenes/investigation/interview.tscn",
 			"res://scenes/prologue/prologue_call.tscn"]:

@@ -369,7 +369,9 @@ func _build_milestones_text() -> String:
 
 
 func _on_continue_pressed() -> void:
-	SessionState.go_to_scene("res://scenes/exploration/urban_exterior.tscn")
+	# Back to whichever street the player came in from - the terrace unless a
+	# district set otherwise when its door was used.
+	SessionState.go_to_scene(SessionState.urban_return_scene)
 
 
 func _on_main_menu_pressed() -> void:

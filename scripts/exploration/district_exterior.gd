@@ -37,6 +37,12 @@ const STOP_SIZE := Vector2(104.0, 96.0)
 var interview_portals: Array[ScenePortal] = []
 var portal_case_paths: Dictionary = {}
 var active_interview_portal: ScenePortal = null
+var transit_portal: ScenePortal = null
+
+# What _build_map() actually put down, so the layout test can check the
+# rectangles that are on screen rather than recompute them from the tables.
+var built_buildings: Array[Rect2] = []
+var built_labels: Array[Rect2] = []
 
 var street_stops: Array[Dictionary] = []
 var active_stop: Dictionary = {}
@@ -152,8 +158,9 @@ func lamp_bottom_x() -> Array:
 	return []
 
 
-# {"x", "y", "kind" ("a"/"b"), "tint"} per pedestrian. A non-noticeboard stop
-# must stand on one of these.
+# {"x", "y", "kind" ("a"/"b"), "tint"} per pedestrian. A stop stands on one of
+# these unless it is the noticeboard or marked `is_fixture` - a stop on a thing
+# the district draws itself (a sign, a door) rather than on a person.
 func npc_spots() -> Array:
 	return []
 
@@ -171,6 +178,24 @@ func pattern_milestone_title() -> String:
 
 func pattern_milestone_detail() -> String:
 	return ""
+
+
+# The way to the next district, or empty when this one is a dead end:
+# {"position": where the portal stands, "prompt", "target": the other scene,
+# "arrival": where the player appears in that scene}. Both ends set the other
+# district's spawn, so arriving never means standing inside the way back.
+func transit() -> Dictionary:
+	return {}
+
+
+# Rectangles a building must not be built on. Side streets by default; a
+# district that draws other roads adds them here so the layout test sees them.
+func obstacle_rects() -> Array[Rect2]:
+	var rects: Array[Rect2] = []
+	for street_x in side_street_x_positions():
+		rects.append(Rect2(Vector2(float(street_x), BOTTOM_PAVEMENT_END),
+			Vector2(SIDE_STREET_WIDTH, MAP_HEIGHT - BOTTOM_PAVEMENT_END)))
+	return rects
 
 
 func has_office() -> bool:
@@ -191,6 +216,7 @@ func _ready() -> void:
 
 	_setup_office_portal()
 	_build_interview_portals()
+	_build_transit()
 	_build_stop_ui()
 
 	_setup_camera_limits()
@@ -217,6 +243,42 @@ func _setup_office_portal() -> void:
 		portal.prompt_text = "Enter the office"
 	portal.player_entered.connect(_on_portal_entered)
 	portal.player_exited.connect(_on_portal_exited)
+
+
+func _build_transit() -> void:
+	var data := transit()
+	if data.is_empty():
+		return
+	transit_portal = ScenePortal.new()
+	transit_portal.target_scene = str(data.get("target", ""))
+	transit_portal.prompt_text = str(data.get("prompt", "Follow the street"))
+	transit_portal.monitoring = true
+	transit_portal.monitorable = true
+	var shape := RectangleShape2D.new()
+	shape.size = INTERVIEW_PORTAL_SIZE
+	var collider := CollisionShape2D.new()
+	collider.shape = shape
+	transit_portal.add_child(collider)
+	transit_portal.global_position = data.get("position", Vector2.ZERO)
+	add_child(transit_portal)
+	transit_portal.player_entered.connect(_on_portal_entered)
+	transit_portal.player_exited.connect(_on_portal_exited)
+
+
+# Crossing to the other district: the player appears at that district's
+# arrival point, and any interview they open over there returns over there.
+func _take_transit() -> void:
+	var data := transit()
+	SessionState.urban_return_spawn = data.get("arrival", Vector2.ZERO)
+	SessionState.has_urban_return_spawn = true
+	SessionState.urban_return_scene = str(data.get("target", SessionState.DEFAULT_STREET_SCENE))
+	_transition_to_scene(str(data.get("target", "")))
+
+
+func _transit_in_reach() -> bool:
+	if transit_portal == null:
+		return false
+	return player.global_position.distance_to(transit_portal.global_position) <= 40.0
 
 
 # One Area2D per interviewee, created from interviewees(). _build_map() drops
@@ -281,6 +343,8 @@ func _unhandled_input(event: InputEvent) -> void:
 		SessionState.pending_case_path = str(portal_case_paths.get(active_interview_portal, ""))
 		_remember_return_spawn(active_interview_portal.global_position)
 		_transition_to_scene(active_interview_portal.target_scene)
+	elif event.is_action_pressed("ui_accept") and _transit_in_reach():
+		_take_transit()
 	elif event.is_action_pressed("ui_accept") and has_office() and _can_enter_portal():
 		if SessionState.case_locked and not SessionState.suspect_flipped:
 			_file_case_unresolved()
@@ -308,6 +372,9 @@ func _file_case_unresolved() -> void:
 func _remember_return_spawn(exit_position: Vector2) -> void:
 	SessionState.urban_return_spawn = exit_position + Vector2(0.0, 20.0)
 	SessionState.has_urban_return_spawn = true
+	# The interview's "Return to the Street" comes back to this street.
+	SessionState.urban_return_scene = scene_file_path if not scene_file_path.is_empty() \
+		else SessionState.DEFAULT_STREET_SCENE
 
 
 # --- Building the map --------------------------------------------------------
@@ -317,6 +384,8 @@ func _remember_return_spawn(exit_position: Vector2) -> void:
 
 func _build_map() -> void:
 	_clear_decor()
+	built_buildings.clear()
+	built_labels.clear()
 	_build_ground()
 	_build_buildings()
 	_build_props()
@@ -424,6 +493,7 @@ func _add_building(top_left: Vector2, color_x: float, image_scale: Vector2) -> R
 
 	var size := Vector2(ROOF_SOURCE_SIZE.x * image_scale.x, ROOF_SOURCE_SIZE.y * image_scale.y)
 	_add_wall_segment(top_left, size)
+	built_buildings.append(Rect2(top_left, size))
 	return Rect2(top_left, size)
 
 
@@ -445,12 +515,16 @@ func _add_shop_door(building_rect: Rect2) -> Vector2:
 	return Vector2(center_x, bottom_y)
 
 
-func _add_building_label(building_rect: Rect2, text: String) -> void:
-	var label_size := Vector2(96.0, 22.0)
+# `label_y` is the label's offset from the building's top. A building whose
+# roof leaves the frame needs it lower than the default or the label does too.
+func _add_building_label(building_rect: Rect2, text: String, label_y: float = 18.0) -> void:
+	# Wide enough for the name: "VALDERRAMA" does not fit the box "OFFICE" does.
+	var label_size := Vector2(maxf(96.0, 12.0 * text.length() + 16.0), 22.0)
 	var top_left := Vector2(
 		building_rect.position.x + building_rect.size.x * 0.5 - label_size.x * 0.5,
-		building_rect.position.y + 18.0
+		building_rect.position.y + label_y
 	)
+	built_labels.append(Rect2(top_left, label_size))
 
 	var background := ColorRect.new()
 	background.color = Color(0.05, 0.05, 0.08, 0.65)
@@ -511,6 +585,104 @@ func _add_npc(npc_position: Vector2, texture: Texture2D, source_rect: Rect2, npc
 	sprite.position = npc_position
 	sprite.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
 	decor.add_child(sprite)
+
+
+# One tile from the Kenney sheet as a free-standing sprite: a cone, a crate,
+# a pane of glass. Centred on `at`.
+func _add_tile_sprite(atlas_coord: Vector2i, at: Vector2, tile_scale: float = 2.0) -> void:
+	var sprite := Sprite2D.new()
+	sprite.texture = _tile_texture(atlas_coord)
+	sprite.centered = true
+	sprite.scale = Vector2(tile_scale, tile_scale)
+	sprite.position = at
+	sprite.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
+	decor.add_child(sprite)
+
+
+# A region of a sheet standing on `base` (bottom-centre), the way lampposts do.
+func _add_prop(texture: Texture2D, source_rect: Rect2, base: Vector2, prop_scale: float,
+		solid: bool = false) -> void:
+	var sprite := Sprite2D.new()
+	sprite.texture = texture
+	sprite.region_enabled = true
+	sprite.region_rect = source_rect
+	sprite.centered = true
+	sprite.scale = Vector2(prop_scale, prop_scale)
+	var size := source_rect.size * prop_scale
+	sprite.position = base - Vector2(0.0, size.y * 0.5)
+	sprite.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
+	decor.add_child(sprite)
+	if solid:
+		_add_wall_segment(base - Vector2(size.x * 0.5, size.y), size)
+
+
+# A run of fence tiles along y, with an opening for a gate. Solid apart from
+# the gap, so a site is a place you enter, not a texture you walk over.
+func _add_fence(x_start: float, x_end: float, y: float, gap: Vector2 = Vector2.ZERO,
+		atlas_coord: Vector2i = Vector2i(21, 14), tile_scale: float = 2.0) -> void:
+	var step := TILE_SIZE * tile_scale
+	var x := x_start
+	while x + step <= x_end + 0.5:
+		var inside_gap := gap != Vector2.ZERO and x + step > gap.x and x < gap.y
+		if not inside_gap:
+			_add_tile_sprite(atlas_coord, Vector2(x + step * 0.5, y + step * 0.5), tile_scale)
+		x += step
+	if gap == Vector2.ZERO:
+		_add_wall_segment(Vector2(x_start, y), Vector2(x_end - x_start, step))
+	else:
+		_add_wall_segment(Vector2(x_start, y), Vector2(gap.x - x_start, step))
+		_add_wall_segment(Vector2(gap.y, y), Vector2(x_end - gap.y, step))
+
+
+# Painted lines: four thin rectangles, no collision.
+func _add_outline(rect: Rect2, color: Color, thickness: float = 3.0) -> void:
+	var edges := [
+		Rect2(rect.position, Vector2(rect.size.x, thickness)),
+		Rect2(rect.position + Vector2(0.0, rect.size.y - thickness), Vector2(rect.size.x, thickness)),
+		Rect2(rect.position, Vector2(thickness, rect.size.y)),
+		Rect2(rect.position + Vector2(rect.size.x - thickness, 0.0), Vector2(thickness, rect.size.y)),
+	]
+	for edge in edges:
+		var strip := ColorRect.new()
+		strip.color = color
+		strip.position = edge.position
+		strip.size = edge.size
+		decor.add_child(strip)
+
+
+# A sign on posts with a few lines of text - the noticeboard's bigger cousin,
+# for a hoarding or a shopfront. `base` is where the posts meet the ground.
+func _add_signboard(base: Vector2, lines: Array, board_size: Vector2 = Vector2(150.0, 62.0),
+		face_color: Color = Color(0.94, 0.92, 0.86, 1.0), text_color: Color = Color(0.16, 0.16, 0.24, 1.0),
+		accent_color: Color = Color(0.63, 0.12, 0.12, 1.0)) -> void:
+	var top_left := base - Vector2(board_size.x * 0.5, board_size.y + 20.0)
+	for post_x in [base.x - board_size.x * 0.35, base.x + board_size.x * 0.35]:
+		var post := ColorRect.new()
+		post.color = Color(0.33, 0.24, 0.16, 1.0)
+		post.position = Vector2(post_x - 5.0, top_left.y + board_size.y)
+		post.size = Vector2(10.0, 22.0)
+		decor.add_child(post)
+	var frame := ColorRect.new()
+	frame.color = Color(0.24, 0.20, 0.16, 1.0)
+	frame.position = top_left - Vector2(4.0, 4.0)
+	frame.size = board_size + Vector2(8.0, 8.0)
+	decor.add_child(frame)
+	var face := ColorRect.new()
+	face.color = face_color
+	face.position = top_left
+	face.size = board_size
+	decor.add_child(face)
+	var line_height := board_size.y / maxf(1.0, float(lines.size()))
+	for i in range(lines.size()):
+		var label := Label.new()
+		label.text = str(lines[i])
+		label.position = top_left + Vector2(0.0, line_height * i)
+		label.size = Vector2(board_size.x, line_height)
+		label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+		label.add_theme_font_size_override("font_size", 12)
+		label.add_theme_color_override("font_color", accent_color if i > 0 else text_color)
+		decor.add_child(label)
 
 
 func _add_wall_segment(top_left: Vector2, size: Vector2) -> void:
@@ -696,6 +868,8 @@ func _stop_body(stop: Dictionary) -> String:
 	var body := str(stop.get("body", ""))
 	if bool(stop.get("cites_number", false)):
 		body = body % SessionState.OPERATION_NUMBER
+	elif bool(stop.get("cites_name", false)):
+		body = body % SessionState.COMPANY_NAME
 	parts.append(TextStyle.dialogue(body))
 	var note := str(stop.get("note", ""))
 	if not note.is_empty():
@@ -720,8 +894,9 @@ func _open_stop(stop: Dictionary) -> void:
 	if not tactic_id.is_empty():
 		SessionState.record_tactic_learned(tactic_id,
 			"Heard on the street - %s" % str(stop.get("title", "")))
-	# Two people naming the same number is the whole point of the street. It is
-	# the player joining sources up, so it earns its own line in the summary.
+	# Two sources naming the same number - or the same company - is the whole
+	# point of a street. It is the player joining sources up, so it earns its
+	# own line in the summary.
 	if not pattern_milestone_title().is_empty() and _cited_number_count() >= 2:
 		SessionState.record_reflection_milestone(pattern_milestone_title(), pattern_milestone_detail())
 
@@ -740,7 +915,7 @@ func _close_stop() -> void:
 func _cited_number_count() -> int:
 	var count := 0
 	for stop in street_stops:
-		if not bool(stop.get("cites_number", false)):
+		if not (bool(stop.get("cites_number", false)) or bool(stop.get("cites_name", false))):
 			continue
 		if SessionState.has_reflection_milestone(str(stop.get("milestone_title", ""))):
 			count += 1
@@ -750,7 +925,9 @@ func _cited_number_count() -> int:
 # --- Doors -------------------------------------------------------------------
 
 func _can_enter_portal() -> bool:
-	if portal_label.visible:
+	# The label is shared with the transit portal, so it is only evidence of
+	# being at the office door when the office door is the one in reach.
+	if portal_label.visible and not _transit_in_reach():
 		return true
 	return player.global_position.distance_to(portal.global_position) <= 40.0
 

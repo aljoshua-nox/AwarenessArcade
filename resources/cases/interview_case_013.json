@@ -1,0 +1,231 @@
+{
+  "case_id": "interview_case_013",
+  "title": "The Closer",
+  "person": {
+    "person_id": "dennis_mercado",
+    "name": "Dennis Mercado",
+    "age": 38,
+    "occupation": "Call floor closer",
+    "role": "Suspect",
+    "portrait": "res://assets/art/portraits/dennis.png",
+    "traits": "The one a stalled call is transferred to. Has done this longer than anyone in the building and feels nothing about it. Has heard every pressure line, because he wrote half of them."
+  },
+  "evidence": [],
+  "start_node": "start",
+  "failure_node": "end_stonewalled",
+  "nodes": {
+    "start": {
+      "prompt": "The lobby of the tower: marble, glass, a desk with nobody at it, and a man in a pressed pale-blue shirt waiting by the elevator with a lanyard in his hand. He looks at you the way a receptionist looks at a delivery. \"You're the one from the barangay. Going door to door.\" A glance at his watch. \"I'm wanted upstairs in ten minutes. You can have nine.\"",
+      "choices": [
+        {
+          "text": "Then let's use them. Tell me what a closer does.",
+          "next": "explains"
+        },
+        {
+          "text": "Let's talk about the calls you finish.",
+          "next": "deny_node"
+        },
+        {
+          "text": "Forty desks on each floor, and you're the one with a card for the elevator. That makes you the one I charge.",
+          "next": "hostile",
+          "cooperation": -10
+        }
+      ]
+    },
+    "explains": {
+      "prompt": "\"When a conversion stalls, the desk transfers it to me, and I close.\" He says it the way a man describes a job in logistics. \"Conversions. That's the word. The desks open them; I close them. Nobody on either floor is better at the last two minutes of a call than I am, and the last two minutes are where the money is.\"",
+      "cooperation": 4,
+      "choices": [
+        {
+          "text": "Then let's talk about the last two minutes of a few of them.",
+          "next": "deny_node"
+        }
+      ]
+    },
+    "hostile": {
+      "prompt": "\"Charge me with what?\" He does not raise his voice; he has never needed to. \"Talking? I talk for a living. Everyone in this building talks for a living. You want the one who dials, and I don't dial.\" The lanyard turns once in his fingers. \"Eight minutes.\"",
+      "choices": [
+        {
+          "text": "Then tell me about the ones you don't dial.",
+          "next": "deny_node"
+        }
+      ]
+    },
+    "deny_node": {
+      "prompt": "\"I take transfers. I have never in my life spoken to anyone who did not ask to speak to me - the desk puts them through, and by the time they reach me they want it settled.\" He says it as a fact about a process, which is how he thinks of it. \"Nobody I close ever hears my voice twice.\"",
+      "claim": "Dennis Mercado, on the record: he takes transfers only, and nobody he closes ever hears from him again.",
+      "evidence_prompt": true,
+      "evidence_hint": "He has just told you the one thing he never does. There is a witness who was called back, and back, and back.",
+      "accepts_evidence": [
+        {
+          "evidence_id": "test_lina_confirmed",
+          "next": "caught_callbacks",
+          "contradicts": true,
+          "contradiction_note": "Lina Reyes was called back three times for three escalating fees, by the same voice, each call timed to the last payment. Nobody transfers a callback. The closer dialed.",
+          "response": "He reads the three dates the way a man reads a delivery schedule. \"The print shop.\" A pause that is not quite nothing. \"Three touches. That was a good conversion.\" He has just told you he made three calls.",
+          "cooperation": 20
+        },
+        {
+          "evidence_id": "test_teddy_confirmed",
+          "next": "pressed",
+          "response": "\"The grandfather.\" Something almost happens on his face and does not. \"Under forty minutes from transfer to close. I remember the time. I don't remember the name.\" He hands it back. \"I don't remember any of the names. That is the point of a script.\"",
+          "cooperation": 15
+        },
+        {
+          "evidence_id": "ev_owner_name",
+          "next": "pressed",
+          "response": "\"Ocampo gave you that.\" One laugh, short. \"Then you don't need me for the name. You need me for what he signs.\" The lanyard turns.",
+          "cooperation": 10
+        },
+        {
+          "accepts_scripts": ["*"],
+          "next": "pressed",
+          "response": "He reads it the way a man reads a receipt. \"A conversion.\" He hands it back. \"I don't remember them individually. That's the point of a script - it's the same call every time, so the last two minutes are the same every time, so I am the same every time.\"",
+          "cooperation": 10
+        },
+        {
+          "evidence_id": "ev_carmen_notice",
+          "next": "deny_node",
+          "response": "\"A text.\" He barely looks. \"Nobody on my floors sends texts. Somebody's phone does that before the desk ever dials.\" A message is the bait, not the closer; it proves what frightened her, not who finished the call.",
+          "cooperation": -6,
+          "wrong": true
+        }
+      ],
+      "choices": [
+        {
+          "text": "Marco cried. You know that.",
+          "next": "pressed"
+        },
+        {
+          "text": "I'll come back with more.",
+          "next": "end_denied"
+        }
+      ]
+    },
+    "caught_callbacks": {
+      "prompt": "\"Three touches,\" you say. \"By a man who only takes transfers.\" He looks at the dates again and, for the first time, at the door behind you instead of the elevator. \"A recontact is a transfer from the list,\" he says, and it is the first thing he has said that he does not believe himself.",
+      "cooperation": 10,
+      "milestone": {
+        "title": "Account Broken: Nobody Hears My Voice Twice",
+        "detail": "Dennis Mercado's account - transfers only, never a second call - did not survive a victim who was called back three times by the same voice for three fees."
+      },
+      "choices": [
+        {
+          "text": "Marco cried, you know. When it was put in front of him.",
+          "next": "pressed"
+        }
+      ]
+    },
+    "pressed": {
+      "prompt": "\"Marco cried because Marco is twenty-nine and thinks the list is a person.\" He checks the watch. \"I've heard every line you've got. The frozen account, the officer at four, the grandson in the cell. I wrote half of them. Pressure doesn't work on the man who sells it.\" He looks at you properly for the first time. \"Evidence might. Show me two people with names, and I'll tell you where the names go.\"",
+      "evidence_prompt": true,
+      "evidence_hint": "He has named his price: not pressure, a second person with a name. Any witness from either floor.",
+      "accepts_evidence": [
+        {
+          "accepts_scripts": ["*"],
+          "next": "two_names",
+          "response": "He puts the second statement beside the first and reads the two names together, which he has not done with any two names in years. \"Two,\" he says. \"With names attached.\" The lanyard stops turning.",
+          "cooperation": 15
+        },
+        {
+          "evidence_id": "ev_carmen_notice",
+          "next": "pressed",
+          "response": "\"Still a text.\" He does not read it again.",
+          "cooperation": -6,
+          "wrong": true
+        }
+      ],
+      "choices": [
+        {
+          "text": "I'll come back with more.",
+          "next": "end_denied"
+        }
+      ]
+    },
+    "two_names": {
+      "prompt": "\"A conversion is a number. Two conversions with names on them is a pattern, and a pattern is a case.\" He says it like a man quoting a training card he wrote. \"You want the last two minutes of the call. Fine. Here's what they are.\"",
+      "cooperation": 6,
+      "choices": [
+        {
+          "text": "Go on. The last two minutes.",
+          "next": "tactic_quiz_closer"
+        }
+      ]
+    },
+    "tactic_quiz_closer": {
+      "tactic_quiz": {
+        "setup": "\"The desk gets them frightened. My job is to keep them from doing the one thing that ends it.\" He lets that sit. [i]\"There is exactly one thing a closer must never let a mark do.\"[/i]",
+        "tactic_id": "verification_denial",
+        "tactic": "The closer's one rule",
+        "question": "What is the one thing the closer must never let the person on the line do?",
+        "milestone": {
+          "title": "Tactic Identified: The Closer's One Rule",
+          "detail": "Recognized, from the man whose job it is, that every script is built around one prohibition: the victim must never hang up and call back on a number they already trust - because every script fails the moment they do."
+        },
+        "options": [
+          {
+            "text": "Hang up and call back on a number they already trust.",
+            "correct": true,
+            "cooperation": 12,
+            "feedback": "\"That's it. That's the whole job.\" Every line a closer has - stay on the line, the account is frozen now, the officer is leaving at three, the desk can only hold it while we're talking - exists to keep the person from putting the phone down and dialing the number on the back of their own card. The scripts are different. The rule is the same. And it is the only thing you ever need to remember."
+          },
+          {
+            "text": "Ask for the caller's name and office.",
+            "cooperation": -6,
+            "feedback": "\"They ask that all the time. I give them one.\" A name and an office cost nothing to invent, and a closer has a dozen ready. The question that ends a call is not who are you - it is the one they ask somebody else, on another line."
+          },
+          {
+            "text": "Refuse to pay until they have a letter.",
+            "cooperation": -6,
+            "feedback": "\"A letter's on its way, I say, and it is - it's a PDF, and it looks fine.\" A demand for paperwork can be met with fake paperwork. What cannot be met is a call to the real office, because the real office has no idea what you are talking about."
+          },
+          {
+            "text": "Talk to a family member first.",
+            "cooperation": -8,
+            "feedback": "\"Half the time I've already told them I spoke to the family.\" A closer can claim to be the family's messenger, and does. The check that survives is not a conversation with someone in the room - it is a call, on a number the mark already had, to the institution the caller is pretending to be."
+          }
+        ],
+        "next": "final_check"
+      }
+    },
+    "final_check": {
+      "evidence_check": {
+        "required_scripts": ["*"],
+        "min_matching": 2,
+        "next_if_met": "end_named",
+        "next_if_not_met": "end_denied"
+      }
+    },
+    "end_named": {
+      "prompt": "\"{company}.\" He says it like a man giving directions. \"Fifth floor. No elevator access - you take the stairs past four and there's a door with a card reader, and behind it there's a man who signs the leases, signs the bonus board, and signs nothing with his own name on it that ever leaves the building.\" He holds up the lanyard, and the card on it, and puts it in your hand. \"Nine minutes. I'm wanted upstairs. I'd rather it was you.\"",
+      "outcome": "owner_named",
+      "grants_evidence": [
+        {
+          "id": "ev_owner_name",
+          "label": "The Name Above The Floors",
+          "description": "{company} - the company that leases both floors of the building and the ground on Terminal Road, named from inside. The fifth floor has no elevator access and a door with a card reader.",
+          "tactic": "An operation is owned by whoever signs the leases, not by whoever reads the scripts - and the owner's name is the one thing no call ever mentions."
+        }
+      ],
+      "milestone": {
+        "title": "The Closer Named The Owner",
+        "detail": "Dennis Mercado, shown two victims with names, gave the name above both floors and the card that opens the fifth - the one man in the building who goes upstairs, and the one who felt nothing about it until it was written down."
+      },
+      "choices": []
+    },
+    "end_denied": {
+      "prompt": "One conversion with a name on it is, to the closer, a number - and a number does not make him say another one. He is in the elevator with his nine minutes to spare.",
+      "outcome": "partial",
+      "choices": []
+    },
+    "end_stonewalled": {
+      "prompt": "\"Ten minutes.\" He is in the elevator before you have closed the folder, and the card reader beside the door blinks once as it takes him up. Whatever is on the fifth floor knows you were in the lobby before you are back on the street.",
+      "outcome": "failure",
+      "milestone": {
+        "title": "The Closer Went Upstairs",
+        "detail": "Dennis Mercado ended the interview and reported it upward. The one man who could have named the building's owner is the one man the owner hears from first."
+      },
+      "choices": []
+    }
+  }
+}

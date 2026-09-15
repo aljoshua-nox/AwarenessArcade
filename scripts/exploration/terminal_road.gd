@@ -17,19 +17,22 @@ const CASE_TRISH := "res://resources/cases/interview_case_008.json"
 const CASE_BEA := "res://resources/cases/interview_case_009.json"
 const CASE_JOEL := "res://resources/cases/interview_case_010.json"
 const CASE_CARMEN := "res://resources/cases/interview_case_012.json"
+const CASE_DENNIS := "res://resources/cases/interview_case_013.json"
 
 # Who lives behind which door. Trish in the first house on the grass, the one
 # home on this map; Bea in the boarding house at the head of the frontage row,
 # two doors from the canteen she eats at; Joel at the site office on the plot -
 # interviewed at work, which is where the call found him; Carmen at the canteen,
-# in her kitchen doorway. "site" is this district's own row: one building,
-# placed in _build_buildings. The rest of the slots are named in the comments
-# on the building tables below.
+# in her kitchen doorway; Dennis in the tower's lobby - the one operator who
+# goes upstairs, and the player gets as far as reception and no further.
+# "site" and "tower" are this district's own rows: one building each, placed
+# in _build_buildings.
 const INTERVIEWEES := [
 	{"case": CASE_TRISH, "label": "TRISH", "prompt": "Speak with Patricia Lim", "row": "block", "slot": 0},
 	{"case": CASE_BEA, "label": "BEA", "prompt": "Speak with Bea Santiago", "row": "street", "slot": 0},
 	{"case": CASE_JOEL, "label": "JOEL", "prompt": "Speak with Joel Abad", "row": "site", "slot": 0},
 	{"case": CASE_CARMEN, "label": "CARMEN", "prompt": "Speak with Carmen Salazar", "row": "street", "slot": CANTEEN_ROW_INDEX},
+	{"case": CASE_DENNIS, "label": "DENNIS", "prompt": "Interrogate Dennis Mercado", "row": "tower", "slot": 0},
 ]
 
 # Kenney sheet coordinates for the ground and props this district adds.
@@ -78,6 +81,7 @@ const CANTEEN_ROW_INDEX := 1
 const TOWER_TOP_LEFT := Vector2(1010.0, -80.0)
 const TOWER_SCALE := Vector2(4.6, 2.92)
 const TOWER_LABEL_Y := 120.0
+const TOWER_DOOR_LABEL_Y := 150.0
 
 # The site office: a squat unit on the plot - Joel's door, row "site" slot 0.
 const SITE_OFFICE_TOP_LEFT := Vector2(760.0, 560.0)
@@ -115,20 +119,22 @@ const NPC_SPOTS := [
 # milestone. The rest arrive with the people whose stories they set up: the
 # cafe owner and the neighbor with Trish and Bea, the site worker with Joel,
 # the remittance clerk with Carmen. Nothing points anything out.
-const TOWER_STOP_POSITION := Vector2(1120.0, 262.0)
+# The directory beside the tower's doors - clear of the door itself, which is
+# Dennis's - keeps the company's name on the street.
+const DIRECTORY_STOP_POSITION := Vector2(1215.0, 262.0)
 const STREET_STOPS := [
 	{
-		"position": TOWER_STOP_POSITION,
+		"position": DIRECTORY_STOP_POSITION,
 		"is_fixture": true,
-		"title": "Reception",
-		"prompt": "Look in at the reception",
-		"body": "Glass doors, a marble floor, a desk with nobody at it and a sign on an easel: %s - RECEPTION - CLOSED TO THE PUBLIC. Behind the desk a directory lists the floors by number and says nothing about what is on them. The elevator needs a card.",
-		"note": "A business that scams people still has a lobby. The name on the door is real; it is the description of the business that is not.",
+		"title": "Building directory",
+		"prompt": "Read the building directory",
+		"body": "A brass directory beside the glass doors, polished, the letters set by hand. %s. 3F - CUSTOMER SERVICE. 4F - TECHNICAL SUPPORT. 5F - HOLDINGS, NO ELEVATOR ACCESS. Under it, on an easel, a smaller sign: RECEPTION CLOSED TO THE PUBLIC.",
+		"note": "A business that scams people still has a lobby and a directory. The company's name is real; so are the floor numbers. It is the two words after them that are not - and the floor without elevator access is the one the directory says least about.",
 		"note_color": TextStyle.COLOR_HINT,
 		"marker": TextStyle.MARK_HINT,
 		"cites_name": true,
 		"milestone_title": "The Name On The Door",
-		"milestone_detail": "The tower on Terminal Road carries a company name and a locked lift - the operation has a front door the public is not allowed through.",
+		"milestone_detail": "The tower on Terminal Road carries a company name, two floors described as services, and a fifth floor with no elevator access - the operation has a front door the public is not allowed through, and an owner above it.",
 	},
 	{
 		"position": Vector2(1130.0, 535.0),
@@ -264,7 +270,7 @@ func transit() -> Dictionary:
 
 
 func slot_count(row: String) -> int:
-	if row == "site":
+	if row == "site" or row == "tower":
 		return 1
 	return super(row)
 
@@ -328,8 +334,9 @@ func _build_buildings() -> void:
 	for y in range(int(TOWER_TOP_LEFT.y), int(tower.end.y) - 24, 32):
 		for x in range(int(TOWER_TOP_LEFT.x) + 8, int(tower.end.x) - 24, 32):
 			_add_tile_sprite(TILE_GLASS, Vector2(float(x) + 16.0, float(y) + 16.0))
-	_add_shop_door(tower)
+	var tower_door := _add_shop_door(tower)
 	_add_building_label(tower, SessionState.COMPANY_NAME.split(" ")[0], TOWER_LABEL_Y)
+	_place_interviewee_door("tower", 0, tower, tower_door, TOWER_DOOR_LABEL_Y)
 
 	# The site office, inside the fence. Its door is a row of its own.
 	var site_office := _add_building(SITE_OFFICE_TOP_LEFT, ROOF_OLIVE_X, SITE_OFFICE_SCALE)

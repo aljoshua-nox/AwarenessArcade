@@ -127,6 +127,18 @@ func _test_lockout_ending() -> void:
 	_check(not view.continue_button.visible, "it is a true ending, not a mid-case summary")
 	await _close(view)
 
+	# The fifth ending: both floors fall and the owner walks.
+	_seed_reads(4, 4, [])
+	view = await _open("building_stands")
+	_check(not view.continue_button.visible, "the building standing is a true ending too")
+	_check(view.outcome_label.text.contains("Building Stands"), "...with its own title (%s)" % view.outcome_label.text)
+	_check(view.outcome_note.text.contains("never got was a name"), "...and a sharp verdict of its own")
+	for tier in ["sharp", "mixed", "blind"]:
+		_check(view.AWARENESS_VERDICTS["building_stands"].has(tier), "...and a verdict for the %s reader" % tier)
+	await _close(view)
+	view = await _open("insufficient_evidence")
+	await _close(view)
+
 	_seed_reads(0, 4, ["Manufactured urgency"])
 	var blind := await _open("insufficient_evidence")
 	_check(blind.outcome_note.text.contains("Nothing was proved and nothing was understood"),

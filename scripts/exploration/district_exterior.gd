@@ -318,7 +318,8 @@ func _build_interview_portals() -> void:
 
 # Drops the portal for whoever lives in this row/slot, if anyone does, and
 # labels the building so the player can tell the doors apart.
-func _place_interviewee_door(row: String, slot: int, building_rect: Rect2, door_base: Vector2) -> void:
+func _place_interviewee_door(row: String, slot: int, building_rect: Rect2, door_base: Vector2,
+		label_y: float = 18.0) -> void:
 	var table := interviewees()
 	for i in range(table.size()):
 		var entry: Dictionary = table[i]
@@ -326,7 +327,7 @@ func _place_interviewee_door(row: String, slot: int, building_rect: Rect2, door_
 			continue
 		if i < interview_portals.size():
 			interview_portals[i].global_position = door_base + Vector2(0.0, 14.0)
-		_add_building_label(building_rect, str(entry["label"]))
+		_add_building_label(building_rect, str(entry["label"]), label_y)
 		return
 
 

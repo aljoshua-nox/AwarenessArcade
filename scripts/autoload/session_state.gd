@@ -110,9 +110,6 @@ var suspect_flipped: bool = false
 # say so. Set by Bea's `turned` outcome; it is what opens Rowena's door, the
 # way suspect_flipped opens Elena's.
 var witness_flipped: bool = false
-# The fourth floor's director has put a name to the company above her. Set by
-# Rowena's `director_named` outcome; the endings read it once Gus exists.
-var upper_floor_named: bool = false
 # Set when an interview ends on a node marked `locks_case`. Losing Marco means
 # nobody will ever name the floor above him, so the confrontation can never
 # happen - without this the player simply wanders a street with nothing left to
@@ -123,7 +120,7 @@ var case_locked: bool = false
 func record_interview_outcome(person_id: String, outcome: String) -> void:
 	if not interviewed_people.has(person_id):
 		interviewed_people.append(person_id)
-	if outcome == "success" or outcome == "whistleblower" or outcome == "turned" or outcome == "director_named":
+	if outcome == "success" or outcome == "whistleblower" or outcome == "turned" or outcome == "owner_named":
 		detective_credibility = clampi(detective_credibility + 15, 0, 100)
 	elif outcome == "partial":
 		detective_credibility = clampi(detective_credibility + 5, 0, 100)
@@ -360,7 +357,6 @@ func reset_investigation() -> void:
 	has_office_return_spawn = false
 	suspect_flipped = false
 	witness_flipped = false
-	upper_floor_named = false
 	case_locked = false
 	investigation_inventory.clear()
 	investigation_case_title = ""

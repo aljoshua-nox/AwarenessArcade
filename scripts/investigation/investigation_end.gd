@@ -2,14 +2,15 @@ extends Control
 
 const TextStyle := preload("res://scripts/systems/text_style.gd")
 
-const FINAL_OUTCOMES := ["full_takedown", "partial_justice", "bribed", "insufficient_evidence"]
+const FINAL_OUTCOMES := ["full_takedown", "building_stands", "partial_justice", "bribed", "insufficient_evidence"]
 
 const OUTCOME_LABELS := {
 	"success": "Case Lead Confirmed",
 	"partial": "Investigation Incomplete",
 	"whistleblower": "Whistleblower Secured",
 	"turned": "Witness Turned",
-	"director_named": "Director Named",
+	"owner_named": "Owner Named",
+	"building_stands": "Case Closed: The Building Stands",
 	"failure": "Lead Lost",
 	"full_takedown": "Case Closed: Operation Dismantled",
 	"partial_justice": "Case Closed: Partial Justice",
@@ -22,9 +23,10 @@ const OUTCOME_MESSAGES := {
 	"partial": "You have a rough picture of what happened, but nothing yet that ties it to the wider operation. The case needs more.",
 	"whistleblower": "The suspect agreed to identify the wider operation. The case against the call center is no longer circumstantial.",
 	"turned": "Someone inside the operation has agreed to say what the floor above does. The building has a second door now.",
-	"director_named": "The fourth floor's director has put a name to the company that owns the building. The case has an address above the call floors now.",
+	"owner_named": "Someone inside the building has put a name to the company that owns it. The case has an address above the call floors now - it is in your evidence.",
+	"building_stands": "Both call floors are gone. The company that leased them to the operation was never named by anyone inside, and a landlord nobody names signs the next lease.",
 	"failure": "This lead has gone cold. The person you spoke with wasn't willing to give you anything more.",
-	"full_takedown": "Every testimony you gathered held up. The operation is being dismantled from the top down, not just the people who made the calls.",
+	"full_takedown": "Every testimony you gathered held up, and someone inside named the owner. The operation is being dismantled from the top down - the building, not just the people who made the calls in it.",
 	"partial_justice": "The callers face consequences, but the case wasn't strong enough to reach whoever was really running things.",
 	"bribed": "The investigation ends here - not because the evidence ran out, but because it stopped being pursued.",
 	"insufficient_evidence": "The file closes with nobody charged. The calls are documented, the people who took them are on record, and the operation that made them is still a phone number nobody can attach a name to.",
@@ -40,6 +42,11 @@ const AWARENESS_VERDICTS := {
 		"sharp": "You did not only close it - you can name every lever they pulled. The office is gone, and so is the part of this that could ever be used on you.",
 		"mixed": "Some of what it ran on still went past you unnamed, though, and those same lines are being read off a script somewhere else tonight.",
 		"blind": "The office is gone. The scripts are not. You took an operation apart without once naming what it actually did to people - and the next crew will use the same three, because they work.",
+	},
+	"building_stands": {
+		"sharp": "You named every lever they pulled and took both floors down with it. What you never got was a name for the man above them - and understanding how a fraud works is not the same as knowing who is paid when it does.",
+		"mixed": "Two floors gone, some of what they ran on still unnamed, and the owner unnamed with it. The next lease will be signed by the same hand.",
+		"blind": "The floors are gone. You never named what they did, and nobody inside ever named who they did it for. The building is already advertising the space.",
 	},
 	"partial_justice": {
 		"sharp": "You could not reach the top of it, but you understood it. That is the part of an unfinished case that still protects somebody.",

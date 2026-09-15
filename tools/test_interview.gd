@@ -19,6 +19,7 @@ const CASE_TEDDY := "res://resources/cases/interview_case_007.json"
 const CASE_TRISH := "res://resources/cases/interview_case_008.json"
 const CASE_BEA := "res://resources/cases/interview_case_009.json"
 const CASE_ROWENA := "res://resources/cases/interview_case_011.json"
+const CASE_DENNIS := "res://resources/cases/interview_case_013.json"
 
 var failures: Array[String] = []
 var checks := 0
@@ -94,6 +95,7 @@ func _run() -> void:
 	await _test_testimony_routing()
 	await _test_witness_turned()
 	await _test_fourth_floor_director()
+	await _test_closer()
 
 	print("\n%d checks, %d failed" % [checks, failures.size()])
 	for f in failures:
@@ -763,8 +765,24 @@ func _test_testimony_routing() -> void:
 	add_child(elena)
 	await get_tree().process_frame
 	elena._load_node("final_check")
+	_check(elena.current_node_id == "end_building_stands",
+		"two floor-3 testimonies - neither written when she was - meet her check, and without the owner's name the building stands (landed on %s)" % elena.current_node_id)
+	await _close(elena)
+
+	SessionState.reset_session()
+	SessionState.detective_credibility = GATE_CLEAR
+	SessionState.suspect_flipped = true
+	SessionState.add_evidence({"id": "test_teddy_confirmed", "label": "T", "person_id": "teodoro_villanueva", "script": "family_emergency"})
+	SessionState.add_evidence({"id": "test_joel_confirmed", "label": "J", "person_id": "joel_abad", "script": "government"})
+	SessionState.add_evidence({"id": "ev_owner_name", "label": "The Name Above The Floors", "description": "named"})
+	SessionState.pending_case_path = CASE_ELENA
+	elena = load(INTERVIEW_SCENE).instantiate()
+	add_child(elena)
+	await get_tree().process_frame
+	elena._load_node("final_check")
 	_check(elena.current_node_id == "end_full_takedown",
-		"two floor-3 testimonies - neither written when she was - meet her check (landed on %s)" % elena.current_node_id)
+		"...and with the owner's name in the file the takedown reaches him (landed on %s)" % elena.current_node_id)
+	_check(elena.prompt_value.text.contains(SessionState.COMPANY_NAME), "the takedown prints the one copy of the name")
 	await _close(elena)
 
 	SessionState.reset_session()
@@ -883,8 +901,8 @@ func _test_fourth_floor_director() -> void:
 	_check(rowena.current_node_id == "end_named",
 		"a tech-support witness and a job-offer witness together name the company (%s)" % rowena.current_node_id)
 	_check(rowena.prompt_value.text.contains(SessionState.COMPANY_NAME), "the ending prints the one copy of the name")
-	_check(SessionState.upper_floor_named, "...and records that the floor above is named")
-	_check(SessionState.investigation_outcome == "director_named", "the outcome is recorded (%s)" % SessionState.investigation_outcome)
+	_check(SessionState.has_evidence("ev_owner_name"), "...and puts the name above the floors in the file as evidence")
+	_check(SessionState.investigation_outcome == "owner_named", "the outcome is recorded (%s)" % SessionState.investigation_outcome)
 	await _close(rowena)
 
 	# Two witnesses from the same script are not enough; she answers for two.
@@ -900,7 +918,7 @@ func _test_fourth_floor_director() -> void:
 	_check(not rowena._presentable_ids().has("test_maria_confirmed"), "a bank-fraud witness is not something she can be shown")
 	rowena._load_node("final_check")
 	_check(rowena.current_node_id == "end_denied", "one witness from her floor is a denial, not a name (%s)" % rowena.current_node_id)
-	_check(not SessionState.upper_floor_named, "...and nothing above her is named")
+	_check(not SessionState.has_evidence("ev_owner_name"), "...and nothing above her is named")
 	await _close(rowena)
 
 	# Bea's own statement counts as the job-offer witness.
@@ -920,6 +938,48 @@ func _test_fourth_floor_director() -> void:
 	_check(rowena.current_node_id == "end_named", "Kevin and Bea together are enough (%s)" % rowena.current_node_id)
 	await _close(rowena)
 
-	SessionState.upper_floor_named = true
+	SessionState.add_evidence({"id": "ev_owner_name", "label": "The Name Above The Floors"})
 	SessionState.reset_session()
-	_check(not SessionState.upper_floor_named, "a fresh session has nobody named above the floors")
+	_check(not SessionState.has_evidence("ev_owner_name"), "a fresh session has nobody named above the floors")
+
+
+# Dennis is broken by evidence, not pressure: any two witnesses with names, from
+# either floor, and he gives the name above them - the same item Rowena gives.
+func _test_closer() -> void:
+	print("\n[the closer]")
+	SessionState.reset_session()
+	SessionState.detective_credibility = GATE_CLEAR
+	SessionState.add_evidence({"id": "test_lina_confirmed", "label": "Lina's Confirmed Testimony",
+		"person_id": "lina_reyes", "script": "lottery"})
+	SessionState.add_evidence({"id": "test_trish_confirmed", "label": "Trish's Confirmed Testimony",
+		"person_id": "patricia_lim", "script": "job_offer"})
+	SessionState.pending_case_path = CASE_DENNIS
+	var dennis: Node = load(INTERVIEW_SCENE).instantiate()
+	add_child(dennis)
+	await get_tree().process_frame
+	_check(dennis._presentable_ids().has("test_trish_confirmed"), "the closer can be shown a witness from the other floor")
+	dennis._load_node("deny_node")
+	dennis._present_evidence_index(_index_of(dennis, "test_lina_confirmed"))
+	_check(dennis.current_node_id == "caught_callbacks", "three callbacks break 'nobody hears my voice twice' (%s)" % dennis.current_node_id)
+	_check(dennis.prompt_value.text.contains("CONTRADICTION"), "...as a contradiction")
+	dennis._load_node("pressed")
+	dennis._present_evidence_index(_index_of(dennis, "test_trish_confirmed"))
+	_check(dennis.current_node_id == "two_names", "a second name from any script is his price (%s)" % dennis.current_node_id)
+	dennis._load_node("final_check")
+	_check(dennis.current_node_id == "end_named", "two names buy the owner's (%s)" % dennis.current_node_id)
+	_check(SessionState.has_evidence("ev_owner_name"), "...as the same evidence Rowena gives")
+	_check(dennis.prompt_value.text.contains(SessionState.COMPANY_NAME), "...printed from the one copy")
+	_check(SessionState.investigation_outcome == "owner_named", "the outcome is recorded (%s)" % SessionState.investigation_outcome)
+	await _close(dennis)
+
+	SessionState.reset_session()
+	SessionState.detective_credibility = GATE_CLEAR
+	SessionState.add_evidence({"id": "test_maria_confirmed", "label": "M", "person_id": "maria_santos", "script": "bank_fraud"})
+	SessionState.pending_case_path = CASE_DENNIS
+	dennis = load(INTERVIEW_SCENE).instantiate()
+	add_child(dennis)
+	await get_tree().process_frame
+	dennis._load_node("final_check")
+	_check(dennis.current_node_id == "end_denied", "one name is a number to him (%s)" % dennis.current_node_id)
+	_check(not SessionState.has_evidence("ev_owner_name"), "...and buys nothing")
+	await _close(dennis)

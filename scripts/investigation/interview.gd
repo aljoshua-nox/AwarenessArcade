@@ -562,8 +562,6 @@ func _load_node(node_id: String, lead_in: String = "") -> void:
 			SessionState.suspect_flipped = true
 		if outcome == "turned":
 			SessionState.witness_flipped = true
-		if outcome == "director_named":
-			SessionState.upper_floor_named = true
 		if outcome == "failure":
 			_play_sting(false)
 

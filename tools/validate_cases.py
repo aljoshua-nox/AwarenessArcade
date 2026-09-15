@@ -768,6 +768,8 @@ for f, data in parsed.items():
     for nid, node in data.get("nodes", {}).items():
         for variant in [node] + list(node.get("dispositions", {}).values()):
             for g in variant.get("grants_evidence", []):
+                if not str(g.get("id", "")).startswith("test_"):
+                    continue  # a granted document (the owner's name) is evidence, not testimony
                 script = g.get("script") or person.get("script")
                 if not script:
                     errors.append(f"{name}: {nid} grants '{g.get('id')}' with no script - a case that is not a"
@@ -1102,7 +1104,7 @@ REGISTER_FORBID = [
     (r"\bcar parks?\b", "parking lot"),
     (r"\bpetrol\b", "gas"),
     (r"\bpostcodes?\b", "zip code"),
-    (r"\bthe lift\b|\blifts? (needs?|to|door)\b", "elevator"),
+    (r"\b(the|a|locked|service|goods) lifts?\b|\blifts? (needs?|to|door|access)\b", "elevator"),
     (r"\ba flat\b(?! (tone|voice|no|refusal))|\bmy flat\b|\bher flat\b|\bhis flat\b|\bthe flat\b(?! (of|on)\b)|\bflat (in|near|above|upstairs)\b", "apartment"),
     (r"\bthe till\b", "the register"),
     (r"\bpost(ed|ing)? (it|the letter|a letter|the form|him|her|them) (to|back|off)\b|\bin the post\b|\bby post\b", "mail"),

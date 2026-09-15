@@ -97,8 +97,15 @@
       "evidence_check": {
         "required_scripts": ["bank_fraud", "lottery", "tech_support", "family_emergency", "government", "utility"],
         "min_matching": 2,
-        "next_if_met": "end_full_takedown",
+        "next_if_met": "owner_check",
         "next_if_not_met": "end_partial_justice"
+      }
+    },
+    "owner_check": {
+      "evidence_check": {
+        "required_evidence": ["ev_owner_name"],
+        "next_if_met": "end_full_takedown",
+        "next_if_not_met": "end_building_stands"
       }
     },
     "end_bribed": {
@@ -111,11 +118,20 @@
       "choices": []
     },
     "end_full_takedown": {
-      "prompt": "By evening, officers move through three floors of the operation. Scripts, victim lists, and payment logs are seized. With a second confirmed testimony behind Marco's statement, there is enough to name the people at the top - not just the callers underneath them. The lists are the part that matters: every name on them belongs to someone who was going to be called again.",
+      "prompt": "By evening, officers move through three floors of the building, and then a fourth door with a card reader on it. Scripts, victim lists, payment logs and two leases are seized, and the leases carry a signature. With a second confirmed testimony behind Marco's statement and the name above the floors in your file, there is enough to charge {company} - the man who signed for the building, not just the people who read the scripts in it. The lists are the part that matters: every name on them belongs to someone who was going to be called again.",
       "outcome": "full_takedown",
       "milestone": {
         "title": "Investigation Breakthrough",
         "detail": "Enough evidence was gathered to bring down the operation, not just the individual callers."
+      },
+      "choices": []
+    },
+    "end_building_stands": {
+      "prompt": "By evening, officers move through both call floors. Scripts, victim lists and payment logs are seized; Marco, Elena and the desks face charges. But the floors are leased, and the leases are in a holding company's name, and nobody on either floor can say who signs for it - the fifth floor has a card reader and no name on the door. The building stands. So does whoever owns it, and the lease on the next floor is already being drawn up.",
+      "outcome": "building_stands",
+      "milestone": {
+        "title": "The Floors Fall, The Building Stands",
+        "detail": "Both call floors were taken down on the strength of the witnesses - but nobody inside the building had named its owner, and an owner who is never named leases the next floor."
       },
       "choices": []
     },

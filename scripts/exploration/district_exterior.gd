@@ -664,37 +664,56 @@ func _add_outline(rect: Rect2, color: Color, thickness: float = 3.0) -> void:
 
 # A sign on posts with a few lines of text - the noticeboard's bigger cousin,
 # for a hoarding or a shopfront. `base` is where the posts meet the ground.
+#
+# The labels are made first and measured, and the board is built around them:
+# a Label cannot be narrower than its text, so a line wider than a fixed face
+# grows off the board's left edge and loses its centring. Measuring after
+# add_child() uses the project theme's real font, not a guess at it.
 func _add_signboard(base: Vector2, lines: Array, board_size: Vector2 = Vector2(150.0, 62.0),
 		face_color: Color = Color(0.94, 0.92, 0.86, 1.0), text_color: Color = Color(0.16, 0.16, 0.24, 1.0),
 		accent_color: Color = Color(0.63, 0.12, 0.12, 1.0)) -> void:
-	var top_left := base - Vector2(board_size.x * 0.5, board_size.y + 20.0)
-	for post_x in [base.x - board_size.x * 0.35, base.x + board_size.x * 0.35]:
-		var post := ColorRect.new()
-		post.color = Color(0.33, 0.24, 0.16, 1.0)
-		post.position = Vector2(post_x - 5.0, top_left.y + board_size.y)
-		post.size = Vector2(10.0, 22.0)
-		decor.add_child(post)
-	var frame := ColorRect.new()
-	frame.color = Color(0.24, 0.20, 0.16, 1.0)
-	frame.position = top_left - Vector2(4.0, 4.0)
-	frame.size = board_size + Vector2(8.0, 8.0)
-	decor.add_child(frame)
-	var face := ColorRect.new()
-	face.color = face_color
-	face.position = top_left
-	face.size = board_size
-	decor.add_child(face)
-	var line_height := board_size.y / maxf(1.0, float(lines.size()))
+	const MARGIN := 24.0
+	var labels: Array[Label] = []
 	for i in range(lines.size()):
 		var label := Label.new()
 		label.text = str(lines[i])
-		label.position = top_left + Vector2(0.0, line_height * i)
-		label.size = Vector2(board_size.x, line_height)
 		label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 		label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 		label.add_theme_font_size_override("font_size", 12)
 		label.add_theme_color_override("font_color", accent_color if i > 0 else text_color)
 		decor.add_child(label)
+		labels.append(label)
+		board_size.x = maxf(board_size.x, label.get_minimum_size().x + MARGIN)
+
+	var top_left := base - Vector2(board_size.x * 0.5, board_size.y + 20.0)
+	var line_height := board_size.y / maxf(1.0, float(lines.size()))
+	for i in range(labels.size()):
+		labels[i].position = top_left + Vector2(0.0, line_height * i)
+		labels[i].size = Vector2(board_size.x, line_height)
+
+	# Posts, frame and face go in behind the text, in that order.
+	var behind: Array[Control] = []
+	for post_x in [base.x - board_size.x * 0.35, base.x + board_size.x * 0.35]:
+		var post := ColorRect.new()
+		post.color = Color(0.33, 0.24, 0.16, 1.0)
+		post.position = Vector2(post_x - 5.0, top_left.y + board_size.y)
+		post.size = Vector2(10.0, 22.0)
+		behind.append(post)
+	var frame := ColorRect.new()
+	frame.color = Color(0.24, 0.20, 0.16, 1.0)
+	frame.position = top_left - Vector2(4.0, 4.0)
+	frame.size = board_size + Vector2(8.0, 8.0)
+	behind.append(frame)
+	var face := ColorRect.new()
+	face.color = face_color
+	face.position = top_left
+	face.size = board_size
+	behind.append(face)
+	var first_label_index := labels[0].get_index() if not labels.is_empty() else decor.get_child_count()
+	for node in behind:
+		decor.add_child(node)
+		decor.move_child(node, first_label_index)
+		first_label_index += 1
 
 
 func _add_wall_segment(top_left: Vector2, size: Vector2) -> void:

@@ -59,6 +59,9 @@ var disposition: String = SessionState.DISPOSITION_NEUTRAL
 var disposition_opening: String = ""
 var disposition_note: String = ""
 var opening_node_id: String = ""
+# True when the case opened on its hesitant node - the witness refused for want
+# of standing. No statement was taken, so none is spent.
+var hesitant_visit: bool = false
 
 # The keys a node's `dispositions` block may override. Only the opening beat
 # used to vary with the prologue; everything after it was the case as written
@@ -223,6 +226,7 @@ func _determine_start_node() -> String:
 	if SessionState.detective_credibility < min_credibility:
 		var hesitant_start := str(person.get("hesitant_start", ""))
 		if not hesitant_start.is_empty():
+			hesitant_visit = true
 			return hesitant_start
 	return default_start
 
@@ -556,6 +560,7 @@ func _load_node(node_id: String, lead_in: String = "") -> void:
 		SessionState.investigation_cooperation = cooperation
 		SessionState.investigation_evidence_misses = evidence_misses
 		SessionState.record_interview_outcome(str(person.get("person_id", "")), outcome)
+		SessionState.record_statement(str(person.get("person_id", "")), str(person.get("role", "")), outcome, hesitant_visit)
 		if bool(current_node.get("locks_case", false)):
 			SessionState.case_locked = true
 		if outcome == "whistleblower":

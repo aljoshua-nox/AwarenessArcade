@@ -94,6 +94,23 @@ var tactic_reads: Array[Dictionary] = []
 var tactics_learned: Array[Dictionary] = []
 var detective_credibility: int = 50
 var interviewed_people: Array[String] = []
+
+# The investigation's pressure. The prologue has a four-minute shift; the
+# investigation has a case with this many statements in it. A victim or a
+# witness costs one when their interview reaches an ending - not when they
+# refuse at the door for want of standing - and the suspects and directors
+# cost nothing: they are the payoff, and the player is already in the
+# building. When it is spent, the case has to move with what it has; if what
+# it has cannot flip Marco, his lawyered ending is the lockout that closes it.
+const STATEMENT_BUDGET := 6
+const STATEMENT_ROLES := ["Victim", "Witness"]
+var statements_taken: int = 0
+# A witness whose interview failed is closed for good. The endings already say
+# so - "you will not get to see it again" - and the map now agrees.
+var closed_witnesses: Array[String] = []
+# Credibility an ending has already paid, per person, so a second visit cannot
+# farm it. A partial then a success still nets the full success.
+var interview_credit: Dictionary = {}
 var pending_case_path: String = ""
 var urban_return_spawn: Vector2 = Vector2.ZERO
 var has_urban_return_spawn: bool = false
@@ -120,12 +137,37 @@ var case_locked: bool = false
 func record_interview_outcome(person_id: String, outcome: String) -> void:
 	if not interviewed_people.has(person_id):
 		interviewed_people.append(person_id)
+	var gain := 0
 	if outcome == "success" or outcome == "whistleblower" or outcome == "turned" or outcome == "owner_named":
-		detective_credibility = clampi(detective_credibility + 15, 0, 100)
+		gain = 15
 	elif outcome == "partial":
-		detective_credibility = clampi(detective_credibility + 5, 0, 100)
+		gain = 5
+	if gain > 0:
+		# Paid once per person: the best ending they have given, not every visit.
+		var already := int(interview_credit.get(person_id, 0))
+		if gain > already:
+			detective_credibility = clampi(detective_credibility + (gain - already), 0, 100)
+			interview_credit[person_id] = gain
 	elif outcome == "failure":
 		detective_credibility = clampi(detective_credibility - 10, 0, 100)
+
+
+# A witness interview that reached an ending spends a statement, and one that
+# failed closes the witness. A hesitant refusal at the door is neither.
+func record_statement(person_id: String, role: String, outcome: String, hesitant: bool) -> void:
+	if not STATEMENT_ROLES.has(role) or hesitant:
+		return
+	statements_taken += 1
+	if outcome == "failure" and not closed_witnesses.has(person_id):
+		closed_witnesses.append(person_id)
+
+
+func statements_left() -> int:
+	return maxi(0, STATEMENT_BUDGET - statements_taken)
+
+
+func is_witness_closed(person_id: String) -> bool:
+	return closed_witnesses.has(person_id)
 
 
 func record_tactic_read(correct: bool, tactic: String = "") -> void:
@@ -371,6 +413,9 @@ func reset_investigation() -> void:
 	tactics_learned.clear()
 	detective_credibility = 50
 	interviewed_people.clear()
+	statements_taken = 0
+	closed_witnesses.clear()
+	interview_credit.clear()
 	pending_case_path = ""
 	session_reset.emit()
 

@@ -285,10 +285,12 @@ func _refresh_view() -> void:
 	if not verdict.is_empty():
 		note_lines.append(verdict)
 	# Two running numbers do not need a paragraph each.
-	note_lines.append("[color=#%s]Cooperation %d / 100     Credibility %d / 100[/color]" % [
+	note_lines.append("[color=#%s]Cooperation %d / 100     Credibility %d / 100     Statements %d / %d[/color]" % [
 		TextStyle.COLOR_NARRATION,
 		SessionState.investigation_cooperation,
-		SessionState.detective_credibility])
+		SessionState.detective_credibility,
+		SessionState.statements_taken,
+		SessionState.STATEMENT_BUDGET])
 	outcome_note.text = "\n\n".join(note_lines)
 
 	scorecard_value.text = _build_scorecard_text()

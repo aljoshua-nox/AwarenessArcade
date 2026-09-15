@@ -36,8 +36,13 @@ const STOP_SIZE := Vector2(104.0, 96.0)
 
 var interview_portals: Array[ScenePortal] = []
 var portal_case_paths: Dictionary = {}
+# Doors the player can stand at but not open: a witness who failed and will
+# not talk again, or any witness once the case's statements are spent. The
+# prompt says which; Enter does nothing.
+var portal_blocked: Dictionary = {}
 var active_interview_portal: ScenePortal = null
 var transit_portal: ScenePortal = null
+var statements_label: Label
 
 # What _build_map() actually put down, so the layout test can check the
 # rectangles that are on screen rather than recompute them from the tables.
@@ -293,13 +298,47 @@ func _transit_in_reach() -> bool:
 	return player.global_position.distance_to(transit_portal.global_position) <= 40.0
 
 
+# The person behind a door, read off their case file: their role decides
+# whether the door costs a statement, their name what a closed door says.
+func _case_person(case_path: String) -> Dictionary:
+	var file := FileAccess.open(case_path, FileAccess.READ)
+	if file == null:
+		return {}
+	var parsed: Variant = JSON.parse_string(file.get_as_text())
+	if typeof(parsed) != TYPE_DICTIONARY:
+		return {}
+	return (parsed as Dictionary).get("person", {})
+
+
+# What a door says, given the case behind it and where the case stands.
+func _door_prompt(entry: Dictionary, person: Dictionary) -> String:
+	var role := str(person.get("role", ""))
+	var person_id := str(person.get("person_id", ""))
+	if SessionState.STATEMENT_ROLES.has(role):
+		if SessionState.is_witness_closed(person_id):
+			return "%s won't talk to you again" % str(person.get("name", "This witness"))
+		if SessionState.statements_left() <= 0:
+			return "No time for another statement - the case moves with what it has"
+	return str(entry["prompt"])
+
+
+func _door_is_blocked(person: Dictionary) -> bool:
+	var role := str(person.get("role", ""))
+	if not SessionState.STATEMENT_ROLES.has(role):
+		return false
+	return SessionState.is_witness_closed(str(person.get("person_id", ""))) or SessionState.statements_left() <= 0
+
+
 # One Area2D per interviewee, created from interviewees(). _build_map() drops
 # each one at its building's door.
 func _build_interview_portals() -> void:
 	for entry in interviewees():
+		var person := _case_person(str(entry["case"]))
 		var interview_portal := ScenePortal.new()
 		interview_portal.target_scene = INTERVIEW_SCENE
-		interview_portal.prompt_text = str(entry["prompt"])
+		interview_portal.prompt_text = _door_prompt(entry, person)
+		if _door_is_blocked(person):
+			portal_blocked[interview_portal] = true
 		interview_portal.monitoring = true
 		interview_portal.monitorable = true
 
@@ -775,6 +814,16 @@ func _build_stop_ui() -> void:
 	stop_label.visible = false
 	hud.add_child(stop_label)
 
+	# The case's budget, always visible - a budget the player did not know
+	# about would read as unfair the first time it bit.
+	statements_label = Label.new()
+	statements_label.offset_left = 20.0
+	statements_label.offset_top = 158.0
+	statements_label.text = "Statements: %d of %d" % [SessionState.statements_taken, SessionState.STATEMENT_BUDGET]
+	statements_label.add_theme_color_override("font_color",
+		Color.html(TextStyle.COLOR_WRONG) if SessionState.statements_left() <= 1 else Color.html(TextStyle.COLOR_HINT))
+	hud.add_child(statements_label)
+
 	inspect_panel = PanelContainer.new()
 	inspect_panel.set_anchors_preset(Control.PRESET_CENTER)
 	inspect_panel.anchor_left = 0.5
@@ -966,11 +1015,11 @@ func _can_enter_portal() -> bool:
 
 func _can_enter_interview() -> bool:
 	if interview_label.visible and active_interview_portal != null:
-		return true
+		return not portal_blocked.has(active_interview_portal)
 	for interview_portal in interview_portals:
 		if player.global_position.distance_to(interview_portal.global_position) <= 40.0:
 			active_interview_portal = interview_portal
-			return true
+			return not portal_blocked.has(interview_portal)
 	return false
 
 

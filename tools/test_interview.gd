@@ -96,6 +96,7 @@ func _run() -> void:
 	await _test_witness_turned()
 	await _test_fourth_floor_director()
 	await _test_closer()
+	await _test_statement_budget()
 
 	print("\n%d checks, %d failed" % [checks, failures.size()])
 	for f in failures:
@@ -1009,3 +1010,83 @@ func _test_closer() -> void:
 	_check(dennis.current_node_id == "end_denied", "one name is a number to him (%s)" % dennis.current_node_id)
 	_check(not SessionState.has_evidence("ev_owner_name"), "...and buys nothing")
 	await _close(dennis)
+
+
+# The investigation's pressure: a case has six statements in it. A witness
+# interview that reaches an ending spends one; a refusal at the door does not;
+# the suspects and directors are free; a failure closes the witness; and an
+# ending pays its credibility once per person, so nothing can be farmed.
+func _test_statement_budget() -> void:
+	print("\n[the statement budget]")
+	SessionState.reset_session()
+	SessionState.detective_credibility = 50
+	_check(SessionState.statements_left() == SessionState.STATEMENT_BUDGET, "a fresh case has every statement left")
+
+	var evelyn: Node = await _open_at(CASE_EVELYN, 50)
+	evelyn._load_node("end_success")
+	_check(SessionState.statements_taken == 1, "a witness interview that ends spends a statement (%d)" % SessionState.statements_taken)
+	_check(SessionState.detective_credibility == 65, "...and pays its credibility (%d)" % SessionState.detective_credibility)
+	await _close(evelyn)
+
+	var kevin: Node = await _open_at(CASE_KEVIN, 50)
+	_check(kevin.current_node_id == "hesitant_intro", "Kevin refuses at 50")
+	kevin._load_node("end_partial_hesitant")
+	_check(SessionState.statements_taken == 1, "a refusal at the door spends nothing (%d)" % SessionState.statements_taken)
+	await _close(kevin)
+
+	SessionState.add_evidence({"id": "test_evelyn_confirmed", "label": "E", "person_id": "evelyn_marsh", "script": "lottery"})
+	var marco: Node = await _open_at(CASE_MARCO, SessionState.detective_credibility)
+	marco._load_node("end_whistleblower")
+	await _close(marco)
+	_check(SessionState.statements_taken == 1, "a suspect spends nothing (%d)" % SessionState.statements_taken)
+
+	kevin = await _open_at(CASE_KEVIN, GATE_CLEAR)
+	_check(kevin.current_node_id == "intro", "Kevin talks at %d" % GATE_CLEAR)
+	kevin._load_node("end_shutdown")
+	_check(SessionState.statements_taken == 2, "a failed interview still spent its statement (%d)" % SessionState.statements_taken)
+	_check(SessionState.is_witness_closed("kevin_d"), "...and closes the witness for good")
+	_check(not SessionState.is_witness_closed("evelyn_marsh"), "...only that witness")
+	await _close(kevin)
+
+	# Credibility is paid once per person. A partial then a success nets the
+	# success; a second success nets nothing; a suspect cannot be farmed.
+	SessionState.reset_session()
+	SessionState.detective_credibility = 50
+	evelyn = await _open_at(CASE_EVELYN, 50)
+	evelyn._load_node("end_partial")
+	_check(SessionState.detective_credibility == 55, "a partial pays 5 (%d)" % SessionState.detective_credibility)
+	await _close(evelyn)
+	evelyn = await _open_at(CASE_EVELYN, SessionState.detective_credibility)
+	evelyn._load_node("end_success")
+	_check(SessionState.detective_credibility == 65, "...and a success after it nets the full 15, not 20 (%d)" % SessionState.detective_credibility)
+	await _close(evelyn)
+	evelyn = await _open_at(CASE_EVELYN, SessionState.detective_credibility)
+	evelyn._load_node("end_success")
+	_check(SessionState.detective_credibility == 65, "a second success pays nothing (%d)" % SessionState.detective_credibility)
+	await _close(evelyn)
+
+	SessionState.reset_session()
+	SessionState.detective_credibility = 50
+	for i in range(2):
+		SessionState.add_evidence({"id": "test_lina_confirmed", "label": "L", "person_id": "lina_reyes", "script": "lottery"})
+		SessionState.add_evidence({"id": "test_trish_confirmed", "label": "T", "person_id": "patricia_lim", "script": "job_offer"})
+		var dennis: Node = await _open_at(CASE_DENNIS, SessionState.detective_credibility)
+		dennis._load_node("end_named")
+		await _close(dennis)
+	_check(SessionState.detective_credibility == 65, "running the closer's ending twice pays once (%d)" % SessionState.detective_credibility)
+	_check(SessionState.statements_taken == 0, "...and the closer never spent a statement")
+
+	SessionState.statements_taken = 4
+	SessionState.closed_witnesses.append("kevin_d")
+	SessionState.reset_session()
+	_check(SessionState.statements_taken == 0 and SessionState.closed_witnesses.is_empty(),
+		"a fresh session has every statement and every witness back")
+
+
+func _open_at(case_path: String, credibility: int) -> Node:
+	SessionState.detective_credibility = credibility
+	SessionState.pending_case_path = case_path
+	var view: Node = load(INTERVIEW_SCENE).instantiate()
+	add_child(view)
+	await get_tree().process_frame
+	return view

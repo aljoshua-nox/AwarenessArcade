@@ -72,6 +72,7 @@ func _run() -> void:
 	await _test_transit()
 	await _test_credibility_economy()
 	await _test_locked_case()
+	await _test_statement_budget_doors()
 
 	print("\n%d checks, %d failed" % [checks, failures.size()])
 	for f in failures:
@@ -589,3 +590,61 @@ func _area_rect(area: Area2D, fallback: Vector2) -> Rect2:
 	if shape != null and shape.shape is RectangleShape2D:
 		size = (shape.shape as RectangleShape2D).size
 	return Rect2(area.global_position - size * 0.5, size)
+
+
+# The budget on the street: the counter is on the HUD, a witness door closes
+# when the witness failed or the statements are spent, and the suspects' doors
+# never do.
+func _test_statement_budget_doors() -> void:
+	print("\n[the budget at the doors]")
+	SessionState.reset_session()
+	var view := await _open()
+	_check(view.statements_label.text == "Statements: 0 of %d" % SessionState.STATEMENT_BUDGET,
+		"the street shows the budget (%s)" % view.statements_label.text)
+	_check(view.portal_blocked.is_empty(), "a fresh case has every door open")
+	await _close(view)
+
+	SessionState.reset_session()
+	SessionState.statements_taken = SessionState.STATEMENT_BUDGET
+	view = await _open()
+	var evelyn := _door_for(view, "interview_case_005.json")
+	var marco := _door_for(view, "interview_case_003.json")
+	_check(evelyn != null and evelyn.prompt_text.begins_with("No time for another statement"),
+		"a spent budget closes a witness's door (%s)" % (evelyn.prompt_text if evelyn else "?"))
+	_check(marco != null and marco.prompt_text == "Interrogate Marco Navarro",
+		"...and leaves the suspect's open (%s)" % (marco.prompt_text if marco else "?"))
+	view.player.global_position = evelyn.global_position
+	_check(not view._can_enter_interview(), "Enter at a closed door does nothing")
+	view.active_interview_portal = null
+	view.interview_label.visible = false
+	view.player.global_position = marco.global_position
+	_check(view._can_enter_interview(), "Enter at the suspect's door still works")
+	await _close(view)
+
+	SessionState.reset_session()
+	SessionState.closed_witnesses.append("kevin_d")
+	view = await _open()
+	var kevin := _door_for(view, "interview_case_002.json")
+	evelyn = _door_for(view, "interview_case_005.json")
+	_check(kevin != null and kevin.prompt_text == "Kevin Dizon won't talk to you again",
+		"a failed witness's door says so (%s)" % (kevin.prompt_text if kevin else "?"))
+	_check(evelyn != null and evelyn.prompt_text == "Speak with Evelyn Marsh", "...and the others are untouched")
+	_check(view.portal_blocked.size() == 1, "exactly one door is closed")
+	await _close(view)
+
+	# Terminal Road reads the same budget.
+	SessionState.reset_session()
+	SessionState.statements_taken = SessionState.STATEMENT_BUDGET
+	view = await _open(TERMINAL_SCENE)
+	var trish := _door_for(view, "interview_case_008.json")
+	var dennis := _door_for(view, "interview_case_013.json")
+	_check(trish != null and view.portal_blocked.has(trish), "a spent budget closes Trish's door")
+	_check(dennis != null and not view.portal_blocked.has(dennis), "...and not the closer's")
+	await _close(view)
+
+
+func _door_for(view: Node, case_file: String) -> ScenePortal:
+	for door in view.interview_portals:
+		if str(view.portal_case_paths.get(door, "")).ends_with(case_file):
+			return door
+	return null

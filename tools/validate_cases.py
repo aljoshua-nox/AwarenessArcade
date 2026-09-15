@@ -652,6 +652,185 @@ linked = sorted(pid for pid in EXPECTED_LINKS if pid in prologue_ids
 print(f"call_content.json: {len(prologue_ids)} call scripts, "
       f"{len(linked)} linked to an interview ({', '.join(linked) if linked else 'none'})")
 
+# --- Prose lint: the interview must not contradict the prologue --------------
+# The engine varies a case per disposition node by node, and the checks above
+# make sure every override's targets resolve. What nothing checked is the prose:
+# an override forgotten on one node leaves "she lost nothing" standing in front
+# of a player who took her money, which is exactly how Evelyn read for a build
+# and was fixed by hand. This scans the text a player would actually see under
+# each disposition for phrases that assert the opposite of it.
+#
+# It is a blunt instrument on purpose. A false positive costs a review and an
+# entry in the case's `lint_allow` (substrings to ignore); a miss is the bug.
+# A case can add its own phrases under `lint_forbid` {disposition: [regex]}.
+# Neutral is never linted: it is the case exactly as written, and its premise
+# is whatever the writer chose.
+import re
+
+LINT_FORBID = {
+    # Money was taken from this person. Nothing may say it was not.
+    "harmed": [
+        r"\blost nothing\b",
+        r"\b(didn't|did not|never|hadn't|had not)( even)? pa(y|id)\b",
+        r"\bnothing (was|had been) taken\b",
+        r"\bno transaction\b",
+        r"\bno loss to report\b",
+        r"\brefused the call\b",
+        r"\b(she|he) (refused|hung up)\b",
+        r"\bhung up on (you|him|her|them)\b",
+        r"\bnot a (penny|peso|cent)\b",
+        r"\bkept (her|his) money\b",
+    ],
+    # Refused the call, unharmed. Nothing may say money moved.
+    "resistant": [
+        r"\b(she|he) paid\b",
+        r"\btook (her|his|their) money\b",
+        r"\btook money from\b",
+        r"\bthe transfer\b",
+        r"\btransferred\b",
+        r"\b(sent|wired) (the |her |his )?money\b",
+        r"\bmoney (she|he) sent\b",
+        r"\blost (her|his|the|their) (savings|money|deposit)\b",
+    ],
+    # The call never resolved. Nothing may say money moved, or that they refused.
+    "unfinished": [
+        r"\b(she|he) paid\b",
+        r"\btook (her|his|their) money\b",
+        r"\btook money from\b",
+        r"\bthe transfer\b",
+        r"\btransferred\b",
+        r"\b(sent|wired) (the |her |his )?money\b",
+        r"\bmoney (she|he) sent\b",
+        r"\blost (her|his|the|their) (savings|money|deposit)\b",
+        r"\brefused the call\b",
+        r"\b(she|he) refused\b",
+        r"\bhung up on (you|him|her|them)\b",
+    ],
+}
+LINT_WHY = {
+    "harmed": "the player took money from this person",
+    "resistant": "this person refused and lost nothing",
+    "unfinished": "this call was never resolved",
+}
+
+
+def lint_texts(node, disposition):
+    """Every string a player can read on this node under this disposition."""
+    resolved = dict(node)
+    resolved.update(node.get("dispositions", {}).get(disposition, {}))
+    if "tactic_quiz" in node and "tactic_quiz" in node.get("dispositions", {}).get(disposition, {}):
+        quiz = dict(node["tactic_quiz"])
+        quiz.update(node["dispositions"][disposition]["tactic_quiz"])
+        resolved["tactic_quiz"] = quiz
+    out = []
+    for key in ("prompt", "evidence_hint", "evidence_prompt", "claim"):
+        if resolved.get(key):
+            out.append((key, resolved[key]))
+    for i, c in enumerate(resolved.get("choices", [])):
+        if c.get("text"):
+            out.append((f"choices[{i}].text", c["text"]))
+    for i, e in enumerate(resolved.get("accepts_evidence", [])):
+        for key in ("response", "contradiction_note"):
+            if e.get(key):
+                out.append((f"accepts_evidence[{i}].{key}", e[key]))
+    m = resolved.get("milestone", {})
+    for key in ("title", "detail"):
+        if m.get(key):
+            out.append((f"milestone.{key}", m[key]))
+    q = resolved.get("tactic_quiz", {})
+    for key in ("setup", "question"):
+        if q.get(key):
+            out.append((f"tactic_quiz.{key}", q[key]))
+    for i, o in enumerate(q.get("options", [])):
+        for key in ("text", "feedback"):
+            if o.get(key):
+                out.append((f"tactic_quiz.options[{i}].{key}", o[key]))
+    return out
+
+
+def lint_evidence_texts(item, disposition):
+    if "only_for" in item and disposition not in item["only_for"]:
+        return []
+    override = item.get("dispositions", {}).get(disposition, {})
+    if override.get("omit"):
+        return []
+    resolved = dict(item)
+    resolved.update({k: v for k, v in override.items() if k != "omit"})
+    return [(key, resolved[key]) for key in ("label", "description", "tactic") if resolved.get(key)]
+
+
+def lint_scan(name, where, text, disposition, allow, forbid):
+    if not isinstance(text, str):
+        return  # `evidence_prompt` is a flag on some nodes, not a line
+    for pattern in forbid:
+        hit = re.search(pattern, text, re.IGNORECASE)
+        if not hit:
+            continue
+        if any(a.lower() in text.lower() for a in allow):
+            continue
+        errors.append(
+            f"{name}: under '{disposition}', {where} says \"{hit.group(0)}\""
+            f" - but {LINT_WHY[disposition]}")
+        return
+
+
+# Who granted each testimony, so a suspect's reaction to it can be read under
+# the disposition of the person it came from.
+testimony_owner = {}
+for f, data in parsed.items():
+    pid = data.get("person", {}).get("person_id", "")
+    for node in data.get("nodes", {}).values():
+        for g in node.get("grants_evidence", []):
+            testimony_owner[g["id"]] = (os.path.basename(f), pid)
+linked_cases = {os.path.basename(f) for f, d in parsed.items() if d.get("person", {}).get("dispositions")}
+
+for f, data in parsed.items():
+    name = os.path.basename(f)
+    person = data.get("person", {})
+    allow = data.get("lint_allow", [])
+    extra = data.get("lint_forbid", {})
+    if not isinstance(allow, list) or not all(isinstance(a, str) for a in allow):
+        errors.append(f"{name}: lint_allow must be a list of strings")
+        allow = []
+    if not isinstance(extra, dict):
+        errors.append(f"{name}: lint_forbid must be an object keyed by disposition")
+        extra = {}
+    for key in extra:
+        if key not in VALID_DISPOSITIONS:
+            errors.append(f"{name}: lint_forbid['{key}'] is not a disposition")
+
+    if person.get("dispositions"):
+        # A linked victim: everything the player reads, under each outcome.
+        for d in sorted(VALID_DISPOSITIONS):
+            forbid = LINT_FORBID[d] + list(extra.get(d, []))
+            entry = person["dispositions"].get(d, {})
+            for key in ("prompt", "note"):
+                if entry.get(key):
+                    lint_scan(name, f"person.dispositions.{d}.{key}", entry[key], d, allow, forbid)
+            for nid, node in data.get("nodes", {}).items():
+                for where, text in lint_texts(node, d):
+                    lint_scan(name, f"{nid}.{where}", text, d, allow, forbid)
+            for i, item in enumerate(data.get("evidence", [])):
+                for where, text in lint_evidence_texts(item, d):
+                    lint_scan(name, f"evidence[{i}].{where}", text, d, allow, forbid)
+    else:
+        # A suspect: their reaction to a testimony is read under the disposition
+        # of whoever gave it. `responses` is keyed by that; `response` is the
+        # line for anyone it does not name.
+        for nid, node in data.get("nodes", {}).items():
+            variants = [node] + list(node.get("dispositions", {}).values())
+            for variant in variants:
+                for i, e in enumerate(variant.get("accepts_evidence", [])):
+                    owner = testimony_owner.get(e.get("evidence_id", ""))
+                    if not owner or owner[0] not in linked_cases:
+                        continue
+                    by_source = e.get("responses", {})
+                    for d in sorted(VALID_DISPOSITIONS):
+                        text = by_source.get(d, e.get("response", ""))
+                        if text:
+                            lint_scan(name, f"{nid}.accepts_evidence[{i}] ({e['evidence_id']}, {owner[1]})",
+                                      text, d, allow, LINT_FORBID[d] + list(extra.get(d, [])))
+
 print()
 if errors:
     print("FAILURES:")

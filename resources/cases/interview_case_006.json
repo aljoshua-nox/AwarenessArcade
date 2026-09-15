@@ -1,6 +1,7 @@
 {
   "case_id": "interview_case_006",
   "title": "The Fee That Kept Moving",
+  "lint_allow": ["the transfer goes out today"],
   "person": {
     "person_id": "lina_reyes",
     "name": "Lina Reyes",

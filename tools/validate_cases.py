@@ -1030,6 +1030,41 @@ for f, data in parsed.items():
                             lint_scan(name, f"{nid}.accepts_evidence[{i}] ({e['evidence_id']}, {owner[1]})",
                                       text, d, allow, LINT_FORBID[d] + list(extra.get(d, [])))
 
+# --- One copy of the number, one copy of the name ----------------------------
+# SessionState.OPERATION_NUMBER and SessionState.COMPANY_NAME are printed by the
+# street, the call floor and now the interviews, and the player is meant to
+# notice the repetition unprompted - which only works if there is exactly one
+# string. A case file writes {number} or {company} and the engine expands it;
+# a case that spells either out is a second copy that will drift.
+session_state_path = os.path.join(base, "scripts", "autoload", "session_state.gd")
+one_copy = {}
+if os.path.exists(session_state_path):
+    with open(session_state_path, encoding="utf-8") as fh:
+        for line in fh:
+            m = re.match(r'const (OPERATION_NUMBER|COMPANY_NAME) := "([^"]+)"', line.strip())
+            if m:
+                one_copy[m.group(1)] = m.group(2)
+
+
+def one_copy_walk(obj, where):
+    if isinstance(obj, dict):
+        for k, v in obj.items():
+            one_copy_walk(v, f"{where}.{k}")
+    elif isinstance(obj, list):
+        for i, v in enumerate(obj):
+            one_copy_walk(v, f"{where}[{i}]")
+    elif isinstance(obj, str):
+        for name, literal in one_copy.items():
+            if literal.lower() in obj.lower():
+                token = "{number}" if name == "OPERATION_NUMBER" else "{company}"
+                errors.append(f"{where} spells out {name} - write {token} and let the engine print the one copy")
+
+
+for f, data in parsed.items():
+    one_copy_walk(data, os.path.basename(f))
+for v in victims:
+    one_copy_walk(v, f"{v.get('person_id', '?')}.json")
+
 # --- Register lint: the game is set in the Philippines and reads like it -----
 # The first four cases and the terrace's stops were written in British English
 # (realise, kerb, noticeboard, perspex) while the setting names barangays,

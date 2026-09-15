@@ -513,7 +513,7 @@ func _load_node(node_id: String, lead_in: String = "") -> void:
 	quiz_active = false
 	current_quiz = {}
 
-	var node_prompt := str(current_node.get("prompt", ""))
+	var node_prompt := _expand_tokens(str(current_node.get("prompt", "")))
 	if node_id == opening_node_id and not disposition_opening.is_empty():
 		node_prompt = disposition_opening
 	var has_evidence_prompt := bool(current_node.get("evidence_prompt", false))
@@ -562,6 +562,8 @@ func _load_node(node_id: String, lead_in: String = "") -> void:
 			SessionState.suspect_flipped = true
 		if outcome == "turned":
 			SessionState.witness_flipped = true
+		if outcome == "director_named":
+			SessionState.upper_floor_named = true
 		if outcome == "failure":
 			_play_sting(false)
 
@@ -895,7 +897,16 @@ func _handle_evidence_miss(item: Dictionary) -> void:
 # --- Text voices -------------------------------------------------------------
 
 func _style_dialogue(raw: String) -> String:
-	return TextStyle.dialogue(raw)
+	return TextStyle.dialogue(_expand_tokens(raw))
+
+
+# The operation's number and the company's name each exist as exactly one
+# string, on SessionState, so that every place that prints them prints the same
+# one and the player can notice the repetition unprompted. A case file cannot
+# read a constant, so it writes {number} or {company} and gets the string here;
+# the validator refuses a case that spells either out.
+func _expand_tokens(raw: String) -> String:
+	return raw.replace("{company}", SessionState.COMPANY_NAME).replace("{number}", SessionState.OPERATION_NUMBER)
 
 
 func _system_line(marker: String, body: String, color: String) -> String:

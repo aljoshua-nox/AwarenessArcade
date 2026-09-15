@@ -9,6 +9,8 @@ extends Node
 ## user://ledger_preview.png (the call list open, reading back a seeded shift).
 
 const OFFICE_SCENE := "res://scenes/exploration/office_interior.tscn"
+const FLOOR_FOUR_SCENE := "res://scenes/exploration/office_floor_four.tscn"
+const FLOOR_FOUR_OUTPUT := "user://office_four_preview.png"
 const OUTPUT := "user://office_preview.png"
 const LEDGER_OUTPUT := "user://ledger_preview.png"
 
@@ -67,6 +69,27 @@ func _run() -> void:
 		await get_tree().process_frame
 	await RenderingServer.frame_post_draw
 	_save(LEDGER_OUTPUT)
+	remove_child(office)
+	office.queue_free()
+	await get_tree().process_frame
+
+	# The floor above, unlocked, same framing.
+	SessionState.witness_flipped = true
+	var upstairs: Node = load(FLOOR_FOUR_SCENE).instantiate()
+	add_child(upstairs)
+	await get_tree().process_frame
+	var upstairs_camera := upstairs.player.get_node_or_null("Camera2D") as Camera2D
+	if upstairs_camera != null:
+		upstairs_camera.enabled = false
+	var camera_four := Camera2D.new()
+	upstairs.add_child(camera_four)
+	camera_four.position = Vector2(640.0, 360.0)
+	camera_four.zoom = Vector2.ONE
+	camera_four.make_current()
+	for i in range(4):
+		await get_tree().process_frame
+	await RenderingServer.frame_post_draw
+	_save(FLOOR_FOUR_OUTPUT)
 
 	get_tree().quit()
 

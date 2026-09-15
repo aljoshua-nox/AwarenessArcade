@@ -1,6 +1,14 @@
 extends Node2D
 
-@export var map_title: String = "Call Floor"
+## A floor of the operation's building. This script is floor 3 - the call floor
+## the office door on Sampaguita Street opens onto, Elena's - and it is also the
+## base for every other floor: the room, the walls, the stations, the inspection
+## panel and the director's door are shared, and what differs between floors is
+## answered by the functions under "What a floor is". office_floor_four.gd is
+## the tech-support floor upstairs, Rowena's. The takedown ending names three
+## floors; the building has two you can walk.
+
+@export var map_title: String = "Call Floor - 3F"
 @export var map_hint: String = "Move with WASD or arrow keys. Press Enter to examine what you find."
 @export_file("*.tscn") var portal_target_scene: String = "res://scenes/exploration/urban_exterior.tscn"
 @export var player_spawn: Vector2 = Vector2(190, 320)
@@ -19,6 +27,7 @@ const TextStyle := preload("res://scripts/systems/text_style.gd")
 
 const CONFRONTATION_SCENE := "res://scenes/investigation/interview.tscn"
 const CASE_ELENA := "res://resources/cases/interview_case_004.json"
+const FLOOR_FOUR_SCENE := "res://scenes/exploration/office_floor_four.tscn"
 
 # wall_tiles.png and floor_tiles.png are ATLASES, not single images - the old
 # map stretched each whole sheet across the screen as one sprite, which is why
@@ -67,6 +76,11 @@ const DESK_COLUMNS := [340.0, 500.0, 660.0, 820.0, 980.0]
 const STATION_SIZE := Vector2(104.0, 92.0)
 const DIRECTOR_DOOR_POSITION := Vector2(1090.0, 268.0)
 const EXIT_DOOR_POSITION := Vector2(190.0, 262.0)
+# The stairwell up, on the back wall between the last window and the director's
+# carpet - the stairs sit beside the director's office because the other
+# director's office sits above it. Coming back down lands just in front of it.
+const STAIRS_POSITION := Vector2(900.0, 268.0)
+const STAIRS_ARRIVAL := Vector2(900.0, 330.0)
 
 var stations: Array[Dictionary] = []
 var active_station: Dictionary = {}
@@ -77,13 +91,49 @@ var station_label: Label
 var inspection_open: bool = false
 
 
+# --- What a floor is ----------------------------------------------------------
+# Override these on another floor. The defaults are floor 3.
+
+# The case the director's door opens when it is unlocked.
+func confrontation_case() -> String:
+	return CASE_ELENA
+
+
+func director_nameplate() -> String:
+	return "E. CRUZ"
+
+
+# What unlocks the director's door on this floor. Elena's opens when Marco
+# flips; Rowena's when Bea turns.
+func director_unlocked() -> bool:
+	return SessionState.suspect_flipped
+
+
+func director_locked_note() -> String:
+	return "Marco is the way through this door. Until a caller on this floor is willing to name the person running it, there is nothing here to open."
+
+
+# The scene the stairwell leads up to, or empty on a floor with no stairs up.
+func stairs_target() -> String:
+	return FLOOR_FOUR_SCENE
+
+
+func exit_prompt() -> String:
+	return "Return to the street"
+
+
 func _ready() -> void:
 	title_label.text = map_title
 	hint_label.text = map_hint
-	player.global_position = player_spawn
+	# Coming down the stairs lands in front of them, not at the street door.
+	if SessionState.has_office_return_spawn:
+		player.global_position = SessionState.office_return_spawn
+		SessionState.has_office_return_spawn = false
+	else:
+		player.global_position = player_spawn
 	player.movement_bounds = movement_bounds
 	portal.target_scene = portal_target_scene
-	portal.prompt_text = "Return to the street"
+	portal.prompt_text = exit_prompt()
 	portal.player_entered.connect(_on_portal_entered)
 	portal.player_exited.connect(_on_portal_exited)
 	_build_hud()
@@ -101,12 +151,21 @@ func _unhandled_input(event: InputEvent) -> void:
 		SessionState.go_to_scene("res://scenes/main_menu/main_menu.tscn")
 	elif event.is_action_pressed("ui_accept") and not active_station.is_empty():
 		if bool(active_station.get("is_confrontation", false)):
-			SessionState.pending_case_path = CASE_ELENA
+			SessionState.pending_case_path = confrontation_case()
 			_transition_to_scene(CONFRONTATION_SCENE)
+		elif bool(active_station.get("is_stairs", false)):
+			_take_stairs()
 		else:
 			_open_inspection(active_station)
 	elif event.is_action_pressed("ui_accept") and _can_enter_portal():
 		_transition_to_scene(portal.target_scene)
+
+
+# Up the stairs. Coming back down should land here, not at the street door.
+func _take_stairs() -> void:
+	SessionState.office_return_spawn = STAIRS_ARRIVAL
+	SessionState.has_office_return_spawn = true
+	_transition_to_scene(stairs_target())
 
 
 # --- Inspection UI -----------------------------------------------------------
@@ -302,7 +361,12 @@ func _build_back_wall_fittings() -> void:
 
 	# The director's office: an actual door, not an unmarked patch of wall.
 	_add_prop(OFFICE_OBJECTS, OBJ_DOOR, Vector2(DIRECTOR_DOOR_POSITION.x, WALL_BASE + 8.0), 2.9, -30)
-	_add_wall_plate(Vector2(DIRECTOR_DOOR_POSITION.x, 118.0), "E. CRUZ")
+	_add_wall_plate(Vector2(DIRECTOR_DOOR_POSITION.x, 118.0), director_nameplate())
+
+	# The stairwell up, where there is a floor above.
+	if not stairs_target().is_empty():
+		_add_prop(OFFICE_WALLS, WALL_DOORWAY, Vector2(STAIRS_POSITION.x, WALL_BASE + 4.0), 2.1, -30)
+		_add_wall_plate(Vector2(STAIRS_POSITION.x, 118.0), "STAIRS - 4F")
 
 
 func _build_call_floor() -> void:
@@ -329,7 +393,7 @@ func _build_props() -> void:
 	_add_prop(OFFICE_OBJECTS, OBJ_FILE_CABINET, Vector2(1168.0, 430.0), 2.1, -8)
 	_add_prop(OFFICE_OBJECTS, OBJ_CABINET, Vector2(128.0, 340.0), 2.1, -8)
 	_add_prop(OFFICE_OBJECTS, OBJ_FILE_CABINET, Vector2(128.0, 440.0), 2.1, -8)
-	_add_prop(OFFICE_OBJECTS, OBJ_SHELF, Vector2(880.0, 262.0), 2.2, -8)
+	_add_prop(OFFICE_OBJECTS, OBJ_SHELF, Vector2(720.0, 262.0), 2.2, -8)
 
 	_add_prop(OFFICE_OBJECTS, OBJ_PLANT, Vector2(126.0, 640.0), 2.4, -8)
 	_add_prop(OFFICE_OBJECTS, OBJ_PLANT, Vector2(1170.0, 640.0), 2.4, -8)
@@ -337,6 +401,7 @@ func _build_props() -> void:
 
 	_build_stations()
 	_add_director_door()
+	_add_stairs()
 
 
 func _build_stations() -> void:
@@ -431,8 +496,8 @@ func _add_floor_marker(marker_position: Vector2) -> void:
 # Elena is now confronted from inside the floor she runs, so the player walks
 # past the evidence of the operation before reaching her.
 func _add_director_door() -> void:
-	var locked := not SessionState.suspect_flipped
-	var body := "A door at the back of the floor, blinds drawn. The nameplate reads E. CRUZ - FLOOR DIRECTOR."
+	var locked := not director_unlocked()
+	var body := "A door at the back of the floor, blinds drawn. The nameplate reads %s - FLOOR DIRECTOR." % director_nameplate()
 	if locked:
 		body += " The handle doesn't move, and nobody on this floor is going to open it for a stranger."
 	else:
@@ -445,11 +510,25 @@ func _add_director_door() -> void:
 		"is_confrontation": not locked,
 	}
 	if locked:
-		data["note"] = "Marco is the way through this door. Until a caller on this floor is willing to name the person running it, there is nothing here to open."
+		data["note"] = director_locked_note()
 		data["note_color"] = TextStyle.COLOR_HINT
 		data["marker"] = TextStyle.MARK_HINT
 
 	_add_station(data, DIRECTOR_DOOR_POSITION)
+
+
+# The stairwell is a station so it shares the prompt and the marker, but Enter
+# on it climbs rather than reads. Always open: the floor above can be walked
+# before its director can be reached, which is where the player learns which
+# witnesses she answers for.
+func _add_stairs() -> void:
+	if stairs_target().is_empty():
+		return
+	_add_station({
+		"title": "Stairwell",
+		"prompt": "Take the stairs to the fourth floor",
+		"is_stairs": true,
+	}, STAIRS_POSITION)
 
 
 func _on_station_entered(body: Node, entry: Dictionary) -> void:

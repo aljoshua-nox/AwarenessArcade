@@ -153,6 +153,7 @@ func _test_overlay() -> void:
 	for scene in ["res://scenes/exploration/urban_exterior.tscn",
 			"res://scenes/exploration/terminal_road.tscn",
 			"res://scenes/exploration/office_interior.tscn",
+			"res://scenes/exploration/office_floor_four.tscn",
 			"res://scenes/investigation/interview.tscn",
 			"res://scenes/prologue/prologue_call.tscn"]:
 		_check(TacticNotebook.shows_button_in(scene), "the notebook is reachable from %s" % scene.get_file())

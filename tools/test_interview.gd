@@ -18,6 +18,7 @@ const CASE_ELENA := "res://resources/cases/interview_case_004.json"
 const CASE_TEDDY := "res://resources/cases/interview_case_007.json"
 const CASE_TRISH := "res://resources/cases/interview_case_008.json"
 const CASE_BEA := "res://resources/cases/interview_case_009.json"
+const CASE_ROWENA := "res://resources/cases/interview_case_011.json"
 
 var failures: Array[String] = []
 var checks := 0
@@ -92,6 +93,7 @@ func _run() -> void:
 	await _test_disposition_variants()
 	await _test_testimony_routing()
 	await _test_witness_turned()
+	await _test_fourth_floor_director()
 
 	print("\n%d checks, %d failed" % [checks, failures.size()])
 	for f in failures:
@@ -830,6 +832,9 @@ func _test_witness_turned() -> void:
 	var credibility_before: int = SessionState.detective_credibility
 	bea._load_node("end_turned")
 	_check(SessionState.witness_flipped, "a turned witness opens the second floor")
+	var statement := _index_of(bea, "test_bea_turned")
+	_check(statement >= 0 and str(SessionState.investigation_inventory[statement].get("script", "")) == "job_offer",
+		"...and her statement is granted, tagged with the floor's recruiting script")
 	_check(SessionState.detective_credibility == credibility_before + 15,
 		"turning a witness is worth what a confirmed one is (%d -> %d)" % [credibility_before, SessionState.detective_credibility])
 	_check(SessionState.investigation_outcome == "turned", "the ending records the outcome (%s)" % SessionState.investigation_outcome)
@@ -849,3 +854,72 @@ func _test_witness_turned() -> void:
 	SessionState.witness_flipped = true
 	SessionState.reset_session()
 	_check(not SessionState.witness_flipped, "a fresh session starts with the second floor closed")
+
+
+# Rowena denies. She is cracked by a witness from each of her floor's two
+# scripts, her denial is broken by a callback, and her ending names the company
+# through the engine's one copy of the name.
+func _test_fourth_floor_director() -> void:
+	print("\n[the fourth floor's director]")
+	SessionState.reset_session()
+	SessionState.detective_credibility = GATE_CLEAR
+	SessionState.witness_flipped = true
+	SessionState.add_evidence({"id": "test_kevin_confirmed", "label": "Kevin's Confirmed Testimony",
+		"person_id": "kevin_d", "script": "tech_support"})
+	SessionState.add_evidence({"id": "test_trish_confirmed", "label": "Trish's Confirmed Testimony",
+		"person_id": "patricia_lim", "script": "job_offer"})
+	SessionState.pending_case_path = CASE_ROWENA
+	var rowena: Node = load(INTERVIEW_SCENE).instantiate()
+	add_child(rowena)
+	await get_tree().process_frame
+	_check(rowena.current_node_id == "start", "Rowena opens on her own terms (%s)" % rowena.current_node_id)
+	rowena._load_node("deny_node")
+	var before: int = rowena.cooperation
+	rowena._present_evidence_index(_index_of(rowena, "test_kevin_confirmed"))
+	_check(rowena.current_node_id == "caught_callback", "Kevin's callback breaks her denial (%s)" % rowena.current_node_id)
+	_check(rowena.prompt_value.text.contains("CONTRADICTION"), "...and it reads as a contradiction, not corroboration")
+	_check(rowena.cooperation > before, "...and moves her")
+	rowena._load_node("final_check")
+	_check(rowena.current_node_id == "end_named",
+		"a tech-support witness and a job-offer witness together name the company (%s)" % rowena.current_node_id)
+	_check(rowena.prompt_value.text.contains(SessionState.COMPANY_NAME), "the ending prints the one copy of the name")
+	_check(SessionState.upper_floor_named, "...and records that the floor above is named")
+	_check(SessionState.investigation_outcome == "director_named", "the outcome is recorded (%s)" % SessionState.investigation_outcome)
+	await _close(rowena)
+
+	# Two witnesses from the same script are not enough; she answers for two.
+	SessionState.reset_session()
+	SessionState.detective_credibility = GATE_CLEAR
+	SessionState.witness_flipped = true
+	SessionState.add_evidence({"id": "test_kevin_confirmed", "label": "K", "person_id": "kevin_d", "script": "tech_support"})
+	SessionState.add_evidence({"id": "test_maria_confirmed", "label": "M", "person_id": "maria_santos", "script": "bank_fraud"})
+	SessionState.pending_case_path = CASE_ROWENA
+	rowena = load(INTERVIEW_SCENE).instantiate()
+	add_child(rowena)
+	await get_tree().process_frame
+	_check(not rowena._presentable_ids().has("test_maria_confirmed"), "a bank-fraud witness is not something she can be shown")
+	rowena._load_node("final_check")
+	_check(rowena.current_node_id == "end_denied", "one witness from her floor is a denial, not a name (%s)" % rowena.current_node_id)
+	_check(not SessionState.upper_floor_named, "...and nothing above her is named")
+	await _close(rowena)
+
+	# Bea's own statement counts as the job-offer witness.
+	SessionState.reset_session()
+	SessionState.detective_credibility = GATE_CLEAR
+	SessionState.witness_flipped = true
+	SessionState.add_evidence({"id": "test_kevin_confirmed", "label": "K", "person_id": "kevin_d", "script": "tech_support"})
+	SessionState.add_evidence({"id": "test_bea_turned", "label": "B", "person_id": "bea_santiago", "script": "job_offer"})
+	SessionState.pending_case_path = CASE_ROWENA
+	rowena = load(INTERVIEW_SCENE).instantiate()
+	add_child(rowena)
+	await get_tree().process_frame
+	rowena._load_node("deny_node")
+	rowena._present_evidence_index(_index_of(rowena, "test_bea_turned"))
+	_check(rowena.current_node_id == "bea_node", "the recruit's statement has its own reaction (%s)" % rowena.current_node_id)
+	rowena._load_node("final_check")
+	_check(rowena.current_node_id == "end_named", "Kevin and Bea together are enough (%s)" % rowena.current_node_id)
+	await _close(rowena)
+
+	SessionState.upper_floor_named = true
+	SessionState.reset_session()
+	_check(not SessionState.upper_floor_named, "a fresh session has nobody named above the floors")

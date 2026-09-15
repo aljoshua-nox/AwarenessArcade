@@ -7,6 +7,7 @@ extends Node
 ## Exits 0 if every check passes, 1 otherwise.
 
 const OFFICE_SCENE := "res://scenes/exploration/office_interior.tscn"
+const FLOOR_FOUR_SCENE := "res://scenes/exploration/office_floor_four.tscn"
 
 var failures: Array[String] = []
 var checks := 0
@@ -52,6 +53,7 @@ func _run() -> void:
 	await _test_ledger_reads_back_prologue()
 	await _test_ledger_without_prologue()
 	await _test_director_door_gate()
+	await _test_fourth_floor()
 	await _test_inspection_panel()
 	await _test_prologue_logs_calls()
 	_test_outcome_vocabulary()
@@ -171,8 +173,8 @@ func _test_stations_exist() -> void:
 	SessionState.reset_session()
 	SessionState.reset_prologue()
 	var view := await _open()
-	_check(view.stations.size() == 5, "four exhibits plus the director's door (got %d)" % view.stations.size())
-	for title in ["Script binders", "The call list", "Bonus board", "The shift schedule", "Floor director's office"]:
+	_check(view.stations.size() == 6, "four exhibits, the director's door and the stairwell (got %d)" % view.stations.size())
+	for title in ["Script binders", "The call list", "Bonus board", "The shift schedule", "Floor director's office", "Stairwell"]:
 		_check(not _station(view, title).is_empty(), "station present: %s" % title)
 	await _close(view)
 
@@ -296,3 +298,88 @@ func _test_inspection_panel() -> void:
 	_check(not view.inspection_open, "panel closes")
 	_check(view.player.is_physics_processing(), "the player can move again")
 	await _close(view)
+
+
+# The floor above. Reached by the stairwell on the call floor, always open;
+# its director's door is not, until Bea has turned.
+func _test_fourth_floor() -> void:
+	print("\n[the fourth floor]")
+	SessionState.reset_session()
+	var view := await _open()
+	var stairs := _station(view, "Stairwell")
+	_check(bool(stairs.get("is_stairs", false)), "the stairwell climbs rather than reads")
+	_check(view.stairs_target() == FLOOR_FOUR_SCENE, "...to the fourth floor")
+	view._take_stairs()
+	_check(SessionState.has_office_return_spawn and SessionState.office_return_spawn == view.STAIRS_ARRIVAL,
+		"climbing remembers where to land coming back down")
+	await _close(view)
+
+	# Coming back down lands in front of the stairs, not at the street door.
+	view = await _open()
+	_check(view.player.global_position == view.STAIRS_ARRIVAL, "the call floor puts a returning player at the stairs")
+	_check(not SessionState.has_office_return_spawn, "...and consumes the arrival point")
+	await _close(view)
+	view = await _open()
+	_check(view.player.global_position == view.player_spawn, "a fresh visit still starts at the street door")
+	await _close(view)
+
+	# The floor itself: its own four exhibits, no ledger, no stairs up, and a
+	# way down.
+	SessionState.reset_session()
+	var upstairs: Node = load(FLOOR_FOUR_SCENE).instantiate()
+	add_child(upstairs)
+	await get_tree().process_frame
+	_check(upstairs.stations.size() == 5, "four exhibits plus the director's door upstairs (got %d)" % upstairs.stations.size())
+	for title in ["The remote-access script", "The session log", "The headset rack", "The recruitment folder", "Floor director's office"]:
+		_check(not _station(upstairs, title).is_empty(), "upstairs station present: %s" % title)
+	_check(_station_quiet(upstairs, "Stairwell").is_empty(), "no stairs up from the top floor")
+	_check(_station_quiet(upstairs, "The call list").is_empty(), "the ledger stays on the call floor")
+	_check(upstairs.portal.target_scene == OFFICE_SCENE, "the way out of the fourth floor is the call floor")
+	_check(upstairs.portal.prompt_text.contains("stairs down"), "...and says so (%s)" % upstairs.portal.prompt_text)
+	_check(upstairs._station_body(_station(upstairs, "The headset rack")).contains("SANTIAGO"),
+		"the headset rack carries the recruit's name")
+	_check(upstairs._station_body(_station(upstairs, "The session log")).contains("23:04"),
+		"the session log holds the 23:04 session Marco's alibi breaks on")
+
+	# Rowena's door: inert until Bea turns, then the confrontation with her case.
+	var door := _station(upstairs, "Floor director's office")
+	_check(not bool(door.get("is_confrontation", false)), "Rowena's door is inert before Bea turns")
+	_check(upstairs._station_body(door).contains("R. OCAMPO"), "the nameplate is hers")
+	_check(upstairs._station_body(door).contains("Bea is the way through"), "the locked door points at Bea")
+	await _close_node(upstairs)
+
+	SessionState.reset_session()
+	SessionState.witness_flipped = true
+	upstairs = load(FLOOR_FOUR_SCENE).instantiate()
+	add_child(upstairs)
+	await get_tree().process_frame
+	door = _station(upstairs, "Floor director's office")
+	_check(bool(door.get("is_confrontation", false)), "the door opens once Bea has turned")
+	_check(upstairs.confrontation_case().ends_with("interview_case_011.json"), "...onto Rowena's case")
+	await _close_node(upstairs)
+
+	# Marco flipping does not open the fourth floor, and Bea turning does not
+	# open the third - each floor has its own way in.
+	SessionState.reset_session()
+	SessionState.suspect_flipped = true
+	upstairs = load(FLOOR_FOUR_SCENE).instantiate()
+	add_child(upstairs)
+	await get_tree().process_frame
+	_check(not bool(_station(upstairs, "Floor director's office").get("is_confrontation", false)),
+		"Marco's flip does not open Rowena's door")
+	await _close_node(upstairs)
+
+
+func _close_node(view: Node) -> void:
+	remove_child(view)
+	view.queue_free()
+	await get_tree().process_frame
+
+
+# A lookup that does not count a missing station as a failure - for asserting
+# that a station is absent.
+func _station_quiet(view: Node, title: String) -> Dictionary:
+	for station in view.stations:
+		if str(station.get("title", "")) == title:
+			return station
+	return {}

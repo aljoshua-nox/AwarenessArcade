@@ -1,0 +1,227 @@
+{
+  "case_id": "interview_case_011",
+  "title": "The Fourth Floor",
+  "person": {
+    "person_id": "rowena_ocampo",
+    "name": "Rowena Ocampo",
+    "age": 55,
+    "occupation": "Floor Director",
+    "role": "Suspect",
+    "portrait": "res://assets/art/portraits/rowena.png",
+    "traits": "Twenty years on floors like this one. Does not negotiate, does not raise her voice, and does not lie where a denial will do."
+  },
+  "evidence": [],
+  "start_node": "start",
+  "failure_node": "end_stonewalled",
+  "nodes": {
+    "start": {
+      "prompt": "The fourth floor is quieter than the third. Forty desks, forty headsets, and at the back a desk with nothing on it but a phone and a folder. The woman behind it has silver hair in a low bun and does not stand. \"You have come up a flight of stairs into a licensed technical support service.\" She says it the way a clerk reads back an address. \"I would like to know on what authority.\"",
+      "choices": [
+        {
+          "text": "The authority of the people this floor called.",
+          "next": "deny_node"
+        },
+        {
+          "text": "None yet. I came to ask you what this floor does.",
+          "next": "soft_open"
+        },
+        {
+          "text": "Bea Santiago's.",
+          "next": "names_bea",
+          "cooperation": -6
+        }
+      ]
+    },
+    "soft_open": {
+      "prompt": "\"It does what the sign says.\" She folds her hands on the folder. \"Customers call us with a device problem. We walk them through it. We invoice. The invoices are on file downstairs, and the license is on the wall behind you.\" It is. It is real. That is the point of it.",
+      "choices": [
+        {
+          "text": "Then let's talk about the calls.",
+          "next": "deny_node"
+        }
+      ]
+    },
+    "names_bea": {
+      "prompt": "\"Miss Santiago is a probationary employee with a confidentiality agreement.\" No pause before the name, no pause after it. \"Whatever she has told you, she has told you in breach of it, and I will be discussing that with her, not with you.\"",
+      "choices": [
+        {
+          "text": "Then let's discuss the calls instead.",
+          "next": "deny_node"
+        }
+      ]
+    },
+    "deny_node": {
+      "prompt": "\"Nobody on this floor dials out.\" It is said as a fact about the weather. \"Customers call us. We have never made an outbound call in the history of this floor, and you will not find a phone bill that says otherwise.\" She has not looked at the folder once. She is not going to.",
+      "claim": "Rowena Ocampo, on the record: this floor makes no outbound calls; customers call in.",
+      "evidence_prompt": true,
+      "evidence_hint": "She has just told you the one thing this floor never does. Someone downstairs has an account of being called back.",
+      "accepts_evidence": [
+        {
+          "evidence_id": "test_kevin_confirmed",
+          "next": "caught_callback",
+          "contradicts": true,
+          "contradiction_note": "Kevin Dizon dialed the number on a pop-up, was put on hold, and was called back nineteen minutes later by a technician using this floor's tool. A floor that never dials out dialed him.",
+          "response": "She reads it. \"A callback to a customer who had requested support.\" She reads it again, and the second time is slower, and the folder is suddenly something she is looking at. \"That is not an outbound call.\" It is.",
+          "cooperation": 20
+        },
+        {
+          "evidence_id": "test_bea_turned",
+          "next": "bea_node",
+          "response": "\"Miss Santiago.\" She says the name as if filing it. \"Probationary. Confidentiality agreement.\" She does not read the rest, which means she already knows what is in it.",
+          "cooperation": 20
+        },
+        {
+          "evidence_id": "test_trish_confirmed",
+          "next": "pressed",
+          "response": "\"Miss Lim applied and was not hired.\" She hands it back. \"That is not a crime. That is a Tuesday.\" It is a Tuesday on which an applicant paid a fee to a floor that never called her back.",
+          "cooperation": 10
+        },
+        {
+          "accepts_scripts": ["tech_support", "job_offer"],
+          "next": "pressed",
+          "response": "She reads it without expression. \"A complaint. We receive them. They go to the accounts department.\" The accounts department is, as far as anyone downstairs knows, upstairs.",
+          "cooperation": 15
+        },
+        {
+          "evidence_id": "ev_bea_badge",
+          "next": "deny_node",
+          "response": "\"A building pass.\" She holds it to the light, once. \"We issue them. It proves she works here, which I have never denied.\" A pass is a fact about a door, not about what happens on the other side of it.",
+          "cooperation": -6,
+          "wrong": true
+        }
+      ],
+      "choices": [
+        {
+          "text": "Every page of the script downstairs is initialed R.O.",
+          "next": "pressure_node"
+        },
+        {
+          "text": "I'll come back with more.",
+          "next": "end_denied"
+        }
+      ]
+    },
+    "caught_callback": {
+      "prompt": "For the first time she does not have the next sentence ready. \"A callback,\" she says again, to the folder. \"From your tool,\" you say. \"To a man who had asked for nothing but a way to close a pop-up.\" She closes the folder, which is the first thing she has done with it.",
+      "cooperation": 10,
+      "milestone": {
+        "title": "Account Broken: The Floor That Never Dials Out",
+        "detail": "Rowena Ocampo's denial - customers call in, nobody dials out - did not survive a customer who was called back from her own floor's tool."
+      },
+      "choices": [
+        {
+          "text": "Now the script. Every page is initialed R.O.",
+          "next": "pressure_node"
+        }
+      ]
+    },
+    "bea_node": {
+      "prompt": "\"She told me about the folder by the door,\" you say. Rowena looks at the folder by the door, and does not look away from it quickly enough. \"Probationary employees see a great many things they do not understand.\" \"She understood the two columns.\"",
+      "cooperation": 10,
+      "milestone": {
+        "title": "The Recruit Named The Folder",
+        "detail": "Bea Santiago's statement put the recruitment folder in front of the director who keeps it - the fourth floor's hiring and its job-offer script are the same document."
+      },
+      "choices": [
+        {
+          "text": "And every page of the script is initialed R.O.",
+          "next": "pressure_node"
+        }
+      ]
+    },
+    "pressed": {
+      "prompt": "\"You have a complaint and a story. I have a business license.\" She turns the folder face down, which is not the same as putting it away. \"Is there anything else?\"",
+      "choices": [
+        {
+          "text": "There's the script downstairs with your initials on every page.",
+          "next": "pressure_node"
+        },
+        {
+          "text": "I'll come back with more.",
+          "next": "end_denied"
+        }
+      ]
+    },
+    "pressure_node": {
+      "prompt": "\"Initials are not a confession. A script is not a crime. A callback is not an outbound call.\" She lists them without heat, like the terms of a lease. \"You are describing a business that does what it says on the sign. What you want is for me to describe something else, and I am not going to.\"",
+      "choices": [
+        {
+          "text": "Then let's talk about what the removal fee removed.",
+          "next": "tactic_quiz_removal"
+        },
+        {
+          "text": "Then I'll come back with a warrant.",
+          "next": "end_stonewalled",
+          "cooperation": -30
+        }
+      ]
+    },
+    "tactic_quiz_removal": {
+      "tactic_quiz": {
+        "setup": "You put the script's last step beside a customer's receipt. The script: [i]STEP 6 - THE REMOVAL FEE.[/i] The receipt: [i]MALWARE REMOVAL - P2,400. Threats removed: 3.[/i]",
+        "tactic_id": "invented_fee",
+        "tactic": "The fee for nothing",
+        "question": "What did the removal fee pay to remove?",
+        "milestone": {
+          "title": "Tactic Identified: The Fee For Nothing",
+          "detail": "Recognized that the fee at the end of the script pays to fix the problem the start of the script invented - the receipt bills for a result that could not have happened."
+        },
+        "options": [
+          {
+            "text": "Nothing. The threats were invented in step one so that step six could charge for them.",
+            "correct": true,
+            "cooperation": 12,
+            "feedback": "That is the whole floor in two steps. A web page cannot scan a machine, so the three threats never existed; the 'removal' removed them; the fee paid for the removal. Every number on that receipt is real except the one that matters. A fee to fix a problem you were told about by the person charging the fee is the tell, whatever the problem is called."
+          },
+          {
+            "text": "Three infected files, as the receipt says.",
+            "cooperation": -8,
+            "feedback": "There were no files. The count came from a pop-up, and a pop-up cannot count anything on a machine it cannot see. The receipt repeats the invention with a price attached, which is what makes it look like a record."
+          },
+          {
+            "text": "The support tool the operator installed.",
+            "cooperation": -6,
+            "feedback": "The tool stayed. It was the operation's foothold, not the customer's problem; nobody charges a fee to leave their own software behind. What was billed was a result that could not have happened."
+          },
+          {
+            "text": "The operator's time on the call.",
+            "cooperation": -6,
+            "feedback": "Real support bills time and says so on the invoice. This receipt bills for threats removed - a result, and one that could not have happened. That is the difference between a service and a script."
+          }
+        ],
+        "next": "final_check"
+      }
+    },
+    "final_check": {
+      "evidence_check": {
+        "required_scripts": ["tech_support", "job_offer"],
+        "min_matching": 2,
+        "next_if_met": "end_named",
+        "next_if_not_met": "end_denied"
+      }
+    },
+    "end_named": {
+      "prompt": "Rowena Ocampo looks at the two statements on her desk - a customer this floor called, and an applicant this floor sorted - and at the door, and at the phone, and does not pick up the phone. \"The floors are leased,\" she says at last. \"Both of them. From the company on the sign outside.\" She writes the name on the back of the folder in block capitals, the way she must have watched a thousand customers write down a session code, and turns it toward you. {company}. \"I run a floor. I do not own the building. If you want the building, that is where it is.\"",
+      "outcome": "director_named",
+      "milestone": {
+        "title": "Director Named",
+        "detail": "Rowena Ocampo, faced with a witness from each of her floor's two scripts, put a name to the company that leases the building - the operation has an owner, and the owner is not on either floor."
+      },
+      "choices": []
+    },
+    "end_denied": {
+      "prompt": "Rowena has denied everything, calmly, and one statement from one of her floor's two scripts is not enough to make her do otherwise. The name on the sign outside stays a name on a sign.",
+      "outcome": "partial",
+      "choices": []
+    },
+    "end_stonewalled": {
+      "prompt": "\"Do that.\" She has the phone in her hand before you reach the stairs. By the time you are back on the street the fourth floor's lights are off, and a sign on the stairwell door says the floor is closed for maintenance. It will reopen when you have stopped looking.",
+      "outcome": "failure",
+      "milestone": {
+        "title": "The Fourth Floor Goes Dark",
+        "detail": "Threatened with a warrant, the fourth floor's director closed the floor and made a call. An operation with a license and a landlord can wait out an investigator who has nothing but a threat."
+      },
+      "choices": []
+    }
+  }
+}

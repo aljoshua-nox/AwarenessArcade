@@ -14,17 +14,17 @@
     "dispositions": {
       "harmed": {
         "cooperation": 34,
-        "prompt": "Trish has the receipt open on her phone before you have sat down, and the chat under it, and she does not look at either. \"I know how it looks. I've had the talk from my mother, and I've had it from myself.\" She turns the phone so you can see the screen. \"She said congratulations. That's what I keep coming back to. She said it first.\"",
+        "prompt": "Trish has the receipt open on her phone before you have sat down, and the chat under it, and she does not look at either. \"I know how it looks. I already got the lecture from my mother, and from myself.\" She turns the phone so you can see the screen. \"She said congratulations. That's what I keep coming back to. She said it first.\"",
         "note": "You took her board exam money with a word. She is not ashamed of wanting the job - she is ashamed of how little it took, and she will minimize it unless you make it safe not to."
       },
       "resistant": {
         "cooperation": 62,
-        "prompt": "Trish has a folder on her phone called EVIDENCE and opens it before you have sat down. \"I said I'd ask Bea first.\" She scrolls to a message and turns the phone toward you. \"Nobody in her batch paid anything. One message. Then I gave her the number and she went quiet.\" She is a little proud, and a little frightened of what the quiet meant.",
+        "prompt": "Trish has a folder on her phone called EVIDENCE and opens it before you have sat down. \"I said I'd ask Bea first.\" She scrolls to a message and turns the phone toward you. \"Nobody in her batch paid anything. One message. Then I gave her the number and she went quiet.\" She is a little proud, and a little scared of what the quiet meant.",
         "note": "She refused the call you made by checking with the one person who would know - and the person who would know works on the fourth floor. She has nothing to trace and a great deal saved."
       },
       "unfinished": {
         "cooperation": 44,
-        "prompt": "\"She called to close it, and then the line went. Mid-sentence.\" Trish says it with the phone face down on the table, for once. \"I sat there with the notebook. SHORTLISTED, at the top, and nothing under it.\" A breath. \"Bea told me after. Nobody paid. She hasn't answered me since.\"",
+        "prompt": "\"She called to close it, and then the line cut. Mid-sentence.\" Trish says it with the phone face down on the table, for once. \"I sat there with my notebook. SHORTLISTED at the top, and nothing under it.\" A breath. \"Bea told me after. Nobody paid. She hasn't answered me since.\"",
         "note": "Your call to her never finished. She found out from Bea what it would have cost, which is why Bea has stopped answering - and why Trish is not sure whether she was lucky or dropped."
       }
     }
@@ -81,19 +81,19 @@
   "failure_node": "end_shutdown",
   "nodes": {
     "intro": {
-      "prompt": "Patricia - \"Trish, please\" - has her phone out before you have sat down, the screenshot already up. \"I know how it looks. I've had the talk from my mother.\" She turns the phone so you can see it. \"It looked real. That's the thing nobody wants to hear. It looked completely real.\"",
+      "prompt": "Patricia - \"Trish, please\" - has her phone out before you have sat down, the screenshot already up. \"I know how it looks. I already got the lecture from my mother.\" She turns the phone so you can see it. \"It looked real. That's the thing nobody wants to hear. It looked completely real.\"",
       "choices": [
         {
-          "text": "Then show me what real looked like. Start with the advertisement.",
+          "text": "Then show me what real looked like. Start with the ad.",
           "next": "ask_ad"
         },
         {
-          "text": "It was built to look real by people who do this all day. Nothing about that is on you.",
+          "text": "It was made to look real by people who do this all day. None of that is on you.",
           "next": "reassure",
           "cooperation": 8
         },
         {
-          "text": "You paid a stranger to give you a job. Walk me through the moment that seemed sensible.",
+          "text": "You paid a stranger to give you a job. Walk me through the moment that made sense.",
           "next": "shame_her",
           "cooperation": -14
         }
@@ -102,16 +102,16 @@
         "resistant": {
           "choices": [
             {
-              "text": "Then show me what real looked like. Start with the advertisement.",
+              "text": "Then show me what real looked like. Start with the ad.",
               "next": "ask_ad"
             },
             {
-              "text": "It was built to look real by people who do this all day. Nothing about that is on you.",
+              "text": "It was made to look real by people who do this all day. None of that is on you.",
               "next": "reassure",
               "cooperation": 8
             },
             {
-              "text": "You nearly gave a stranger your mother's e-wallet PIN for a job. Walk me through the moment that seemed sensible.",
+              "text": "You almost gave a stranger your mother's e-wallet PIN for a job. Walk me through the moment that made sense.",
               "next": "shame_her",
               "cooperation": -14
             }
@@ -120,16 +120,16 @@
         "unfinished": {
           "choices": [
             {
-              "text": "Then show me what real looked like. Start with the advertisement.",
+              "text": "Then show me what real looked like. Start with the ad.",
               "next": "ask_ad"
             },
             {
-              "text": "It was built to look real by people who do this all day. Nothing about that is on you.",
+              "text": "It was made to look real by people who do this all day. None of that is on you.",
               "next": "reassure",
               "cooperation": 8
             },
             {
-              "text": "A stranger said shortlisted and you went looking for your mother's e-wallet PIN. Walk me through the moment that seemed sensible.",
+              "text": "A stranger said shortlisted and you went looking for your mother's e-wallet PIN. Walk me through the moment that made sense.",
               "next": "shame_her",
               "cooperation": -14
             }
@@ -138,17 +138,17 @@
       }
     },
     "reassure": {
-      "prompt": "Something in her shoulders lets go. \"Everyone else has been very kind about how I should have known.\" She looks at the phone. \"Okay. From the top.\"",
+      "prompt": "Something in her shoulders lets go. \"Everyone else has been very nice about how I should have known.\" She looks at the phone. \"Okay. From the top.\"",
       "cooperation": 4,
       "choices": [
         {
-          "text": "From the top. The advertisement.",
+          "text": "From the top. The ad.",
           "next": "ask_ad"
         }
       ]
     },
     "shame_her": {
-      "prompt": "Her face closes, politely. \"I was three weeks out of college and I had sent forty applications and this one answered.\" She puts the phone face down. \"That was the moment. Was there anything else?\"",
+      "prompt": "Her face closes, politely. \"I was three weeks out of college and I had sent forty applications and this one answered.\" She puts the phone face down. \"That was the moment. Anything else?\"",
       "choices": [
         {
           "text": "That was unfair, and I'm sorry. Forty applications and one answer is exactly what they look for.",
@@ -156,14 +156,14 @@
           "cooperation": 8
         },
         {
-          "text": "The advertisement. Let's see it.",
+          "text": "The ad. Let's see it.",
           "next": "ask_ad_cold",
           "cooperation": -8
         }
       ]
     },
     "ask_ad": {
-      "prompt": "\"Customer service. No experience needed, training provided, five slots left, batch starts Monday.\" She reads it off the screen in the voice of someone who has read it a hundred times since. \"I messaged the number and HR Ms. Dela Cruz replied in four minutes. Four minutes. I'd been waiting weeks for anyone.\" A breath. \"She asked for my resume, and then she said congratulations, I was shortlisted, and there was a training and uniform fee. Refundable on the first payday.\"",
+      "prompt": "\"Customer service. No experience needed, training provided, five slots left, batch starts Monday.\" She reads it off the screen in the voice of somebody who has read it a hundred times since. \"I messaged the number and HR Ms. Dela Cruz replied in four minutes. Four minutes. I'd been waiting weeks for anybody to reply.\" A breath. \"She asked for my resume, and then she said congratulations, I was shortlisted, and there was a training and uniform fee. Refundable on the first payday daw.\"",
       "choices": [
         {
           "text": "Stay on that word. Refundable.",
@@ -172,7 +172,7 @@
       ]
     },
     "ask_ad_cold": {
-      "prompt": "\"Customer service. No experience. Five slots. Batch Monday.\" She does not look up from the screen. \"HR messaged back in four minutes, said I was shortlisted, said there was a training fee. Refundable.\"",
+      "prompt": "\"Customer service. No experience. Five slots. Batch Monday.\" She does not look up from the screen. \"HR messaged back in four minutes, said I was shortlisted, said there was a training fee. Refundable daw.\"",
       "cooperation": -6,
       "choices": [
         {
@@ -186,7 +186,7 @@
         "setup": "You read the recruiter's message on Trish's phone: [i]\"Congratulations! You are shortlisted. Please settle the training and uniform fee (P2,500) to secure your slot. This is refunded in full on your first payday.\"[/i]",
         "tactic_id": "advance_fee",
         "tactic": "Paying to be hired",
-        "question": "What is the one thing this message asks for that no real employer ever does?",
+        "question": "What is the one thing this message asks for that no real employer ever asks for?",
         "milestone": {
           "title": "Tactic Identified: Paying To Be Hired",
           "detail": "Recognized that a job which asks the applicant to pay anything before they start is not a job - the fee is the product, and the refund is the story that sells it."
@@ -196,29 +196,29 @@
             "text": "Money from the applicant before she has started work.",
             "correct": true,
             "cooperation": 12,
-            "feedback": "That is the whole scam in one line. An employer pays you; you never pay an employer, not for training, not for a uniform, not for a background check, not to 'secure a slot'. The promised refund is what makes the fee feel like a deposit rather than a purchase - and it was never going to arrive, because there was never going to be a payday."
+            "feedback": "That is the whole scam in one line. An employer pays you; you never pay an employer - not for training, not for a uniform, not for a background check, not to 'secure a slot.' The promised refund is what makes the fee feel like a deposit instead of a purchase - and it was never coming, because there was never going to be a payday."
           },
           {
             "text": "A resume with a photo on it.",
             "cooperation": -6,
-            "feedback": "Plenty of real postings ask for that, and it cost her nothing. What it did was make the exchange feel like an application - a form, a photo, a shortlist - so that the fee at the end felt like the next step in a process rather than what it was."
+            "feedback": "Plenty of real postings ask for that, and it cost her nothing. What it did was make the whole thing feel like an application - a form, a photo, a shortlist - so that the fee at the end felt like the next step in a process instead of what it was."
           },
           {
             "text": "A quick reply - real HR takes weeks.",
             "cooperation": -6,
-            "feedback": "Speed is a tell, but not proof; some real recruiters do answer fast. What settles it is not how quickly they replied but what they asked for. Four minutes was there to keep her from having time to wonder about the fee."
+            "feedback": "Speed is a tell, but not proof; some real recruiters do answer fast. What settles it is not how fast they replied but what they asked for. Four minutes was there so she would not have time to wonder about the fee."
           },
           {
             "text": "A uniform for a customer service job.",
             "cooperation": -8,
-            "feedback": "Some call floors do have a dress code, and some issue a uniform. The uniform is not the problem. Being asked to pay for it in advance is - and that is the same problem whatever the word after 'fee' is."
+            "feedback": "Some call centers do have a dress code, and some issue a uniform. The uniform is not the problem. Being asked to pay for it in advance is - and that is the same problem whatever word comes before 'fee.'"
           }
         ],
         "next": "ask_evidence"
       }
     },
     "ask_evidence": {
-      "prompt": "Trish scrolls to the end of the chat. \"After I paid, she said welcome to the team and the training details would follow. They didn't. On Monday the account was gone. Not blocked - gone. Like she'd never existed.\"",
+      "prompt": "Trish scrolls to the end of the chat. \"After I paid, she said welcome to the team, training details to follow. They didn't follow. On Monday the account was gone. Not blocked - gone. Like she never existed.\"",
       "evidence_prompt": true,
       "evidence_hint": "The chat proves what she was promised. What ties it to an operation is where the money went.",
       "accepts_evidence": [
@@ -237,36 +237,36 @@
         {
           "evidence_id": "ev_trish_chat_log",
           "next": "ask_evidence",
-          "response": "\"Don't call the office, the lines are for clients.\" She reads it aloud. \"I thought that was professional.\" It proves the promise; it does not prove the money moved.",
+          "response": "\"Don't call the office, the lines are for clients.\" She reads it out loud. \"I thought that was so professional.\" It proves the promise; it does not prove the money moved.",
           "cooperation": 6
         },
         {
           "evidence_id": "ev_trish_resume",
           "next": "ask_evidence",
-          "response": "\"That's just my resume.\" A small frown. It proves she applied, which nobody disputes, and nothing about who took her money.",
+          "response": "\"That's just my resume.\" A small frown. It proves she applied, which nobody is arguing, and nothing about who took her money.",
           "cooperation": -8,
           "wrong": true
         }
       ],
       "choices": [
         {
-          "text": "Did anyone else from your batch pay?",
+          "text": "Did anybody else from your batch pay?",
           "next": "press_batch"
         },
         {
-          "text": "That's enough to be going on with. Thank you.",
+          "text": "That's enough to start with. Thank you.",
           "next": "end_partial"
         }
       ],
       "dispositions": {
         "resistant": {
-          "prompt": "Trish scrolls past the chat to the call log. \"She phoned that night, to close it. Fee tonight, slot secured, refund on payday.\" She stops on a message. \"I said I'd ask Bea first. She really didn't like that.\"",
+          "prompt": "Trish scrolls past the chat to the call log. \"She called that night, to close it. Fee tonight, slot secured, refund on payday.\" She stops on a message. \"I said I'd ask Bea first. She really didn't like that.\"",
           "evidence_hint": "Nothing was paid. What matters is the one message it took to find out - and who she sent it to.",
           "accepts_evidence": [
             {
               "evidence_id": "ev_trish_bea_reply",
               "next": "confirm",
-              "response": "\"Eleven fifty-two.\" She reads it again, though she knows it by heart. \"Nobody in my batch paid anything. Who is this.\" A pause. \"She never asks who anything is. She just knew.\"",
+              "response": "\"Eleven fifty-two.\" She reads it again, even though she knows it by heart. \"Nobody in my batch paid anything. Who is this.\" A pause. \"She never asks who anything is. She just knew.\"",
               "cooperation": 10
             },
             {
@@ -278,13 +278,13 @@
             {
               "evidence_id": "ev_trish_chat_log",
               "next": "ask_evidence",
-              "response": "\"Don't call the office, the lines are for clients.\" She reads it aloud. \"I thought that was professional.\" It proves the promise; it does not prove who made it.",
+              "response": "\"Don't call the office, the lines are for clients.\" She reads it out loud. \"I thought that was so professional.\" It proves the promise; it does not prove who made it.",
               "cooperation": 6
             },
             {
               "evidence_id": "ev_trish_resume",
               "next": "ask_evidence",
-              "response": "\"That's just my resume.\" A small frown. It proves she applied, which nobody disputes, and nothing about who was on the other end.",
+              "response": "\"That's just my resume.\" A small frown. It proves she applied, which nobody is arguing, and nothing about who was on the other end.",
               "cooperation": -8,
               "wrong": true
             }
@@ -295,13 +295,13 @@
               "next": "press_batch"
             },
             {
-              "text": "That's enough to be going on with. Thank you.",
+              "text": "That's enough to start with. Thank you.",
               "next": "end_partial"
             }
           ]
         },
         "unfinished": {
-          "prompt": "Trish scrolls past the chat to the call log: one incoming call, four minutes, ended. \"She phoned that night, to close it. Fee tonight, slot secured, refund on payday. And then nothing. Mid-sentence.\" She turns the phone over. \"I thought the signal had gone. I waited an hour.\"",
+          "prompt": "Trish scrolls past the chat to the call log: one incoming call, four minutes, ended. \"She called that night, to close it. Fee tonight, slot secured, refund on payday. And then nothing. Mid-sentence.\" She turns the phone over. \"I thought it was the signal. I waited an hour.\"",
           "evidence_hint": "The call never finished. What matters is what she found out afterward - and who told her.",
           "accepts_evidence": [
             {
@@ -319,13 +319,13 @@
             {
               "evidence_id": "ev_trish_chat_log",
               "next": "ask_evidence",
-              "response": "\"Don't call the office, the lines are for clients.\" She reads it aloud. \"I thought that was professional.\" It proves the promise; it does not prove who made it.",
+              "response": "\"Don't call the office, the lines are for clients.\" She reads it out loud. \"I thought that was so professional.\" It proves the promise; it does not prove who made it.",
               "cooperation": 6
             },
             {
               "evidence_id": "ev_trish_resume",
               "next": "ask_evidence",
-              "response": "\"That's just my resume.\" A small frown. It proves she applied, which nobody disputes, and nothing about who was on the other end.",
+              "response": "\"That's just my resume.\" A small frown. It proves she applied, which nobody is arguing, and nothing about who was on the other end.",
               "cooperation": -8,
               "wrong": true
             }
@@ -336,7 +336,7 @@
               "next": "press_batch"
             },
             {
-              "text": "That's enough to be going on with. Thank you.",
+              "text": "That's enough to start with. Thank you.",
               "next": "end_partial"
             }
           ]
@@ -344,7 +344,7 @@
       }
     },
     "press_batch": {
-      "prompt": "\"There were two of us I knew of. Me, and a girl from the same graduating class - Bea. Bea Santiago.\" Trish turns the phone over in her hands. \"She got the job. Actually got it. She's been there two months.\" A pause. \"She doesn't answer my messages any more. I thought she was embarrassed for me.\"",
+      "prompt": "\"There were two of us that I know of. Me, and a girl from my batch in college - Bea. Bea Santiago.\" Trish turns the phone over in her hands. \"She got the job. Actually got it. She's been there two months.\" A pause. \"She doesn't answer my messages anymore. I thought she was embarrassed for me.\"",
       "cooperation": 6,
       "choices": [
         {
@@ -352,21 +352,21 @@
           "next": "ask_evidence"
         },
         {
-          "text": "That's enough to be going on with. Thank you.",
+          "text": "That's enough to start with. Thank you.",
           "next": "end_partial"
         }
       ],
       "dispositions": {
         "resistant": {
-          "prompt": "\"That nobody paid. That's all - nobody in her batch paid anything, and then who is this, and then send me the number.\" Trish turns the phone over in her hands. \"She got the job off this ad two months ago. Actually got it. I think she got in trouble for picking up. She hasn't answered me since.\""
+          "prompt": "\"That nobody paid. That's all - nobody in her batch paid anything, and then who is this, and then send me the number.\" Trish turns the phone over in her hands. \"She got the job off this same ad two months ago. Actually got it. I think she got in trouble for replying. She hasn't answered me since.\""
         },
         "unfinished": {
-          "prompt": "\"That nobody paid. I messaged her after the line went, and she said nobody in her batch paid anything, and who was it, and I sent the number.\" Trish turns the phone over in her hands. \"She got the job off this ad two months ago. Actually got it. She hasn't answered me since. I don't know if I was lucky or if they just dropped me.\""
+          "prompt": "\"That nobody paid. I messaged her after the line cut, and she said nobody in her batch paid anything, and who was it, and I sent the number.\" Trish turns the phone over in her hands. \"She got the job off this same ad two months ago. Actually got it. She hasn't answered me since. I don't know if I was lucky or if they just dropped me.\""
         }
       }
     },
     "confirm": {
-      "prompt": "\"Two and a half thousand.\" Trish says the number like it is not very much, which is how she has decided to survive it. \"It was the money for my board exam review.\" She looks up. \"Write down that it looked real. Please. Somebody else is going to think it looks real.\"",
+      "prompt": "\"Two thousand five hundred.\" Trish says the number like it is not very much, which is how she has decided to survive it. \"It was my money for board exam review.\" She looks up. \"Write down that it looked real. Please. Somebody else is going to think it looks real.\"",
       "cooperation": 10,
       "milestone": {
         "title": "Witness Secured: The Job That Cost Money",
@@ -374,20 +374,20 @@
       },
       "choices": [
         {
-          "text": "This matches the pattern from the other calls. Thank you.",
+          "text": "This matches the other calls. Thank you, Trish.",
           "next": "end_success"
         }
       ],
       "dispositions": {
         "resistant": {
-          "prompt": "\"One message,\" Trish says. \"That's what it took. One message to somebody who'd actually been hired.\" She locks the phone. \"Write down that it was that easy to check. Somebody else won't, and it'll be because she said congratulations first.\"",
+          "prompt": "\"One message,\" Trish says. \"That's what it took. One message to somebody who actually got hired.\" She locks the phone. \"Write down that it was that easy to check. Somebody else won't check, and it'll be because she said congratulations first.\"",
           "milestone": {
             "title": "Witness Secured: The Job That Cost Money",
             "detail": "Trish Lim put an advertisement, a chat-only recruiter and a one-message check on the same night - the job-offer script, and the name of the batchmate it hired instead of robbing."
           }
         },
         "unfinished": {
-          "prompt": "\"I never found out what the next sentence was,\" Trish says. \"Bea told me instead. One message.\" She locks the phone. \"Write down that I'd have paid. I'd written SHORTLISTED at the top of the page. I'd have paid.\"",
+          "prompt": "\"I never found out what the next sentence was,\" Trish says. \"Bea told me instead. One message.\" She locks the phone. \"Write down that I would have paid. I had written SHORTLISTED at the top of the page. I would have paid.\"",
           "milestone": {
             "title": "Witness Secured: The Job That Cost Money",
             "detail": "Trish Lim put an advertisement, a chat-only recruiter and a call that dropped mid-sentence on the same night - the job-offer script, and the name of the batchmate it hired instead of robbing."
@@ -433,12 +433,12 @@
       }
     },
     "end_partial": {
-      "prompt": "You have Trish's account, but nothing yet that ties it to the wider operation.",
+      "prompt": "You have Trish's account, but nothing yet that ties it to the operation behind it.",
       "outcome": "partial",
       "choices": []
     },
     "end_shutdown": {
-      "prompt": "Trish locks the phone and stands. \"I've got another interview at three. A real one, I think.\" She says it to the door rather than to you. \"I hope.\" The receipt, the chat and the name of the girl who got the job go back into her pocket.",
+      "prompt": "Trish locks the phone and stands. \"I have another interview at three. A real one, I think.\" She says it to the door and not to you. \"I hope.\" The receipt, the chat and the name of the girl who got the job go back into her pocket.",
       "outcome": "failure",
       "milestone": {
         "title": "Witness Lost",
@@ -447,10 +447,10 @@
       "choices": [],
       "dispositions": {
         "resistant": {
-          "prompt": "Trish locks the phone and stands. \"I've got another interview at three. A real one, I think.\" She says it to the door rather than to you. \"I hope.\" The chat, Bea's reply and the number go back into her pocket."
+          "prompt": "Trish locks the phone and stands. \"I have another interview at three. A real one, I think.\" She says it to the door and not to you. \"I hope.\" The chat, Bea's reply and the number go back into her pocket."
         },
         "unfinished": {
-          "prompt": "Trish locks the phone and stands. \"I've got another interview at three. A real one, I think.\" She says it to the door rather than to you. \"I hope.\" The chat, Bea's reply and the number go back into her pocket."
+          "prompt": "Trish locks the phone and stands. \"I have another interview at three. A real one, I think.\" She says it to the door and not to you. \"I hope.\" The chat, Bea's reply and the number go back into her pocket."
         }
       }
     }

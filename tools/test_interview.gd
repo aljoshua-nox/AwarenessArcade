@@ -584,7 +584,7 @@ func _test_disposition_variants() -> void:
 	_check(receipt >= 0, "a harmed Evelyn has the payment to show")
 	if receipt >= 0:
 		view._present_evidence_index(receipt)
-		_check(view.prompt_value.text.contains("balanced it that evening"), "...and reacts to it in her own voice")
+		_check(view.prompt_value.text.contains("balanced it that same evening"), "...and reacts to it in her own voice")
 	var stub := _index_of(view, "ev_raffle_stub")
 	view._load_node("ask_evidence")
 	view._present_evidence_index(stub)

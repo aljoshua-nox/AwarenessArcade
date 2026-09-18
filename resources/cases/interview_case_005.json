@@ -13,17 +13,17 @@
     "dispositions": {
       "harmed": {
         "cooperation": 34,
-        "prompt": "Evelyn has coffee on the stove and does not offer you a cup. \"I'd rather not go through it again, if it's all the same.\" She sits with her hands in her lap. \"I spent thirty years telling other people to check their figures.\"",
+        "prompt": "Evelyn has coffee on the stove and does not offer you a cup. \"I'd rather not go through it again, if that's okay with you.\" She sits with her hands in her lap. \"Thirty years I told other people to check their figures.\"",
         "note": "You took money from this one. A person who audited other people's books for a living now has to say out loud that she was caught - which is why she would rather say nothing."
       },
       "resistant": {
         "cooperation": 62,
-        "prompt": "\"Sit down, sit down.\" Evelyn already has a notebook open on the table, turned to face you. \"Number, date, time, and what he said, near enough word for word. I wrote it while he was still talking.\"",
+        "prompt": "\"Sit down, sit down.\" Evelyn already has a notebook open on the table, turned to face you. \"Number, date, time, and what he said, more or less word for word. I wrote it while he was still talking.\"",
         "note": "She refused the call you made and took notes while doing it. There is no transaction to trace, but there is a witness who was paying attention."
       },
       "unfinished": {
         "cooperation": 44,
-        "prompt": "\"Somebody called about a prize and then the line went dead.\" Evelyn shrugs. \"I assumed it was a wrong number that got bored.\" She studies you. \"You've come a long way for a wrong number.\"",
+        "prompt": "\"Somebody called about a prize and then the line went dead.\" Evelyn shrugs. \"I assumed it was a wrong number that got bored.\" She studies you. \"You came a long way for a wrong number.\"",
         "note": "Your call to her never finished. She has nothing to be frightened of and no reason to think this matters, which is its own kind of difficult."
       }
     }
@@ -76,7 +76,7 @@
   "failure_node": "end_shutdown",
   "nodes": {
     "intro": {
-      "prompt": "Evelyn Marsh meets you at the door with the air of someone who has been waiting to be taken seriously. \"You're here about the phone call. Finally.\"",
+      "prompt": "Evelyn Marsh meets you at the door like somebody who has been waiting to be taken seriously. \"You're here about the phone call. Finally.\"",
       "choices": [
         {
           "text": "I am. And I'd like to hear all of it, in your own order.",
@@ -87,7 +87,7 @@
           "next": "ask_call"
         },
         {
-          "text": "You didn't lose any money, so let's keep this brief.",
+          "text": "You didn't lose any money, so let's keep this short.",
           "next": "dismiss_her",
           "cooperation": -14
         }
@@ -104,7 +104,7 @@
               "next": "ask_call"
             },
             {
-              "text": "I'll be honest - a bookkeeper paying a release fee is the part I don't understand.",
+              "text": "I'll be honest - a bookkeeper paying a release fee is the part I don't get.",
               "next": "dismiss_her",
               "cooperation": -14
             }
@@ -121,7 +121,7 @@
               "next": "ask_call"
             },
             {
-              "text": "A wrong number and a dropped line. Let's keep this brief.",
+              "text": "A wrong number and a dropped line. Let's keep this short.",
               "next": "dismiss_her",
               "cooperation": -14
             }
@@ -130,10 +130,10 @@
       }
     },
     "dismiss_her": {
-      "prompt": "The warmth goes out of her face. \"No. I didn't lose any money.\" A pause with an edge on it. \"Is that the entry requirement? Should I have paid, so you'd write it down?\"",
+      "prompt": "The warmth goes out of her face. \"No. I didn't lose any money.\" A pause with an edge on it. \"Is that the requirement? Should I have paid, so you would write it down?\"",
       "choices": [
         {
-          "text": "That was badly put. You're the only person so far who wrote anything down.",
+          "text": "That came out wrong. You're the only person so far who wrote anything down.",
           "next": "recover",
           "cooperation": 8
         },
@@ -145,10 +145,10 @@
       ],
       "dispositions": {
         "harmed": {
-          "prompt": "The warmth goes out of her face. \"No. Nor do I.\" A pause with an edge on it. \"Is that what you came for? To have it explained to you?\"",
+          "prompt": "The warmth goes out of her face. \"No. Neither do I.\" A pause with an edge on it. \"Is that what you came for? For me to explain it to you?\"",
           "choices": [
             {
-              "text": "That was badly put. You wrote his number down before you paid him. Nobody else did that.",
+              "text": "That came out wrong. You wrote his number down before you paid him. Nobody else did that.",
               "next": "recover",
               "cooperation": 8
             },
@@ -160,10 +160,10 @@
           ]
         },
         "unfinished": {
-          "prompt": "The warmth goes out of her face. \"A wrong number.\" A pause with an edge on it. \"Then why, precisely, are you at my door?\"",
+          "prompt": "The warmth goes out of her face. \"A wrong number.\" A pause with an edge on it. \"Then why exactly are you at my door?\"",
           "choices": [
             {
-              "text": "That was badly put. You noted the time of a call that went nowhere. Nobody else did that.",
+              "text": "That came out wrong. You wrote down the time of a call that went nowhere. Nobody else did that.",
               "next": "recover",
               "cooperation": 8
             },
@@ -177,7 +177,7 @@
       }
     },
     "recover": {
-      "prompt": "She considers that, then nods once. \"No. It's a fair point badly made. Nobody wants the statement of the woman who was fine.\"",
+      "prompt": "She thinks about that, then nods once. \"No. It's a fair point, badly made. Nobody wants the statement of the woman who was fine.\"",
       "cooperation": 4,
       "choices": [
         {
@@ -187,7 +187,7 @@
       ],
       "dispositions": {
         "harmed": {
-          "prompt": "She considers that, then nods once. \"No. It's a fair point badly made. Nobody wants the statement of the woman who should have known better.\"",
+          "prompt": "She thinks about that, then nods once. \"No. It's a fair point, badly made. Nobody wants the statement of the woman who should have known better.\"",
           "choices": [
             {
               "text": "The people it worked on are exactly who I need. Go on.",
@@ -196,7 +196,7 @@
           ]
         },
         "unfinished": {
-          "prompt": "She considers that, then nods once. \"No. It's a fair point badly made. Nobody wants the statement of the woman nothing happened to.\"",
+          "prompt": "She thinks about that, then nods once. \"No. It's a fair point, badly made. Nobody wants the statement of the woman nothing happened to.\"",
           "choices": [
             {
               "text": "The people it didn't finish with are exactly who I need. Go on.",
@@ -207,7 +207,7 @@
       }
     },
     "ask_wellbeing": {
-      "prompt": "\"I'm perfectly well. Annoyed, mainly.\" She sets down two cups anyway. \"My sister had one of these calls last year and she has never told anybody but me. That is what makes me angry.\"",
+      "prompt": "\"I'm fine. Annoyed, mostly.\" She sets down two cups anyway. \"My sister got one of these calls last year and she has never told anybody but me. That's what makes me angry.\"",
       "cooperation": 8,
       "choices": [
         {
@@ -217,42 +217,42 @@
       ],
       "dispositions": {
         "harmed": {
-          "prompt": "\"Well enough. Angry, mainly - with myself.\" She sets down two cups anyway. \"My sister had one of these calls last year and told nobody but me, and I thought less of her for it. I've had to revise that.\""
+          "prompt": "\"Okay enough. Angry, mostly - at myself.\" She sets down two cups anyway. \"My sister got one of these calls last year and told nobody but me, and I thought less of her for it. I've had to take that back.\""
         }
       }
     },
     "ask_call": {
-      "prompt": "\"A very pleasant young man. I had won a regional draw - four hundred-something thousand. All that remained was a release fee, and could I settle it today, because the draw closed at five.\"",
+      "prompt": "\"A very pleasant young man. I had won a regional raffle daw - four hundred-something thousand. All that was left was the release fee, and could I settle it today, because the draw closes at five.\"",
       "choices": [
         {
-          "text": "Say the part about the fee again. Exactly as he said it.",
+          "text": "Say the part about the fee again. Exactly the way he said it.",
           "next": "tactic_quiz_advance_fee"
         }
       ],
       "dispositions": {
         "harmed": {
-          "prompt": "\"A very pleasant young man. I had won a regional draw - four hundred-something thousand. There was a release fee, and it had to be settled today, because the draw closed at five.\" She folds her hands. \"I settled it.\""
+          "prompt": "\"A very pleasant young man. I had won a regional raffle daw - four hundred-something thousand. There was a release fee, and it had to be settled today, because the draw closes at five.\" She folds her hands. \"I settled it.\""
         },
         "unfinished": {
-          "prompt": "\"A very pleasant young man. I had won a regional draw, and he was coming to what was needed to release it when the line went.\" She frowns. \"I've had a week to think about what the next sentence was going to be. My sister had one of these calls. I know what it was.\""
+          "prompt": "\"A very pleasant young man. I had won a regional raffle daw, and he was getting to what was needed to release it when the line cut.\" She frowns. \"I've had a week to think about what the next sentence was going to be. My sister got one of these calls. I know what it was.\""
         }
       }
     },
     "ask_call_cold": {
-      "prompt": "She gives it flatly, like a statement being read into a record. \"Regional draw. Large sum. A release fee, payable today, or the draw closed at five.\"",
+      "prompt": "She gives it flatly, like a statement being read into the record. \"Regional raffle. Large sum. A release fee, payable today, or the draw closes at five.\"",
       "cooperation": -6,
       "choices": [
         {
-          "text": "Say the part about the fee again. Exactly as he said it.",
+          "text": "Say the part about the fee again. Exactly the way he said it.",
           "next": "tactic_quiz_advance_fee"
         }
       ],
       "dispositions": {
         "harmed": {
-          "prompt": "She gives it flatly, like a statement being read into a record. \"Regional draw. Large sum. A release fee, payable today, or the draw closed at five.\" A beat. \"Paid.\""
+          "prompt": "She gives it flatly, like a statement being read into the record. \"Regional raffle. Large sum. A release fee, payable today, or the draw closes at five.\" A beat. \"Paid.\""
         },
         "unfinished": {
-          "prompt": "She gives it flatly, like a statement being read into a record. \"Regional draw. Large sum. Line went dead.\""
+          "prompt": "She gives it flatly, like a statement being read into the record. \"Regional raffle. Large sum. Line went dead.\""
         }
       }
     },
@@ -261,7 +261,7 @@
         "setup": "You write it down as she says it: [i]\"Your prize is confirmed. There is only the release fee to settle before we can transfer it, and the draw closes at five.\"[/i]",
         "tactic_id": "advance_fee",
         "tactic": "Paying to receive",
-        "question": "One thing in that sentence is impossible rather than merely suspicious. Which?",
+        "question": "One thing in that sentence is impossible, not just suspicious. Which one?",
         "milestone": {
           "title": "Tactic Identified: Paying To Receive",
           "detail": "Recognized that money flowing towards the winner is the whole idea of winning - a fee charged before a prize is released is the fraud, not a formality."
@@ -271,22 +271,22 @@
             "text": "That she has to pay before she can be paid.",
             "correct": true,
             "cooperation": 10,
-            "feedback": "That is the tell, and it needs no research to spot. Winnings arrive net. Any arrangement where money must travel towards the stranger first is the scam in one sentence - lottery, refund, inheritance, loan, job offer, it does not matter."
+            "feedback": "That is the tell, and it takes no research to spot. Real winnings do not cost anything to collect. Any setup where money has to go to the stranger first is the scam in one sentence - raffle, refund, inheritance, loan, job offer, it does not matter."
           },
           {
             "text": "That the draw closes at five.",
             "cooperation": -6,
-            "feedback": "Close - the deadline is doing real work, and you have met it before. But an urgent legitimate offer is at least possible. A prize you must buy is not."
+            "feedback": "Close - the deadline is doing real work, and you have met it before. But an urgent offer that is real is at least possible. A prize you have to buy is not."
           },
           {
             "text": "That the sum was oddly specific.",
             "cooperation": -8,
-            "feedback": "Specific figures are chosen precisely because they sound audited. A round number invites doubt; four hundred-something thousand sounds like it came off a spreadsheet."
+            "feedback": "Specific figures are chosen exactly because they sound audited. A round number invites doubt; four hundred-something thousand sounds like it came off a spreadsheet."
           },
           {
             "text": "That he was pleasant.",
             "cooperation": -8,
-            "feedback": "Pleasantness is the job. Callers who are rude get hung up on, so the ones still working the phones are the ones who are easy to talk to."
+            "feedback": "Being pleasant is the job. Callers who are rude get hung up on, so the ones still on the phones are the ones who are easy to talk to."
           }
         ],
         "next": "ask_evidence"
@@ -300,32 +300,32 @@
       }
     },
     "ask_evidence": {
-      "prompt": "\"So I was right.\" She sits back, satisfied and still annoyed. \"I told him winnings don't have an entry fee and he hung up on me. Rather rude, in the end.\"",
+      "prompt": "\"So I was right.\" She sits back, satisfied and still annoyed. \"I told him winnings don't have an entry fee, and he hung up on me. Quite rude, in the end.\"",
       "evidence_prompt": true,
       "evidence_hint": "She refused, so there is no transaction to follow. What matters is anything that shows how they reached her in the first place.",
       "accepts_evidence": [
         {
           "evidence_id": "ev_raffle_stub",
           "next": "confirm_list",
-          "response": "Evelyn goes very still. \"The hardware store. A bowl of tickets by the cashier.\" She turns the stub over. \"I wrote my address on it myself. I handed it to them.\"",
+          "response": "Evelyn goes very still. \"The hardware store. A bowl of tickets by the cashier.\" She turns the stub over. \"I wrote my address on it myself. I handed it to them myself.\"",
           "cooperation": 20
         },
         {
           "evidence_id": "ev_call_note",
           "next": "ask_evidence",
-          "response": "\"My own handwriting, yes.\" She taps the page. \"Compare it to whatever the others told you. I'd like to know if he used the same words.\"",
+          "response": "\"My own handwriting, yes.\" She taps the page. \"Compare it to whatever the others told you. I'd like to know if he used the same words on them.\"",
           "cooperation": 8
         },
         {
           "evidence_id": "ev_prize_notice",
           "next": "ask_evidence",
-          "response": "\"That arrived the evening before.\" She reads it again. \"Softening me up, I suppose. It worked on my curiosity, if nothing else.\"",
+          "response": "\"That arrived the evening before.\" She reads it again. \"Softening me up, I suppose. It got my curiosity, if nothing else.\"",
           "cooperation": 6
         },
         {
           "evidence_id": "ev_shopping_list",
           "next": "ask_evidence",
-          "response": "She looks at the list, then at you. \"Unless the canned tomatoes are implicated, I'm not sure what you want me to say.\"",
+          "response": "She looks at the list, then at you. \"Unless the canned sardines are involved, I'm not sure what you want me to say.\"",
           "cooperation": -8,
           "wrong": true
         }
@@ -342,68 +342,68 @@
       ],
       "dispositions": {
         "harmed": {
-          "prompt": "\"So it was the fee.\" She sits very still. \"I know that winnings do not have an entry fee. I have said it to nephews. I paid it anyway, because I had written the sum down and I wanted it to be true.\"",
+          "prompt": "\"So it was the fee.\" She sits very still. \"I know winnings don't have an entry fee. I've said it to my nephews. I paid it anyway, because I had written the amount down and I wanted it to be true.\"",
           "evidence_hint": "She paid, so there is a transaction - but the money is gone and the account it went to is not. What matters is how they reached her in the first place.",
           "accepts_evidence": [
             {
               "evidence_id": "ev_raffle_stub",
               "next": "confirm_list",
-              "response": "Evelyn goes very still. \"The hardware store. A bowl of tickets by the cashier.\" She turns the stub over. \"I wrote my address on it myself. I handed it to them.\"",
+              "response": "Evelyn goes very still. \"The hardware store. A bowl of tickets by the cashier.\" She turns the stub over. \"I wrote my address on it myself. I handed it to them myself.\"",
               "cooperation": 20
             },
             {
               "evidence_id": "ev_release_receipt",
               "next": "ask_evidence",
-              "response": "She does not look at it. \"I know what it says. I balanced it that evening, the way I balance everything.\"",
+              "response": "She does not look at it. \"I know what it says. I balanced it that same evening, the way I balance everything.\"",
               "cooperation": 4
             },
             {
               "evidence_id": "ev_call_note",
               "next": "ask_evidence",
-              "response": "\"My own handwriting. Number, time, what he said.\" She looks at the page. \"I wrote all of that down, and then I paid him. Make of that what you like.\"",
+              "response": "\"My own handwriting. Number, time, what he said.\" She looks at the page. \"I wrote all of that down, and then I paid him. Make of that what you want.\"",
               "cooperation": 8
             },
             {
               "evidence_id": "ev_prize_notice",
               "next": "ask_evidence",
-              "response": "\"That arrived the evening before.\" She reads it again. \"Softening me up, I suppose. It worked on my curiosity, if nothing else.\"",
+              "response": "\"That arrived the evening before.\" She reads it again. \"Softening me up, I suppose. It got my curiosity, if nothing else.\"",
               "cooperation": 6
             },
             {
               "evidence_id": "ev_shopping_list",
               "next": "ask_evidence",
-              "response": "She looks at the list, then at you. \"Unless the canned tomatoes are implicated, I'm not sure what you want me to say.\"",
+              "response": "She looks at the list, then at you. \"Unless the canned sardines are involved, I'm not sure what you want me to say.\"",
               "cooperation": -8,
               "wrong": true
             }
           ]
         },
         "unfinished": {
-          "prompt": "\"So it would have been a fee.\" She nods slowly. \"That is what my sister was asked for. I'd have said no.\" A pause. \"I think I would have said no.\"",
+          "prompt": "\"So it would have been a fee.\" She nods slowly. \"That's what my sister was asked for. I would have said no.\" A pause. \"I think I would have said no.\"",
           "evidence_hint": "The call never finished, so there is nothing to follow. What matters is how they reached her in the first place.",
           "accepts_evidence": [
             {
               "evidence_id": "ev_raffle_stub",
               "next": "confirm_list",
-              "response": "Evelyn goes very still. \"The hardware store. A bowl of tickets by the cashier.\" She turns the stub over. \"I wrote my address on it myself. I handed it to them.\"",
+              "response": "Evelyn goes very still. \"The hardware store. A bowl of tickets by the cashier.\" She turns the stub over. \"I wrote my address on it myself. I handed it to them myself.\"",
               "cooperation": 20
             },
             {
               "evidence_id": "ev_call_note",
               "next": "ask_evidence",
-              "response": "\"Two lines and a question mark. I'd started out of habit, and then there was nothing left to write.\"",
+              "response": "\"Two lines and a question mark. I started out of habit, and then there was nothing left to write.\"",
               "cooperation": 8
             },
             {
               "evidence_id": "ev_prize_notice",
               "next": "ask_evidence",
-              "response": "\"That arrived the evening before.\" She reads it again. \"Softening me up, I suppose. It worked on my curiosity, if nothing else.\"",
+              "response": "\"That arrived the evening before.\" She reads it again. \"Softening me up, I suppose. It got my curiosity, if nothing else.\"",
               "cooperation": 6
             },
             {
               "evidence_id": "ev_shopping_list",
               "next": "ask_evidence",
-              "response": "She looks at the list, then at you. \"Unless the canned tomatoes are implicated, I'm not sure what you want me to say.\"",
+              "response": "She looks at the list, then at you. \"Unless the canned sardines are involved, I'm not sure what you want me to say.\"",
               "cooperation": -8,
               "wrong": true
             }
@@ -412,11 +412,11 @@
       }
     },
     "press_details": {
-      "prompt": "\"He had my name. My full name, and the road, though not the number.\" She frowns. \"I did wonder how. I assumed the phone book, but nobody's been in the phone book for twenty years.\"",
+      "prompt": "\"He had my name. My full name, and the street, but not the house number.\" She frowns. \"I did wonder how. I assumed the phone directory, but nobody has been in a phone directory for twenty years.\"",
       "cooperation": 6,
       "choices": [
         {
-          "text": "Then something you filled in gave it to him. Anything you can show me?",
+          "text": "Then something you filled out gave it to him. Anything you can show me?",
           "next": "ask_evidence"
         },
         {
@@ -426,7 +426,7 @@
       ]
     },
     "confirm_list": {
-      "prompt": "\"A prize draw to find out who wants prizes.\" Evelyn sets the stub down carefully, as though it might be needed later. \"They weren't fishing. They were working a list, and I put myself on it for a chance at a gift basket.\"",
+      "prompt": "\"A raffle to find out who wants prizes.\" Evelyn sets the stub down carefully, like it might be needed later. \"They weren't fishing. They were working a list, and I put myself on it for a chance at a gift basket.\"",
       "cooperation": 10,
       "milestone": {
         "title": "Witness Secured: The List",
@@ -503,12 +503,12 @@
       }
     },
     "end_partial": {
-      "prompt": "You have her account of the call and nothing that shows how they found her. It corroborates the script, but it does not move the case forward on its own.",
+      "prompt": "You have her account of the call and nothing that shows how they found her. It backs up the script, but it does not move the case forward on its own.",
       "outcome": "partial",
       "choices": []
     },
     "end_shutdown": {
-      "prompt": "\"I think you have what you came for.\" Evelyn stands and holds the door. \"I was the one who saw it coming, and I have somehow still managed to waste your afternoon. Good day.\" The notebook stays on the table, closed.",
+      "prompt": "\"I think you have what you came for.\" Evelyn stands and holds the door. \"I was the one who saw it coming, and somehow I still managed to waste your afternoon. Thank you for your time.\" The notebook stays on the table, closed.",
       "outcome": "failure",
       "milestone": {
         "title": "Witness Lost",
@@ -517,10 +517,10 @@
       "choices": [],
       "dispositions": {
         "harmed": {
-          "prompt": "\"I think you have what you came for.\" Evelyn stands and holds the door. \"I was the one who didn't see it coming, and I don't intend to have that read back to me. Good day.\" The notebook stays on the table, closed."
+          "prompt": "\"I think you have what you came for.\" Evelyn stands and holds the door. \"I was the one who didn't see it coming, and I'm not going to sit here and have that read back to me. Thank you for your time.\" The notebook stays on the table, closed."
         },
         "unfinished": {
-          "prompt": "\"I think you have what you came for.\" Evelyn stands and holds the door. \"Nothing happened to me, and I have somehow still managed to waste your afternoon. Good day.\" The notebook stays on the table, closed."
+          "prompt": "\"I think you have what you came for.\" Evelyn stands and holds the door. \"Nothing happened to me, and somehow I still managed to waste your afternoon. Thank you for your time.\" The notebook stays on the table, closed."
         }
       }
     }

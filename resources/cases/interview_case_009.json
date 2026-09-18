@@ -31,7 +31,7 @@
   "failure_node": "end_shutdown",
   "nodes": {
     "hesitant_intro": {
-      "prompt": "Bea opens the boarding-house door the width of her face. \"I can't talk about work. It's in the contract.\" She looks past you down the road, the way people do when they are deciding whether they have been seen. \"Sorry. I've got a shift.\"",
+      "prompt": "Bea opens the boarding-house door just wide enough for her face. \"I can't talk about work. It's in the contract.\" She looks past you down the road, the way people do when they are deciding whether they have been seen. \"Sorry. I have a shift.\"",
       "choices": [
         {
           "text": "I'll come back when I can show you why it matters.",
@@ -40,12 +40,12 @@
       ]
     },
     "end_partial_hesitant": {
-      "prompt": "Bea is not going to risk the job for someone she has no reason to trust. Standing with the other witnesses first might change that.",
+      "prompt": "Bea is not going to risk the job for somebody she has no reason to trust. Standing with the other witnesses first might change that.",
       "outcome": "partial",
       "choices": []
     },
     "intro": {
-      "prompt": "Bea lets you into a room with a mattress, a rice cooker and a headset on the windowsill. \"You're the one asking about the calls. People at work talked about you.\" She sits on the mattress with her hoodie sleeves over her hands. \"I do customer service. That's all I'm going to say about it.\"",
+      "prompt": "Bea lets you into a room with a mattress, a rice cooker and a headset on the windowsill. \"You're the one asking about the calls. People at work were talking about you.\" She sits on the mattress with her hoodie sleeves pulled over her hands. \"I do customer service. That's all I'm going to say about it.\"",
       "choices": [
         {
           "text": "Then tell me about customer service. How did you get the job?",
@@ -64,7 +64,7 @@
       ]
     },
     "reassure": {
-      "prompt": "She watches you for a moment to see if it is a trick. \"Nobody at work says script. They say call flow.\" A small, tired laugh. \"Okay. Ask.\"",
+      "prompt": "She watches you for a moment to see if it's a trick. \"Nobody at work says script. They say call flow.\" A small, tired laugh. \"Okay. Ask.\"",
       "cooperation": 4,
       "choices": [
         {
@@ -74,7 +74,7 @@
       ]
     },
     "press_her": {
-      "prompt": "\"I read what they give me.\" Her voice goes flat. \"I read it to people who called a number because a pop-up told them to. I don't dial anyone.\" She pulls the sleeves further down. \"You want to arrest someone, there are forty of us.\"",
+      "prompt": "\"I read what they give me.\" Her voice goes flat. \"I read it to people who called a number because a pop-up told them to. I don't dial anybody.\" She pulls the sleeves further down. \"You want to arrest somebody? There are forty of us.\"",
       "choices": [
         {
           "text": "That was out of line. You're on the list of people they used, not the list I'm building.",
@@ -89,7 +89,7 @@
       ]
     },
     "ask_job": {
-      "prompt": "\"An ad. Customer service, no experience, training provided.\" She says it like a line she has heard herself say before. \"I messaged, they replied in about five minutes, I did a chat interview and a typing test. Then two days of training with the cards.\" She nods at the windowsill. \"They said it was tech support. It [i]is[/i] tech support, sort of. People call in with a virus warning and we walk them through the fix.\"",
+      "prompt": "\"An ad. Customer service, no experience, training provided.\" She says it like a line she has heard herself say before. \"I messaged, they replied in like five minutes, I did a chat interview and a typing test. Then two days of training with the cards.\" She nods at the windowsill. \"They said it was tech support. It [i]is[/i] tech support, sort of. People call in with a virus warning and we walk them through the fix.\"",
       "choices": [
         {
           "text": "Show me one of the cards.",
@@ -119,10 +119,10 @@
         },
         "options": [
           {
-            "text": "Because the call has to be identical for everyone - it's a script tuned on thousands of people, not a conversation.",
+            "text": "Because the call has to be identical for everyone - it's a script tested on thousands of people, not a conversation.",
             "correct": true,
             "cooperation": 12,
-            "feedback": "A script is a machine for producing one outcome. Every objection a caller might raise has been heard before and has a printed answer; a new operator improvising would break it. That is also why the same call turns up word for word at door after door - and why the moment a caller says something that is not on the card, the voice on the line gets less sure."
+            "feedback": "A script is a machine for producing one outcome. Every objection a caller might raise has been heard before and has a printed answer; a new operator improvising would break it. That is also why the same call turns up word for word at door after door - and why the moment a caller says something that is not on the card, the voice on the line gets less sure of itself."
           },
           {
             "text": "Because new operators make mistakes and the company wants quality.",
@@ -137,24 +137,24 @@
           {
             "text": "Because she isn't technical enough to answer real questions.",
             "cooperation": -6,
-            "feedback": "Neither is anyone else on the floor, and it does not matter, because there is no real problem to fix. The card does not need her to know anything. It needs her to say the next line."
+            "feedback": "Neither is anybody else on the floor, and it does not matter, because there is no real problem to fix. The card does not need her to know anything. It needs her to say the next line."
           }
         ],
         "next": "ask_evidence"
       }
     },
     "ask_evidence": {
-      "prompt": "Bea puts the card face down on the mattress. \"It's a job. I know what you think it is.\" She looks at the headset. \"The pay is real. The rent is real. Everyone I know from college is still sending applications.\"",
+      "prompt": "Bea puts the card face down on the mattress. \"It's a job. I know what you think it is.\" She looks at the headset. \"The pay is real. The rent is real. Everyone I know from college is still sending out applications.\"",
       "evidence_prompt": true,
-      "evidence_hint": "She will defend the job until she sees what the job did to someone she knows. You need the other end of the advertisement she answered.",
+      "evidence_hint": "She will defend the job until she sees what the job did to somebody she knows. You need the other end of the ad she answered.",
       "accepts_evidence": [
         {
           "evidence_id": "test_trish_confirmed",
           "next": "turned",
-          "response": "She reads the name before she reads anything else. \"Trish.\" And then the rest, slowly, and then again. \"Two and a half thousand. She paid them two and a half thousand and they - \" She stops. \"Same ad. Same HR. Same [i]week.[/i] I got the job and she got a receipt.\" The sleeves come off her hands.",
+          "response": "She reads the name before she reads anything else. \"Trish.\" And then the rest, slowly, and then again. \"Two thousand five hundred. She paid them two thousand five hundred and they - \" She stops. \"Same ad. Same HR. Same [i]week.[/i] I got the job and she got a receipt.\" The sleeves come off her hands.",
           "cooperation": 20,
           "responses": {
-            "resistant": "She reads the name before she reads anything else. \"Trish.\" And then the rest, slowly. \"She asked me. Eleven fifty-two, that night - is this real, did you pay. And I said nobody paid, and I asked who it was, and she sent me a number I dial from that desk.\" She stops. \"I never answered her again. I couldn't.\" The sleeves come off her hands.",
+            "resistant": "She reads the name before she reads anything else. \"Trish.\" And then the rest, slowly. \"She asked me. Eleven fifty-two that night - is this real, did you pay. And I said nobody paid, and I asked who it was, and she sent me a number I dial from that desk.\" She stops. \"I never answered her again. I couldn't.\" The sleeves come off her hands.",
             "unfinished": "She reads the name before she reads anything else. \"Trish.\" And then the rest, slowly. \"She messaged me after. Is this real, did you pay. I said nobody paid. She sent me the number.\" She looks at the headset. \"It was our number. I never answered her again.\" The sleeves come off her hands."
           }
         },
@@ -167,7 +167,7 @@
         {
           "evidence_id": "ev_bea_badge",
           "next": "ask_evidence",
-          "response": "\"It's a badge. Everyone has one.\" It proves where she works, which she has not denied, and nothing about why she should talk.",
+          "response": "\"It's a badge. Everybody has one.\" It proves where she works, which she has not denied, and nothing about why she should talk.",
           "cooperation": -8,
           "wrong": true
         }
@@ -184,11 +184,11 @@
       ]
     },
     "press_pay": {
-      "prompt": "\"Cash. Fridays. An envelope with my operator number on it.\" She says it before she can decide not to. \"No payslip. I asked once and the floor lead said the accounts department was upstairs and I didn't need to worry about it.\" A pause. \"Upstairs is where the director sits. Ocampo. Nobody goes up unless they're called.\"",
+      "prompt": "\"Cash. Fridays. An envelope with my operator number on it.\" She says it before she can decide not to. \"No payslip. I asked once and the team lead said accounting is upstairs and I don't need to worry about it.\" A pause. \"Upstairs is where the director sits. Ocampo. Nobody goes up unless they're called.\"",
       "cooperation": 6,
       "choices": [
         {
-          "text": "Let me show you something from the other end of that advertisement.",
+          "text": "Let me show you something from the other end of that ad.",
           "next": "ask_evidence"
         },
         {
@@ -198,7 +198,7 @@
       ]
     },
     "turned": {
-      "prompt": "Bea sits with the statement in her lap for a long time. \"There's a folder upstairs. Recruitment. It's the same ad, every month, and the ones who pay the fee never get called back, and the ones who don't get a chat interview.\" She looks at the headset on the windowsill as if it belongs to someone else. \"I'll say that. To whoever you need me to say it to. Write it down before I change my mind.\"",
+      "prompt": "Bea sits with the statement in her lap for a long time. \"There's a folder upstairs. Recruitment. It's the same ad, every month, and the ones who pay the fee never get called back, and the ones who don't pay get a chat interview.\" She looks at the headset on the windowsill as if it belongs to somebody else. \"I'll say that. To whoever you need me to say it to. Write it down before I change my mind.\"",
       "cooperation": 10,
       "milestone": {
         "title": "Witness Turned: The Recruit",
@@ -206,7 +206,7 @@
       },
       "choices": [
         {
-          "text": "You've just given me the second floor. Thank you.",
+          "text": "You just gave me the second floor. Thank you, Bea.",
           "next": "end_turned"
         }
       ]
@@ -231,7 +231,7 @@
       "choices": []
     },
     "end_shutdown": {
-      "prompt": "Bea stands and picks the headset off the windowsill. \"I've got a shift.\" At the door she stops without turning round. \"Don't come back here. They'll know.\" You will not find her at the boarding house again, and the folder upstairs stays upstairs.",
+      "prompt": "Bea stands and picks the headset up off the windowsill. \"I have a shift.\" At the door she stops without turning around. \"Don't come back here. They'll know.\" You will not find her at the boarding house again, and the folder upstairs stays upstairs.",
       "outcome": "failure",
       "milestone": {
         "title": "Witness Lost: The Recruit",

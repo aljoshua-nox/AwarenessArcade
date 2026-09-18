@@ -20,12 +20,12 @@
       },
       "resistant": {
         "cooperation": 62,
-        "prompt": "\"Sit, sit.\" Teodoro has two cups out already. \"I called my daughter on the other line while he was still talking. Paolo was in a mathematics lesson.\" He is almost pleased. \"I have the number written down. I write everything down.\"",
+        "prompt": "\"Sit, sit.\" Teodoro has two cups out already. \"I called my daughter on the other phone while he was still talking. Paolo was in math class.\" He is almost pleased. \"I have the number written down. I write everything down.\"",
         "note": "He refused the call you made, and he checked - which is the whole lesson in one sentence. Nothing was taken, so there is nothing to trace; what he has is a very good memory and a note in pencil."
       },
       "unfinished": {
         "cooperation": 44,
-        "prompt": "\"Somebody rang about Paolo, and then the line went dead.\" Teodoro says it carefully, as if it might still turn out to be true. \"I called my daughter. He was at school. I have been waiting for them to call back and explain.\"",
+        "prompt": "\"Somebody called about Paolo, and then the line went dead.\" Teodoro says it carefully, as if it might still turn out to be true. \"I called my daughter. He was at school. I have been waiting for them to call back and explain.\"",
         "note": "Your call to him never finished. He does not know it was a scam - he knows a stranger said his grandson's name and then vanished, and he has been frightened since."
       }
     }
@@ -75,7 +75,7 @@
   "failure_node": "end_shutdown",
   "nodes": {
     "hesitant_intro": {
-      "prompt": "Teodoro reads the identification, hands it back, and does not open the door any further. \"I have told the story once, to a policeman who wrote nothing down.\" It is said without heat. \"Come back when it is being taken seriously. I will still be here.\"",
+      "prompt": "Teodoro reads the ID, hands it back, and does not open the door any further. \"I told the story once already, to a policeman who wrote nothing down.\" He says it without heat. \"Come back when it is being taken seriously. I will still be here.\"",
       "choices": [
         {
           "text": "That's fair. I'll come back when I can show you it is.",
@@ -84,24 +84,24 @@
       ]
     },
     "end_partial_hesitant": {
-      "prompt": "Teodoro is not ready to go through it again for someone who cannot show him it will matter. Standing with the other witnesses first might change his mind.",
+      "prompt": "Teodoro is not ready to go through it again for somebody who cannot show him it will matter. Standing with the other witnesses first might change his mind.",
       "outcome": "partial",
       "choices": []
     },
     "intro": {
-      "prompt": "Teodoro shows you to the kitchen table and waits until you are sitting before he sits. \"You are here about the telephone call.\" He says it the way he might once have said you are here about your son's marks - kindly, and expecting the worst.",
+      "prompt": "Teodoro shows you to the kitchen table and waits until you are seated before he sits. \"You are here about the phone call.\" He says it the way he might once have said you are here about your son's grades - kindly, and expecting the worst.",
       "choices": [
         {
-          "text": "Start with the call itself, if you would. Who did he say he was?",
+          "text": "Let's start with the call itself. Who did he say he was?",
           "next": "ask_call"
         },
         {
-          "text": "Before anything else - Paolo is fine, and none of this was your doing.",
+          "text": "Before anything else - Paolo is fine, and none of this was your fault.",
           "next": "reassure",
           "cooperation": 8
         },
         {
-          "text": "You sent money to a stranger for a grandson you never spoke to. Take me through that.",
+          "text": "You sent money to a stranger for a grandson you never even spoke to. Take me through that.",
           "next": "shame_him",
           "cooperation": -14
         }
@@ -110,16 +110,16 @@
         "resistant": {
           "choices": [
             {
-              "text": "Start with the call itself, if you would. Who did he say he was?",
+              "text": "Let's start with the call itself. Who did he say he was?",
               "next": "ask_call"
             },
             {
-              "text": "Before anything else - Paolo is fine, and none of this was your doing.",
+              "text": "Before anything else - Paolo is fine, and none of this was your fault.",
               "next": "reassure",
               "cooperation": 8
             },
             {
-              "text": "You very nearly paid a stranger's bail for a grandson you never spoke to. Take me through that.",
+              "text": "You almost paid bail to a stranger for a grandson you never even spoke to. Take me through that.",
               "next": "shame_him",
               "cooperation": -14
             }
@@ -128,16 +128,16 @@
         "unfinished": {
           "choices": [
             {
-              "text": "Start with the call itself, if you would. Who did he say he was?",
+              "text": "Let's start with the call itself. Who did he say he was?",
               "next": "ask_call"
             },
             {
-              "text": "Before anything else - Paolo is fine, and none of this was your doing.",
+              "text": "Before anything else - Paolo is fine, and none of this was your fault.",
               "next": "reassure",
               "cooperation": 8
             },
             {
-              "text": "A stranger said your grandson's name and you went to find the passbook. Take me through that.",
+              "text": "A stranger said your grandson's name and you went to get the passbook. Take me through that.",
               "next": "shame_him",
               "cooperation": -14
             }
@@ -146,20 +146,20 @@
       }
     },
     "reassure": {
-      "prompt": "He looks at you for a moment, and then at the table. \"I know he is fine. I have seen him since.\" A pause. \"Thank you for saying it anyway. Nobody else has thought to.\"",
+      "prompt": "He looks at you for a moment, and then at the table. \"I know he is fine. I have seen him since then.\" A pause. \"Thank you for saying it anyway. Nobody else thought to.\"",
       "cooperation": 4,
       "choices": [
         {
-          "text": "Then let's start with the man on the telephone. Who did he say he was?",
+          "text": "Then let's start with the man on the phone. Who did he say he was?",
           "next": "ask_call"
         }
       ]
     },
     "shame_him": {
-      "prompt": "He does not flinch; he has been spoken to like that by parents, and he answers the way he answered them. \"Yes. That is what happened. I am eighty-one, and a man said my grandson's name.\" He waits. \"Was there a question?\"",
+      "prompt": "He does not flinch; parents have spoken to him like that before, and he answers the way he answered them. \"Yes. That is what happened. I am eighty-one, and a man said my grandson's name.\" He waits. \"Was there a question?\"",
       "choices": [
         {
-          "text": "That was badly put, and I'm sorry. The name is exactly what I want to understand.",
+          "text": "That came out badly, and I'm sorry. The name is exactly what I want to understand.",
           "next": "reassure",
           "cooperation": 8
         },
@@ -171,7 +171,7 @@
       ]
     },
     "ask_call": {
-      "prompt": "\"He said he was an attorney. Salcedo, from the public attorney's office - he gave the office before I asked.\" Teodoro turns his cup a quarter turn. \"And he said Paolo. Before anything else. My grandson's name, in the first sentence, from a man I had never heard of.\" He looks up. \"A stranger who knows the name of your grandson is not a stranger. That is what I thought. That is what I was meant to think.\"",
+      "prompt": "\"He said he was an attorney. Salcedo, from the public attorney's office - he gave the office before I even asked.\" Teodoro turns his cup a little. \"And he said Paolo. Before anything else. My grandson's name, in the first sentence, from a man I had never heard of.\" He looks up. \"A stranger who knows the name of your grandson is not a stranger. That is what I thought. That is what I was meant to think.\"",
       "choices": [
         {
           "text": "Let's stay on that first sentence for a moment.",
@@ -180,7 +180,7 @@
       ]
     },
     "ask_call_cold": {
-      "prompt": "\"An attorney. Salcedo. The public attorney's office.\" Short, correct, and nothing more. \"He said Paolo's name before I had said anything at all. That is the whole of it.\"",
+      "prompt": "\"An attorney. Salcedo. The public attorney's office.\" Short, correct, and nothing more. \"He said Paolo's name before I had said anything at all. That is all of it.\"",
       "cooperation": -6,
       "choices": [
         {
@@ -201,25 +201,25 @@
         },
         "options": [
           {
-            "text": "That the name was written down somewhere beside his telephone number - nothing more.",
+            "text": "That the name was written down somewhere beside his phone number - nothing more.",
             "correct": true,
             "cooperation": 12,
-            "feedback": "That is all it proves. A grandson's first name is on a raffle slip, a delivery form, a church newsletter, a relative's social media - and once it is beside a number on a list, every caller who buys the list has it. The detail felt like verification. It was the cheapest thing on the sheet."
+            "feedback": "That is all it proves. A grandson's first name is on a raffle slip, a delivery form, a church newsletter, a relative's Facebook - and once it is beside a number on a list, every caller who buys the list has it. The detail felt like proof. It was the cheapest thing on the sheet."
           },
           {
             "text": "That the caller had actually spoken to Paolo.",
             "cooperation": -8,
-            "feedback": "Nothing in the call came from Paolo. Notice what the caller did not have: the boy's voice, where he was, anything only Paolo could have said. A name is the one thing you can know about someone without ever having met them."
+            "feedback": "Nothing in the call came from Paolo. Notice what the caller did not have: the boy's voice, where he was, anything only Paolo could have said. A name is the one thing you can know about somebody without ever having met them."
           },
           {
             "text": "That the call came from a real office - only an office would have the family details.",
             "cooperation": -6,
-            "feedback": "The details an office has are the details a bought list has, and the list is cheaper. An office that needed money from him would write, and would not mind being called back. A caller who minds being checked is telling you what he is."
+            "feedback": "The details an office has are the details a bought list has, and the list is cheaper. An office that needed money from him would send a letter, and would not mind being called back. A caller who minds being checked is telling you what he is."
           },
           {
             "text": "That his bank had leaked his records.",
             "cooperation": -6,
-            "feedback": "It rarely takes a bank. Lists are assembled from everywhere - a slip with a name and a number on it, a form, a directory twenty years old - and then sold on with whatever notes the last caller added. The lesson is not where the name came from. It is that a name is not a credential."
+            "feedback": "It rarely takes a bank. Lists are put together from everywhere - a slip with a name and a number on it, a form, a directory twenty years old - and then sold on with whatever notes the last caller added. The lesson is not where the name came from. It is that a name is not proof of anything."
           }
         ],
         "next": "ask_evidence"
@@ -233,7 +233,7 @@
         {
           "evidence_id": "ev_teddy_passbook",
           "next": "confirm",
-          "response": "He turns the passbook the right way round for you without being asked. \"That line. Forty minutes after he said hello.\"",
+          "response": "He turns the passbook around for you without being asked. \"That line. Forty minutes after he said hello.\"",
           "cooperation": 20
         },
         {
@@ -256,7 +256,7 @@
           "next": "press_method"
         },
         {
-          "text": "That's enough to be going on with. Thank you.",
+          "text": "That's enough to start with. Thank you.",
           "next": "end_partial"
         }
       ],
@@ -267,7 +267,7 @@
             {
               "evidence_id": "ev_teddy_daughter_call",
               "next": "confirm",
-              "response": "\"Four minutes.\" He looks at his daughter's screen. \"He told me there was not time. There was time for that.\"",
+              "response": "\"Four minutes.\" He looks at his daughter's screen. \"He told me there was no time. There was time for that.\"",
               "cooperation": 10
             },
             {
@@ -290,7 +290,7 @@
               "next": "press_method"
             },
             {
-              "text": "That's enough to be going on with. Thank you.",
+              "text": "That's enough to start with. Thank you.",
               "next": "end_partial"
             }
           ]
@@ -301,7 +301,7 @@
             {
               "evidence_id": "ev_teddy_daughter_call",
               "next": "confirm",
-              "response": "\"Four minutes.\" He looks at his daughter's screen. \"I did not know what I was checking. I only knew I had to hear the boy.\"",
+              "response": "\"Four minutes.\" He looks at his daughter's screen. \"I did not know what I was checking. I only knew I had to hear the boy's voice.\"",
               "cooperation": 10
             },
             {
@@ -320,11 +320,11 @@
           ],
           "choices": [
             {
-              "text": "How far had he got when the line went?",
+              "text": "How far did he get before the line cut?",
               "next": "press_method"
             },
             {
-              "text": "That's enough to be going on with. Thank you.",
+              "text": "That's enough to start with. Thank you.",
               "next": "end_partial"
             }
           ]
@@ -332,7 +332,7 @@
       }
     },
     "press_method": {
-      "prompt": "\"A transfer, to an account he read out to me. Or a cash-in at the counter on the corner - he said either would do.\" Teodoro turns the cup again. \"He stayed on the line so that I would not have to do it alone. I thought that was kind.\"",
+      "prompt": "\"A transfer, to an account he read out to me. Or a cash-in at the counter on the corner - either one, he said.\" Teodoro turns the cup again. \"He stayed on the line so that I would not have to do it alone. I thought that was kind of him.\"",
       "cooperation": 6,
       "choices": [
         {
@@ -340,21 +340,21 @@
           "next": "ask_evidence"
         },
         {
-          "text": "That's enough to be going on with. Thank you.",
+          "text": "That's enough to start with. Thank you.",
           "next": "end_partial"
         }
       ],
       "dispositions": {
         "resistant": {
-          "prompt": "\"He wanted me to walk to the counter on the corner with him still on the line. I said I would call my daughter first, and he said there was not time.\" Teodoro shakes his head, once. \"There is always time. I taught for forty years. There was always time.\""
+          "prompt": "\"He wanted me to walk to the counter on the corner with him still on the line. I said I would call my daughter first, and he said there was no time.\" Teodoro shakes his head, once. \"There is always time. I taught for forty years. There was always time.\""
         },
         "unfinished": {
-          "prompt": "\"He had got as far as the amount. Twenty-two thousand. I had the pencil in my hand.\" Teodoro looks at the hand. \"And then nothing. I said hello three times. I sat there until the light went.\""
+          "prompt": "\"He had gotten as far as the amount. Twenty-two thousand. I had the pencil in my hand.\" Teodoro looks at the hand. \"And then nothing. I said hello three times. I sat there until it got dark.\""
         }
       }
     },
     "confirm": {
-      "prompt": "Teodoro closes the passbook. \"That was the funeral plan. I had it so that nobody would have to.\" He rests his hand on the cover. \"If it helps somebody else's grandfather, then write it down. All of it.\"",
+      "prompt": "Teodoro closes the passbook. \"That was for my funeral. I set it aside so that nobody would have to.\" He rests his hand on the cover. \"If it helps somebody else's Lolo, then write it down. All of it.\"",
       "cooperation": 10,
       "milestone": {
         "title": "Witness Secured: The Name On The List",
@@ -362,13 +362,13 @@
       },
       "choices": [
         {
-          "text": "This matches the pattern from the other calls. Thank you.",
+          "text": "This matches the other calls. Thank you, sir.",
           "next": "end_success"
         }
       ],
       "dispositions": {
         "resistant": {
-          "prompt": "\"Four minutes,\" Teodoro says. \"That is what it took. One telephone call to the person the story was about.\" He lays the penciled note beside his daughter's phone. \"Write that down. Four minutes.\"",
+          "prompt": "\"Four minutes,\" Teodoro says. \"That is what it took. One phone call to the person the story was about.\" He lays the penciled note beside his daughter's phone. \"Write that down. Four minutes.\"",
           "milestone": {
             "title": "Witness Secured: The Name On The List",
             "detail": "Teodoro Villanueva put a name, a number and a four-minute check on the same afternoon - the family-emergency script, and the list it was read from."
@@ -421,12 +421,12 @@
       }
     },
     "end_partial": {
-      "prompt": "You have Teodoro's account, but nothing yet that ties it to the wider operation.",
+      "prompt": "You have Teodoro's account, but nothing yet that ties it to the operation behind it.",
       "outcome": "partial",
       "choices": []
     },
     "end_shutdown": {
-      "prompt": "Teodoro stands, slowly, and holds the door with the courtesy of a man ending a lesson early. \"I think we have done what we can.\" The passbook goes back into the hall drawer, and the drawer is closed, and you understand that it will not be opened for you again.",
+      "prompt": "Teodoro stands, slowly, and holds the door with the courtesy of a man ending a class early. \"I think we have done what we can.\" The passbook goes back into the drawer in the hall, the drawer is closed, and you understand that it will not be opened for you again.",
       "outcome": "failure",
       "milestone": {
         "title": "Witness Lost",
@@ -435,10 +435,10 @@
       "choices": [],
       "dispositions": {
         "resistant": {
-          "prompt": "Teodoro stands, slowly, and holds the door with the courtesy of a man ending a lesson early. \"I think we have done what we can.\" The penciled note goes back into the hall drawer, and the drawer is closed, and you understand that it will not be opened for you again."
+          "prompt": "Teodoro stands, slowly, and holds the door with the courtesy of a man ending a class early. \"I think we have done what we can.\" The penciled note goes back into the drawer in the hall, the drawer is closed, and you understand that it will not be opened for you again."
         },
         "unfinished": {
-          "prompt": "Teodoro stands, slowly, and holds the door with the courtesy of a man ending a lesson early. \"I think we have done what we can.\" The penciled note goes back into the hall drawer, and the drawer is closed, and you understand that it will not be opened for you again."
+          "prompt": "Teodoro stands, slowly, and holds the door with the courtesy of a man ending a class early. \"I think we have done what we can.\" The penciled note goes back into the drawer in the hall, the drawer is closed, and you understand that it will not be opened for you again."
         }
       }
     }

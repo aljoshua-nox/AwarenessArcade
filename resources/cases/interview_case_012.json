@@ -46,7 +46,7 @@
   "failure_node": "end_shutdown",
   "nodes": {
     "hesitant_intro": {
-      "prompt": "Carmen does not stop serving. \"The barangay took a statement. Nothing happened.\" A plate goes down in front of a customer, then another. \"I've got a line, and I've told it once. Come back when it's worth the rice going cold.\"",
+      "prompt": "Carmen does not stop serving. \"The barangay took a statement. Nothing happened.\" A plate goes down in front of a customer, then another. \"I have a line here, and I already told it once. Come back when it's worth the rice going cold.\"",
       "choices": [
         {
           "text": "That's fair. I'll come back when I can show you it is.",
@@ -55,12 +55,12 @@
       ]
     },
     "end_partial_hesitant": {
-      "prompt": "Carmen has told this once to no effect and has a canteen to run. Standing with the other witnesses first might make it worth her afternoon.",
+      "prompt": "Carmen told this once and nothing came of it, and she has a canteen to run. Standing with the other witnesses first might make it worth her afternoon.",
       "outcome": "partial",
       "choices": []
     },
     "intro": {
-      "prompt": "Two o'clock, between lunch and dinner, and the canteen is empty except for the rice cooker ticking. Carmen wipes the counter in front of you and puts a plate down whether you want it or not. \"You're the one going door to door. Sit. Eat something.\" She does not sit. \"Thirty minutes, they said. Thirty minutes and the lights go out. I've got three kids doing homework at that table at six o'clock.\"",
+      "prompt": "Two o'clock, between lunch and dinner, and the canteen is empty except for the rice cooker ticking. Carmen wipes the counter in front of you and puts a plate down whether you want it or not. \"You're the one going door to door. Sit, sit. Eat first.\" She does not sit. \"Thirty minutes, they said. Thirty minutes and the lights go out. I have three kids doing homework at that table at six o'clock.\"",
       "choices": [
         {
           "text": "Start with the message. What did it say, exactly?",
@@ -72,14 +72,14 @@
           "cooperation": 8
         },
         {
-          "text": "You paid a stranger to keep the lights on without looking at a bill you'd already paid. Take me through that.",
+          "text": "You paid a stranger to keep the lights on without looking at a bill you already paid. Take me through that.",
           "next": "shame_her",
           "cooperation": -14
         }
       ]
     },
     "reassure": {
-      "prompt": "\"Everyone's told me I should have checked.\" She stacks plates without looking at them. \"I did check. Afterward. It took two minutes.\" The stack goes down. \"I didn't have two minutes at six o'clock. That's what they knew.\"",
+      "prompt": "\"Everybody told me I should have checked.\" She stacks plates without looking at them. \"I did check. Afterward. It took two minutes.\" The stack goes down. \"I didn't have two minutes at six o'clock. That's what they knew.\"",
       "cooperation": 4,
       "choices": [
         {
@@ -89,7 +89,7 @@
       ]
     },
     "shame_her": {
-      "prompt": "\"Yes. I did.\" She does not stop wiping. \"You want to know why? Ask me why. Ask me what six o'clock looks like in this house with the lights off and three kids and the rice half done.\" The cloth stops. \"Or ask me about the message. Your choice.\"",
+      "prompt": "\"Yes. I did.\" She does not stop wiping. \"You want to know why? Ask me why. Ask me what six o'clock looks like in this house with the lights off and three kids and the rice half cooked.\" The cloth stops. \"Or ask me about the message. Your choice.\"",
       "choices": [
         {
           "text": "That was out of line, and I'm sorry. Six o'clock is exactly what I want to understand.",
@@ -104,7 +104,7 @@
       ]
     },
     "ask_call": {
-      "prompt": "\"A text first. FINAL NOTICE, capital letters, thirty minutes. Then the call, a minute after - a man, very polite, very sorry, the system was automatic and he couldn't stop it himself unless the reconnection fee was settled while he was on the line.\" She sets a glass down harder than she means to. \"Reconnection. It hadn't been disconnected. He said the fee is what stops the disconnection. At six o'clock, with the rice on, that made sense. It made complete sense.\"",
+      "prompt": "\"A text first. FINAL NOTICE, all capital letters, thirty minutes. Then the call, a minute after - a man, very polite, very sorry, the system was automatic daw and he couldn't stop it himself unless the reconnection fee was settled while he was on the line.\" She sets a glass down harder than she means to. \"Reconnection. It wasn't even disconnected. He said the fee is what stops the disconnection. At six o'clock, with the rice on, that made sense. It made complete sense.\"",
       "choices": [
         {
           "text": "Stay on six o'clock for a moment.",
@@ -113,7 +113,7 @@
       ]
     },
     "ask_call_cold": {
-      "prompt": "\"A text. Thirty minutes. Then a man, polite, the system was automatic, pay the reconnection fee on the line or the lights go.\" Flat, and to the counter. \"It hadn't been disconnected. He said the fee stops it. That's all.\"",
+      "prompt": "\"A text. Thirty minutes. Then a man, polite, the system was automatic, pay the reconnection fee on the line or the lights go.\" Flat, and to the counter. \"It wasn't even disconnected. He said the fee stops it. That's all.\"",
       "cooperation": -6,
       "choices": [
         {
@@ -124,7 +124,7 @@
     },
     "tactic_quiz_fear": {
       "tactic_quiz": {
-        "setup": "You put the message beside what she told you: [i]FINAL NOTICE - 30 MINUTES[/i], a polite man who was very sorry, and six o'clock in this house with the lights off, three kids and the rice half done.",
+        "setup": "You put the message beside what she told you: [i]FINAL NOTICE - 30 MINUTES[/i], a polite man who was very sorry, and six o'clock in this house with the lights off, three kids and the rice half cooked.",
         "tactic_id": "manufactured_fear",
         "tactic": "The picture you supply yourself",
         "question": "What was the caller actually threatening her with?",
@@ -142,7 +142,7 @@
           {
             "text": "A disconnection the company was about to carry out.",
             "cooperation": -8,
-            "feedback": "The company was not about to do anything; the bill was paid, and the real company does not cut power in thirty minutes by text. The disconnection existed only in the message. The picture of it existed in her - which is where the script needed it."
+            "feedback": "The company was not about to do anything; the bill was paid, and the real company does not cut power in thirty minutes by text. The disconnection existed only in the message. The picture of it existed in her head - which is where the script needed it."
           },
           {
             "text": "A late fee on next month's bill.",
@@ -152,16 +152,16 @@
           {
             "text": "Reporting her to the barangay for non-payment.",
             "cooperation": -6,
-            "feedback": "Nothing in the message or the call mentioned anyone but the 'system'. The threat was not a person coming; it was the lights going. The fear that works is the one the victim can see, and she could see six o'clock."
+            "feedback": "Nothing in the message or the call mentioned anybody but the 'system.' The threat was not a person coming; it was the lights going out. The fear that works is the one the victim can see, and she could see six o'clock."
           }
         ],
         "next": "ask_evidence"
       }
     },
     "ask_evidence": {
-      "prompt": "\"I paid it at the counter two doors down. Eighteen fifty.\" Carmen says the number as three days of stock, which is what it is. \"Then I went home and the lights were on, and I thought, good. It worked.\" A pause. \"It worked.\"",
+      "prompt": "\"I paid it at the counter two doors down. One thousand eight-fifty.\" Carmen says the number like it is three days of stock, which is what it is. \"Then I went home and the lights were on, and I thought, good. It worked.\" A pause. \"It worked.\"",
       "evidence_prompt": true,
-      "evidence_hint": "She remembers the message to the capital letter. What you need is where the fee went.",
+      "evidence_hint": "She remembers the message down to the capital letters. What you need is where the fee went.",
       "accepts_evidence": [
         {
           "evidence_id": "ev_carmen_cashin_receipt",
@@ -172,19 +172,19 @@
         {
           "evidence_id": "ev_carmen_notice",
           "next": "ask_evidence",
-          "response": "\"Capital letters.\" She reads it again off your screen. \"No company. I see that now.\" It is the bait; it proves what frightened her, not what was taken.",
+          "response": "\"All capital letters.\" She reads it again off your screen. \"No company name. I see that now.\" It is the bait; it proves what scared her, not what was taken.",
           "cooperation": 6
         },
         {
           "evidence_id": "ev_carmen_bill",
           "next": "ask_evidence",
-          "response": "\"Paid. The week before. Stamped.\" She taps the printed line at the bottom. \"We will never ask for payment by phone. It says it on the bill.\" It proves the story was false; it does not prove who told it.",
+          "response": "\"Paid. The week before. Stamped.\" She taps the printed line at the bottom. \"We will never ask for payment by phone. It says so right on the bill.\" It proves the story was false; it does not prove who told it.",
           "cooperation": 6
         },
         {
           "evidence_id": "ev_carmen_budget",
           "next": "ask_evidence",
-          "response": "\"That's how I know what I can't lose.\" She closes it. It proves what the money was for, which nobody disputes, and nothing about where it went.",
+          "response": "\"That's how I know what I can't lose.\" She closes it. It proves what the money was for, which nobody is arguing, and nothing about where it went.",
           "cooperation": -8,
           "wrong": true
         }
@@ -195,13 +195,13 @@
           "next": "press_caller"
         },
         {
-          "text": "That's enough to be going on with. Thank you.",
+          "text": "That's enough to start with. Thank you.",
           "next": "end_partial"
         }
       ]
     },
     "press_caller": {
-      "prompt": "\"The electric company. He knew my account number - that's what did it. He read it to me before I'd said a word.\" She picks the cloth back up. \"I found out after: the account number's on the bill, the bill's in the mailbox, and the mailbox is on the street.\" She almost laughs. \"Anyone could have my account number. Anyone did.\"",
+      "prompt": "\"The electric company. He knew my account number - that's what did it. He read it to me before I said a word.\" She picks the cloth back up. \"I found out after: the account number is on the bill, the bill is in the mailbox, and the mailbox is on the street.\" She almost laughs. \"Anybody could have my account number. Somebody did.\"",
       "cooperation": 6,
       "choices": [
         {
@@ -209,13 +209,13 @@
           "next": "ask_evidence"
         },
         {
-          "text": "That's enough to be going on with. Thank you.",
+          "text": "That's enough to start with. Thank you.",
           "next": "end_partial"
         }
       ]
     },
     "confirm": {
-      "prompt": "Carmen puts one finger on the receipt. \"Eighteen fifty. Three days of stock.\" She takes the finger away. \"Put it down. And put down that the lights were never going off. I want that written somewhere by someone whose job it is.\"",
+      "prompt": "Carmen puts one finger on the receipt. \"One thousand eight-fifty. Three days of stock.\" She takes the finger away. \"Write it down. And write down that the lights were never going off. I want that written somewhere by somebody whose job it is.\"",
       "cooperation": 10,
       "milestone": {
         "title": "Witness Secured: Thirty Minutes To Six",
@@ -223,7 +223,7 @@
       },
       "choices": [
         {
-          "text": "This matches the pattern from the other calls. Thank you.",
+          "text": "This matches the other calls. Thank you, Ate Carmen.",
           "next": "end_success"
         }
       ]
@@ -242,12 +242,12 @@
       "choices": []
     },
     "end_partial": {
-      "prompt": "You have Carmen's account, but nothing yet that ties it to the wider operation.",
+      "prompt": "You have Carmen's account, but nothing yet that ties it to the operation behind it.",
       "outcome": "partial",
       "choices": []
     },
     "end_shutdown": {
-      "prompt": "\"Line.\" Carmen nods at the door, where there isn't one yet, and picks up the plate you did not eat from. The receipt goes back into the cash box, and the cash box goes under the counter, and the afternoon goes back to being hers.",
+      "prompt": "\"Line.\" Carmen nods at the door, where there isn't one yet, and picks up the plate you did not eat from. The receipt goes back into the cash box, the cash box goes under the counter, and the afternoon goes back to being hers.",
       "outcome": "failure",
       "milestone": {
         "title": "Witness Lost",

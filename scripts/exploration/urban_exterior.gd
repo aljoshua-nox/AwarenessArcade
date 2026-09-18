@@ -13,6 +13,12 @@ const CASE_EVELYN := "res://resources/cases/interview_case_005.json"
 const CASE_LINA := "res://resources/cases/interview_case_006.json"
 const CASE_TEDDY := "res://resources/cases/interview_case_007.json"
 
+# The detective's desk: the building the case starts in, on the grass at the
+# bottom-left with its door over the map's default spawn - so walking out of
+# it for the first time and being dropped on the street by a test are the same
+# place. Clear of the tree at (300, 950) and the first side street at 520.
+const DESK_TOP_LEFT := Vector2(88.0, 748.0)
+
 # The cast, and which building each one lives in. Portals used to be three
 # hand-placed nodes in the scene file, which capped the cast at three and made
 # adding a witness a scene edit; they are built from this table instead.
@@ -192,6 +198,14 @@ const TRANSIT := {
 func _init() -> void:
 	map_title = "Sampaguita Street"
 	map_hint = "Move with WASD or arrow keys. Press Enter at a door to interact."
+
+
+func _build_buildings() -> void:
+	super()
+	var desk := _add_building(DESK_TOP_LEFT, ROOF_OLIVE_X, BLOCK_BUILDING_SCALE)
+	var desk_door := _add_shop_door(desk)
+	_add_building_label(desk, "ANTI-FRAUD")
+	_place_exit_door(desk_door, "Go in to your desk", SessionState.DESK_SCENE)
 
 
 func interviewees() -> Array:

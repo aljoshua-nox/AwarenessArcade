@@ -74,6 +74,7 @@ func _run() -> void:
 	await _test_locked_case()
 	await _test_statement_budget_doors()
 	await _test_briefing_on_arrival()
+	await _test_desk_door()
 
 	print("\n%d checks, %d failed" % [checks, failures.size()])
 	for f in failures:
@@ -683,3 +684,46 @@ func _test_briefing_on_arrival() -> void:
 	SessionState.briefing_pending = true
 	SessionState.reset_investigation()
 	_check(not SessionState.briefing_pending, "a reset clears a pending briefing")
+
+
+# The detective's desk has a door on Sampaguita Street: the case starts inside
+# it, and walking out lands the player where a fresh street puts them anyway.
+func _test_desk_door() -> void:
+	print("\n[the desk's door]")
+	SessionState.reset_session()
+	var terrace := await _open(URBAN_SCENE)
+	_check(terrace.exit_doors.size() == 1, "Sampaguita Street has the desk's door (got %d)" % terrace.exit_doors.size())
+	if terrace.exit_doors.is_empty():
+		await _close(terrace)
+		return
+	var door: ScenePortal = terrace.exit_doors[0]
+	_check(door.target_scene == SessionState.DESK_SCENE, "it leads to the desk")
+	_check(terrace.movement_bounds.has_point(door.global_position), "it can be walked to")
+	_check(terrace.player_spawn.distance_to(door.global_position) <= 40.0,
+		"the street's default spawn is at the desk's door - leaving the desk for the first time lands there")
+	var outside := door.global_position + Vector2(0.0, 20.0)
+	var inside_a_wall := 0
+	for rect in terrace.built_buildings:
+		if rect.has_point(outside) or rect.has_point(terrace.player_spawn):
+			inside_a_wall += 1
+	_check(inside_a_wall == 0, "neither the spawn nor the return point is inside a building")
+
+	# The door is a door: standing at it must not read as the office or a stop.
+	terrace.player.global_position = door.global_position
+	terrace.portal_label.visible = true
+	_check(not terrace._can_enter_portal(), "standing at the desk's door is not standing at the office")
+	terrace.portal_label.visible = false
+	var door_rect := _area_rect(door, terrace.INTERVIEW_PORTAL_SIZE)
+	var collisions := 0
+	for stop in terrace.street_stops:
+		if _area_rect(stop["area"], terrace.STOP_SIZE).intersects(door_rect):
+			collisions += 1
+	for other in terrace.interview_portals:
+		if _area_rect(other, terrace.INTERVIEW_PORTAL_SIZE).intersects(door_rect):
+			collisions += 1
+	_check(collisions == 0, "the desk's door overlaps no stop or interview door (%d)" % collisions)
+	await _close(terrace)
+
+	var road := await _open(TERMINAL_SCENE)
+	_check(road.exit_doors.is_empty(), "Terminal Road has no desk")
+	await _close(road)

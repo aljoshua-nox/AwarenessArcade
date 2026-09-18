@@ -11,6 +11,8 @@ extends Node
 const OFFICE_SCENE := "res://scenes/exploration/office_interior.tscn"
 const FLOOR_FOUR_SCENE := "res://scenes/exploration/office_floor_four.tscn"
 const FLOOR_FOUR_OUTPUT := "user://office_four_preview.png"
+const DESK_SCENE := "res://scenes/exploration/detective_office.tscn"
+const DESK_OUTPUT := "user://desk_preview.png"
 const OUTPUT := "user://office_preview.png"
 const LEDGER_OUTPUT := "user://ledger_preview.png"
 
@@ -90,6 +92,27 @@ func _run() -> void:
 		await get_tree().process_frame
 	await RenderingServer.frame_post_draw
 	_save(FLOOR_FOUR_OUTPUT)
+	remove_child(upstairs)
+	upstairs.queue_free()
+	await get_tree().process_frame
+
+	# The detective's desk, as the case opens on it: nothing taken yet.
+	SessionState.reset_investigation()
+	var desk: Node = load(DESK_SCENE).instantiate()
+	add_child(desk)
+	await get_tree().process_frame
+	var desk_camera := desk.player.get_node_or_null("Camera2D") as Camera2D
+	if desk_camera != null:
+		desk_camera.enabled = false
+	var camera_desk := Camera2D.new()
+	desk.add_child(camera_desk)
+	camera_desk.position = Vector2(640.0, 360.0)
+	camera_desk.zoom = Vector2.ONE
+	camera_desk.make_current()
+	for i in range(4):
+		await get_tree().process_frame
+	await RenderingServer.frame_post_draw
+	_save(DESK_OUTPUT)
 
 	get_tree().quit()
 

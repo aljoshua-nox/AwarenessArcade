@@ -7,6 +7,7 @@ extends Node
 ## Exits 0 if every check passes, 1 otherwise.
 
 const OFFICE_SCENE := "res://scenes/exploration/office_interior.tscn"
+const DESK_SCENE := "res://scenes/exploration/detective_office.tscn"
 const FLOOR_FOUR_SCENE := "res://scenes/exploration/office_floor_four.tscn"
 
 var failures: Array[String] = []
@@ -54,6 +55,7 @@ func _run() -> void:
 	await _test_ledger_without_prologue()
 	await _test_director_door_gate()
 	await _test_fourth_floor()
+	await _test_detective_desk()
 	await _test_inspection_panel()
 	await _test_prologue_logs_calls()
 	_test_outcome_vocabulary()
@@ -393,3 +395,77 @@ func _station_quiet(view: Node, title: String) -> Dictionary:
 		if str(station.get("title", "")) == title:
 			return station
 	return {}
+
+
+# The case starts at the detective's desk: the case file and the notebook are
+# picked up there, the door does not open until both are, and the brief opens
+# when the file is taken.
+func _test_detective_desk() -> void:
+	print("\n[the detective's desk]")
+	SessionState.reset_session()
+	SessionState.briefing_pending = true
+	_check(SessionState.DESK_SCENE == DESK_SCENE and ResourceLoader.exists(DESK_SCENE),
+		"both ways into the investigation have a desk to land at")
+	var desk: Node = load(DESK_SCENE).instantiate()
+	add_child(desk)
+	await get_tree().process_frame
+
+	_check(desk.stations.size() == 3, "the desk, the locker and the map, nothing else (got %d)" % desk.stations.size())
+	for title in ["Your desk", "Your locker", "The district map"]:
+		_check(not _station(desk, title).is_empty(), "station present: %s" % title)
+	var titles: Array[String] = []
+	for station in desk.stations:
+		titles.append(str(station.get("title", "")))
+	_check(not titles.has("Floor director's office") and not titles.has("Stairwell"), "no director's door and no stairs")
+	_check(desk.portal.target_scene == "res://scenes/exploration/urban_exterior.tscn", "the way out is Sampaguita Street")
+
+	# Stand at the door with nothing taken.
+	desk.player.global_position = desk.portal.global_position
+	_check(not desk._can_enter_portal(), "the door does not open before the tools are taken")
+	_check(desk.portal.prompt_text.begins_with("Take the case file"), "and says why (%s)" % desk.portal.prompt_text)
+	_check(not CaseJournal._available_here(), "the journal is not offered before the file is taken")
+
+	var desk_station := _station(desk, "Your desk")
+	_check(str(desk_station.get("prompt", "")) == "Take the case file", "the desk offers the file")
+	desk._open_inspection(desk_station)
+	await get_tree().process_frame
+	_check(SessionState.journal_collected, "taking the file hands over the journal")
+	_check(not SessionState.briefing_pending, "and consumes the pending brief, so the street will not show it again")
+	_check(CaseJournal.is_open and CaseJournal.current_tab == CaseJournal.TAB_BRIEF, "and opens the brief")
+	_check(not desk.inspection_open, "without a station panel under it")
+	CaseJournal.close()
+	await get_tree().process_frame
+	_check(str(desk_station.get("prompt", "")) == "Read the case file", "the desk now offers to re-read it")
+	_check(not desk._can_enter_portal(), "one tool is not enough for the door")
+
+	var locker := _station(desk, "Your locker")
+	_check(str(locker.get("prompt", "")) == "Take your notebook", "the locker offers the notebook")
+	desk._open_inspection(locker)
+	await get_tree().process_frame
+	_check(SessionState.notebook_collected, "taking the notebook hands over the Tactics tab")
+	_check(desk.inspection_open and desk.inspect_body.text.contains("half its pages used"),
+		"the locker reads as the notebook being taken")
+	desk._close_inspection()
+	_check(str(locker.get("prompt", "")) == "Examine the locker", "the locker now reads as emptied")
+	desk._open_inspection(locker)
+	_check(desk.inspect_body.text.contains("notebook gone"), "and says so")
+	desk._close_inspection()
+
+	_check(desk._can_enter_portal(), "with both tools taken the door opens")
+	_check(desk.portal.prompt_text.begins_with("Head out"), "and the prompt says where (%s)" % desk.portal.prompt_text)
+	_check(CaseJournal._available_here(), "the journal is offered now")
+
+	remove_child(desk)
+	desk.queue_free()
+	await get_tree().process_frame
+
+	# Coming back later finds the tools already taken.
+	var again: Node = load(DESK_SCENE).instantiate()
+	add_child(again)
+	await get_tree().process_frame
+	_check(str(_station(again, "Your desk").get("prompt", "")) == "Read the case file", "a later visit re-reads the file")
+	_check(str(_station(again, "Your locker").get("prompt", "")) == "Examine the locker", "and finds the locker empty")
+	_check(again.portal.prompt_text.begins_with("Head out"), "and the door open")
+	remove_child(again)
+	again.queue_free()
+	await get_tree().process_frame

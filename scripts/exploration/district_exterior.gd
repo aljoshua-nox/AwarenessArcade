@@ -42,6 +42,11 @@ var portal_case_paths: Dictionary = {}
 var portal_blocked: Dictionary = {}
 var active_interview_portal: ScenePortal = null
 var transit_portal: ScenePortal = null
+# Doors to somewhere that is neither an interview nor the call floor - the
+# detective's desk. A district places one from its _build_buildings() with
+# _place_exit_door(); the street remembers the door on the way in, so the way
+# back out lands beside it.
+var exit_doors: Array[ScenePortal] = []
 var standing_label: Label
 var statements_label: Label
 var objective_label: Label
@@ -306,6 +311,32 @@ func _transit_in_reach() -> bool:
 	return player.global_position.distance_to(transit_portal.global_position) <= 40.0
 
 
+func _place_exit_door(door_base: Vector2, prompt: String, target: String) -> ScenePortal:
+	var door := ScenePortal.new()
+	door.target_scene = target
+	door.prompt_text = prompt
+	door.monitoring = true
+	door.monitorable = true
+	var shape := RectangleShape2D.new()
+	shape.size = INTERVIEW_PORTAL_SIZE
+	var collider := CollisionShape2D.new()
+	collider.shape = shape
+	door.add_child(collider)
+	door.global_position = door_base + Vector2(0.0, 14.0)
+	add_child(door)
+	exit_doors.append(door)
+	door.player_entered.connect(_on_portal_entered)
+	door.player_exited.connect(_on_portal_exited)
+	return door
+
+
+func _exit_door_in_reach() -> ScenePortal:
+	for door in exit_doors:
+		if player.global_position.distance_to(door.global_position) <= 40.0:
+			return door
+	return null
+
+
 # The person behind a door, read off their case file: their role decides
 # whether the door costs a statement, their name what a closed door says.
 func _case_person(case_path: String) -> Dictionary:
@@ -408,6 +439,10 @@ func _unhandled_input(event: InputEvent) -> void:
 		_transition_to_scene(active_interview_portal.target_scene)
 	elif event.is_action_pressed("ui_accept") and _transit_in_reach():
 		_take_transit()
+	elif event.is_action_pressed("ui_accept") and _exit_door_in_reach() != null:
+		var door := _exit_door_in_reach()
+		_remember_return_spawn(door.global_position)
+		_transition_to_scene(door.target_scene)
 	elif event.is_action_pressed("ui_accept") and has_office() and _can_enter_portal():
 		if SessionState.case_locked and not SessionState.suspect_flipped:
 			_file_case_unresolved()
@@ -1040,9 +1075,9 @@ func _cited_number_count() -> int:
 # --- Doors -------------------------------------------------------------------
 
 func _can_enter_portal() -> bool:
-	# The label is shared with the transit portal, so it is only evidence of
-	# being at the office door when the office door is the one in reach.
-	if portal_label.visible and not _transit_in_reach():
+	# The label is shared with the transit portal and the exit doors, so it is
+	# only evidence of being at the office door when that is the one in reach.
+	if portal_label.visible and not _transit_in_reach() and _exit_door_in_reach() == null:
 		return true
 	return player.global_position.distance_to(portal.global_position) <= 40.0
 

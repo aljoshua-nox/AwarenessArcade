@@ -69,6 +69,7 @@ func _run() -> void:
 	_test_collection_state()
 	await _test_overlay()
 	await _test_briefing()
+	await _test_tools()
 	await _test_pause_menu()
 	await _test_learned_in_an_interview()
 
@@ -222,6 +223,39 @@ func _test_briefing() -> void:
 	_check(rendered.contains("holds %d statements" % SessionState.STATEMENT_BUDGET), "the page shows the brief")
 	CaseJournal.close()
 	await get_tree().process_frame
+
+
+# The journal is handed over at the desk, the notebook from its locker. Until
+# then the keys and the button do nothing, and the Tactics tab is not there.
+func _test_tools() -> void:
+	print("\n[the tools]")
+	SessionState.reset_session()
+	_check(not SessionState.journal_collected and not SessionState.notebook_collected,
+		"a fresh case has neither tool")
+	_check(not CaseJournal._available_here(), "no journal before the case file is taken")
+	CaseJournal.open()
+	_check(not (CaseJournal.tab_buttons[CaseJournal.TAB_TACTICS] as Button).visible,
+		"no Tactics tab before the notebook is taken")
+	CaseJournal.close()
+	CaseJournal.open_pause()
+	_check(not CaseJournal.journal_button.visible and not CaseJournal.notebook_button.visible,
+		"the pause menu offers neither")
+	CaseJournal.close_pause()
+
+	SessionState.journal_collected = true
+	_check(CaseJournal._available_here(), "the case file makes the journal available")
+	CaseJournal.open_pause()
+	_check(CaseJournal.journal_button.visible and not CaseJournal.notebook_button.visible,
+		"the pause menu offers the journal but not yet the notebook")
+	CaseJournal.close_pause()
+
+	SessionState.notebook_collected = true
+	CaseJournal.open()
+	_check((CaseJournal.tab_buttons[CaseJournal.TAB_TACTICS] as Button).visible, "the notebook adds the Tactics tab")
+	CaseJournal.close()
+	await get_tree().process_frame
+	SessionState.reset_session()
+	_check(not SessionState.journal_collected, "a reset takes the tools back")
 
 
 # Esc on a street or a floor used to go straight to the main menu, which resets

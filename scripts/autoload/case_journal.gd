@@ -72,6 +72,8 @@ var progress_label: Label
 
 var pause_root: Control
 var pause_buttons: VBoxContainer
+var journal_button: Button
+var notebook_button: Button
 var confirm_box: VBoxContainer
 
 
@@ -634,6 +636,7 @@ func open(tab_id: String = "") -> void:
 	if is_pause_open:
 		close_pause()
 	is_open = true
+	(tab_buttons[TAB_TACTICS] as Button).visible = SessionState.notebook_collected
 	var target := tab_id if tab_pages.has(tab_id) else str(TABS[0].get("id", ""))
 	_select_tab(target)
 	panel_root.visible = true
@@ -692,8 +695,8 @@ func _build_pause_menu() -> void:
 	pause_buttons.add_theme_constant_override("separation", 10)
 	column.add_child(pause_buttons)
 	_add_pause_button("Resume", close_pause)
-	_add_pause_button("Case Journal", open.bind(""))
-	_add_pause_button("Tactic Notebook", open.bind(TAB_TACTICS))
+	journal_button = _add_pause_button("Case Journal", open.bind(""))
+	notebook_button = _add_pause_button("Tactic Notebook", open.bind(TAB_TACTICS))
 	_add_pause_button("Return to Main Menu", _ask_to_abandon)
 
 	# Leaving resets the session. The one question this menu exists to ask.
@@ -722,18 +725,21 @@ func _build_pause_menu() -> void:
 	confirm_box.add_child(stay)
 
 
-func _add_pause_button(text: String, on_pressed: Callable) -> void:
+func _add_pause_button(text: String, on_pressed: Callable) -> Button:
 	var button := Button.new()
 	button.text = text
 	button.custom_minimum_size = Vector2(0, 40)
 	button.pressed.connect(on_pressed)
 	pause_buttons.add_child(button)
+	return button
 
 
 func open_pause() -> void:
 	if is_pause_open or is_open:
 		return
 	is_pause_open = true
+	journal_button.visible = SessionState.journal_collected
+	notebook_button.visible = SessionState.notebook_collected
 	_show_pause_buttons()
 	pause_root.visible = true
 	open_button.visible = false
@@ -793,7 +799,7 @@ func _unhandled_input(event: InputEvent) -> void:
 	if wants_journal:
 		open()
 		get_viewport().set_input_as_handled()
-	elif wants_notebook:
+	elif wants_notebook and SessionState.notebook_collected:
 		open(TAB_TACTICS)
 		get_viewport().set_input_as_handled()
 
@@ -812,9 +818,16 @@ func shows_button_in(scene_path: String) -> bool:
 	return not HIDDEN_IN_SCENES.has(scene_path)
 
 
+## Offered in this scene, and picked up: the journal is handed over at the
+## desk the case starts at, so until then there is nothing to open.
 func _available_here() -> bool:
 	var current := get_tree().current_scene
-	return shows_button_in(current.scene_file_path if current != null else "")
+	return SessionState.journal_collected and shows_button_in(current.scene_file_path if current != null else "")
+
+
+## For the desk to call when a tool is picked up.
+func refresh_availability() -> void:
+	_refresh_button_visibility()
 
 
 func _refresh_button_visibility() -> void:

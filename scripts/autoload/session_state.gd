@@ -123,6 +123,8 @@ var has_urban_return_spawn: bool = false
 # interview's "Return to the Street" has to go back to the one with the door
 # they walked in through, not always the terrace. Set alongside the spawn.
 const DEFAULT_STREET_SCENE := "res://scenes/exploration/urban_exterior.tscn"
+# Where the case starts: the detective's desk, whose door is on that street.
+const DESK_SCENE := "res://scenes/exploration/detective_office.tscn"
 var urban_return_scene: String = DEFAULT_STREET_SCENE
 # Coming down the office stairs lands in front of them, not at the street door.
 var office_return_spawn: Vector2 = Vector2.ZERO
@@ -137,6 +139,12 @@ var witness_flipped: bool = false
 # happen - without this the player simply wanders a street with nothing left to
 # do and no ending. The street offers to file the case unresolved instead.
 var case_locked: bool = false
+# The detective's tools, picked up at the desk the case starts at. The journal
+# (and its J key and corner button) exists once the case file is taken; the
+# Tactics tab (and N) once the notebook is. The desk's door will not open
+# until both are, so outside that room these are always true.
+var journal_collected: bool = false
+var notebook_collected: bool = false
 # Objectives the journal has seen completed. Every condition an objective can
 # complete on is monotonic except standing, which a failed interview lowers -
 # so without this, "earn the standing" would reopen every time standing dipped
@@ -285,7 +293,7 @@ func start_prologue() -> void:
 func start_investigation_direct() -> void:
 	reset_prologue()
 	briefing_pending = true
-	go_to_scene("res://scenes/exploration/urban_exterior.tscn")
+	go_to_scene(DESK_SCENE)
 
 
 # Continue from the prologue summary into the detective half. The investigation
@@ -295,7 +303,7 @@ func start_investigation_direct() -> void:
 func start_investigation_from_prologue() -> void:
 	reset_investigation()
 	briefing_pending = true
-	go_to_scene("res://scenes/exploration/urban_exterior.tscn")
+	go_to_scene(DESK_SCENE)
 
 
 func record_tactic_used(tactic_id: String) -> void:
@@ -418,6 +426,8 @@ func reset_investigation() -> void:
 	suspect_flipped = false
 	witness_flipped = false
 	case_locked = false
+	journal_collected = false
+	notebook_collected = false
 	objectives_done.clear()
 	briefing_pending = false
 	investigation_inventory.clear()

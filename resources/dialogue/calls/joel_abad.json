@@ -16,15 +16,15 @@
 	"perspective_variants": {
 		"harmed": [
 			"He had a case number. He had the contractor's name. I had thirty-two men on a pour and he said an officer was coming to the site at four. I paid to make it not happen, and then I checked, an hour after, and there was nothing to check.",
-			"It was the fifteenth's money. The money that goes home. I told them the site held the pay back a week. I am still telling them that."
+			"It was the fifteenth's money. The money that goes home. I told them the site delayed the pay by a week. I'm still telling them that."
 		],
 		"resistant": [
-			"I called the real office from the site phone while he was still talking on mine. A woman laughed at me, and then she stopped laughing and took the number down.",
-			"Nobody from the government has ever called me in my life. They send letters. That was the whole of it, in the end - he called."
+			"I called the real office from the site phone while he was still talking on mine. The woman laughed at me, and then she stopped laughing and wrote the number down.",
+			"Nobody from the government has ever called me in my life. They send letters. That was the whole thing, in the end - he called."
 		],
 		"unfinished": [
-			"Somebody said warrant and then the line went. I stood on the road for ten minutes waiting for it to ring again. I have been waiting for a letter since. Nothing has come.",
-			"I half believe there is a case. I know there isn't. I still look at the gate every time a car slows down."
+			"Somebody said warrant and then the line cut. I stood on the road for ten minutes waiting for it to ring again. I've been waiting for a letter since. Nothing came.",
+			"I half believe there's a case. I know there isn't. I still look at the gate every time a car slows down."
 		]
 	},
 	"nodes": {
@@ -32,7 +32,7 @@
 			"prompt": "The sheet says he answers on site. Two rings, and a cement mixer in the background. \"Abad.\" One word, and the sound of a man who has thirty other things to do.",
 			"choices": [
 				{
-					"text": "Mr. Joel Abad? This is the enforcement desk at the revenue office. I'm calling about a case filed under your name - reference 2024-0417. Do you have a moment?",
+					"text": "Mr. Joel Abad? This is the enforcement desk at the revenue office. I'm calling about a case filed under your name - reference 2024-0417. Do you have a moment, sir?",
 					"next": "case_number",
 					"doubt": -5,
 					"tactic_id": "authority_impersonation"
@@ -44,7 +44,7 @@
 					"tactic_id": "manufactured_fear"
 				},
 				{
-					"text": "Good afternoon, is this Joel? I'm calling from a government office about a compliance matter.",
+					"text": "Good afternoon, is this Mr. Joel Abad? I'm calling from a government office about a compliance matter.",
 					"next": "which_office",
 					"doubt": 5
 				}
@@ -66,14 +66,14 @@
 					"tactic_id": "manufactured_urgency"
 				},
 				{
-					"text": "Your employer has already been notified, sir. Your site manager will have received the letter this morning.",
+					"text": "Your employer has already been notified, sir. Your site manager should have received the letter this morning.",
 					"next": "boss_snag",
 					"doubt": 20
 				}
 			]
 		},
 		"alarmed": {
-			"prompt": "\"A warrant -\" The mixer cuts out entirely; someone has shouted for it to stop. \"I'm on a site. I've got thirty-two men on a pour. You can't send anyone here.\" He is frightened, and he is angry about being frightened, and both are useful.",
+			"prompt": "\"A warrant -\" The mixer cuts out completely; somebody has shouted for it to stop. \"I'm on a site. I have thirty-two men on a pour. You can't send anybody here.\" He is scared, and he is angry about being scared, and both are useful.",
 			"choices": [
 				{
 					"text": "Nobody wants to, sir. That's why I'm calling you before the dispatcher does. Ten minutes on this line and there's no visit.",
@@ -104,7 +104,7 @@
 					"tactic_id": "authority_impersonation"
 				},
 				{
-					"text": "I'm not able to say until I've confirmed I'm speaking to the right person, sir. Full name, date of birth and tax number, please.",
+					"text": "I'm not able to say until I've confirmed I'm speaking to the right person, sir. Full name, date of birth and TIN, please.",
 					"next": "verify",
 					"doubt": 10
 				},
@@ -117,7 +117,7 @@
 			]
 		},
 		"hurried": {
-			"prompt": "\"Four o'clock.\" A pause with the whole site in it. \"You lot never call. You send letters. Nobody from the government has ever called me in my life.\" Quieter: \"Why now?\"",
+			"prompt": "\"Four o'clock.\" A pause with the whole site in it. \"You people never call. You send letters. Nobody from the government has ever called me in my life.\" Quieter: \"Why now?\"",
 			"choices": [
 				{
 					"text": "Because a letter takes three weeks and a warrant takes an afternoon, sir. I'm trying to give you the afternoon.",
@@ -139,10 +139,10 @@
 			]
 		},
 		"boss_snag": {
-			"prompt": "\"My site manager.\" Something changes. \"Ramil. He'd have told me. He's standing forty metres from me.\" You hear him turn. \"Hold on - I'll ask him.\" And then, back to the phone: \"What did you say your name was?\"",
+			"prompt": "\"My site manager.\" Something changes. \"Ramil. He would have told me. He's standing forty meters from me.\" You hear him turn. \"Hold on - I'll ask him.\" And then, back to the phone: \"What did you say your name was?\"",
 			"choices": [
 				{
-					"text": "No need to involve him, sir - the letter's addressed to you, he'd only have had a copy. Let's keep this between you and the desk.",
+					"text": "No need to involve him, sir - the letter is addressed to you, he would only have a copy. Let's keep this between you and the desk.",
 					"next": "verify",
 					"doubt": 10
 				},
@@ -160,7 +160,7 @@
 			]
 		},
 		"verify": {
-			"prompt": "\"All right.\" The mixer is gone; he has walked out to the road. \"What do I owe, and how do I make it go away. Today. I can't lose a day to this.\" A marker clicks. He is going to write the number on the back of his hand.",
+			"prompt": "\"Okay.\" The mixer is gone; he has walked out to the road. \"What do I owe, and how do I make it go away. Today. I can't lose a day to this.\" A marker clicks. He is going to write the number on the back of his hand.",
 			"choices": [
 				{
 					"text": "Sixteen thousand settles it in full, sir. It can be paid by transfer to the desk's account, or as a cash-in at any remittance counter - I'll stay on the line and read you the reference so it's filed right.",
@@ -169,7 +169,7 @@
 					"tactic_id": "verification_denial"
 				},
 				{
-					"text": "Sixteen thousand, sir, and the desk closes at four. There's a remittance counter on every road in this city - which one's nearest you?",
+					"text": "Sixteen thousand, sir, and the desk closes at four. There's a remittance counter on every street in this city - which one is nearest to you?",
 					"next": "pay_check",
 					"doubt": 10,
 					"tactic_id": "manufactured_urgency"
@@ -196,7 +196,7 @@
 			}
 		},
 		"balks": {
-			"prompt": "\"Sixteen thousand.\" He says it the way a man says the name of someone he sends money to. \"That's the fifteenth. That's what goes home.\" The pen stops. \"Give me the reference and the office and I'll settle it at the office. Myself. Tomorrow morning.\"",
+			"prompt": "\"Sixteen thousand.\" He says it the way a man says the name of somebody he sends money to. \"That's the fifteenth. That's what goes home.\" The pen stops. \"Give me the reference and the office and I'll settle it at the office. Myself. Tomorrow morning.\"",
 			"choices": [
 				{
 					"text": "You can, sir - and the warrant will have been served by then. The desk can only hold it while we're on this call. That's not me being difficult; that's the system.",
@@ -225,21 +225,21 @@
 			}
 		},
 		"paid": {
-			"prompt": "He walks to the counter on the corner with the phone against his shoulder and the reference number on the back of his hand in marker. Sixteen thousand - the fifteenth's money, the money that goes home - cash-ins to a name he does not read properly, and you read the reference back to him twice so it is filed right. \"Is that it? It's gone?\" It is gone. He goes back to the pour.",
+			"prompt": "He walks to the counter on the corner with the phone against his shoulder and the reference number on the back of his hand in marker. Sixteen thousand - the fifteenth's money, the money that goes home - goes to a name he does not really read, and you read the reference back to him twice so it is filed right. \"Is that it? It's gone?\" It is gone. He goes back to the pour.",
 			"outcome": "success",
 			"consequence": "He had a case number. He had the contractor's name. I had thirty-two men on a pour and he said an officer was coming to the site at four. I paid to make it not happen, and then I checked, an hour after, and there was nothing to check.",
 			"payout": 16000
 		},
 		"paid_part": {
-			"prompt": "\"I've got five on me.\" He cash-ins five thousand at the counter on the corner with you in his ear, and reads the reference off the back of his hand. \"Freeze it. I'll sort the rest Monday.\" There is no rest, and there is no Monday, and he goes back to the pour.",
+			"prompt": "\"I have five on me.\" He cashes in five thousand at the counter on the corner with you in his ear, and reads the reference off the back of his hand. \"Freeze it. I'll settle the rest Monday.\" There is no rest, and there is no Monday, and he goes back to the pour.",
 			"outcome": "partial",
 			"consequence": "I sent five thousand to freeze a warrant that didn't exist. I told myself that was being careful. Five thousand is a week of what goes home.",
 			"payout": 5000
 		},
 		"refused": {
-			"prompt": "\"No.\" And then, over the top of you: \"I called the actual office on the site phone while you were talking. There's no case. There's no desk. There's a woman who laughed at me, and then she stopped laughing and wrote your number down.\" The line does not go dead straight away. \"So do I. I've got your number.\"",
+			"prompt": "\"No.\" And then, talking over you: \"I called the actual office on the site phone while you were talking. There's no case. There's no desk. There's a woman who laughed at me, and then she stopped laughing and wrote your number down.\" The line does not go dead right away. \"So do I. I have your number.\"",
 			"outcome": "refused",
-			"consequence": "I called the real office from the site phone while he was still talking on mine. A woman laughed at me, and then she stopped laughing and took the number down.",
+			"consequence": "I called the real office from the site phone while he was still talking on mine. The woman laughed at me, and then she stopped laughing and wrote the number down.",
 			"reports": true
 		},
 		"hangs_up": {
@@ -249,9 +249,9 @@
 			"reports": true
 		},
 		"bail": {
-			"prompt": "\"Wait - what reference? Hello?\" You have already gone. He stands on the road with a marker and half a number on the back of his hand, and then he goes back to the pour, and the pour is fine, and he is not.",
+			"prompt": "\"Wait - what reference? Hello?\" You are already gone. He stands on the road with a marker and half a number on the back of his hand, and then he goes back to the pour, and the pour is fine, and he is not.",
 			"outcome": "aborted",
-			"consequence": "Somebody said warrant and then the line went. I stood on the road for ten minutes waiting for it to ring again. I have been waiting for a letter since. Nothing has come."
+			"consequence": "Somebody said warrant and then the line cut. I stood on the road for ten minutes waiting for it to ring again. I've been waiting for a letter since. Nothing came."
 		}
 	}
 }

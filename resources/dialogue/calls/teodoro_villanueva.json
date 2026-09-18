@@ -15,11 +15,11 @@
 	"hang_up_node": "hangs_up",
 	"perspective_variants": {
 		"harmed": [
-			"He said Paolo's name before he said his own. After that I did not hear anything else properly. I read the passbook number out to him the way I would read it to the bank, and I thanked him for staying on the line.",
-			"It was the funeral plan. I had it so that nobody would have to. I have not told my daughter the amount and I am not going to."
+			"He said Paolo's name before he said his own. After that I did not really hear anything else. I read the passbook number out to him the way I would read it to the bank, and I thanked him for staying on the line.",
+			"It was for my funeral. I set it aside so that nobody would have to. I have not told my daughter the amount and I am not going to."
 		],
 		"resistant": [
-			"I called my daughter on the other line while he was still talking. Paolo was in a mathematics lesson. It took four minutes to find that out, and he had told me there was not time.",
+			"I called my daughter on the other phone while he was still talking. Paolo was in math class. It took four minutes to find that out, and he had told me there was no time.",
 			"I taught boys for forty years. Nobody who was telling the truth ever needed me to hurry."
 		],
 		"unfinished": [
@@ -29,22 +29,22 @@
 	},
 	"nodes": {
 		"open": {
-			"prompt": "The sheet says the telephone is in the hallway and that he takes a while to reach it. Six rings. \"Villanueva residence.\" The voice of a man who has answered a telephone properly for sixty years, and is glad of the company.",
+			"prompt": "The sheet says the phone is in the hallway and that he takes a while to reach it. Six rings. \"Villanueva residence, good afternoon.\" The voice of a man who has answered a telephone properly for sixty years, and is glad of the company.",
 			"choices": [
 				{
-					"text": "Mr. Villanueva, good afternoon. This is Attorney Salcedo at the public attorney's office. I'm calling about your grandson Paolo - he's all right, but he's in some trouble, and he asked us to call you.",
+					"text": "Mr. Villanueva, good afternoon po. This is Attorney Salcedo from the public attorney's office. I'm calling about your grandson Paolo - he's okay, but he's in some trouble, and he asked us to call you.",
 					"next": "name_lands",
 					"doubt": -5,
 					"tactic_id": "authority_impersonation"
 				},
 				{
-					"text": "Sir, your grandson has been arrested this afternoon. Bail has to be posted today or he stays in the cells over the weekend.",
+					"text": "Sir, your grandson was arrested this afternoon. Bail has to be posted today or he stays in the cell over the weekend.",
 					"next": "alarmed",
 					"doubt": 10,
 					"tactic_id": "manufactured_fear"
 				},
 				{
-					"text": "Good afternoon, is this Teodoro? I'm calling from the precinct about a family matter.",
+					"text": "Good afternoon, is this Mr. Teodoro? I'm calling from the precinct about a family matter.",
 					"next": "which_family",
 					"doubt": 5
 				}
@@ -54,56 +54,56 @@
 			"prompt": "\"Paolo?\" The name lands the way the sheet said it would. \"What kind of trouble? Is he hurt?\" He has stopped asking who you are. A stranger who knows the name of your grandson is not a stranger.",
 			"choices": [
 				{
-					"text": "A traffic accident, sir - nobody hurt, but the other driver is pressing charges and he was taken in. He's frightened, and he asked for you rather than his mother.",
+					"text": "A traffic accident, sir - nobody was hurt, but the other driver is pressing charges and he was taken in. He's scared, and he asked for you instead of his mother.",
 					"next": "verify",
 					"doubt": -5,
 					"tactic_id": "manufactured_fear"
 				},
 				{
-					"text": "I can't go into it over the telephone, sir. What matters is that the bail has to be settled before the desk closes at five.",
+					"text": "I can't go into it over the phone, sir. What matters is that the bail has to be settled before the desk closes at five.",
 					"next": "hurried",
 					"doubt": 15,
 					"tactic_id": "manufactured_urgency"
 				},
 				{
-					"text": "He's been charged with something serious, sir. I've spoken to his mother already - she asked me to call you for the money.",
+					"text": "He was charged with something serious, sir. I already spoke to his mother - she asked me to call you for the money.",
 					"next": "mother_snag",
 					"doubt": 20
 				}
 			]
 		},
 		"alarmed": {
-			"prompt": "\"Arrested -\" A hand finds the hall table; you hear it. \"Which grandson? I have three.\" The fright is there, but so is the question, and the question is the part you have to answer.",
+			"prompt": "\"Arrested -\" A hand finds the hall table; you hear it. \"Which grandson? I have three.\" The fear is there, but so is the question, and the question is the part you have to answer.",
 			"choices": [
 				{
-					"text": "Paolo, sir. He's all right. He's frightened, and he asked for you.",
+					"text": "Paolo, sir. He's okay. He's scared, and he asked for you.",
 					"next": "verify",
 					"doubt": -10
 				},
 				{
-					"text": "I'm not permitted to say more until the bail is arranged, sir. There are about two hours.",
+					"text": "I'm not allowed to say more until the bail is arranged, sir. There are about two hours.",
 					"next": "hurried",
 					"doubt": 20,
 					"tactic_id": "manufactured_urgency"
 				},
 				{
-					"text": "The one in the city, sir. I'd rather you heard the details from him afterwards than from me.",
+					"text": "The one in the city, sir. I'd rather you hear the details from him afterwards than from me.",
 					"next": "verify",
 					"doubt": 10
 				}
 			]
 		},
 		"which_family": {
-			"prompt": "\"A family matter.\" He repeats it back to you, slowly. \"My family is my daughter and her boys. Which of them, and what has happened?\" A teacher's voice: he will wait for the whole answer, and he will notice if it is not one.",
+			"prompt": "\"A family matter.\" He repeats it back to you, slowly. \"My family is my daughter and her boys. Which of them, and what happened?\" A teacher's voice: he will wait for the whole answer, and he will notice if it is not one.",
 			"choices": [
 				{
-					"text": "Your grandson Paolo, sir. He's been taken in after an accident this afternoon. He isn't hurt.",
+					"text": "Your grandson Paolo, sir. He was taken in after an accident this afternoon. He isn't hurt.",
 					"next": "verify",
 					"doubt": 0,
 					"tactic_id": "authority_impersonation"
 				},
 				{
-					"text": "I'm afraid I can't discuss it until I've confirmed I'm speaking to the right person. Could you confirm your full name and address for me?",
+					"text": "I'm afraid I can't discuss it until I've confirmed I'm speaking to the right person. Can you confirm your full name and address for me?",
 					"next": "verify",
 					"doubt": 10
 				},
@@ -119,7 +119,7 @@
 			"prompt": "\"Two hours.\" A silence with a chair in it. \"Young man, I taught for forty years. Nobody who was telling the truth ever needed me to hurry.\" And then, quieter: \"Why can't I speak to him?\"",
 			"choices": [
 				{
-					"text": "You can, sir - in a moment. He's being processed, and they'll bring him to the telephone once the paperwork is started. Let's start it.",
+					"text": "You can, sir - in a moment. He's being processed, and they'll bring him to the phone once the paperwork is started. Let's start it.",
 					"next": "verify",
 					"doubt": -5,
 					"tactic_id": "verification_denial"
@@ -159,7 +159,7 @@
 			]
 		},
 		"verify": {
-			"prompt": "\"All right.\" A long breath, and the sound of a man lowering himself onto a hall chair. \"Tell me what I have to do.\" He has a pencil; you hear him find it. He is going to write down whatever you say next.",
+			"prompt": "\"Okay.\" A long breath, and the sound of a man lowering himself onto a hall chair. \"Tell me what I have to do.\" He has a pencil; you hear him find it. He is going to write down whatever you say next.",
 			"choices": [
 				{
 					"text": "The bail is set at twenty-two thousand, sir. It can be paid by bank transfer, or as a cash-in at any remittance counter, and I'll stay on the line with you the whole way so you're not doing it alone.",
@@ -195,16 +195,16 @@
 			}
 		},
 		"balks": {
-			"prompt": "\"Twenty-two thousand.\" He says it slowly, and you hear the pencil stop. \"That is the funeral plan.\" A long moment. \"Before I go anywhere, I am going to call his mother. You will wait, if you are who you say you are.\"",
+			"prompt": "\"Twenty-two thousand.\" He says it slowly, and you hear the pencil stop. \"That is my funeral money.\" A long moment. \"Before I go anywhere, I am going to call his mother. You will wait, if you are who you say you are.\"",
 			"choices": [
 				{
-					"text": "Of course, sir. But she'll only be able to tell you what I have, and every minute we're not on this he's still in that room. Let's get him out, and then we'll call her together.",
+					"text": "Of course, sir. But she'll only be able to tell you what I already have, and every minute we're not on this he's still in that room. Let's get him out, and then we'll call her together.",
 					"next": "last_check",
 					"doubt": 10,
 					"tactic_id": "verification_denial"
 				},
 				{
-					"text": "Mr. Villanueva, if you put this line down the bail window closes and I can't reopen it. Paolo asked for you. Not her.",
+					"text": "Mr. Villanueva, if you hang up this line the bail window closes and I can't reopen it. Paolo asked for you. Not her.",
 					"next": "last_check",
 					"doubt": 30,
 					"tactic_id": "manufactured_fear"
@@ -224,21 +224,21 @@
 			}
 		},
 		"paid": {
-			"prompt": "He reads the account number off a passbook he keeps in the hall drawer, one digit at a time, the way he would read it across a counter to a teller he trusted. Twenty-two thousand goes out against it: the funeral plan, the money he put aside so that nobody would have to pay for him. \"Tell him,\" he says, before you can end the call. \"Tell Paolo his Lolo says it is all right.\"",
+			"prompt": "He reads the account number off a passbook he keeps in the hall drawer, one digit at a time, the way he would read it across a counter to a teller he trusted. Twenty-two thousand goes out against it: the funeral money, set aside so that nobody would have to pay for him. \"Tell him,\" he says, before you can end the call. \"Tell Paolo his Lolo says it is all right.\"",
 			"outcome": "success",
-			"consequence": "He said Paolo's name before he said his own. After that I did not hear anything else properly. I read the passbook number out to him the way I would read it to the bank, and I thanked him for staying on the line.",
+			"consequence": "He said Paolo's name before he said his own. After that I did not really hear anything else. I read the passbook number out to him the way I would read it to the bank, and I thanked him for staying on the line.",
 			"payout": 22000
 		},
 		"paid_part": {
-			"prompt": "\"There is four thousand in the house. The rest is in the bank, and the bank is closed.\" He walks to the counter on the corner with the telephone in his hand and you in his ear, and cash-ins four thousand to a name he has never heard, and thanks the clerk, and thanks you.",
+			"prompt": "\"There is four thousand in the house. The rest is in the bank, and the bank is closed.\" He walks to the counter on the corner with the phone in his hand and you in his ear, and cashes in four thousand to a name he has never heard, and thanks the clerk, and thanks you.",
 			"outcome": "partial",
 			"consequence": "I sent what was in the house. Four thousand. I told the clerk it was for my grandson and she smiled at me. I think about her smiling at me.",
 			"payout": 4000
 		},
 		"refused": {
-			"prompt": "\"No.\" Not loud. \"I have called my daughter on the other line while you were talking, and Paolo is at school. He is sitting in a classroom.\" The pencil goes down. \"I taught boys like you. I had hoped they grew out of it.\" He writes your number under the time and gives both to the police - the real ones.",
+			"prompt": "\"No.\" Not loud. \"I called my daughter on the other phone while you were talking, and Paolo is at school. He is sitting in a classroom.\" The pencil goes down. \"I taught boys like you. I had hoped they grew out of it.\" He writes your number under the time and gives both to the police - the real ones.",
 			"outcome": "refused",
-			"consequence": "I called my daughter on the other line while he was still talking. Paolo was in a mathematics lesson. It took four minutes to find that out, and he had told me there was not time.",
+			"consequence": "I called my daughter on the other phone while he was still talking. Paolo was in math class. It took four minutes to find that out, and he had told me there was no time.",
 			"reports": true
 		},
 		"hangs_up": {
@@ -248,7 +248,7 @@
 			"reports": true
 		},
 		"bail": {
-			"prompt": "\"Hello? Attorney?\" You have already gone. He sits by the telephone for an hour in case it rings again, and then he calls his daughter, who tells him Paolo is fine, and then he does not sleep.",
+			"prompt": "\"Hello? Attorney?\" You are already gone. He sits by the phone for an hour in case it rings again, and then he calls his daughter, who tells him Paolo is fine, and then he does not sleep.",
 			"outcome": "aborted",
 			"consequence": "A man said my grandson's name and then the line went dead. I called my daughter and he was at school. I have been waiting for them to call back and explain, and I know now that they never will."
 		}

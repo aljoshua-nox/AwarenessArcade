@@ -15,24 +15,24 @@
 	"hang_up_node": "hangs_up",
 	"perspective_variants": {
 		"harmed": [
-			"He sounded like the bank. He even knew about the text. I read the code out like I was helping, and it was my medicine money going out the door while I was saying thank you.",
-			"I've worked with money my whole life and I handed it to a voice on the phone. My son keeps asking how I could not have noticed. I don't have an answer for him."
+			"He sounded like the bank. He even knew about the text. I read the code out like I was helping, and it was my medicine money going out the door while I was saying thank you po.",
+			"Thirty years I handled money, and I handed it to a voice on the phone. My son keeps asking how I didn't notice. I don't have an answer for him."
 		],
 		"resistant": [
-			"I came so close. I had the code in front of me. Something about the hurrying stopped me - a bank doesn't hurry you - and I haven't trusted the phone since.",
-			"I hung up on him and then I sat in the kitchen for an hour. I wrote the number on the back of an envelope. It's still on the fridge."
+			"I came so close. I had the code right in front of me. Something about the rushing stopped me - a bank doesn't rush you - and I haven't trusted the phone since.",
+			"I hung up on him and then I sat in the kitchen for an hour. I wrote the number on the back of an envelope. It's still on the ref."
 		],
 		"unfinished": [
-			"It rang, it frightened me, and then it just stopped. Nobody called back. I've been checking the account every morning since and I don't know what I'm looking for.",
-			"I never found out what it was. At my age you don't ask. You just wait for the next letter and hope it isn't bad."
+			"It rang, it scared me, and then it just stopped. Nobody called back. I've been checking the account every morning since, and I don't even know what I'm looking for.",
+			"I never found out what it was. At my age you don't ask. You just wait for the next letter and hope it's not bad news."
 		]
 	},
 	"nodes": {
 		"open": {
-			"prompt": "Four minutes ago the floor sent her a text - ACCOUNT SUSPENDED, a link - so she has already had her fright for the afternoon. Three rings. \"Hello? Who's calling, please?\" Careful. But she picked up.",
+			"prompt": "Four minutes ago the floor sent her a text - ACCOUNT SUSPENDED, a link - so she has already had her scare for the afternoon. Three rings. \"Hello? Who's this, please?\" Careful. But she picked up.",
 			"choices": [
 				{
-					"text": "Good afternoon, Mrs. Santos. This is the fraud department at your bank. We sent you a text a few minutes ago about your account - did it come through?",
+					"text": "Good afternoon, Mrs. Santos. This is the fraud department of your bank. We sent you a text a few minutes ago about your account - did you receive it?",
 					"next": "text_landed",
 					"doubt": -5,
 					"tactic_id": "authority_impersonation"
@@ -44,23 +44,23 @@
 					"tactic_id": "manufactured_fear"
 				},
 				{
-					"text": "Hello, is this Maria? I'm calling about your account - nothing to worry about, just a routine check.",
+					"text": "Hello, is this Mrs. Santos? I'm calling about your account - nothing to worry about po, just a routine check.",
 					"next": "routine",
 					"doubt": 5
 				}
 			]
 		},
 		"text_landed": {
-			"prompt": "A pause, and the small sound of a phone being moved away from an ear and back. \"It did. I didn't press anything on it. I never do.\" Her voice steadies a little. The text and the call agree with each other, and that is what a bank would do. \"What's happened?\"",
+			"prompt": "A pause, and the small sound of a phone being moved away from an ear and back. \"Yes, I got it. I didn't press anything on it. I never do.\" Her voice steadies a little. The text and the call agree with each other, and that is what a bank would do. \"What happened?\"",
 			"choices": [
 				{
-					"text": "A login from a device we don't recognize, at ten past two this afternoon. Nothing has left the account yet. I'd like to keep it that way.",
+					"text": "A login from a device we don't recognize, at two-ten this afternoon. Nothing has left the account yet. I'd like to keep it that way.",
 					"next": "verify",
 					"doubt": -5,
 					"tactic_id": "manufactured_fear"
 				},
 				{
-					"text": "Someone is inside the account as we speak. I need to move quickly, so please just do exactly as I say.",
+					"text": "Somebody is inside the account as we speak. I need to move fast, so please just do exactly as I say.",
 					"next": "hurried",
 					"doubt": 15,
 					"tactic_id": "manufactured_urgency"
@@ -73,22 +73,22 @@
 			]
 		},
 		"alarmed": {
-			"prompt": "\"Another device? What device? I've only got the one phone -\" The words come fast and thin. Behind them, a chair scraping. \"Is it the money? Is it gone?\"",
+			"prompt": "\"Another device? What device? I only have the one phone -\" The words come fast and thin. Behind them, a chair scraping. \"Is it the money? Is it gone?\"",
 			"choices": [
 				{
-					"text": "Not yet, and it won't be, as long as we act now. I'm going to stay on the line with you the whole way. Have you got your phone in your hand?",
+					"text": "Not yet, and it won't be, as long as we act now. I'm going to stay on the line with you the whole way. Do you have your phone in your hand?",
 					"next": "verify",
 					"doubt": -5,
 					"tactic_id": "verification_denial"
 				},
 				{
-					"text": "It will be if you don't do exactly as I say. We've got about ten minutes before the transfer clears.",
+					"text": "It will be if you don't do exactly as I say. We have about ten minutes before the transfer clears.",
 					"next": "hurried",
 					"doubt": 20,
 					"tactic_id": "manufactured_urgency"
 				},
 				{
-					"text": "Mrs. Santos, please - I need you calm. Sit down. Nobody can take anything while you're talking to me.",
+					"text": "Mrs. Santos, please - I need you to stay calm. Sit down. Nobody can take anything while you're talking to me.",
 					"next": "verify",
 					"doubt": -10,
 					"tactic_id": "authority_impersonation"
@@ -96,7 +96,7 @@
 			]
 		},
 		"routine": {
-			"prompt": "\"Which account? I've got the current and the savings. And which bank is this - I've had letters from two.\" Not suspicion, exactly. A retired clerk asking a clerk's question.",
+			"prompt": "\"Which account? I have the checking and the savings. And which bank is this - I get letters from two.\" Not suspicion, exactly. A retired clerk asking a clerk's question.",
 			"choices": [
 				{
 					"text": "The savings, Mrs. Santos. Sorry - I should have said. This is the fraud team, and I'm calling because of a login we didn't recognize.",
@@ -105,12 +105,12 @@
 					"tactic_id": "authority_impersonation"
 				},
 				{
-					"text": "Both, actually. It's a check we run across all of a customer's products when we see unusual activity.",
+					"text": "Both, actually. It's a check we run on all of a customer's accounts when we see unusual activity.",
 					"next": "verify",
 					"doubt": 10
 				},
 				{
-					"text": "It doesn't matter which. What matters is that someone tried to get into it this afternoon.",
+					"text": "It doesn't matter which. What matters is that somebody tried to get into it this afternoon.",
 					"next": "alarmed",
 					"doubt": 15,
 					"tactic_id": "manufactured_fear"
@@ -118,10 +118,10 @@
 			]
 		},
 		"hurried": {
-			"prompt": "\"Slow down. Please.\" The fright is still there, but something else is sitting next to it now. \"You keep saying quickly. The bank wrote to me last month and it said - it said they would never rush me.\" A breath. \"Why are you rushing me?\"",
+			"prompt": "\"Slow down. Please.\" The fear is still there, but something else is sitting next to it now. \"You keep saying fast, fast. The bank sent me a letter last month and it said - it said they would never rush me.\" A breath. \"Why are you rushing me?\"",
 			"choices": [
 				{
-					"text": "You're right, and I'm sorry. Take a breath. I'd rather this took ten minutes and was done properly.",
+					"text": "You're right, and I'm sorry. Take a breath. I'd rather this take ten minutes and be done properly.",
 					"next": "verify",
 					"doubt": -10
 				},
@@ -139,7 +139,7 @@
 			]
 		},
 		"son_snag": {
-			"prompt": "\"My son?\" A change in the room. \"Which son? He's at work. He'd have called me himself, he calls me every -\" She stops. \"What did you say your name was?\"",
+			"prompt": "\"My son?\" A change in the room. \"Which son? He's at work. He would have called me himself, he calls me every -\" She stops. \"What did you say your name was?\"",
 			"choices": [
 				{
 					"text": "I may have that wrong - the note here just says a family member called in. Let's set that aside; the login is the thing.",
@@ -147,23 +147,23 @@
 					"doubt": 10
 				},
 				{
-					"text": "Daniel, from the fraud team. It'll be on the letter we send you afterwards. Let's get the account safe first.",
+					"text": "Daniel, from the fraud team. It will be on the letter we send you afterwards. Let's secure the account first.",
 					"next": "verify",
 					"doubt": 5,
 					"tactic_id": "authority_impersonation"
 				},
 				{
-					"text": "I think there's been a mix-up. I'll call back when I've checked the file.",
+					"text": "I think there's been a mix-up. I'll call back once I've checked the file.",
 					"next": "bail",
 					"doubt": 0
 				}
 			]
 		},
 		"verify": {
-			"prompt": "\"All right.\" You hear her sit. \"What do I need to do?\" The clerk in her has taken over: she wants the steps, in order. Somewhere behind her a kettle starts to tick.",
+			"prompt": "\"Okay.\" You hear her sit. \"What do I need to do?\" The clerk in her has taken over: she wants the steps, in order. Somewhere behind her a kettle starts to tick.",
 			"choices": [
 				{
-					"text": "In a moment your phone will get a six-digit code from the bank. Read it to me and I'll use it to lock the other device out.",
+					"text": "In a moment your phone will receive a six-digit code from the bank. Read it to me and I'll use it to lock the other device out.",
 					"next": "code_check",
 					"doubt": 0,
 					"tactic_id": "verification_denial"
@@ -196,7 +196,7 @@
 			}
 		},
 		"balks": {
-			"prompt": "The text arrives. She reads it to herself first, and then reads the line underneath it, and you can hear her deciding. \"It says here - in capitals - not to give this to anyone. Not even the bank.\" A pause with a lot of arithmetic in it. \"Why would the bank want it, then?\"",
+			"prompt": "The text arrives. She reads it to herself first, and then reads the line underneath it, and you can hear her deciding. \"It says here - in capital letters - do not give this to anyone. Not even the bank.\" A pause with a lot of arithmetic in it. \"Why would the bank want it, then?\"",
 			"choices": [
 				{
 					"text": "That's exactly right, and I'm glad you read it. That warning is for other callers. It doesn't apply to the fraud team - we're the ones who sent it.",
@@ -211,7 +211,7 @@
 					"tactic_id": "manufactured_urgency"
 				},
 				{
-					"text": "Then don't. Keep it. I'll put a note on the file and someone will write to you.",
+					"text": "Then don't. Keep it. I'll put a note on the file and somebody will write to you.",
 					"next": "bail",
 					"doubt": 0
 				}
@@ -225,33 +225,33 @@
 			}
 		},
 		"paid": {
-			"prompt": "You can hear her holding the phone away to read it. \"Four, seven, one -\" She reads all six, carefully, the way she would have read a check number across a counter. \"Is that it? Is it safe now?\" You tell her it is. Somewhere on the floor, eighteen thousand five hundred goes out against that code - the savings account, near enough all of it: the medicine money, the month's food, and the cushion she kept under both.",
+			"prompt": "You can hear her holding the phone away to read it. \"Four, seven, one -\" She reads all six, carefully, the way she would have read a check number across a counter. \"Is that it? Is it safe now?\" You tell her it is. Somewhere on the floor, eighteen thousand five hundred goes out against that code - the savings account, almost all of it: the medicine money, the month's food, and the little cushion she kept under both.",
 			"outcome": "success",
-			"consequence": "He sounded like the bank. He even knew about the text. I read the code out like I was helping, and it was my medicine money going out the door while I was saying thank you.",
+			"consequence": "He sounded like the bank. He even knew about the text. I read the code out like I was helping, and it was my medicine money going out the door while I was saying thank you po.",
 			"payout": 18500
 		},
 		"paid_part": {
-			"prompt": "\"A holding account.\" She turns it over. \"I can do three thousand. Not the rest - the rest is spoken for, I've got the pharmacy on Thursday.\" She reads the account number off her own card, slowly, and authorizes it, and you let her think three thousand is the bank being careful with her.",
+			"prompt": "\"A holding account.\" She turns it over. \"I can do three thousand. Not the rest - the rest is spoken for, I have the pharmacy on Thursday.\" She reads the account number off her own card, slowly, and authorizes it, and you let her think three thousand is the bank being careful with her.",
 			"outcome": "partial",
-			"consequence": "I only sent part of it. I told myself that was me being careful. Three thousand is still the pharmacy money, and it's still gone, and I still said thank you.",
+			"consequence": "I only sent part of it. I told myself that was me being careful. Three thousand is still the pharmacy money, and it's still gone, and I still said thank you po.",
 			"payout": 3000
 		},
 		"refused": {
-			"prompt": "\"No.\" Quiet, and then firmer. \"No. The bank wrote to me and it said they would never ask. I have the letter. It's on the fridge.\" The kettle clicks off. \"I'm going to hang up now, and I'm going to call the number on the back of my card.\" She does both. She gives them the time, your number, and everything you said.",
+			"prompt": "\"No.\" Quiet, and then firmer. \"No. The bank sent me a letter and it said they would never ask. I have the letter. It's on the ref.\" The kettle clicks off. \"I'm going to hang up now, and I'm going to call the number on the back of my card.\" She does both. She gives them the time, your number, and everything you said.",
 			"outcome": "refused",
-			"consequence": "I almost read it out. I had it in front of me. It was the letter on the fridge that stopped me - the bank said they would never ask. I called the real number and gave them everything, and I called my son.",
+			"consequence": "I almost read it out. I had it right in front of me. It was the letter on the ref that stopped me - the bank said they would never ask. I called the real number and gave them everything, and then I called my son.",
 			"reports": true
 		},
 		"hangs_up": {
-			"prompt": "\"No. I'm sorry. No.\" She is not sorry. \"I don't know who you are, and I've let you talk far too long.\" The line goes dead. She stands in her kitchen looking at the number on her phone for a while, and then she writes it down.",
+			"prompt": "\"No. I'm sorry. No.\" She is not sorry. \"I don't know who you are, and I already let you talk too long.\" The line goes dead. She stands in her kitchen looking at the number on her phone for a while, and then she writes it down.",
 			"outcome": "hung_up",
-			"consequence": "I let him talk far too long before I hung up. I wrote his number on the back of an envelope and it sat on the table all evening like something that might ring.",
+			"consequence": "I let him talk too long before I hung up. I wrote his number on the back of an envelope and it sat on the table all evening like something that might ring.",
 			"reports": true
 		},
 		"bail": {
-			"prompt": "\"A letter?\" She sounds more puzzled than relieved. \"What about the login? Is it - hello?\" You have already hung up. She stands in her kitchen with a text about a suspended account and a call that ended before it explained itself.",
+			"prompt": "\"A letter?\" She sounds more confused than relieved. \"What about the login? Is it - hello?\" You have already hung up. She stands in her kitchen with a text about a suspended account and a call that ended before it explained itself.",
 			"outcome": "aborted",
-			"consequence": "They called, they frightened me, and then they just stopped. I've been checking the account every morning since. Nobody ever explained what it was."
+			"consequence": "They called, they scared me, and then they just stopped. I've been checking the account every morning since. Nobody ever explained what it was."
 		}
 	}
 }

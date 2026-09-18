@@ -8,20 +8,22 @@ extends "res://scripts/exploration/office_interior.gd"
 ## The room is the call floor's (shell, stations, inspection panel, exit door
 ## are all office_interior.gd's); what is in it is not. Two of its stations are
 ## pickups: the case file on the desk hands over the journal and opens the
-## brief, the notebook in the locker hands over the Tactics tab. The exit door
+## brief, the notebook on the side table hands over the Tactics tab. The exit door
 ## will not open until both are taken - a light gate that guarantees the brief
 ## is read once. There is no director's door and no stairwell.
 
 const DESK_STREET_SCENE := "res://scenes/exploration/urban_exterior.tscn"
 
 const DESK_POSITION := Vector2(640.0, 470.0)
-const LOCKER_POSITION := Vector2(1120.0, 340.0)
+const TABLE_POSITION := Vector2(1120.0, 340.0)
 const MAP_POSITION := Vector2(430.0, 268.0)
 
-const LOCKER_UNTAKEN_BODY := "A steel locker with your name on a strip of tape. Inside: a jacket, a bottle of water, and a notebook with half its pages used. The used pages are from the last case. The rest are for this one."
-const LOCKER_UNTAKEN_NOTE := "The notebook records every tactic you can name. A caller's trick, written down, is a trick you will recognize the next time it is tried on you. Press N at any time to read it."
-const LOCKER_TAKEN_BODY := "The locker, with the notebook gone from it. The jacket can stay."
-const LOCKER_TAKEN_NOTE := "Press N at any time to open the notebook."
+# The object sheet has no locker (the tall white unit is a fridge), so the
+# notebook waits on a table by the window instead.
+const TABLE_UNTAKEN_BODY := "A small table by the window with your things on it: a jacket over the chair, a bottle of water, and a notebook with half its pages used. The used pages are from the last case. The rest are for this one."
+const TABLE_UNTAKEN_NOTE := "The notebook records every tactic you can name. A caller's trick, written down, is a trick you will recognize the next time it is tried on you. Press N at any time to read it."
+const TABLE_TAKEN_BODY := "The table by the window, with the notebook gone from it. The jacket can stay."
+const TABLE_TAKEN_NOTE := "Press N at any time to open the notebook."
 
 
 func _init() -> void:
@@ -80,7 +82,7 @@ func _build_call_floor() -> void:
 func _build_props() -> void:
 	_add_prop(OFFICE_OBJECTS, OBJ_FILE_CABINET, Vector2(128.0, 340.0), 2.1, -8)
 	_add_prop(OFFICE_OBJECTS, OBJ_FILE_CABINET, Vector2(128.0, 440.0), 2.1, -8)
-	_add_prop(OFFICE_OBJECTS, OBJ_CABINET, Vector2(1168.0, 330.0), 2.1, -8)
+	_add_prop(OFFICE_OBJECTS, OBJ_DESK_BACK, Vector2(TABLE_POSITION.x, TABLE_POSITION.y - 10.0), 2.4, -10)
 	_add_prop(OFFICE_OBJECTS, OBJ_COOLER, Vector2(1168.0, 440.0), 2.3, -8)
 	_add_prop(OFFICE_OBJECTS, OBJ_PLANT, Vector2(126.0, 640.0), 2.4, -8)
 	_add_prop(OFFICE_OBJECTS, OBJ_PLANT, Vector2(1170.0, 640.0), 2.4, -8)
@@ -95,15 +97,15 @@ func _build_stations() -> void:
 		"is_brief": true,
 	}, DESK_POSITION)
 
-	var locker := {
-		"title": "Your locker",
-		"prompt": _locker_prompt(),
+	var table := {
+		"title": "The side table",
+		"prompt": _table_prompt(),
 		"is_notebook": true,
 		"marker": TextStyle.MARK_HINT,
 		"note_color": TextStyle.COLOR_HINT,
 	}
-	_set_locker_text(locker)
-	_add_station(locker, LOCKER_POSITION)
+	_set_table_text(table)
+	_add_station(table, TABLE_POSITION)
 
 	_add_station({
 		"title": "The district map",
@@ -119,20 +121,20 @@ func _desk_prompt() -> String:
 	return "Read the case file" if SessionState.journal_collected else "Take the case file"
 
 
-func _locker_prompt() -> String:
-	return "Examine the locker" if SessionState.notebook_collected else "Take your notebook"
+func _table_prompt() -> String:
+	return "Examine the table" if SessionState.notebook_collected else "Take your notebook"
 
 
-func _set_locker_text(station: Dictionary) -> void:
+func _set_table_text(station: Dictionary) -> void:
 	var taken := SessionState.notebook_collected
-	station["body"] = LOCKER_TAKEN_BODY if taken else LOCKER_UNTAKEN_BODY
-	station["note"] = LOCKER_TAKEN_NOTE if taken else LOCKER_UNTAKEN_NOTE
+	station["body"] = TABLE_TAKEN_BODY if taken else TABLE_UNTAKEN_BODY
+	station["note"] = TABLE_TAKEN_NOTE if taken else TABLE_UNTAKEN_NOTE
 
 
 # --- Pickups ------------------------------------------------------------------
 
 # The desk opens the brief itself - the case file IS the journal - and the
-# first time is when the journal is handed over. The locker reads like any
+# first time is when the journal is handed over. The table reads like any
 # other station, but taking the notebook changes what it says afterwards.
 func _open_inspection(station: Dictionary) -> void:
 	if bool(station.get("is_brief", false)):
@@ -142,8 +144,8 @@ func _open_inspection(station: Dictionary) -> void:
 			_refresh_tools()
 		CaseJournal.show_briefing()
 		return
-	# The locker's first read is the notebook being taken, so it is rendered
-	# before the pickup changes what the locker says.
+	# The table's first read is the notebook being taken, so it is rendered
+	# before the pickup changes what the table says.
 	var taking_notebook := bool(station.get("is_notebook", false)) and not SessionState.notebook_collected
 	super(station)
 	if taking_notebook:
@@ -157,8 +159,8 @@ func _refresh_tools() -> void:
 		if bool(station.get("is_brief", false)):
 			station["prompt"] = _desk_prompt()
 		elif bool(station.get("is_notebook", false)):
-			station["prompt"] = _locker_prompt()
-			_set_locker_text(station)
+			station["prompt"] = _table_prompt()
+			_set_table_text(station)
 	if not active_station.is_empty() and station_label.visible:
 		station_label.text = str(active_station.get("prompt", ""))
 	portal.prompt_text = exit_prompt()

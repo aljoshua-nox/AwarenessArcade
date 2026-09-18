@@ -225,7 +225,7 @@ func _test_briefing() -> void:
 	await get_tree().process_frame
 
 
-# The journal is handed over at the desk, the notebook from its locker. Until
+# The journal is handed over at the desk, the notebook from its side table. Until
 # then the keys and the button do nothing, and the Tactics tab is not there.
 func _test_tools() -> void:
 	print("\n[the tools]")

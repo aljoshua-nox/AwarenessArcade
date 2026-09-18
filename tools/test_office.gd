@@ -398,8 +398,8 @@ func _station_quiet(view: Node, title: String) -> Dictionary:
 
 
 # The case starts at the detective's desk: the case file and the notebook are
-# picked up there, the door does not open until both are, and the brief opens
-# when the file is taken.
+# picked up there (the desk and the side table), the door does not open until
+# both are, and the brief opens when the file is taken.
 func _test_detective_desk() -> void:
 	print("\n[the detective's desk]")
 	SessionState.reset_session()
@@ -410,8 +410,8 @@ func _test_detective_desk() -> void:
 	add_child(desk)
 	await get_tree().process_frame
 
-	_check(desk.stations.size() == 3, "the desk, the locker and the map, nothing else (got %d)" % desk.stations.size())
-	for title in ["Your desk", "Your locker", "The district map"]:
+	_check(desk.stations.size() == 3, "the desk, the side table and the map, nothing else (got %d)" % desk.stations.size())
+	for title in ["Your desk", "The side table", "The district map"]:
 		_check(not _station(desk, title).is_empty(), "station present: %s" % title)
 	var titles: Array[String] = []
 	for station in desk.stations:
@@ -438,16 +438,16 @@ func _test_detective_desk() -> void:
 	_check(str(desk_station.get("prompt", "")) == "Read the case file", "the desk now offers to re-read it")
 	_check(not desk._can_enter_portal(), "one tool is not enough for the door")
 
-	var locker := _station(desk, "Your locker")
-	_check(str(locker.get("prompt", "")) == "Take your notebook", "the locker offers the notebook")
-	desk._open_inspection(locker)
+	var table := _station(desk, "The side table")
+	_check(str(table.get("prompt", "")) == "Take your notebook", "the table offers the notebook")
+	desk._open_inspection(table)
 	await get_tree().process_frame
 	_check(SessionState.notebook_collected, "taking the notebook hands over the Tactics tab")
 	_check(desk.inspection_open and desk.inspect_body.text.contains("half its pages used"),
-		"the locker reads as the notebook being taken")
+		"the table reads as the notebook being taken")
 	desk._close_inspection()
-	_check(str(locker.get("prompt", "")) == "Examine the locker", "the locker now reads as emptied")
-	desk._open_inspection(locker)
+	_check(str(table.get("prompt", "")) == "Examine the table", "the table now reads as cleared")
+	desk._open_inspection(table)
 	_check(desk.inspect_body.text.contains("notebook gone"), "and says so")
 	desk._close_inspection()
 
@@ -464,7 +464,7 @@ func _test_detective_desk() -> void:
 	add_child(again)
 	await get_tree().process_frame
 	_check(str(_station(again, "Your desk").get("prompt", "")) == "Read the case file", "a later visit re-reads the file")
-	_check(str(_station(again, "Your locker").get("prompt", "")) == "Examine the locker", "and finds the locker empty")
+	_check(str(_station(again, "The side table").get("prompt", "")) == "Examine the table", "and finds the table cleared")
 	_check(again.portal.prompt_text.begins_with("Head out"), "and the door open")
 	remove_child(again)
 	again.queue_free()

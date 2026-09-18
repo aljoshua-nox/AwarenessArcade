@@ -1,0 +1,67 @@
+{
+  "objectives": [
+    {
+      "id": "first_statement",
+      "title": "Get a first statement on record",
+      "detail": "Someone on these streets will talk to a detective with no standing. Knock until a door opens, and take the statement that is offered.",
+      "complete_when": {"statements_at_least": 1}
+    },
+    {
+      "id": "build_standing",
+      "title": "Earn the standing for the doors that stayed shut",
+      "detail": "Most of the people on the list will not talk to a stranger. Every statement that helps a neighbor raises your standing, and every interview that goes wrong lowers it. Their gates are on the People page.",
+      "unlock_when": {"statements_at_least": 1},
+      "complete_when": {"credibility_at_least": 60}
+    },
+    {
+      "id": "find_operator",
+      "title": "Find who made the calls",
+      "detail": "A voice, a script and a number. Somebody on the shop row works the floor those calls come from, and asking him costs no statement.",
+      "complete_when": {"interviewed": "marco_navarro"}
+    },
+    {
+      "id": "flip_operator",
+      "title": "Get the operator to name the floor above him",
+      "detail": "He will not give up the floor for nothing. What he answers to is a witness he called: a statement from someone on his floor's list, presented to his face.",
+      "unlock_when": {"interviewed": "marco_navarro"},
+      "complete_when": {"flag": "suspect_flipped"},
+      "failed_when": {"flag": "case_locked"},
+      "failed_detail": "He stopped talking and asked for a lawyer. Nobody else on the floor will name the office above it - unless a witness he called can still be found and brought back to him."
+    },
+    {
+      "id": "file_unresolved",
+      "title": "File the case with what it has",
+      "detail": "Nobody who made the calls is talking. The office door on Sampaguita Street will take the file as it stands.",
+      "unlock_when": {"flag": "case_locked"},
+      "complete_when": {"flag": "suspect_flipped"}
+    },
+    {
+      "id": "confront_director",
+      "title": "Confront the floor director",
+      "detail": "The operator named her. Her door is at the far end of the call floor, past the desks - walk the floor before you open it. Two statements from the people her floor called will hold her.",
+      "unlock_when": {"flag": "suspect_flipped"},
+      "complete_when": {"interviewed": "elena_cruz"}
+    },
+    {
+      "id": "turn_recruit",
+      "title": "Turn someone who works on the fourth floor",
+      "detail": "The floor above the call floor hires by the batch. One of its recruits boards on Terminal Road, at a gate of 65 - and what she answers to is not a badge but someone who read the same advertisement she did.",
+      "unlock_when": {"any": [
+        {"interviewed": "patricia_lim"},
+        {"interviewed": "bea_santiago"},
+        {"milestone": "The Script Upstairs"},
+        {"milestone": "One Login, Two Floors"},
+        {"milestone": "Her Name Is On The Rack"},
+        {"milestone": "The Ad Is The Script"}
+      ]},
+      "complete_when": {"flag": "witness_flipped"}
+    },
+    {
+      "id": "name_owner",
+      "title": "Name who owns the building",
+      "detail": "The floor directors answer to a name on the leases. Whoever runs a whole floor has seen it, and so has whoever closes the calls the floors transfer out. Without the name in the file, the building stands.",
+      "unlock_when": {"any": [{"flag": "suspect_flipped"}, {"flag": "witness_flipped"}]},
+      "complete_when": {"evidence": "ev_owner_name"}
+    }
+  ]
+}

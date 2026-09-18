@@ -670,7 +670,7 @@ func _test_briefing_on_arrival() -> void:
 	view = await _open()
 	await get_tree().process_frame
 	_check(CaseJournal.is_open, "arriving with the briefing pending opens the journal")
-	_check(CaseJournal.current_tab == CaseJournal.TAB_CASE, "on the case file")
+	_check(CaseJournal.current_tab == CaseJournal.TAB_BRIEF, "on the brief")
 	_check(not SessionState.briefing_pending, "and consumes the flag")
 	CaseJournal.close()
 	await _close(view)

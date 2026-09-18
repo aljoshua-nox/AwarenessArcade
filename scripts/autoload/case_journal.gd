@@ -32,19 +32,30 @@ const HIDDEN_IN_SCENES := [
 ]
 
 const BRIEFING_PATH := "res://resources/journal/briefing.json"
+const OBJECTIVES_PATH := "res://resources/journal/objectives.json"
 
-const TAB_CASE := "case"
+const TAB_OBJECTIVES := "objectives"
+const TAB_BRIEF := "brief"
+const TAB_PEOPLE := "people"
+const TAB_EVIDENCE := "evidence"
 const TAB_TACTICS := "tactics"
 ## One row per tab, in display order. The id names the `_fill_<id>()` that
-## renders it into its page.
+## renders it into its page. The brief has a tab of its own rather than a
+## place above the objectives: it is read once, and the objectives are what
+## the player opens the journal for after that.
 const TABS := [
-	{"id": TAB_CASE, "label": "Case File  (J)"},
+	{"id": TAB_OBJECTIVES, "label": "Objectives  (J)"},
+	{"id": TAB_BRIEF, "label": "Brief"},
+	{"id": TAB_PEOPLE, "label": "People"},
+	{"id": TAB_EVIDENCE, "label": "Evidence"},
 	{"id": TAB_TACTICS, "label": "Tactics  (N)"},
 ]
 
 ## The desk sergeant's brief: who the player is and what a statement is for.
 ## Loaded from JSON so the validator can lint it like any other prose.
 var briefing: Dictionary = {}
+## The case's objectives, in file order - see the Objectives section below.
+var objectives: Array[Dictionary] = []
 
 var is_open: bool = false
 var is_pause_open: bool = false
@@ -69,6 +80,7 @@ func _ready() -> void:
 	# closed again once it has paused the game beneath it.
 	process_mode = Node.PROCESS_MODE_ALWAYS
 	_load_briefing()
+	_load_objectives()
 	_build_ui()
 	_build_pause_menu()
 	get_tree().node_added.connect(_on_node_added)
@@ -247,7 +259,7 @@ func briefing_text() -> String:
 	return "\n\n".join(lines)
 
 
-func _fill_case(page: VBoxContainer) -> void:
+func _fill_brief(page: VBoxContainer) -> void:
 	var box := _add_scrolling_box(page)
 	var brief := RichTextLabel.new()
 	brief.bbcode_enabled = true
@@ -257,9 +269,306 @@ func _fill_case(page: VBoxContainer) -> void:
 	box.add_child(brief)
 
 
-## The brief, on arrival: the journal opens on the case file.
+## The brief, on arrival: the journal opens on it.
 func show_briefing() -> void:
-	open(TAB_CASE)
+	open(TAB_BRIEF)
+
+
+# --- Objectives ---------------------------------------------------------------
+# What to do next, without saying how. An objective is a row in
+# resources/journal/objectives.json with an `unlock_when` (absent = open from
+# the start), a `complete_when`, and optionally a `failed_when`; each is one
+# condition or `{"any": [...]}`. Conditions are a closed vocabulary read off
+# SessionState - see _condition_holds() - and the validator checks every id.
+
+const OBJECTIVE_LOCKED := "locked"
+const OBJECTIVE_ACTIVE := "active"
+const OBJECTIVE_DONE := "done"
+const OBJECTIVE_FAILED := "failed"
+
+
+func _load_objectives() -> void:
+	var file := FileAccess.open(OBJECTIVES_PATH, FileAccess.READ)
+	if file == null:
+		push_error("Could not open objectives: %s" % OBJECTIVES_PATH)
+		return
+	var parsed: Variant = JSON.parse_string(file.get_as_text())
+	if typeof(parsed) != TYPE_DICTIONARY:
+		push_error("Objectives file is not a dictionary")
+		return
+	for entry in (parsed as Dictionary).get("objectives", []):
+		if entry is Dictionary:
+			objectives.append(entry)
+
+
+func _condition_holds(condition: Variant) -> bool:
+	if condition == null:
+		return true
+	if not condition is Dictionary:
+		return false
+	var c: Dictionary = condition
+	if c.has("any"):
+		for option in c.get("any", []):
+			if _condition_holds(option):
+				return true
+		return false
+	if c.has("statements_at_least"):
+		return SessionState.statements_taken >= int(c["statements_at_least"])
+	if c.has("credibility_at_least"):
+		return SessionState.detective_credibility >= int(c["credibility_at_least"])
+	if c.has("interviewed"):
+		return SessionState.interviewed_people.has(str(c["interviewed"]))
+	if c.has("flag"):
+		var value: Variant = SessionState.get(str(c["flag"]))
+		return value is bool and value
+	if c.has("evidence"):
+		return SessionState.has_evidence(str(c["evidence"]))
+	if c.has("milestone"):
+		return SessionState.has_reflection_milestone(str(c["milestone"]))
+	return false
+
+
+## Done is sticky (SessionState.objectives_done), so an objective completed on
+## standing does not reopen when a failed interview lowers it again. Complete
+## outranks failed: a suspect flipped after he lawyered up is a flip.
+func objective_state(objective: Dictionary) -> String:
+	var id := str(objective.get("id", ""))
+	if SessionState.objectives_done.has(id):
+		return OBJECTIVE_DONE
+	if _condition_holds(objective.get("complete_when")):
+		if not id.is_empty():
+			SessionState.objectives_done.append(id)
+		return OBJECTIVE_DONE
+	if objective.has("failed_when") and _condition_holds(objective["failed_when"]):
+		return OBJECTIVE_FAILED
+	if objective.has("unlock_when") and not _condition_holds(objective["unlock_when"]):
+		return OBJECTIVE_LOCKED
+	return OBJECTIVE_ACTIVE
+
+
+func objectives_in_state(state: String) -> Array[Dictionary]:
+	var found: Array[Dictionary] = []
+	for objective in objectives:
+		if objective_state(objective) == state:
+			found.append(objective)
+	return found
+
+
+## The one line the HUD tracks: the first active objective in file order.
+func tracked_objective() -> Dictionary:
+	var active := objectives_in_state(OBJECTIVE_ACTIVE)
+	return active[0] if not active.is_empty() else {}
+
+
+func _objective_row(box: VBoxContainer, objective: Dictionary, state: String) -> void:
+	var row := PanelContainer.new()
+	box.add_child(row)
+	var row_margin := MarginContainer.new()
+	for side in ["margin_left", "margin_top", "margin_right", "margin_bottom"]:
+		row_margin.add_theme_constant_override(side, 12)
+	row.add_child(row_margin)
+	var body := RichTextLabel.new()
+	body.bbcode_enabled = true
+	body.fit_content = true
+	body.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	row_margin.add_child(body)
+
+	var title := str(objective.get("title", ""))
+	var detail := str(objective.get("detail", ""))
+	match state:
+		OBJECTIVE_DONE:
+			body.text = "[color=#%s][b]DONE[/b]  %s[/color]" % [TextStyle.COLOR_CORRECT, title]
+		OBJECTIVE_FAILED:
+			body.text = "[color=#%s][b]CLOSED[/b]  %s[/color]\n[color=#%s]%s[/color]" % [
+				TextStyle.COLOR_WRONG, title, TextStyle.COLOR_NARRATION,
+				str(objective.get("failed_detail", detail))]
+		_:
+			body.text = "[b]%s[/b]\n%s" % [title, detail]
+
+
+func _fill_objectives(page: VBoxContainer) -> void:
+	var active := objectives_in_state(OBJECTIVE_ACTIVE)
+	var failed := objectives_in_state(OBJECTIVE_FAILED)
+	var done := objectives_in_state(OBJECTIVE_DONE)
+	_add_note(page, "What the case needs next. How is yours to work out; the People page says who is where.")
+	var box := _add_scrolling_box(page)
+	if active.is_empty() and failed.is_empty() and done.is_empty():
+		_add_note(box, "Nothing on file yet.")
+	for objective in active:
+		_objective_row(box, objective, OBJECTIVE_ACTIVE)
+	for objective in failed:
+		_objective_row(box, objective, OBJECTIVE_FAILED)
+	for objective in done:
+		_objective_row(box, objective, OBJECTIVE_DONE)
+
+
+# --- People -------------------------------------------------------------------
+# Every door in the case, where it is, what it takes to open, and how it went.
+# Derived, not authored: the streets' own door tables say who stands where,
+# the case files say what they need, SessionState says what happened.
+
+## Each place names the script whose INTERVIEWEES table places its doors, or
+## lists its cases outright with the flag that opens the door (the floors).
+const PLACES := [
+	{"name": "Sampaguita Street", "script": "res://scripts/exploration/urban_exterior.gd"},
+	{"name": "Terminal Road", "script": "res://scripts/exploration/terminal_road.gd"},
+	{"name": "Call Floor - 3F", "cases": ["res://resources/cases/interview_case_004.json"],
+		"door_flag": "suspect_flipped", "door_locked": "The operator has to name her first"},
+	{"name": "Tech Support Floor - 4F", "cases": ["res://resources/cases/interview_case_011.json"],
+		"door_flag": "witness_flipped", "door_locked": "Someone on her floor has to turn first"},
+]
+
+var _person_cache: Dictionary = {}
+
+
+func _case_person(case_path: String) -> Dictionary:
+	if _person_cache.has(case_path):
+		return _person_cache[case_path]
+	var person: Dictionary = {}
+	var file := FileAccess.open(case_path, FileAccess.READ)
+	if file != null:
+		var parsed: Variant = JSON.parse_string(file.get_as_text())
+		if typeof(parsed) == TYPE_DICTIONARY:
+			person = (parsed as Dictionary).get("person", {})
+	_person_cache[case_path] = person
+	return person
+
+
+func _place_cases(place: Dictionary) -> Array:
+	if place.has("cases"):
+		return place["cases"]
+	var script: Script = load(str(place.get("script", "")))
+	if script == null:
+		return []
+	var cases: Array = []
+	for entry in script.get_script_constant_map().get("INTERVIEWEES", []):
+		cases.append(str(entry.get("case", "")))
+	return cases
+
+
+## One row per door: {name, role, place, gate, status, tone}. `tone` is the
+## text color the status renders in.
+func people_rows() -> Array[Dictionary]:
+	var rows: Array[Dictionary] = []
+	for place in PLACES:
+		for case_path in _place_cases(place):
+			var person := _case_person(str(case_path))
+			if person.is_empty():
+				continue
+			var row := {
+				"name": str(person.get("name", "")),
+				"role": str(person.get("role", "")),
+				"place": str(place.get("name", "")),
+				"gate": int(person.get("min_credibility", 0)),
+			}
+			var status := _person_status(person, place)
+			row["status"] = status[0]
+			row["tone"] = status[1]
+			rows.append(row)
+	return rows
+
+
+func _person_status(person: Dictionary, place: Dictionary) -> Array:
+	var person_id := str(person.get("person_id", ""))
+	var role := str(person.get("role", ""))
+	var gate := int(person.get("min_credibility", 0))
+	var outcome := str(SessionState.interview_outcomes.get(person_id, ""))
+	var takes_statement: bool = SessionState.STATEMENT_ROLES.has(role)
+
+	if takes_statement and SessionState.is_witness_closed(person_id):
+		return ["Won't talk to you again", TextStyle.COLOR_WRONG]
+	match outcome:
+		"success":
+			return ["Statement on record", TextStyle.COLOR_CORRECT]
+		"whistleblower":
+			return ["Flipped - he named the floor above him", TextStyle.COLOR_CORRECT]
+		"turned":
+			return ["Turned - she will say what her floor does", TextStyle.COLOR_CORRECT]
+		"owner_named":
+			return ["Named the owner", TextStyle.COLOR_CORRECT]
+		"partial":
+			return ["Partial statement", TextStyle.COLOR_TACTIC]
+		"failure":
+			if role == "Suspect":
+				return ["Shut the door - come back with a witness", TextStyle.COLOR_WRONG]
+			return ["Interview went wrong", TextStyle.COLOR_WRONG]
+		SessionState.OUTCOME_HESITANT:
+			if SessionState.detective_credibility >= gate:
+				return ["Turned you away once - your standing is enough now", TextStyle.COLOR_TACTIC]
+			return ["Turned you away - needs Standing %d" % gate, TextStyle.COLOR_TACTIC]
+	if not outcome.is_empty():
+		return ["Spoken to", TextStyle.COLOR_NARRATION]
+	if place.has("door_flag") and not bool(SessionState.get(str(place["door_flag"]))):
+		return [str(place.get("door_locked", "Door locked")), TextStyle.COLOR_NARRATION]
+	if takes_statement and SessionState.statements_left() <= 0:
+		return ["No statements left to take", TextStyle.COLOR_WRONG]
+	if gate > SessionState.detective_credibility:
+		return ["Will not talk to a stranger - needs Standing %d" % gate, TextStyle.COLOR_NARRATION]
+	if takes_statement:
+		return ["Will talk", TextStyle.COLOR_HINT]
+	return ["Costs no statement", TextStyle.COLOR_HINT]
+
+
+func _fill_people(page: VBoxContainer) -> void:
+	_add_note(page, "Every door in the case: where it is, what it takes to open, and how it went.")
+	var box := _add_scrolling_box(page)
+	var current_place := ""
+	for row in people_rows():
+		if str(row.get("place", "")) != current_place:
+			current_place = str(row.get("place", ""))
+			var heading := Label.new()
+			heading.text = current_place.to_upper()
+			heading.add_theme_font_override("font", load(TextStyle.FONT_SYSTEM))
+			heading.add_theme_color_override("font_color", Color.html(TextStyle.COLOR_HINT))
+			box.add_child(heading)
+		var line := RichTextLabel.new()
+		line.bbcode_enabled = true
+		line.fit_content = true
+		line.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		var gate: int = int(row.get("gate", 0))
+		var gate_text := "  [color=#%s](Standing %d)[/color]" % [TextStyle.COLOR_NARRATION, gate] if gate > 0 else ""
+		line.text = "[b]%s[/b]  [color=#%s]%s[/color]%s\n[color=#%s]%s[/color]" % [
+			str(row.get("name", "")), TextStyle.COLOR_NARRATION, str(row.get("role", "")), gate_text,
+			str(row.get("tone", TextStyle.COLOR_NARRATION)), str(row.get("status", ""))]
+		box.add_child(line)
+
+
+# --- Evidence -----------------------------------------------------------------
+# What is held, and what each piece proves. Mid-case this was visible only
+# inside Present Evidence, one interview at a time.
+
+func _person_name(person_id: String) -> String:
+	for place in PLACES:
+		for case_path in _place_cases(place):
+			var person := _case_person(str(case_path))
+			if str(person.get("person_id", "")) == person_id:
+				return str(person.get("name", ""))
+	return ""
+
+
+func _fill_evidence(page: VBoxContainer) -> void:
+	var items: Array[Dictionary] = SessionState.investigation_inventory
+	_add_note(page, "%d item%s in the file. A statement given in one interview can be put to the next." % [
+		items.size(), "" if items.size() == 1 else "s"])
+	var box := _add_scrolling_box(page)
+	if items.is_empty():
+		_add_note(box, "Nothing yet. What you hold comes from the people who talk to you.")
+		return
+	for item in items:
+		var line := RichTextLabel.new()
+		line.bbcode_enabled = true
+		line.fit_content = true
+		line.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		var lines: Array[String] = []
+		var source := _person_name(str(item.get("person_id", "")))
+		lines.append("[b]%s[/b]%s" % [str(item.get("label", "")),
+			"  [color=#%s]from %s[/color]" % [TextStyle.COLOR_NARRATION, source] if not source.is_empty() else ""])
+		if not str(item.get("description", "")).is_empty():
+			lines.append(str(item.get("description", "")))
+		if not str(item.get("tactic", "")).is_empty():
+			lines.append("[color=#%s]TACTIC: %s[/color]" % [TextStyle.COLOR_TACTIC, str(item.get("tactic", ""))])
+		line.text = "\n".join(lines)
+		box.add_child(line)
 
 
 # --- Tactics ------------------------------------------------------------------

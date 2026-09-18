@@ -6,9 +6,12 @@ extends Node
 ##   godot --path . res://tools/capture_journal.tscn
 ##
 ## Writes briefing_preview.png (the case file as it opens on arrival, after a
-## reported shift), journal_preview.png (the Tactics tab with one entry
-## recorded) and pause_preview.png (the pause menu on its confirm step, the one
-## screen it exists for) under user://.
+## reported shift), objectives_preview.png (the case file mid-case: one
+## objective closed, some done, some open), people_preview.png (every door,
+## mid-case), evidence_preview.png (a file with three items in it),
+## journal_preview.png (the Tactics tab with one entry recorded) and
+## pause_preview.png (the pause menu on its confirm step, the one screen it
+## exists for) under user://.
 
 const URBAN_SCENE := "res://scenes/exploration/urban_exterior.tscn"
 
@@ -32,6 +35,29 @@ func _run() -> void:
 	CaseJournal.close()
 	SessionState.prologue_played = false
 	SessionState.reports_filed = 0
+
+	# Mid-case: a statement taken, a witness lost, the operator lawyered up.
+	SessionState.statements_taken = 2
+	SessionState.record_interview_outcome("evelyn_marsh", "success")
+	SessionState.record_interview_outcome("maria_santos", "partial", true)
+	SessionState.record_interview_outcome("kevin_d", "failure")
+	SessionState.record_statement("kevin_d", "Victim", "failure", false)
+	SessionState.record_interview_outcome("marco_navarro", "failure")
+	SessionState.case_locked = true
+	SessionState.add_evidence({"id": "test_evelyn_confirmed", "label": "Evelyn's Statement",
+		"description": "The raffle call, the fee, the refusal - on record.", "tactic": "Advance fee: a prize that costs money to collect", "person_id": "evelyn_marsh", "script": "lottery"})
+	SessionState.add_evidence({"id": "ev_raffle_stub", "label": "The Raffle Stub",
+		"description": "A ticket for a draw she never entered.", "tactic": "Unsolicited prize", "person_id": "evelyn_marsh"})
+	SessionState.add_evidence({"id": "ev_phishing_text", "label": "The Text Before The Call",
+		"description": "A message four minutes before the call, from a number that is not her bank's.", "tactic": "Manufactured urgency", "person_id": "maria_santos"})
+	for tab in [CaseJournal.TAB_OBJECTIVES, CaseJournal.TAB_PEOPLE, CaseJournal.TAB_EVIDENCE]:
+		CaseJournal.open(tab)
+		await _settle()
+		_save({CaseJournal.TAB_OBJECTIVES: "objectives_preview", CaseJournal.TAB_PEOPLE: "people_preview",
+			CaseJournal.TAB_EVIDENCE: "evidence_preview"}[tab])
+		CaseJournal.close()
+	SessionState.reset_investigation()
+	SessionState.record_tactic_learned("manufactured_urgency", "Named while interviewing Maria Santos")
 
 	CaseJournal.open(CaseJournal.TAB_TACTICS)
 	await _settle()

@@ -90,6 +90,7 @@ var inspect_body: RichTextLabel
 var station_label: Label
 var standing_label: Label
 var statements_label: Label
+var objective_label: Label
 var inspection_open: bool = false
 
 
@@ -199,6 +200,13 @@ func _build_hud() -> void:
 		Color.html(TextStyle.COLOR_WRONG) if SessionState.statements_left() <= 1 else Color.html(TextStyle.COLOR_HINT))
 	hud.add_child(statements_label)
 
+	objective_label = Label.new()
+	objective_label.offset_left = 20.0
+	objective_label.offset_top = 214.0
+	objective_label.add_theme_color_override("font_color", Color.html(TextStyle.COLOR_TACTIC))
+	hud.add_child(objective_label)
+	_refresh_objective_label()
+
 	inspect_panel = PanelContainer.new()
 	inspect_panel.set_anchors_preset(Control.PRESET_CENTER)
 	inspect_panel.anchor_left = 0.5
@@ -259,7 +267,14 @@ func _open_inspection(station: Dictionary) -> void:
 		SessionState.record_reflection_milestone(milestone_title, str(station.get("milestone_detail", "")))
 
 
+func _refresh_objective_label() -> void:
+	var tracked: Dictionary = CaseJournal.tracked_objective()
+	objective_label.visible = not tracked.is_empty()
+	objective_label.text = "> %s" % str(tracked.get("title", ""))
+
+
 func _close_inspection() -> void:
+	_refresh_objective_label()
 	inspection_open = false
 	inspect_panel.visible = false
 	player.set_physics_process(true)

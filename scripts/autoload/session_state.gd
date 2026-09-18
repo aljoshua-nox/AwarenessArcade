@@ -94,6 +94,11 @@ var tactic_reads: Array[Dictionary] = []
 var tactics_learned: Array[Dictionary] = []
 var detective_credibility: int = 50
 var interviewed_people: Array[String] = []
+# How each interview last ended, by person_id - the outcome, or "hesitant" for
+# a refusal at the door for want of standing. The journal's People page reads
+# it; the doors and the credit rules above do not.
+const OUTCOME_HESITANT := "hesitant"
+var interview_outcomes: Dictionary = {}
 
 # The investigation's pressure. The prologue has a four-minute shift; the
 # investigation has a case with this many statements in it. A victim or a
@@ -132,15 +137,22 @@ var witness_flipped: bool = false
 # happen - without this the player simply wanders a street with nothing left to
 # do and no ending. The street offers to file the case unresolved instead.
 var case_locked: bool = false
+# Objectives the journal has seen completed. Every condition an objective can
+# complete on is monotonic except standing, which a failed interview lowers -
+# so without this, "earn the standing" would reopen every time standing dipped
+# under its gate after the doors it was about had already been walked through.
+# Done is done.
+var objectives_done: Array[String] = []
 # The briefing is shown once, on arrival. Set by the two ways into the
 # investigation and consumed by the first scene that can show it, so a scene
 # instantiated on its own (a test, a render pass) never opens it unasked.
 var briefing_pending: bool = false
 
 
-func record_interview_outcome(person_id: String, outcome: String) -> void:
+func record_interview_outcome(person_id: String, outcome: String, hesitant: bool = false) -> void:
 	if not interviewed_people.has(person_id):
 		interviewed_people.append(person_id)
+	interview_outcomes[person_id] = OUTCOME_HESITANT if hesitant else outcome
 	var gain := 0
 	if outcome == "success" or outcome == "whistleblower" or outcome == "turned" or outcome == "owner_named":
 		gain = 15
@@ -406,6 +418,7 @@ func reset_investigation() -> void:
 	suspect_flipped = false
 	witness_flipped = false
 	case_locked = false
+	objectives_done.clear()
 	briefing_pending = false
 	investigation_inventory.clear()
 	investigation_case_title = ""
@@ -420,6 +433,7 @@ func reset_investigation() -> void:
 	tactics_learned.clear()
 	detective_credibility = 50
 	interviewed_people.clear()
+	interview_outcomes.clear()
 	statements_taken = 0
 	closed_witnesses.clear()
 	interview_credit.clear()

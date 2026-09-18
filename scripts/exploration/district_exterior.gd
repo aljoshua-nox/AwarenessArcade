@@ -44,6 +44,7 @@ var active_interview_portal: ScenePortal = null
 var transit_portal: ScenePortal = null
 var standing_label: Label
 var statements_label: Label
+var objective_label: Label
 
 # What _build_map() actually put down, so the layout test can check the
 # rectangles that are on screen rather than recompute them from the tables.
@@ -842,6 +843,14 @@ func _build_stop_ui() -> void:
 		Color.html(TextStyle.COLOR_WRONG) if SessionState.statements_left() <= 1 else Color.html(TextStyle.COLOR_HINT))
 	hud.add_child(statements_label)
 
+	# The journal's first open objective, so the case has a direction on screen.
+	objective_label = Label.new()
+	objective_label.offset_left = 20.0
+	objective_label.offset_top = 214.0
+	objective_label.add_theme_color_override("font_color", Color.html(TextStyle.COLOR_TACTIC))
+	hud.add_child(objective_label)
+	_refresh_objective_label()
+
 	inspect_panel = PanelContainer.new()
 	inspect_panel.set_anchors_preset(Control.PRESET_CENTER)
 	inspect_panel.anchor_left = 0.5
@@ -1000,7 +1009,14 @@ func _open_stop(stop: Dictionary) -> void:
 		SessionState.record_reflection_milestone(pattern_milestone_title(), pattern_milestone_detail())
 
 
+func _refresh_objective_label() -> void:
+	var tracked: Dictionary = CaseJournal.tracked_objective()
+	objective_label.visible = not tracked.is_empty()
+	objective_label.text = "> %s" % str(tracked.get("title", ""))
+
+
 func _close_stop() -> void:
+	_refresh_objective_label()
 	inspection_open = false
 	inspect_panel.visible = false
 	player.set_physics_process(true)

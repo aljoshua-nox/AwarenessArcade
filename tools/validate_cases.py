@@ -403,6 +403,106 @@ if os.path.exists(briefing_path):
 else:
     errors.append("briefing.json: missing - the case journal's first tab reads it")
 
+# --- The objectives ----------------------------------------------------------
+# The journal's list of what to do next. Each objective completes (and may
+# unlock or fail) on conditions from a closed vocabulary read off SessionState;
+# every id a condition names must exist, or the objective can never move and
+# the player is steered at a wall. Milestone titles are collected from the case
+# files and from the string literals of the exploration scripts, which is where
+# the street stops and the office stations declare theirs.
+CONDITION_KEYS = {"any", "statements_at_least", "credibility_at_least", "interviewed",
+                  "flag", "evidence", "milestone"}
+OBJECTIVE_FIELDS = {"id", "title", "detail", "unlock_when", "complete_when", "failed_when", "failed_detail"}
+person_ids = {data.get("person", {}).get("person_id", "") for data in parsed.values()}
+session_flags = set()
+statement_budget = None
+if os.path.exists(session_state_path := os.path.join(base, "scripts", "autoload", "session_state.gd")):
+    with open(session_state_path, encoding="utf-8") as fh:
+        for line in fh:
+            m = re.match(r"var (\w+): bool", line.strip())
+            if m:
+                session_flags.add(m.group(1))
+            m = re.match(r"const STATEMENT_BUDGET := (\d+)", line.strip())
+            if m:
+                statement_budget = int(m.group(1))
+milestone_titles = set()
+for data in parsed.values():
+    for node in data.get("nodes", {}).values():
+        for holder in (node, node.get("tactic_quiz", {})):
+            title = (holder.get("milestone") or {}).get("title", "")
+            if title:
+                milestone_titles.add(title)
+for rel in glob.glob(os.path.join(base, "scripts", "exploration", "*.gd")):
+    with open(rel, encoding="utf-8") as fh:
+        for line in fh:
+            for literal in re.findall(r'"((?:[^"\\]|\\.)*)"', line):
+                milestone_titles.add(literal.replace('\\"', '"'))
+
+
+def check_condition(cond, where):
+    if not isinstance(cond, dict) or len(cond) != 1:
+        errors.append(f"objectives.json: {where} must be one condition, {{key: value}}")
+        return
+    key, value = next(iter(cond.items()))
+    if key not in CONDITION_KEYS:
+        errors.append(f"objectives.json: {where} uses '{key}', not one of {sorted(CONDITION_KEYS)}")
+    elif key == "any":
+        if not isinstance(value, list) or not value:
+            errors.append(f"objectives.json: {where}.any must be a non-empty list")
+        else:
+            for i, option in enumerate(value):
+                check_condition(option, f"{where}.any[{i}]")
+    elif key == "statements_at_least":
+        if not isinstance(value, int) or value < 1 or (statement_budget and value > statement_budget):
+            errors.append(f"objectives.json: {where} asks for {value} statements of a budget of {statement_budget}")
+    elif key == "credibility_at_least":
+        if not isinstance(value, int) or not 0 <= value <= 100:
+            errors.append(f"objectives.json: {where} credibility {value} is not 0-100")
+    elif key == "interviewed" and value not in person_ids:
+        errors.append(f"objectives.json: {where} names '{value}', who has no case file")
+    elif key == "flag" and value not in session_flags:
+        errors.append(f"objectives.json: {where} names flag '{value}', not a bool on SessionState")
+    elif key == "evidence" and value not in global_evidence:
+        errors.append(f"objectives.json: {where} names evidence '{value}', which nothing grants")
+    elif key == "milestone" and value not in milestone_titles:
+        errors.append(f"objectives.json: {where} names milestone '{value}', which nothing records")
+
+
+objectives_path = os.path.join(base, "resources", "journal", "objectives.json")
+objectives = []
+if os.path.exists(objectives_path):
+    with open(objectives_path, encoding="utf-8") as fh:
+        objectives = json.load(fh).get("objectives", [])
+    seen_objectives = set()
+    for i, objective in enumerate(objectives):
+        oid = objective.get("id", "")
+        where = oid or f"objectives[{i}]"
+        if not oid:
+            errors.append(f"objectives.json: objectives[{i}] has no id")
+        elif oid in seen_objectives:
+            errors.append(f"objectives.json: duplicate id '{oid}'")
+        seen_objectives.add(oid)
+        for field in ("title", "detail", "complete_when"):
+            if not objective.get(field):
+                errors.append(f"objectives.json: {where} has no {field}")
+        for field in objective:
+            if field not in OBJECTIVE_FIELDS:
+                errors.append(f"objectives.json: {where} carries unknown field '{field}'")
+        for field in ("unlock_when", "complete_when", "failed_when"):
+            if field in objective:
+                check_condition(objective[field], f"{where}.{field}")
+        if "failed_detail" in objective and "failed_when" not in objective:
+            errors.append(f"objectives.json: {where} has a failed_detail but nothing fails it")
+        for field in ("title", "detail", "failed_detail"):
+            text = str(objective.get(field, ""))
+            if "[" in text or "]" in text:
+                errors.append(f"objectives.json: {where}.{field} carries markup - the journal applies all styling")
+    if not objectives:
+        errors.append("objectives.json: no objectives")
+    print(f"objectives.json: {len(objectives)} objectives")
+else:
+    errors.append("objectives.json: missing - the case journal reads it")
+
 # --- Tactic quizzes carry a name ---------------------------------------------
 # The ending names the tactics the player got wrong, so an unlabelled quiz would
 # silently drop out of that list rather than fail.
@@ -1106,6 +1206,7 @@ for f, data in parsed.items():
 for v in victims:
     one_copy_walk(v, f"{v.get('person_id', '?')}.json")
 one_copy_walk(briefing, "briefing.json")
+one_copy_walk(objectives, "objectives.json")
 
 # --- Register lint: the game is set in the Philippines and reads like it -----
 # The first four cases and the terrace's stops were written in British English
@@ -1214,6 +1315,7 @@ if os.path.exists(catalogue_path):
     with open(catalogue_path, encoding="utf-8") as fh:
         register_walk(json.load(fh), "tactic_catalogue.json", [])
 register_walk(briefing, "briefing.json", [])
+register_walk(objectives, "objectives.json", [])
 
 # String literals only: a British comment is nobody's business but the
 # author's, a British line on screen is the game's.

@@ -559,7 +559,7 @@ func _load_node(node_id: String, lead_in: String = "") -> void:
 		SessionState.investigation_outcome_note = node_prompt
 		SessionState.investigation_cooperation = cooperation
 		SessionState.investigation_evidence_misses = evidence_misses
-		SessionState.record_interview_outcome(str(person.get("person_id", "")), outcome)
+		SessionState.record_interview_outcome(str(person.get("person_id", "")), outcome, hesitant_visit)
 		SessionState.record_statement(str(person.get("person_id", "")), str(person.get("role", "")), outcome, hesitant_visit)
 		if bool(current_node.get("locks_case", false)):
 			SessionState.case_locked = true

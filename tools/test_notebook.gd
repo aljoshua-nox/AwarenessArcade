@@ -213,9 +213,9 @@ func _test_briefing() -> void:
 
 	CaseJournal.show_briefing()
 	await get_tree().process_frame
-	_check(CaseJournal.is_open and CaseJournal.current_tab == CaseJournal.TAB_CASE,
-		"showing the briefing opens the journal on the case file")
-	var page: Control = CaseJournal.tab_pages[CaseJournal.TAB_CASE]
+	_check(CaseJournal.is_open and CaseJournal.current_tab == CaseJournal.TAB_BRIEF,
+		"showing the briefing opens the journal on the brief")
+	var page: Control = CaseJournal.tab_pages[CaseJournal.TAB_BRIEF]
 	var rendered := ""
 	for label in page.find_children("*", "RichTextLabel", true, false):
 		rendered += (label as RichTextLabel).text

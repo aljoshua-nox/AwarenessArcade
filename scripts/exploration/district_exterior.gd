@@ -42,6 +42,7 @@ var portal_case_paths: Dictionary = {}
 var portal_blocked: Dictionary = {}
 var active_interview_portal: ScenePortal = null
 var transit_portal: ScenePortal = null
+var standing_label: Label
 var statements_label: Label
 
 # What _build_map() actually put down, so the layout test can check the
@@ -390,7 +391,10 @@ func _unhandled_input(event: InputEvent) -> void:
 		return
 
 	if event.is_action_pressed("ui_cancel"):
-		SessionState.go_to_scene("res://scenes/main_menu/main_menu.tscn")
+		# The menu asks before abandoning the run; this used to go straight to
+		# the main menu, which resets the session.
+		CaseJournal.open_pause()
+		get_viewport().set_input_as_handled()
 	elif event.is_action_pressed("ui_accept") and _can_enter_interview():
 		SessionState.pending_case_path = str(portal_case_paths.get(active_interview_portal, ""))
 		_remember_return_spawn(active_interview_portal.global_position)
@@ -814,11 +818,19 @@ func _build_stop_ui() -> void:
 	stop_label.visible = false
 	hud.add_child(stop_label)
 
-	# The case's budget, always visible - a budget the player did not know
-	# about would read as unfair the first time it bit.
+	# The case's two numbers, always visible. Standing gates seven of the
+	# doors and used to show only on the summary screen; a budget the player
+	# did not know about would read as unfair the first time it bit.
+	standing_label = Label.new()
+	standing_label.offset_left = 20.0
+	standing_label.offset_top = 158.0
+	standing_label.text = "Standing: %d" % SessionState.detective_credibility
+	standing_label.add_theme_color_override("font_color", Color.html(TextStyle.COLOR_HINT))
+	hud.add_child(standing_label)
+
 	statements_label = Label.new()
 	statements_label.offset_left = 20.0
-	statements_label.offset_top = 158.0
+	statements_label.offset_top = 186.0
 	statements_label.text = "Statements: %d of %d" % [SessionState.statements_taken, SessionState.STATEMENT_BUDGET]
 	statements_label.add_theme_color_override("font_color",
 		Color.html(TextStyle.COLOR_WRONG) if SessionState.statements_left() <= 1 else Color.html(TextStyle.COLOR_HINT))

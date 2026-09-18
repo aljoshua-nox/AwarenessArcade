@@ -1,12 +1,13 @@
 extends Node
 
-## Headless smoke test for the tactic notebook.
+## Headless smoke test for the tactic notebook and the case journal it lives in.
 ##
 ##   godot --headless --path . res://tools/test_notebook.tscn
 ##
 ## Exits 0 if every check passes, 1 otherwise. Covers the catalogue, the
-## collection state, the overlay itself, and the path that matters most: a
-## tactic met in an interview actually turning up in the notebook.
+## collection state, the overlay itself (the journal's Tactics tab), the pause
+## menu the same overlay owns, and the path that matters most: a tactic met in
+## an interview actually turning up in the notebook.
 
 const INTERVIEW_SCENE := "res://scenes/investigation/interview.tscn"
 const CASE_MARIA := "res://resources/cases/interview_case_001.json"
@@ -54,7 +55,7 @@ func _index_of(view: Node, evidence_id: String) -> int:
 
 func _entry_texts() -> Array[String]:
 	var found: Array[String] = []
-	for row in TacticNotebook.entries_box.get_children():
+	for row in CaseJournal.entries_box.get_children():
 		for child in row.get_children():
 			for leaf in child.get_children():
 				if leaf is RichTextLabel:
@@ -67,6 +68,7 @@ func _run() -> void:
 	_test_catalogue()
 	_test_collection_state()
 	await _test_overlay()
+	await _test_pause_menu()
 	await _test_learned_in_an_interview()
 
 	print("\n%d checks, %d failed" % [checks, failures.size()])
@@ -114,26 +116,29 @@ func _test_collection_state() -> void:
 
 
 func _test_overlay() -> void:
-	print("\n[the overlay]")
+	print("
+[the overlay]")
 	SessionState.reset_session()
 	SessionState.record_tactic_learned("manufactured_urgency", "Named while interviewing Maria Santos")
 
-	_check(not TacticNotebook.is_open, "the notebook starts closed")
-	TacticNotebook.open()
+	_check(not CaseJournal.is_open, "the journal starts closed")
+	CaseJournal.open(CaseJournal.TAB_TACTICS)
 	await get_tree().process_frame
-	_check(TacticNotebook.is_open, "it opens")
-	_check(TacticNotebook.panel_root.visible, "the panel is visible")
-	# Reading it must not cost prologue time or let the player walk the map.
+	_check(CaseJournal.is_open, "it opens")
+	_check(CaseJournal.panel_root.visible, "the panel is visible")
+	_check(CaseJournal.current_tab == CaseJournal.TAB_TACTICS, "on the tab that was asked for")
+	# Reading it must not let the player walk the map.
 	_check(get_tree().paused, "opening pauses the game beneath it")
-	_check(TacticNotebook.process_mode == Node.PROCESS_MODE_ALWAYS,
-		"the notebook still runs while paused, so it can be closed again")
+	_check(CaseJournal.process_mode == Node.PROCESS_MODE_ALWAYS,
+		"the journal still runs while paused, so it can be closed again")
 
 	var texts := _entry_texts()
 	_check(texts.size() == TacticNotebook.tactics.size(),
 		"every tactic has a row, found or not (got %d)" % texts.size())
-	_check(TacticNotebook.progress_label.text.contains("1 of"), "progress counts what has been found")
+	_check(CaseJournal.progress_label.text.contains("1 of"), "progress counts what has been found")
 
-	var joined := "\n".join(texts)
+	var joined := "
+".join(texts)
 	_check(joined.contains("Manufactured urgency"), "a found tactic is named")
 	_check(joined.contains("HOW TO SPOT IT"), "a found tactic carries its guidance")
 	_check(joined.contains("Named while interviewing Maria Santos"), "it records where it was learned")
@@ -141,22 +146,71 @@ func _test_overlay() -> void:
 	_check(not joined.contains("The reused victim list"),
 		"a locked entry does not leak the answer it is hiding")
 
-	TacticNotebook.close()
+	CaseJournal.close()
 	await get_tree().process_frame
-	_check(not TacticNotebook.is_open, "it closes")
+	_check(not CaseJournal.is_open, "it closes")
 	_check(not get_tree().paused, "closing unpauses")
 
-	# Reachable from anywhere in the fiction, but not from the title screen,
-	# where there is nothing collected to read.
-	_check(not TacticNotebook.shows_button_in("res://scenes/main_menu/main_menu.tscn"),
-		"the notebook button stays off the main menu")
+	# Every tab in the table has a page and a button, and opening with no tab
+	# lands on the first one.
+	for tab in CaseJournal.TABS:
+		var tab_id := str(tab.get("id", ""))
+		_check(CaseJournal.tab_pages.has(tab_id) and CaseJournal.tab_buttons.has(tab_id),
+			"the %s tab has a page and a button" % tab_id)
+	CaseJournal.open()
+	_check(CaseJournal.current_tab == str(CaseJournal.TABS[0].get("id", "")),
+		"opening with no tab lands on the first")
+	CaseJournal.close()
+	await get_tree().process_frame
+
+	# The detective's, so it is reachable everywhere in the investigation and
+	# nowhere in the prologue - the scammer carries nothing onto the call
+	# floor, and the notebook that used to show there had every entry locked.
+	for scene in ["res://scenes/main_menu/main_menu.tscn",
+			"res://scenes/prologue/prologue_call.tscn",
+			"res://scenes/prologue/prologue_end.tscn"]:
+		_check(not CaseJournal.shows_button_in(scene), "the journal stays off %s" % scene.get_file())
 	for scene in ["res://scenes/exploration/urban_exterior.tscn",
 			"res://scenes/exploration/terminal_road.tscn",
 			"res://scenes/exploration/office_interior.tscn",
 			"res://scenes/exploration/office_floor_four.tscn",
 			"res://scenes/investigation/interview.tscn",
-			"res://scenes/prologue/prologue_call.tscn"]:
-		_check(TacticNotebook.shows_button_in(scene), "the notebook is reachable from %s" % scene.get_file())
+			"res://scenes/investigation/investigation_end.tscn"]:
+		_check(CaseJournal.shows_button_in(scene), "the journal is reachable from %s" % scene.get_file())
+
+
+# Esc on a street or a floor used to go straight to the main menu, which resets
+# the session. The pause menu asks first.
+func _test_pause_menu() -> void:
+	print("
+[the pause menu]")
+	_check(not CaseJournal.is_pause_open, "the pause menu starts closed")
+	CaseJournal.open_pause()
+	await get_tree().process_frame
+	_check(CaseJournal.is_pause_open, "it opens")
+	_check(CaseJournal.pause_root.visible, "the panel is visible")
+	_check(get_tree().paused, "opening pauses the game beneath it")
+	_check(not CaseJournal.is_asking_to_abandon(), "it does not open on the confirm step")
+
+	CaseJournal._ask_to_abandon()
+	_check(CaseJournal.is_asking_to_abandon(), "leaving asks first")
+	CaseJournal._show_pause_buttons()
+	_check(not CaseJournal.is_asking_to_abandon(), "and can be backed out of")
+
+	# The journal is a step out of the pause menu, not on top of it.
+	CaseJournal.open(CaseJournal.TAB_TACTICS)
+	await get_tree().process_frame
+	_check(CaseJournal.is_open and not CaseJournal.is_pause_open, "opening the journal from the menu closes the menu")
+	_check(get_tree().paused, "the game stays paused underneath")
+	CaseJournal.close()
+	await get_tree().process_frame
+	_check(not get_tree().paused, "closing the journal resumes")
+
+	CaseJournal.open_pause()
+	CaseJournal.close_pause()
+	await get_tree().process_frame
+	_check(not CaseJournal.is_pause_open, "resume closes it")
+	_check(not get_tree().paused, "and unpauses")
 
 
 # The path that matters: meet a tactic in play, find it in the notebook after.

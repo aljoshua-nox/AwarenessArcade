@@ -88,6 +88,8 @@ var inspect_panel: PanelContainer
 var inspect_title: Label
 var inspect_body: RichTextLabel
 var station_label: Label
+var standing_label: Label
+var statements_label: Label
 var inspection_open: bool = false
 
 
@@ -148,7 +150,10 @@ func _unhandled_input(event: InputEvent) -> void:
 		return
 
 	if event.is_action_pressed("ui_cancel"):
-		SessionState.go_to_scene("res://scenes/main_menu/main_menu.tscn")
+		# The menu asks before abandoning the run; this used to go straight to
+		# the main menu, which resets the session.
+		CaseJournal.open_pause()
+		get_viewport().set_input_as_handled()
 	elif event.is_action_pressed("ui_accept") and not active_station.is_empty():
 		if bool(active_station.get("is_confrontation", false)):
 			SessionState.pending_case_path = confrontation_case()
@@ -176,6 +181,23 @@ func _build_hud() -> void:
 	station_label.offset_top = 102.0
 	station_label.visible = false
 	hud.add_child(station_label)
+
+	# The same two numbers the street shows, in the same place, so walking
+	# indoors does not lose sight of the case.
+	standing_label = Label.new()
+	standing_label.offset_left = 20.0
+	standing_label.offset_top = 158.0
+	standing_label.text = "Standing: %d" % SessionState.detective_credibility
+	standing_label.add_theme_color_override("font_color", Color.html(TextStyle.COLOR_HINT))
+	hud.add_child(standing_label)
+
+	statements_label = Label.new()
+	statements_label.offset_left = 20.0
+	statements_label.offset_top = 186.0
+	statements_label.text = "Statements: %d of %d" % [SessionState.statements_taken, SessionState.STATEMENT_BUDGET]
+	statements_label.add_theme_color_override("font_color",
+		Color.html(TextStyle.COLOR_WRONG) if SessionState.statements_left() <= 1 else Color.html(TextStyle.COLOR_HINT))
+	hud.add_child(statements_label)
 
 	inspect_panel = PanelContainer.new()
 	inspect_panel.set_anchors_preset(Control.PRESET_CENTER)

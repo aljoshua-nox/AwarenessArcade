@@ -601,6 +601,9 @@ func _test_statement_budget_doors() -> void:
 	var view := await _open()
 	_check(view.statements_label.text == "Statements: 0 of %d" % SessionState.STATEMENT_BUDGET,
 		"the street shows the budget (%s)" % view.statements_label.text)
+	# Standing gates seven doors; it used to be visible only on the summary.
+	_check(view.standing_label.text == "Standing: %d" % SessionState.detective_credibility,
+		"the street shows standing (%s)" % view.standing_label.text)
 	_check(view.portal_blocked.is_empty(), "a fresh case has every door open")
 	await _close(view)
 

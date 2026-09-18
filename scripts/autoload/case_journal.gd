@@ -31,12 +31,20 @@ const HIDDEN_IN_SCENES := [
 	"res://scenes/prologue/prologue_end.tscn",
 ]
 
+const BRIEFING_PATH := "res://resources/journal/briefing.json"
+
+const TAB_CASE := "case"
 const TAB_TACTICS := "tactics"
 ## One row per tab, in display order. The id names the `_fill_<id>()` that
 ## renders it into its page.
 const TABS := [
+	{"id": TAB_CASE, "label": "Case File  (J)"},
 	{"id": TAB_TACTICS, "label": "Tactics  (N)"},
 ]
+
+## The desk sergeant's brief: who the player is and what a statement is for.
+## Loaded from JSON so the validator can lint it like any other prose.
+var briefing: Dictionary = {}
 
 var is_open: bool = false
 var is_pause_open: bool = false
@@ -60,6 +68,7 @@ func _ready() -> void:
 	# Must keep running while the tree is paused, or the overlay could not be
 	# closed again once it has paused the game beneath it.
 	process_mode = Node.PROCESS_MODE_ALWAYS
+	_load_briefing()
 	_build_ui()
 	_build_pause_menu()
 	get_tree().node_added.connect(_on_node_added)
@@ -196,6 +205,61 @@ func _rebuild_tab(tab_id: String) -> void:
 	var filler := "_fill_%s" % tab_id
 	if has_method(filler):
 		call(filler, page)
+
+
+# --- The case file ------------------------------------------------------------
+
+func _load_briefing() -> void:
+	var file := FileAccess.open(BRIEFING_PATH, FileAccess.READ)
+	if file == null:
+		push_error("Could not open briefing: %s" % BRIEFING_PATH)
+		return
+	var parsed: Variant = JSON.parse_string(file.get_as_text())
+	if typeof(parsed) != TYPE_DICTIONARY:
+		push_error("Briefing is not a dictionary")
+		return
+	briefing = parsed
+
+
+## `{statements}` is the budget, expanded here so the brief cannot drift from
+## the number the HUD prints. The number and the company name are deliberately
+## NOT expandable in the brief: noticing them is the street's mechanic.
+func _expand_tokens(text: String) -> String:
+	return text.replace("{statements}", str(SessionState.STATEMENT_BUDGET))
+
+
+## The brief as bbcode. The header is the case file talking (monospaced, the
+## CASE NOTE color); the sergeant's paragraphs are a person writing.
+func briefing_text() -> String:
+	if briefing.is_empty():
+		return ""
+	var lines: Array[String] = []
+	lines.append(TextStyle.system("CASE FILE %s" % str(briefing.get("case_number", "")),
+		str(briefing.get("subject", "")), TextStyle.COLOR_HINT))
+	lines.append("[color=#%s]To: %s\nFrom: %s[/color]" % [TextStyle.COLOR_NARRATION,
+		str(briefing.get("to", "")), str(briefing.get("from", ""))])
+	for paragraph in briefing.get("paragraphs", []):
+		lines.append(_expand_tokens(str(paragraph)))
+	# Only when the player worked the shift and someone on it kept the number.
+	if SessionState.prologue_played and SessionState.reports_filed > 0:
+		lines.append("[i]%s[/i]" % _expand_tokens(str(briefing.get("prologue_note", ""))))
+	lines.append("[color=#%s]%s[/color]" % [TextStyle.COLOR_HINT, _expand_tokens(str(briefing.get("closing", "")))])
+	return "\n\n".join(lines)
+
+
+func _fill_case(page: VBoxContainer) -> void:
+	var box := _add_scrolling_box(page)
+	var brief := RichTextLabel.new()
+	brief.bbcode_enabled = true
+	brief.fit_content = true
+	brief.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	brief.text = briefing_text()
+	box.add_child(brief)
+
+
+## The brief, on arrival: the journal opens on the case file.
+func show_briefing() -> void:
+	open(TAB_CASE)
 
 
 # --- Tactics ------------------------------------------------------------------

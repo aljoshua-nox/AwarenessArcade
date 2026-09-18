@@ -4,7 +4,7 @@ There is no headless Godot in this workspace, so a broken `next` target or a
 dead-end node would otherwise only show up as a blank screen mid-playtest.
 Run from anywhere:  python tools/validate_cases.py
 """
-import json, glob, os, sys
+import json, glob, os, re, sys
 
 base = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 files = sorted(glob.glob(os.path.join(base, "resources", "cases", "interview_case_*.json")))
@@ -363,6 +363,45 @@ for tid in sorted(catalogue_ids - reachable):
                   f"nothing in any case grants it")
 
 print(f"tactic_catalogue.json: {len(catalogue_ids)} tactics, {len(reachable)} reachable")
+
+# --- The briefing ------------------------------------------------------------
+# The desk sergeant's brief on the case journal's first tab. Prose like any
+# other, so it gets the register lint and the one-copy rule below; on top of
+# that, the only token it may carry is {statements} (the budget) - the number
+# and the company are the street's to reveal, and the journal does not expand
+# them, so a {number} here would print as a literal brace.
+BRIEFING_FIELDS = ["case_number", "subject", "to", "from", "paragraphs", "prologue_note", "closing"]
+BRIEFING_TOKENS = {"{statements}"}
+briefing_path = os.path.join(base, "resources", "journal", "briefing.json")
+briefing = {}
+if os.path.exists(briefing_path):
+    with open(briefing_path, encoding="utf-8") as fh:
+        briefing = json.load(fh)
+    for field in BRIEFING_FIELDS:
+        if not briefing.get(field):
+            errors.append(f"briefing.json: no {field}")
+    if not isinstance(briefing.get("paragraphs"), list):
+        errors.append("briefing.json: paragraphs must be a list")
+
+
+    def briefing_walk(obj, where):
+        if isinstance(obj, list):
+            for i, v in enumerate(obj):
+                briefing_walk(v, f"{where}[{i}]")
+        elif isinstance(obj, str):
+            for token in re.findall(r"\{[^}]*\}", obj):
+                if token not in BRIEFING_TOKENS:
+                    errors.append(f"briefing.json: {where} carries {token}, which the journal does not expand "
+                                  f"(only {', '.join(sorted(BRIEFING_TOKENS))})")
+            if "[" in obj or "]" in obj:
+                errors.append(f"briefing.json: {where} carries markup - the journal applies all styling")
+
+
+    for field in BRIEFING_FIELDS:
+        briefing_walk(briefing.get(field, ""), field)
+    print(f"briefing.json: {len(briefing.get('paragraphs', []))} paragraphs")
+else:
+    errors.append("briefing.json: missing - the case journal's first tab reads it")
 
 # --- Tactic quizzes carry a name ---------------------------------------------
 # The ending names the tactics the player got wrong, so an unlabelled quiz would
@@ -859,7 +898,6 @@ for f, data in parsed.items():
 # A case can add its own phrases under `lint_forbid` {disposition: [regex]}.
 # Neutral is never linted: it is the case exactly as written, and its premise
 # is whatever the writer chose.
-import re
 
 LINT_FORBID = {
     # Money was taken from this person. Nothing may say it was not.
@@ -1067,6 +1105,7 @@ for f, data in parsed.items():
     one_copy_walk(data, os.path.basename(f))
 for v in victims:
     one_copy_walk(v, f"{v.get('person_id', '?')}.json")
+one_copy_walk(briefing, "briefing.json")
 
 # --- Register lint: the game is set in the Philippines and reads like it -----
 # The first four cases and the terrace's stops were written in British English
@@ -1130,6 +1169,7 @@ REGISTER_SCRIPTS = [
     "scripts/exploration/urban_exterior.gd",
     "scripts/exploration/terminal_road.gd",
     "scripts/exploration/office_interior.gd",
+    "scripts/autoload/case_journal.gd",
     "scripts/investigation/investigation_end.gd",
     "scripts/investigation/interview.gd",
     "scripts/prologue/prologue_call.gd",
@@ -1173,6 +1213,7 @@ catalogue_path = os.path.join(base, "resources", "tactics", "tactic_catalogue.js
 if os.path.exists(catalogue_path):
     with open(catalogue_path, encoding="utf-8") as fh:
         register_walk(json.load(fh), "tactic_catalogue.json", [])
+register_walk(briefing, "briefing.json", [])
 
 # String literals only: a British comment is nobody's business but the
 # author's, a British line on screen is the game's.

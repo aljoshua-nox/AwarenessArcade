@@ -68,6 +68,7 @@ func _run() -> void:
 	_test_catalogue()
 	_test_collection_state()
 	await _test_overlay()
+	await _test_briefing()
 	await _test_pause_menu()
 	await _test_learned_in_an_interview()
 
@@ -177,6 +178,50 @@ func _test_overlay() -> void:
 			"res://scenes/investigation/interview.tscn",
 			"res://scenes/investigation/investigation_end.tscn"]:
 		_check(CaseJournal.shows_button_in(scene), "the journal is reachable from %s" % scene.get_file())
+
+
+# The desk sergeant's brief: the case file's first page, and the only place the
+# game says who the player is and what a statement is for.
+func _test_briefing() -> void:
+	print("
+[the briefing]")
+	SessionState.reset_session()
+	_check(not CaseJournal.briefing.is_empty(), "the briefing loads")
+	_check((CaseJournal.briefing.get("paragraphs", []) as Array).size() >= 3, "it has a body")
+
+	var text := CaseJournal.briefing_text()
+	_check(text.contains("CASE FILE"), "it opens as the case file talking")
+	_check(text.contains(str(CaseJournal.briefing.get("case_number", "?"))), "it carries the case number")
+	_check(text.contains("holds %d statements" % SessionState.STATEMENT_BUDGET),
+		"{statements} expands to the budget")
+	_check(not text.contains("{statements}"), "no token is left unexpanded")
+	# The number and the name are the street's to reveal. The validator refuses
+	# them in the file; this pins that the render does not add them either.
+	_check(not text.contains(SessionState.OPERATION_NUMBER), "the brief never prints the operation's number")
+	_check(not text.to_lower().contains(SessionState.COMPANY_NAME.to_lower()), "nor the company's name")
+	var prologue_note := str(CaseJournal.briefing.get("prologue_note", ""))
+	_check(not text.contains(prologue_note), "a skip run gets no line about last night's shift")
+
+	SessionState.prologue_played = true
+	SessionState.reports_filed = 2
+	_check(CaseJournal.briefing_text().contains(prologue_note),
+		"a shift somebody reported puts a line about it in the brief")
+	SessionState.reports_filed = 0
+	_check(not CaseJournal.briefing_text().contains(prologue_note),
+		"a shift nobody reported does not")
+	SessionState.reset_session()
+
+	CaseJournal.show_briefing()
+	await get_tree().process_frame
+	_check(CaseJournal.is_open and CaseJournal.current_tab == CaseJournal.TAB_CASE,
+		"showing the briefing opens the journal on the case file")
+	var page: Control = CaseJournal.tab_pages[CaseJournal.TAB_CASE]
+	var rendered := ""
+	for label in page.find_children("*", "RichTextLabel", true, false):
+		rendered += (label as RichTextLabel).text
+	_check(rendered.contains("holds %d statements" % SessionState.STATEMENT_BUDGET), "the page shows the brief")
+	CaseJournal.close()
+	await get_tree().process_frame
 
 
 # Esc on a street or a floor used to go straight to the main menu, which resets

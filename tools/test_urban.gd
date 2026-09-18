@@ -73,6 +73,7 @@ func _run() -> void:
 	await _test_credibility_economy()
 	await _test_locked_case()
 	await _test_statement_budget_doors()
+	await _test_briefing_on_arrival()
 
 	print("\n%d checks, %d failed" % [checks, failures.size()])
 	for f in failures:
@@ -651,3 +652,34 @@ func _door_for(view: Node, case_file: String) -> ScenePortal:
 		if str(view.portal_case_paths.get(door, "")).ends_with(case_file):
 			return door
 	return null
+
+
+# The first street of the case opens the case file on the player, once. The
+# flag is set by the two ways into the investigation and consumed here, so a
+# street instantiated on its own - every other test in this file - never opens
+# it unasked.
+func _test_briefing_on_arrival() -> void:
+	print("
+[the briefing on arrival]")
+	SessionState.reset_session()
+	var view := await _open()
+	_check(not CaseJournal.is_open, "a street opened on its own shows no briefing")
+	await _close(view)
+
+	SessionState.briefing_pending = true
+	view = await _open()
+	await get_tree().process_frame
+	_check(CaseJournal.is_open, "arriving with the briefing pending opens the journal")
+	_check(CaseJournal.current_tab == CaseJournal.TAB_CASE, "on the case file")
+	_check(not SessionState.briefing_pending, "and consumes the flag")
+	CaseJournal.close()
+	await _close(view)
+
+	view = await _open()
+	await get_tree().process_frame
+	_check(not CaseJournal.is_open, "coming back to the street does not show it again")
+	await _close(view)
+
+	SessionState.briefing_pending = true
+	SessionState.reset_investigation()
+	_check(not SessionState.briefing_pending, "a reset clears a pending briefing")

@@ -5,9 +5,10 @@ extends Node
 ##
 ##   godot --path . res://tools/capture_journal.tscn
 ##
-## Writes journal_preview.png (the journal open on its Tactics tab with one
-## entry recorded) and pause_preview.png (the pause menu on its confirm step,
-## the one screen it exists for) under user://.
+## Writes briefing_preview.png (the case file as it opens on arrival, after a
+## reported shift), journal_preview.png (the Tactics tab with one entry
+## recorded) and pause_preview.png (the pause menu on its confirm step, the one
+## screen it exists for) under user://.
 
 const URBAN_SCENE := "res://scenes/exploration/urban_exterior.tscn"
 
@@ -22,6 +23,15 @@ func _run() -> void:
 	var view: Node = load(URBAN_SCENE).instantiate()
 	add_child(view)
 	await _settle()
+
+	SessionState.prologue_played = true
+	SessionState.reports_filed = 3
+	CaseJournal.show_briefing()
+	await _settle()
+	_save("briefing_preview")
+	CaseJournal.close()
+	SessionState.prologue_played = false
+	SessionState.reports_filed = 0
 
 	CaseJournal.open(CaseJournal.TAB_TACTICS)
 	await _settle()

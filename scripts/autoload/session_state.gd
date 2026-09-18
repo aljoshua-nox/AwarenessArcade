@@ -132,6 +132,10 @@ var witness_flipped: bool = false
 # happen - without this the player simply wanders a street with nothing left to
 # do and no ending. The street offers to file the case unresolved instead.
 var case_locked: bool = false
+# The briefing is shown once, on arrival. Set by the two ways into the
+# investigation and consumed by the first scene that can show it, so a scene
+# instantiated on its own (a test, a render pass) never opens it unasked.
+var briefing_pending: bool = false
 
 
 func record_interview_outcome(person_id: String, outcome: String) -> void:
@@ -268,6 +272,7 @@ func start_prologue() -> void:
 # the prologue coupling varies away from, not a degraded mode.
 func start_investigation_direct() -> void:
 	reset_prologue()
+	briefing_pending = true
 	go_to_scene("res://scenes/exploration/urban_exterior.tscn")
 
 
@@ -277,6 +282,7 @@ func start_investigation_direct() -> void:
 # it, so the coupling only ever worked in tests that seeded the log afterwards.
 func start_investigation_from_prologue() -> void:
 	reset_investigation()
+	briefing_pending = true
 	go_to_scene("res://scenes/exploration/urban_exterior.tscn")
 
 
@@ -400,6 +406,7 @@ func reset_investigation() -> void:
 	suspect_flipped = false
 	witness_flipped = false
 	case_locked = false
+	briefing_pending = false
 	investigation_inventory.clear()
 	investigation_case_title = ""
 	investigation_person_name = ""

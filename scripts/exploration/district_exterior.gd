@@ -240,6 +240,12 @@ func _ready() -> void:
 	_setup_camera_limits()
 	_build_map()
 
+	# The first street of the case opens the case file on the player. Deferred
+	# so the street is on screen underneath it.
+	if SessionState.briefing_pending:
+		SessionState.briefing_pending = false
+		CaseJournal.show_briefing.call_deferred()
+
 
 # The office door always leads onto the call floor. Elena is confronted from
 # inside it, so the player walks the operation before reaching her. A district

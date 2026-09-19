@@ -6,8 +6,8 @@ exact name, run `godot --headless --path . --import`, and add a row to `CREDITS.
 
 | file | scene | source |
 |---|---|---|
-| `street.ogg` | Sampaguita Street, Terminal Road | 100 s cut from kevp888's Freesound 441454 (a Philippine street), crossfaded to loop |
-| `call_floor.ogg` | Call Floor 3F, Tech Support Floor 4F, and the Anti-Fraud Desk at -22 dB | 100 s cut from qubodup's Freesound 211945, crossfaded to loop |
+| `street.ogg` | Sampaguita Street, Terminal Road, and the Anti-Fraud Desk at -24 dB (the street through the window) | 100 s cut from kevp888's Freesound 441454 (a Philippine street), crossfaded to loop |
+| `call_floor.ogg` | Call Floor 3F, Tech Support Floor 4F | 100 s cut from qubodup's Freesound 211945, crossfaded to loop |
 
 Both CC-BY 4.0 - their lines are on the in-game credits screen. The originals (a 43 MB
 WAV and a 50 MB FLAC) live outside the repo in the workspace's `downloads/audio-originals/`;

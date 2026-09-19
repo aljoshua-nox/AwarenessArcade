@@ -171,8 +171,10 @@ const CAR_SPOTS := [300.0, 650.0, 1250.0, 1600.0, 1800.0]
 # as a bottle standing on the grass (removed 2026-09-19). The table and the
 # layout test's tree check stay, so a proper tree can be put back as rows here.
 const TREE_SPOTS := []
-const LAMP_TOP_X := [350.0, 900.0, 1450.0]
-const LAMP_BOTTOM_X := [350.0, 900.0, 1300.0]
+# Alternating sides along the road (see district_exterior.gd), the top ones in
+# the gaps between buildings, the bottom ones clear of the side streets' mouths.
+const LAMP_TOP_X := [426.0, 1067.0, 1707.0]
+const LAMP_BOTTOM_X := [760.0, 1350.0]
 
 const NPC_SPOTS := [
 	{"x": 330.0, "y": 216.0, "kind": "a", "tint": Color(1, 1, 1, 1)},

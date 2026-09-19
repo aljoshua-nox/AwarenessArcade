@@ -99,8 +99,10 @@ const BLOCK_BUILDINGS := [
 const CAR_SPOTS := [200.0, 700.0, 1250.0, 1750.0]
 # No trees - see urban_exterior.gd. The table stays for the layout test.
 const TREE_SPOTS := []
-const LAMP_TOP_X := [450.0, 900.0, 1650.0]
-const LAMP_BOTTOM_X := [450.0, 1100.0, 1650.0]
+# Alternating sides along the road (see district_exterior.gd), the top ones in
+# the gaps between buildings, the bottom ones clear of the side streets' mouths.
+const LAMP_TOP_X := [282.0, 972.0, 1732.0]
+const LAMP_BOTTOM_X := [500.0, 1200.0]
 
 # The conductor, the cafe owner, the remittance clerk, the site worker in the
 # gate, the neighbour on the grass. Their stops arrive with the characters
@@ -298,8 +300,8 @@ func _build_ground() -> void:
 	_add_tiled_rect(TILE_DIRT, Vector2(SITE_START, BOTTOM_PAVEMENT_END), Vector2(SITE_END - SITE_START, lower_height))
 	_add_tiled_rect(TILE_GRASS, Vector2(GRASS_START, BOTTOM_PAVEMENT_END), Vector2(MAP_WIDTH - GRASS_START, lower_height))
 	for street_x in SIDE_STREET_X_POSITIONS:
-		_add_side_street(street_x, BOTTOM_PAVEMENT_END, MAP_HEIGHT)
-	_add_side_street(ARRIVAL_STREET_X, 0.0, TOP_PAVEMENT_END)
+		_add_side_street(street_x, ROAD_END, MAP_HEIGHT, SIDEWALK_HEIGHT)
+	_add_side_street(ARRIVAL_STREET_X, 0.0, TOP_PAVEMENT_END, SIDEWALK_HEIGHT, true)
 
 	# The bus bay: painted bays, two buses in them, the sign, somewhere to sit.
 	for bay_x in [110.0, 260.0, 410.0]:

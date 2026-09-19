@@ -30,9 +30,11 @@ func _init() -> void:
 	map_title = "Anti-Fraud Desk"
 	map_hint = "WASD or arrows to walk  \u00b7  Enter to pick up or read  \u00b7  J journal  \u00b7  Esc menu"
 	portal_target_scene = DESK_STREET_SCENE
-	# A quiet room: the call floor's bed, well down, until a room tone exists.
-	ambience_path = "res://assets/audio/ambience/call_floor.ogg"
-	ambience_db = -22.0
+	# A quiet room. The call floor's bed - forty people typing - was wrong for
+	# an office with one desk in it; what is heard here is Sampaguita Street
+	# through the window, well down.
+	ambience_path = "res://assets/audio/ambience/street.ogg"
+	ambience_db = -24.0
 	# The door sits between the map board and the first window, and the
 	# player starts under it: the wall's left end is under the HUD's lines,
 	# where the STREET plate and the door prompt were unreadable.

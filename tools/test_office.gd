@@ -416,6 +416,10 @@ func _test_detective_desk() -> void:
 	await get_tree().process_frame
 
 	_check(desk.stations.size() == 3, "the desk, the side table and the map, nothing else (got %d)" % desk.stations.size())
+	# One desk, not forty: the call floor's bed was wrong here. The street
+	# through the window, well down, is what plays.
+	_check(str(desk.ambience_path).ends_with("street.ogg") and float(desk.ambience_db) <= -20.0,
+		"the desk hears the street through the window, not the call floor (%s at %.0f dB)" % [str(desk.ambience_path).get_file(), float(desk.ambience_db)])
 	for title in ["Your desk", "The side table", "The district map"]:
 		_check(not _station(desk, title).is_empty(), "station present: %s" % title)
 	var titles: Array[String] = []

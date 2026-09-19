@@ -172,6 +172,10 @@ func tree_spots() -> Array:
 	return []
 
 
+# Lampposts stand on the pavements, one side of the road at a time: a lamp on
+# the top pavement, then one on the bottom, then the top again, never a pair
+# across from each other. Each district lists its own; the layout test checks
+# the alternation and that no lamp stands in a side street's mouth.
 func lamp_top_x() -> Array:
 	return []
 
@@ -557,7 +561,7 @@ func _build_ground() -> void:
 	_add_tiled_band(TILE_GRASS, BOTTOM_PAVEMENT_END, MAP_HEIGHT - BOTTOM_PAVEMENT_END, MAP_WIDTH)
 
 	for street_x in side_street_x_positions():
-		_add_side_street(street_x, BOTTOM_PAVEMENT_END, MAP_HEIGHT)
+		_add_side_street(street_x, ROAD_END, MAP_HEIGHT, SIDEWALK_HEIGHT)
 
 
 func _build_buildings() -> void:
@@ -626,6 +630,8 @@ func _add_tiled_rect(atlas_coord: Vector2i, top_left: Vector2, size: Vector2) ->
 	sprite.region_rect = Rect2(0.0, 0.0, size.x, size.y)
 	sprite.texture_repeat = CanvasItem.TEXTURE_REPEAT_ENABLED
 	sprite.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
+	# Which tile this is, for the layout test to read the ground back.
+	sprite.set_meta("tile", atlas_coord)
 	decor.add_child(sprite)
 
 
@@ -697,13 +703,21 @@ func _add_building_label(building_rect: Rect2, text: String, label_y: float = 18
 	decor.add_child(label)
 
 
-func _add_side_street(x_start: float, y_start: float, y_end: float) -> void:
+# A side street from y_start to y_end: a road strip with a kerb either side.
+# `mouth` is the depth of the main pavement it cuts through where it meets the
+# road - at the start for a street running down from the road, at the end for
+# one running down into it. The road strip runs the whole way, so the two roads
+# join; the kerbs begin past the mouth. Until 2026-09-20 the street started
+# below the pavement, and the pavement's tiles ran across every junction.
+func _add_side_street(x_start: float, y_start: float, y_end: float, mouth: float = 0.0, mouth_at_end: bool = false) -> void:
 	var road_left := x_start + SIDE_STREET_SIDEWALK
 	var road_width := SIDE_STREET_WIDTH - SIDE_STREET_SIDEWALK * 2.0
 	var height := y_end - y_start
-	_add_tiled_rect(TILE_SIDEWALK, Vector2(x_start, y_start), Vector2(SIDE_STREET_SIDEWALK, height))
+	var kerb_top := y_start if mouth_at_end else y_start + mouth
+	var kerb_height := height - mouth
+	_add_tiled_rect(TILE_SIDEWALK, Vector2(x_start, kerb_top), Vector2(SIDE_STREET_SIDEWALK, kerb_height))
 	_add_tiled_rect(TILE_ROAD, Vector2(road_left, y_start), Vector2(road_width, height))
-	_add_tiled_rect(TILE_SIDEWALK, Vector2(road_left + road_width, y_start), Vector2(SIDE_STREET_SIDEWALK, height))
+	_add_tiled_rect(TILE_SIDEWALK, Vector2(road_left + road_width, kerb_top), Vector2(SIDE_STREET_SIDEWALK, kerb_height))
 
 
 func _add_tree(tree_position: Vector2) -> void:

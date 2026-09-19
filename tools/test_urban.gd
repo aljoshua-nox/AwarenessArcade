@@ -77,6 +77,8 @@ func _run() -> void:
 	await _test_desk_door()
 	_test_movement_keys()
 	await _test_prompts_and_markers()
+	for district in DISTRICTS:
+		await _test_lamps_and_junctions(district)
 
 	print("\n%d checks, %d failed" % [checks, failures.size()])
 	for f in failures:
@@ -86,6 +88,55 @@ func _run() -> void:
 	# A sound still in the mixer at quit is reported as a leak.
 	await AudioManager.settle()
 	get_tree().quit(1 if failures.size() > 0 else 0)
+
+
+# Lampposts alternate sides along the road - never a pair facing each other -
+# and never stand in the mouth of a side street, which is road now: a side
+# street's tiles run through the main pavement where the two meet, so the
+# roads read as connected instead of the pavement cutting the junction.
+func _test_lamps_and_junctions(district: Dictionary) -> void:
+	print("\n[lamps alternate and the junctions join - %s]" % district["name"])
+	var view := await _open(str(district["scene"]))
+	var lamps: Array = []
+	for x in view.lamp_top_x():
+		lamps.append({"x": float(x), "side": "top"})
+	for x in view.lamp_bottom_x():
+		lamps.append({"x": float(x), "side": "bottom"})
+	lamps.sort_custom(func(a, b): return a["x"] < b["x"])
+	_check(lamps.size() >= 4, "there are lamps along the road (%d)" % lamps.size())
+	var alternates := true
+	var spaced := true
+	for i in range(1, lamps.size()):
+		if lamps[i]["side"] == lamps[i - 1]["side"]:
+			alternates = false
+		if lamps[i]["x"] - lamps[i - 1]["x"] < 180.0:
+			spaced = false
+	_check(alternates, "they alternate sides along the road")
+	_check(spaced, "and are spread out, not bunched")
+	var half: float = view.SIDE_STREET_WIDTH * 0.5 + 30.0
+	for lamp in lamps:
+		if lamp["side"] == "bottom":
+			for street_x in view.side_street_x_positions():
+				_check(absf(lamp["x"] - (float(street_x) + view.SIDE_STREET_WIDTH * 0.5)) > half,
+					"bottom lamp at %.0f is clear of the side street at %.0f" % [lamp["x"], float(street_x)])
+	# The mouth of every side street is road, not pavement: the road strip's
+	# tiles start at the main road's edge, a pavement's height above the kerbs.
+	var road_tops: Array = []
+	var kerb_tops: Array = []
+	for child in view.decor.get_children():
+		if not (child is Sprite2D) or not child.has_meta("tile"):
+			continue
+		for street_x in view.side_street_x_positions():
+			var road_left: float = float(street_x) + view.SIDE_STREET_SIDEWALK
+			if is_equal_approx(child.position.x, road_left) and child.get_meta("tile") == view.TILE_ROAD:
+				road_tops.append(child.position.y)
+			if is_equal_approx(child.position.x, float(street_x)) and child.get_meta("tile") == view.TILE_SIDEWALK:
+				kerb_tops.append(child.position.y)
+	_check(road_tops.size() >= view.side_street_x_positions().size() and road_tops.min() <= view.ROAD_END,
+		"each side street's road starts at the main road's edge (top %s)" % str(road_tops.min() if road_tops.size() > 0 else "none"))
+	_check(kerb_tops.size() >= view.side_street_x_positions().size() and kerb_tops.min() >= view.BOTTOM_PAVEMENT_END,
+		"...and its kerbs start below the main pavement (top %s)" % str(kerb_tops.min() if kerb_tops.size() > 0 else "none"))
+	await _close(view)
 
 
 # Losing Marco used to strand the player: he is the only route to Elena, so the

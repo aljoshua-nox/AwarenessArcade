@@ -74,6 +74,15 @@ func _build_ui() -> void:
 	skip_button.pressed.connect(_start_investigation_only)
 	column.add_child(skip_button)
 
+	# The one volume control, mirrored on the pause menu: On -> Quiet -> Off.
+	var sound_button := Button.new()
+	sound_button.text = AudioManager.volume_label()
+	sound_button.custom_minimum_size = Vector2(220, 44)
+	sound_button.pressed.connect(func() -> void:
+		AudioManager.cycle_volume()
+		sound_button.text = AudioManager.volume_label())
+	column.add_child(sound_button)
+
 	var quit_button := Button.new()
 	quit_button.text = "Quit"
 	quit_button.custom_minimum_size = Vector2(220, 44)

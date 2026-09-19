@@ -34,6 +34,16 @@ const MUSIC := {
 
 const SFX_PLAYERS := 4
 
+## The one volume control the game has: a button that cycles these. Kept in
+## user://settings.cfg so it holds between runs.
+const VOLUME_STEPS := [
+	{"label": "On", "db": 0.0, "mute": false},
+	{"label": "Quiet", "db": -12.0, "mute": false},
+	{"label": "Off", "db": 0.0, "mute": true},
+]
+const SETTINGS_PATH := "user://settings.cfg"
+
+var volume_step: int = 0
 var _sfx_players: Array[AudioStreamPlayer] = []
 var _next_sfx: int = 0
 var _ambience_player: AudioStreamPlayer
@@ -55,6 +65,43 @@ func _ready() -> void:
 	_music_player = AudioStreamPlayer.new()
 	_music_player.volume_db = -12.0
 	add_child(_music_player)
+	_load_settings()
+
+
+# --- Volume -------------------------------------------------------------------
+
+## Move to the next step in VOLUME_STEPS (On -> Quiet -> Off -> On).
+func cycle_volume() -> void:
+	set_volume_step((volume_step + 1) % VOLUME_STEPS.size())
+
+
+func set_volume_step(step: int) -> void:
+	volume_step = clampi(step, 0, VOLUME_STEPS.size() - 1)
+	var entry: Dictionary = VOLUME_STEPS[volume_step]
+	var master := AudioServer.get_bus_index("Master")
+	AudioServer.set_bus_volume_db(master, float(entry["db"]))
+	AudioServer.set_bus_mute(master, bool(entry["mute"]))
+	_save_settings()
+
+
+## What the button says: "Sound: On", "Sound: Quiet", "Sound: Off".
+func volume_label() -> String:
+	return "Sound: %s" % str(VOLUME_STEPS[volume_step]["label"])
+
+
+func _load_settings() -> void:
+	var config := ConfigFile.new()
+	if config.load(SETTINGS_PATH) == OK:
+		set_volume_step(int(config.get_value("audio", "volume_step", 0)))
+	else:
+		set_volume_step(0)
+
+
+func _save_settings() -> void:
+	var config := ConfigFile.new()
+	config.load(SETTINGS_PATH)
+	config.set_value("audio", "volume_step", volume_step)
+	config.save(SETTINGS_PATH)
 
 
 # Playback objects are released on the mix thread a moment after stop(); a

@@ -293,6 +293,27 @@ func _test_pause_menu() -> void:
 	_check(not CaseJournal.is_pause_open, "resume closes it")
 	_check(not get_tree().paused, "and unpauses")
 
+	# The sound button: three steps round to where it began, applied to the
+	# master bus, and the label follows. The player's own setting is put back.
+	var master := AudioServer.get_bus_index("Master")
+	var was: int = AudioManager.volume_step
+	AudioManager.set_volume_step(0)
+	CaseJournal.open_pause()
+	_check(CaseJournal.sound_button.text == "Sound: On", "the pause menu shows the sound setting (%s)" % CaseJournal.sound_button.text)
+	CaseJournal._cycle_volume()
+	_check(CaseJournal.sound_button.text == "Sound: Quiet" and is_equal_approx(AudioServer.get_bus_volume_db(master), -12.0),
+		"one press turns it down (%s, %.0f dB)" % [CaseJournal.sound_button.text, AudioServer.get_bus_volume_db(master)])
+	CaseJournal._cycle_volume()
+	_check(CaseJournal.sound_button.text == "Sound: Off" and AudioServer.is_bus_mute(master), "two presses mute it")
+	CaseJournal._cycle_volume()
+	_check(CaseJournal.sound_button.text == "Sound: On" and not AudioServer.is_bus_mute(master)
+		and is_equal_approx(AudioServer.get_bus_volume_db(master), 0.0), "three presses bring it back")
+	var config := ConfigFile.new()
+	_check(config.load(AudioManager.SETTINGS_PATH) == OK and int(config.get_value("audio", "volume_step", -1)) == 0,
+		"the setting is written to %s" % AudioManager.SETTINGS_PATH)
+	CaseJournal.close_pause()
+	AudioManager.set_volume_step(was)
+
 
 # The path that matters: meet a tactic in play, find it in the notebook after.
 func _test_learned_in_an_interview() -> void:

@@ -72,6 +72,7 @@ var progress_label: Label
 
 var pause_root: Control
 var pause_buttons: VBoxContainer
+var sound_button: Button
 var journal_button: Button
 var notebook_button: Button
 var confirm_box: VBoxContainer
@@ -732,6 +733,7 @@ func _build_pause_menu() -> void:
 	_add_pause_button("Resume", close_pause)
 	journal_button = _add_pause_button("Case Journal", open.bind(""))
 	notebook_button = _add_pause_button("Tactic Notebook", open.bind(TAB_TACTICS))
+	sound_button = _add_pause_button(AudioManager.volume_label(), _cycle_volume)
 	_add_pause_button("Return to Main Menu", _ask_to_abandon)
 
 	# Leaving resets the session. The one question this menu exists to ask.
@@ -775,6 +777,8 @@ func open_pause() -> void:
 	is_pause_open = true
 	journal_button.visible = SessionState.journal_collected
 	notebook_button.visible = SessionState.notebook_collected
+	# The main menu has the same control; pick up whatever it was set to there.
+	sound_button.text = AudioManager.volume_label()
 	_show_pause_buttons()
 	pause_root.visible = true
 	open_button.visible = false
@@ -792,6 +796,11 @@ func close_pause() -> void:
 
 func is_asking_to_abandon() -> bool:
 	return is_pause_open and confirm_box.visible
+
+
+func _cycle_volume() -> void:
+	AudioManager.cycle_volume()
+	sound_button.text = AudioManager.volume_label()
 
 
 func _ask_to_abandon() -> void:

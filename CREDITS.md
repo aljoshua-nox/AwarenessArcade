@@ -59,6 +59,13 @@ license file bundled, or license terms require per-file checking).
 | Background photos: Jose Losada | `assets/art/backgrounds/jose-losada-DyFjxmHt3Es-unsplash.jpg` | Jose Losada — [Unsplash](https://unsplash.com/photos/DyFjxmHt3Es) | Unsplash License | ✅ |
 | Background photos: LYCS Architecture | `assets/art/backgrounds/lycs-architecture-U2BI3GMnSSE-unsplash.jpg` | LYCS Architecture — [Unsplash](https://unsplash.com/photos/U2BI3GMnSSE) | Unsplash License | ✅ |
 | Background photos: Nastuh Abootalebi (x2) | `assets/art/backgrounds/nastuh-abootalebi-eHD8Y1Znfpk-unsplash.jpg`, `assets/art/backgrounds/nastuh-abootalebi-yWwob8kwOCk-unsplash.jpg` | Nastuh Abootalebi — [Unsplash](https://unsplash.com/photos/eHD8Y1Znfpk), [Unsplash](https://unsplash.com/photos/yWwob8kwOCk) | Unsplash License | ✅ |
+| Interview backdrop: home (Maria, Kevin, Evelyn, Teodoro, Trish) | `assets/art/backgrounds/settings/home.jpg` | Jenn Causing — [Unsplash](https://unsplash.com/photos/elegant-living-room-with-chandelier-and-ornate-furniture-wMrgMaPt26E) (added 2026-09-19) | Unsplash License | ✅ |
+| Interview backdrop: boarding house (Bea) | `assets/art/backgrounds/settings/boarding_house.jpg` | Rob Wingate — [Unsplash](https://unsplash.com/photos/window-curtain-open-wide-Fd9tUmRBJzk) | Unsplash License | ✅ |
+| Interview backdrop: print shop (Lina) | `assets/art/backgrounds/settings/shop.jpg` | Aleksandr Galichkin — [Unsplash](https://unsplash.com/photos/industrial-printing-press-with-purple-ink-rollers-QRykXu51r_0) | Unsplash License | ✅ |
+| Interview backdrop: construction site (Joel) | `assets/art/backgrounds/settings/site.jpg` | Roman Kravtsov — [Unsplash](https://unsplash.com/photos/portable-buildings-and-construction-materials-on-site-3aX0xSHWn6A) | Unsplash License | ✅ |
+| Interview backdrop: tower lobby (Dennis) | `assets/art/backgrounds/settings/lobby.jpg` | Aalo Lens — [Unsplash](https://unsplash.com/photos/modern-reception-desk-with-marble-and-wood-accents-ke212Tnsmw0) | Unsplash License | ✅ |
+| Interview backdrop: interrogation room (Marco) | `assets/art/backgrounds/settings/interrogation.jpg` | rawpixel.com — [Magnific](https://www.magnific.com/free-photo/dark-small-room-with-table-chair_2989655.htm) | Magnific free license — **attribution required**: *"Image by rawpixel.com on Magnific"*. Goes on the in-game credits screen with the Font Awesome and Calciumtrice lines | ✅ |
+| Interview backdrop: carinderia (Carmen) | `assets/art/backgrounds/settings/canteen.jpg` | Photo from the ikot.ph article [A Drive Back Home: Discover Vinta Modern Carinderia](https://www.ikot.ph/a-drive-back-home-discover-vinta-modern-carinderia/); 768x434, re-encoded from PNG to JPEG on import | **No license stated** — an editorial blog photo, copyright presumed reserved. Not cleared for redistribution in a public repo or a shipped build; **replace with a stock photo (Pexels "carinderia") or get the site's permission before submission** | ⚠️ |
 
 ## Fonts
 
@@ -102,7 +109,11 @@ No music tracks are currently in `assets/audio/music/` (empty).
 3. Confirm each Freesound SFX's actual license (CC0 vs CC-BY vs CC-BY-NC) — CC-BY entries
    need "Author — title (freesound.org)" in the credits screen; CC-BY-NC entries are not
    safe to ship in a commercial release.
-4. Font Awesome Free icons are CC BY 4.0 — the credits screen must include an attribution
+4. The interrogation-room backdrop (Magnific / rawpixel.com) requires attribution — the
+   credits screen must carry "Image by rawpixel.com on Magnific". The carinderia
+   backdrop (`settings/canteen.jpg`) has no license at all and has to be replaced or
+   cleared before the build is submitted.
+5. Font Awesome Free icons are CC BY 4.0 — the credits screen must include an attribution
    line for Font Awesome (fontawesome.com) since these are not the CC0 subset. The same
    screen must carry "Portrait Pack by Calciumtrice, usable under Creative Commons
    Attribution 3.0 license." for the four original portraits.

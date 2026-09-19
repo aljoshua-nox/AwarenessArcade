@@ -141,8 +141,11 @@ func stairs_target() -> String:
 	return FLOOR_FOUR_SCENE
 
 
+# The street door opens straight onto this floor, so the way out says what
+# the game skips: the operation rents the upper floors of an ordinary
+# building, and the lobby and the second floor are somebody else's.
 func exit_prompt() -> String:
-	return "Return to the street"
+	return "Down three flights, past the lobby, to the street"
 
 
 func _ready() -> void:

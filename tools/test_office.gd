@@ -524,6 +524,8 @@ func _test_floor_prompts() -> void:
 	view._on_portal_exited(view.portal)
 	_check(not view.prompt_bubble.visible, "stepping off it hides the prompt")
 	_check(not view.station_label.visible and not view.portal_label.visible, "the corner labels stay off")
+	_check(view.portal.prompt_text.contains("three flights") and view.portal.prompt_text.contains("lobby"),
+		"the way out says the floors below exist (%s)" % view.portal.prompt_text)
 	var ledger := _station(view, "The call list")
 	view._on_station_entered(view.player, ledger)
 	_check(view.prompt_bubble.visible and view.prompt_bubble.text == str(ledger.get("prompt", "")),

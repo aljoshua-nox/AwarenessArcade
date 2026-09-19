@@ -3,6 +3,7 @@ extends Control
 
 func _ready() -> void:
 	AudioManager.stop_ambience()
+	AudioManager.play_music("menu", -12.0)
 	_build_ui()
 	SessionState.reset_session()
 

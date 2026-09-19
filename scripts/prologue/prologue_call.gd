@@ -80,6 +80,7 @@ var suppress_scene_change: bool = false
 func _ready() -> void:
 	rng.randomize()
 	_build_ui()
+	AudioManager.play_music("prologue", -18.0)
 	AudioManager.play_stream(DIAL_TONE_SFX, -14.0)
 	_load_content()
 	doubt_bar.max_value = float(DOUBT_CEILING)
@@ -597,6 +598,8 @@ func _end_current_call(outcome: String, ending: Dictionary = {}, closing_line: S
 		SessionState.profit += payout
 	if not victim.is_empty():
 		SessionState.victims_affected += 1
+	if outcome == SessionState.CALL_REFUSED or outcome == SessionState.CALL_HUNG_UP:
+		AudioManager.play_sfx("hang_up")
 	if reported:
 		SessionState.reports_filed += 1
 		AudioManager.play_stream(REPORT_SFX, -8.0)

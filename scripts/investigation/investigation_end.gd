@@ -79,6 +79,10 @@ var continue_button: Button
 
 
 func _ready() -> void:
+	# The five true endings get their music; a mid-case summary stays quiet.
+	if FINAL_OUTCOMES.has(SessionState.investigation_outcome):
+		AudioManager.stop_ambience()
+		AudioManager.play_music("ending", -12.0)
 	_build_ui()
 	_refresh_view()
 

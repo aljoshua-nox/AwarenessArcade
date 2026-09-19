@@ -129,6 +129,8 @@ func _run() -> void:
 		print("  - %s" % f)
 	await get_tree().process_frame
 	await get_tree().process_frame
+	# A sound still in the mixer at quit is reported as a leak.
+	await AudioManager.settle()
 	get_tree().quit(1 if failures.size() > 0 else 0)
 
 

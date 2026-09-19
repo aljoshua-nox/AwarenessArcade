@@ -226,6 +226,7 @@ func record_tactic_learned(tactic_id: String, context: String = "") -> void:
 	if tactic_id.is_empty() or has_learned_tactic(tactic_id):
 		return
 	tactics_learned.append({"id": tactic_id, "context": context})
+	AudioManager.play_sfx("pen")
 
 
 func has_learned_tactic(tactic_id: String) -> bool:
@@ -405,6 +406,7 @@ func record_reflection_milestone(milestone: String, detail: String = "") -> void
 		"title": milestone,
 		"detail": detail,
 	})
+	AudioManager.play_sfx("pen")
 
 
 func go_to_menu() -> void:

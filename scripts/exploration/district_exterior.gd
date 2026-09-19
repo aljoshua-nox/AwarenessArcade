@@ -18,7 +18,7 @@ const PromptBubble := preload("res://scripts/exploration/prompt_bubble.gd")
 @export var map_title: String = "District"
 @export var map_hint: String = "WASD or arrows to walk  \u00b7  Enter at a door or a person  \u00b7  J journal  \u00b7  Esc menu"
 ## The looping bed under this street, if the file exists (see assets/audio/ambience/).
-@export var ambience_path: String = "res://assets/audio/ambience/street.mp3"
+@export var ambience_path: String = "res://assets/audio/ambience/street.ogg"
 @export_file("*.tscn") var portal_target_scene: String = "res://scenes/exploration/office_interior.tscn"
 @export var player_spawn: Vector2 = Vector2(150, 950)
 @export var movement_bounds: Rect2 = Rect2(Vector2(48, 48), Vector2(1824, 984))
@@ -247,6 +247,7 @@ func _ready() -> void:
 	interview_label.visible = false
 	prompt_bubble = PromptBubble.new()
 	add_child(prompt_bubble)
+	AudioManager.stop_music()
 	AudioManager.play_ambience(ambience_path)
 	if SessionState.has_urban_return_spawn:
 		player.global_position = SessionState.urban_return_spawn
@@ -1165,6 +1166,7 @@ func _on_interview_exited(portal_node: ScenePortal) -> void:
 func _transition_to_scene(scene_path: String) -> void:
 	if scene_path.is_empty():
 		return
+	AudioManager.play_sfx("door")
 	fade_overlay.visible = true
 	fade_overlay.modulate.a = 0.0
 	var tween := create_tween()

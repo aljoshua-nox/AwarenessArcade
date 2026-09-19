@@ -7,6 +7,10 @@ class_name ExplorationPlayer
 @onready var sprite: AnimatedSprite2D = %AnimatedSprite2D
 
 var facing: String = "down"
+# A footstep every STEP_INTERVAL seconds while walking; the first one lands the
+# moment the player starts moving.
+const STEP_INTERVAL := 0.34
+var step_clock: float = 0.0
 
 const FRAME_TEXTURES := {
 	"idle_down": "res://assets/art/characters/player/detective_idle_front.png",
@@ -26,7 +30,7 @@ func _ready() -> void:
 	_show_idle_pose("down")
 
 
-func _physics_process(_delta: float) -> void:
+func _physics_process(delta: float) -> void:
 	# move_* carries the arrows and WASD both. The ui_* actions this used to read
 	# are arrows only, so the hint's "WASD" was a lie until 2026-09-19.
 	var direction := Input.get_vector("move_left", "move_right", "move_up", "move_down")
@@ -35,8 +39,13 @@ func _physics_process(_delta: float) -> void:
 	if direction != Vector2.ZERO:
 		facing = _direction_from_vector(direction)
 		_play_animation("walk_%s" % facing)
+		step_clock -= delta
+		if step_clock <= 0.0:
+			AudioManager.play_sfx("step")
+			step_clock = STEP_INTERVAL
 	else:
 		_show_idle_pose(facing)
+		step_clock = 0.0
 
 	move_and_slide()
 	_clamp_to_bounds()

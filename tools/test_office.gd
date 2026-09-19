@@ -70,6 +70,8 @@ func _run() -> void:
 		print("  - %s" % f)
 	await get_tree().process_frame
 	await get_tree().process_frame
+	# A sound still in the mixer at quit is reported as a leak.
+	await AudioManager.settle()
 	get_tree().quit(1 if failures.size() > 0 else 0)
 
 
@@ -517,3 +519,20 @@ func _test_ambience() -> void:
 	_check(AudioManager.ambience_path == stand_in, "asking for the same bed again keeps it")
 	AudioManager.stop_ambience()
 	_check(not AudioManager.ambience_playing() and AudioManager.ambience_path.is_empty(), "stopping clears it")
+
+	# The beds and the music that ship are real files that loop.
+	for path in ["res://assets/audio/ambience/street.ogg", "res://assets/audio/ambience/call_floor.ogg"]:
+		_check(ResourceLoader.exists(path), "%s is in the repo" % path.get_file())
+	for name in AudioManager.MUSIC:
+		_check(ResourceLoader.exists(str(AudioManager.MUSIC[name])), "music '%s' is in the repo" % name)
+	for name in AudioManager.SFX:
+		_check(ResourceLoader.exists(str(AudioManager.SFX[name])), "effect '%s' is in the repo" % name)
+	AudioManager.play_music("menu")
+	_check(AudioManager.music_path == str(AudioManager.MUSIC["menu"]), "music plays by name")
+	_check(bool(AudioManager._music_player.stream.get("loop")), "and loops")
+	AudioManager.play_music("not_a_track")
+	_check(AudioManager.music_path.is_empty() and not AudioManager.music_playing(), "an unknown track stops the music")
+	AudioManager.play_sfx("click")
+	AudioManager.play_sfx("step")
+	_check(AudioManager._sfx_players.size() == AudioManager.SFX_PLAYERS, "effects play from a pool, not one player")
+	AudioManager.stop_music()

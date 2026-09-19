@@ -11,7 +11,8 @@ extends Node2D
 @export var map_title: String = "Call Floor - 3F"
 @export var map_hint: String = "WASD or arrows to walk  \u00b7  Enter to examine  \u00b7  J journal  \u00b7  Esc menu"
 ## The looping bed under this floor, if the file exists (see assets/audio/ambience/).
-@export var ambience_path: String = "res://assets/audio/ambience/call_floor.mp3"
+@export var ambience_path: String = "res://assets/audio/ambience/call_floor.ogg"
+@export var ambience_db: float = -12.0
 @export_file("*.tscn") var portal_target_scene: String = "res://scenes/exploration/urban_exterior.tscn"
 @export var player_spawn: Vector2 = Vector2(190, 320)
 @export var movement_bounds: Rect2 = Rect2(Vector2(96, 240), Vector2(1096, 424))
@@ -141,7 +142,8 @@ func _ready() -> void:
 	portal_label.visible = false
 	prompt_bubble = PromptBubble.new()
 	add_child(prompt_bubble)
-	AudioManager.play_ambience(ambience_path)
+	AudioManager.stop_music()
+	AudioManager.play_ambience(ambience_path, ambience_db)
 	# Coming down the stairs lands in front of them, not at the street door.
 	if SessionState.has_office_return_spawn:
 		player.global_position = SessionState.office_return_spawn
@@ -710,6 +712,7 @@ func _on_portal_exited(portal_node: ScenePortal) -> void:
 func _transition_to_scene(scene_path: String) -> void:
 	if scene_path.is_empty():
 		return
+	AudioManager.play_sfx("door")
 	fade_overlay.visible = true
 	fade_overlay.modulate.a = 0.0
 	var tween := create_tween()

@@ -77,24 +77,48 @@ license file bundled, or license terms require per-file checking).
 
 ## Audio
 
-All SFX/ambience filenames follow the Freesound.org convention `<id>__<username>__<description>`.
-Freesound license varies per-upload (CC0, CC-BY, CC-BY-NC, or Sampling+), so each one below
-must be checked individually at `freesound.org/s/<id>/` before shipping — do not assume CC0.
+Freesound files keep the site's `<id>__<username>__<description>` name; everything else is
+named for what it does in the game. Licenses below are as the user recorded them when the
+files were downloaded (2026-09-19) - Freesound prints the license on each sound's page.
+**Every CC-BY line goes on the in-game credits screen.**
 
-**Verification status (checked 2026-09-08).** freesound.org could not be reached from
-tooling — the site is currently serving an expired TLS certificate, and web.archive.org
-is unavailable here too — so only the license that surfaced in search results could be
-confirmed. The remaining three need someone to open the URL in a browser; the license is
-printed on the sound's page. Every file listed below is referenced by the game.
+### Ambience (loops under a scene)
 
-| Asset | Location | Freesound user | Freesound ID | License |
+| Asset | Location | Author / source | License | Status |
 |---|---|---|---|---|
-| Dial tone | `assets/audio/sfx/360480__giddster__dial-tone.wav` | giddster | [360480](https://freesound.org/s/360480/) | ⚠️ unverified — site unreachable |
-| Notification sound (handmade) | `assets/audio/sfx/434379__kila_vat__notification-sound-handmade.mp3` | kila_vat | [434379](https://freesound.org/s/434379/) | ⚠️ unverified — site unreachable |
-| Radio static | `assets/audio/sfx/524204__joviansounds__radio-static.wav` | JovianSounds | [524204](https://freesound.org/s/524204/) | **CC0** — no attribution required (confirmed) |
-| Phone ringing 5 | `assets/audio/sfx/629201__audacitier__phone-ringing-5.mp3` | AUDACITIER | [629201](https://freesound.org/s/629201/) | ⚠️ unverified — site unreachable |
+| Street bed (Sampaguita Street, Terminal Road) | `assets/audio/ambience/street.ogg` | kevp888 - *LS_33886_PH_Street* - [freesound.org/s/441454](https://freesound.org/s/441454/). A 100 s cut of the 43 MB original, crossfaded to loop, encoded to OGG; the original is outside the repo in `downloads/audio-originals/` | **CC-BY 4.0** - attribution required | ✅ |
+| Office bed (Call Floor, Tech Support Floor; the Anti-Fraud Desk at -22 dB) | `assets/audio/ambience/call_floor.ogg` | qubodup - *The Office* - [freesound.org/s/211945](https://freesound.org/s/211945/). A 100 s cut of the FLAC original (Godot cannot read FLAC), same treatment | **CC-BY 4.0** - attribution required | ✅ |
 
-No music tracks are currently in `assets/audio/music/` (empty).
+Also downloaded and credited by the user but **not in the repo and not used**: kevp888's
+*LS_34158_PH_StreetAndStation* (671498, CC-BY 4.0; moved to `downloads/audio-originals/`),
+and seven CC0 room-tone/office sounds (stomachache 192529, keweldog 181708, vrodge 119555,
+esperri 119154, DiArchangeli 108695, shaugestuen 89985, beckmen 79711) that were never
+copied into `assets/audio/`. Nothing is owed for them unless one is wired in later.
+
+### Music
+
+| Asset | Location | Author / source | License | Status |
+|---|---|---|---|---|
+| Main menu | `assets/audio/music/tension_loop.ogg` | Tsorthan Grove - *Tension* - [opengameart.org/content/tension](https://opengameart.org/content/tension). Encoded from the FLAC the author ships | **CC-BY 4.0** - credit line: *"Tension by Tsorthan Grove - CC-BY 4.0"* | ✅ |
+| Prologue (under the calls) | `assets/audio/music/thought_loop.ogg` | GloryToTheMachine - *Thought Loop* (OpenGameArt). Encoded from the author's FLAC | **CC-BY 4.0** - the author's required notice: *"Music by GloryToTheMachine"* | ✅ |
+| Ending screens | `assets/audio/music/something_isnt_adding_up.ogg` | Spring Spring - *I know he's the culprit, but something just isn't adding up here...* from *The Puppyland Serial Murder Case* (OpenGameArt). Unmodified, renamed | **CC-BY-SA 4.0** - required notice: *"Produced by Julie Damsgaard/Spring Spring/Spring Enterprises @ https://spring-enterprises.neocities.org"* | ✅ |
+| Reserved (not yet played anywhere; `MUSIC["crime_scene"]`) | `assets/audio/music/crime_scene.ogg` | Spring Spring - *Crime Scene*, same album | CC-BY-SA 4.0, same notice | ✅ |
+
+The album's other two tracks (*Tybarne*, *Dio e popolo*) were moved to `downloads/audio-originals/` unused.
+
+### Sound effects
+
+| Asset | Location | Author / source | License | Status |
+|---|---|---|---|---|
+| Button click, journal tab, door, statement landed, objective done, statement missed | `assets/audio/sfx/ui/click.ogg`, `tab.ogg`, `door.ogg`, `confirm.ogg`, `objective.ogg`, `error.ogg` | Kenney - *Interface Sounds* (kenney.nl): `click_001`, `click_003`, `open_001`, `confirmation_001`, `confirmation_002`, `error_004`, copied under short names. The full pack, and the unused *UI Audio* pack, are in `downloads/audio-originals/` | CC0 | ✅ |
+| Journal opens | `assets/audio/sfx/page_turn.ogg` | jephwallace - *turning pages book slow quickly* - [freesound.org/s/318615](https://freesound.org/s/318615/); one turn cut from the recording | CC0 | ✅ |
+| Something new written in the journal (tactic, milestone) | `assets/audio/sfx/pen_scratch.ogg` | MoKoLoKo - *Writing with a felt tip pen* - [freesound.org/s/325133](https://freesound.org/s/325133/); 1.2 s cut | **CC-BY 4.0** - attribution required | ✅ |
+| Footsteps | `assets/audio/sfx/477357__nuff3__steps-tile_3a.ogg` | nuFF3 - *Steps-Tile_3a* - [freesound.org/s/477357](https://freesound.org/s/477357/) | **CC-BY 4.0** - attribution required | ✅ |
+| A caller hangs up on you | `assets/audio/sfx/575853__martian__intercom-bell-phone-hang-up.wav` | martian - *intercom bell phone hang up* - [freesound.org/s/575853](https://freesound.org/s/575853/) | CC0 | ✅ |
+| Dial tone (prologue) | `assets/audio/sfx/360480__giddster__dial-tone.wav` | giddster - [freesound.org/s/360480](https://freesound.org/s/360480/) | ⚠️ unverified - the site was unreachable on 2026-09-08; open the page | ⚠️ |
+| Report filed (prologue) | `assets/audio/sfx/434379__kila_vat__notification-sound-handmade.mp3` | kila_vat - [freesound.org/s/434379](https://freesound.org/s/434379/) | ⚠️ unverified, as above | ⚠️ |
+| Phone ringing 5 (prologue) | `assets/audio/sfx/629201__audacitier__phone-ringing-5.mp3` | AUDACITIER - [freesound.org/s/629201](https://freesound.org/s/629201/) | ⚠️ unverified, as above | ⚠️ |
+| Radio static | `assets/audio/sfx/524204__joviansounds__radio-static.wav` | JovianSounds - [freesound.org/s/524204](https://freesound.org/s/524204/) | CC0 (confirmed) | ✅ - **no longer referenced**; the interview's miss sting is Kenney's `error.ogg` since 2026-09-19 |
 
 ## Open items
 
@@ -106,9 +130,11 @@ No music tracks are currently in `assets/audio/music/` (empty).
 2. Identify the remaining ⚠️ art: the `office/` floor and wall tiles, the numbered `pack/`
    character sheets, and the player detective sprite. All sixteen portraits are resolved:
    four are Calciumtrice's pack (CC-BY 3.0), twelve are AI-generated by the team.
-3. Confirm each Freesound SFX's actual license (CC0 vs CC-BY vs CC-BY-NC) — CC-BY entries
-   need "Author — title (freesound.org)" in the credits screen; CC-BY-NC entries are not
-   safe to ship in a commercial release.
+3. Confirm the three prologue Freesound SFX still marked ⚠️ (360480, 434379, 629201) -
+   CC-BY-NC entries are not safe to ship in a commercial release. The 2026-09-19 audio
+   (beds, music, page, pen, steps, hang-up, Kenney UI) is already recorded above with the
+   licenses the downloads came with; the CC-BY and CC-BY-SA lines there go on the credits
+   screen next to Font Awesome, Calciumtrice and Magnific.
 4. The interrogation-room backdrop (Magnific / rawpixel.com) requires attribution — the
    credits screen must carry "Image by rawpixel.com on Magnific". The carinderia
    backdrop (`settings/canteen.jpg`) has no license at all and has to be replaced or

@@ -3,8 +3,8 @@ extends Control
 const DEFAULT_CASE_PATH := "res://resources/cases/interview_case_001.json"
 const SUMMARY_SCENE := "res://scenes/investigation/investigation_end.tscn"
 
-const HIT_SFX := "res://assets/audio/sfx/434379__kila_vat__notification-sound-handmade.mp3"
-const MISS_SFX := "res://assets/audio/sfx/524204__joviansounds__radio-static.wav"
+const HIT_SFX := "res://assets/audio/sfx/ui/confirm.ogg"
+const MISS_SFX := "res://assets/audio/sfx/ui/error.ogg"
 
 const TYPE_CHARS_PER_SECOND := 55.0
 const EVIDENCE_MISS_COOPERATION := -10
@@ -978,7 +978,7 @@ func _finish_typing() -> void:
 
 
 func _play_sting(positive: bool) -> void:
-	AudioManager.play_stream(HIT_SFX if positive else MISS_SFX, -16.0)
+	AudioManager.play_stream(HIT_SFX if positive else MISS_SFX, -10.0)
 	_flinch(positive)
 
 

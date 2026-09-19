@@ -83,9 +83,10 @@ func _ready() -> void:
 	process_mode = Node.PROCESS_MODE_ALWAYS
 	_load_briefing()
 	_load_objectives()
+	# Connected before the overlay is built, so its own buttons click too.
+	get_tree().node_added.connect(_on_node_added)
 	_build_ui()
 	_build_pause_menu()
-	get_tree().node_added.connect(_on_node_added)
 	_refresh_button_visibility.call_deferred()
 
 
@@ -155,7 +156,8 @@ func _build_ui() -> void:
 		button.toggle_mode = true
 		button.button_group = group
 		button.custom_minimum_size = Vector2(150, 34)
-		button.pressed.connect(_select_tab.bind(tab_id))
+		button.pressed.connect(_on_tab_pressed.bind(tab_id))
+		button.set_meta("silent", true)
 		tab_row.add_child(button)
 		tab_buttons[tab_id] = button
 
@@ -199,6 +201,11 @@ func _clear_page(page: VBoxContainer) -> void:
 	for child in page.get_children():
 		page.remove_child(child)
 		child.queue_free()
+
+
+func _on_tab_pressed(tab_id: String) -> void:
+	AudioManager.play_sfx("tab")
+	_select_tab(tab_id)
 
 
 func _select_tab(tab_id: String) -> void:
@@ -340,6 +347,8 @@ func objective_state(objective: Dictionary) -> String:
 	if _condition_holds(objective.get("complete_when")):
 		if not id.is_empty():
 			SessionState.objectives_done.append(id)
+			# Heard the first time the journal or a HUD notices it is done.
+			AudioManager.play_sfx("objective")
 		return OBJECTIVE_DONE
 	if objective.has("failed_when") and _condition_holds(objective["failed_when"]):
 		return OBJECTIVE_FAILED
@@ -661,6 +670,7 @@ func open(tab_id: String = "") -> void:
 	if is_pause_open:
 		close_pause()
 	is_open = true
+	AudioManager.play_sfx("page")
 	(tab_buttons[TAB_TACTICS] as Button).visible = SessionState.notebook_collected
 	var target := tab_id if tab_pages.has(tab_id) else str(TABS[0].get("id", ""))
 	_select_tab(target)
@@ -835,8 +845,13 @@ func _pressed(event: InputEvent, action: String, fallback_key: Key) -> bool:
 	return event is InputEventKey and event.pressed and not event.echo and event.keycode == fallback_key
 
 
-func _on_node_added(_node: Node) -> void:
+# Every button in the game clicks. Connected here, as buttons are added, so
+# no screen has to remember to do it; a button that makes its own sound (the
+# journal's tabs) opts out with the "silent" meta.
+func _on_node_added(node: Node) -> void:
 	_refresh_button_visibility.call_deferred()
+	if node is Button and not node.has_meta("silent"):
+		(node as Button).pressed.connect(AudioManager.play_sfx.bind("click"))
 
 
 func shows_button_in(scene_path: String) -> bool:

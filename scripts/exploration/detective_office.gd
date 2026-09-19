@@ -30,8 +30,9 @@ func _init() -> void:
 	map_title = "Anti-Fraud Desk"
 	map_hint = "WASD or arrows to walk  \u00b7  Enter to pick up or read  \u00b7  J journal  \u00b7  Esc menu"
 	portal_target_scene = DESK_STREET_SCENE
-	# The desk is a quiet room; the call floor's bed would be wrong here.
-	ambience_path = "res://assets/audio/ambience/office.mp3"
+	# A quiet room: the call floor's bed, well down, until a room tone exists.
+	ambience_path = "res://assets/audio/ambience/call_floor.ogg"
+	ambience_db = -22.0
 
 
 # No director here, and no floor above.

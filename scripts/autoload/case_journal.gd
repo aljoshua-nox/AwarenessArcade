@@ -27,6 +27,7 @@ const MAIN_MENU_SCENE := "res://scenes/main_menu/main_menu.tscn"
 ## The menu is not part of the fiction, and the prologue is the scammer's half.
 const HIDDEN_IN_SCENES := [
 	MAIN_MENU_SCENE,
+	"res://scenes/main_menu/credits.tscn",
 	"res://scenes/prologue/prologue_call.tscn",
 	"res://scenes/prologue/prologue_end.tscn",
 ]

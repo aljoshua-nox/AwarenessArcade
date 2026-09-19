@@ -1,5 +1,7 @@
 extends Control
 
+const CREDITS_SCENE := "res://scenes/main_menu/credits.tscn"
+
 
 func _ready() -> void:
 	AudioManager.stop_ambience()
@@ -73,6 +75,12 @@ func _build_ui() -> void:
 	skip_button.tooltip_text = "Start at the detective half with no prologue history. Every witness opens neutral."
 	skip_button.pressed.connect(_start_investigation_only)
 	column.add_child(skip_button)
+
+	var credits_button := Button.new()
+	credits_button.text = "Credits"
+	credits_button.custom_minimum_size = Vector2(220, 44)
+	credits_button.pressed.connect(SessionState.go_to_scene.bind(CREDITS_SCENE))
+	column.add_child(credits_button)
 
 	# The one volume control, mirrored on the pause menu: On -> Quiet -> Off.
 	var sound_button := Button.new()

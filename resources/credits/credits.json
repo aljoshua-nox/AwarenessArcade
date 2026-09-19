@@ -1,0 +1,71 @@
+{
+  "intro": "Dial and Deceive is a student project. Everything below was made by somebody else and is used under the license named; the full record, with links, is CREDITS.md in the repository. Lines marked as required are the wording the authors ask for.",
+  "sections": [
+	{
+	  "title": "Engine",
+	  "entries": [
+		{"line": "Made with Godot Engine (godotengine.org), MIT license. Copyright (c) 2014-present Godot Engine contributors. Copyright (c) 2007-2014 Juan Linietsky, Ariel Manzur."}
+	  ]
+	},
+	{
+	  "title": "Portraits",
+	  "entries": [
+		{"line": "Portrait Pack by Calciumtrice, usable under Creative Commons Attribution 3.0 license.", "required": true, "key": "Portrait Pack by Calciumtrice, usable under Creative Commons Attribution 3.0 license."},
+		{"line": "Maria, Evelyn, Ramon and Marco wear Calciumtrice's faces (opengameart.org/content/portrait-pack). The other twelve portraits were generated for this project."}
+	  ]
+	},
+	{
+	  "title": "Icons",
+	  "entries": [
+		{"line": "Icons: Font Awesome Free 7.2.0 (fontawesome.com), CC BY 4.0", "required": true, "key": "Font Awesome Free 7.2.0"}
+	  ]
+	},
+	{
+	  "title": "Photographs",
+	  "entries": [
+		{"line": "Image by rawpixel.com on Magnific", "required": true, "key": "Image by rawpixel.com on Magnific"},
+		{"line": "The interrogation room, above. The office behind the directors' interviews is by Yan Krukau on Pexels."},
+		{"line": "Unsplash: Copernico (the menu), Jose Losada (the prologue and the endings), Jenn Causing, Rob Wingate, Aleksandr Galichkin, Roman Kravtsov and Aalo Lens (the homes, the boarding house, the print shop, the site, the tower lobby), Alesia Kazantceva, Israel Andrade, LYCS Architecture and Nastuh Abootalebi."}
+	  ]
+	},
+	{
+	  "title": "Tiles and sprites",
+	  "entries": [
+		{"line": "Kenney (kenney.nl), CC0: Roguelike Modern City, RPG Urban Pack, UI Pack and RPG Expansion, Input Prompts, Background Elements, Kenney Fonts."},
+		{"line": "PixelOffice, CC0: the call floor's people and props."},
+		{"line": "Free Office Pixel Art by arlantr (arlantr.itch.io), free to use with credit."},
+		{"line": "Little Bits: Office by AdricCustoms (adriccustoms.itch.io): the office walls, floors and furniture."}
+	  ]
+	},
+	{
+	  "title": "Fonts",
+	  "entries": [
+		{"line": "IBM Plex Sans and IBM Plex Mono by IBM, SIL Open Font License 1.1."}
+	  ]
+	},
+	{
+	  "title": "Music",
+	  "entries": [
+		{"line": "Tension by Tsorthan Grove - CC-BY 4.0", "required": true, "key": "Tension by Tsorthan Grove - CC-BY 4.0"},
+		{"line": "The main menu (opengameart.org/content/tension)."},
+		{"line": "Music by GloryToTheMachine", "required": true, "key": "Music by GloryToTheMachine"},
+		{"line": "Thought Loop, under the prologue's calls (OpenGameArt)."},
+		{"line": "Produced by Julie Damsgaard/Spring Spring/Spring Enterprises @ https://spring-enterprises.neocities.org", "required": true, "key": "Produced by Julie Damsgaard/Spring Spring/Spring Enterprises @ https://spring-enterprises.neocities.org"},
+		{"line": "\"I know he's the culprit, but something just isn't adding up here...\" and \"Crime Scene\", from The Puppyland Serial Murder Case by Spring Spring, CC-BY-SA 4.0. The first plays on the endings."}
+	  ]
+	},
+	{
+	  "title": "Sound",
+	  "entries": [
+		{"line": "LS_33886_PH_Street by kevp888 (freesound.org/s/441454), CC-BY 4.0 - the street.", "required": true, "key": "kevp888"},
+		{"line": "The Office by qubodup (freesound.org/s/211945), CC-BY 4.0 - the call floors and the desk.", "required": true, "key": "qubodup"},
+		{"line": "Writing with a felt tip pen by MoKoLoKo (freesound.org/s/325133), CC-BY 4.0 - the journal's pen.", "required": true, "key": "MoKoLoKo"},
+		{"line": "Steps-Tile_3a by nuFF3 (freesound.org/s/477357), CC-BY 4.0 - footsteps.", "required": true, "key": "nuFF3"},
+		{"line": "turning pages book slow quickly by jephwallace (freesound.org/s/318615), CC0. intercom bell phone hang up by martian (freesound.org/s/575853), CC0."},
+		{"line": "Dial tone by giddster (freesound.org/s/360480). Notification sound (handmade) by kila_vat (freesound.org/s/434379). Phone ringing 5 by AUDACITIER (freesound.org/s/629201)."},
+		{"line": "Interface Sounds by Kenney (kenney.nl), CC0: every click, tab, door, chime and buzz."}
+	  ]
+	}
+  ],
+  "closing": "CC0 work needs no credit and is listed anyway. Thank you to everyone who put their work where a student project could find it."
+}

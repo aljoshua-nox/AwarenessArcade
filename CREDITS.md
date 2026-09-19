@@ -1,8 +1,14 @@
 # Asset Credits — Dial and Deceive
 
-Tracking file for every third-party art/audio/font asset used in the game, so we can
-build an in-game credits screen and stay license-compliant. Update this whenever a
-new asset is added under `assets/`.
+Tracking file for every third-party art/audio/font asset used in the game, so the
+in-game credits screen can quote it and the project stays license-compliant. Update
+this whenever a new asset is added under `assets/`.
+
+**The credits screen exists (2026-09-20):** main menu -> Credits, built from
+`resources/credits/credits.json`. Every entry there marked `required` carries the
+author's own wording and a `key` that `tools/test_credits.tscn` looks up in this file,
+so a required line cannot be changed in one place without the other noticing. When a
+new attribution-licensed asset lands, add its row here *and* its entry there.
 
 Status legend: ✅ confirmed from bundled license/readme · ⚠️ needs verification (no
 license file bundled, or license terms require per-file checking).
@@ -19,7 +25,7 @@ license file bundled, or license terms require per-file checking).
 >
 > **Font Awesome** (CC BY 4.0) and the **Calciumtrice Portrait Pack** (CC-BY 3.0)
 > both *require* attribution in the shipped game, not just in this file. The
-> planned in-game credits screen is what satisfies that.
+> in-game credits screen (built 2026-09-20) is what satisfies that.
 >
 > **Removed the same day, all unreferenced by the game:** Modern Office 2D
 > Props, Pixel Life – Desk Essentials, 25 Portrait Pixel Art pack1 (terms never
@@ -59,6 +65,8 @@ license file bundled, or license terms require per-file checking).
 | Background photos: Jose Losada | `assets/art/backgrounds/jose-losada-DyFjxmHt3Es-unsplash.jpg` | Jose Losada — [Unsplash](https://unsplash.com/photos/DyFjxmHt3Es) | Unsplash License | ✅ |
 | Background photos: LYCS Architecture | `assets/art/backgrounds/lycs-architecture-U2BI3GMnSSE-unsplash.jpg` | LYCS Architecture — [Unsplash](https://unsplash.com/photos/U2BI3GMnSSE) | Unsplash License | ✅ |
 | Background photos: Nastuh Abootalebi (x2) | `assets/art/backgrounds/nastuh-abootalebi-eHD8Y1Znfpk-unsplash.jpg`, `assets/art/backgrounds/nastuh-abootalebi-yWwob8kwOCk-unsplash.jpg` | Nastuh Abootalebi — [Unsplash](https://unsplash.com/photos/eHD8Y1Znfpk), [Unsplash](https://unsplash.com/photos/yWwob8kwOCk) | Unsplash License | ✅ |
+| Office photo behind the directors' interviews (`office` / `call_floor` settings) | `assets/art/backgrounds/pexels-yankrukov-8867271.jpg` | Yan Krukau — [Pexels](https://www.pexels.com/photo/8867271/) (in the repo since the first commit; row added 2026-09-20) | Pexels License (free to use, attribution not required) | ✅ |
+| Office photos, unused (x3) | `assets/art/backgrounds/pexels-yankrukov-8867190.jpg`, `pexels-yankrukov-8867265.jpg`, `pexels-mart-production-7709259.jpg` | Yan Krukau and MART PRODUCTION — Pexels | Pexels License | ✅ (unreferenced) |
 | Interview backdrop: home (Maria, Kevin, Evelyn, Teodoro, Trish) | `assets/art/backgrounds/settings/home.jpg` | Jenn Causing — [Unsplash](https://unsplash.com/photos/elegant-living-room-with-chandelier-and-ornate-furniture-wMrgMaPt26E) (added 2026-09-19) | Unsplash License | ✅ |
 | Interview backdrop: boarding house (Bea) | `assets/art/backgrounds/settings/boarding_house.jpg` | Rob Wingate — [Unsplash](https://unsplash.com/photos/window-curtain-open-wide-Fd9tUmRBJzk) | Unsplash License | ✅ |
 | Interview backdrop: print shop (Lina) | `assets/art/backgrounds/settings/shop.jpg` | Aleksandr Galichkin — [Unsplash](https://unsplash.com/photos/industrial-printing-press-with-purple-ink-rollers-QRykXu51r_0) | Unsplash License | ✅ |
@@ -135,13 +143,14 @@ The album's other two tracks (*Tybarne*, *Dio e popolo*) were moved to `download
    (beds, music, page, pen, steps, hang-up, Kenney UI) is already recorded above with the
    licenses the downloads came with; the CC-BY and CC-BY-SA lines there go on the credits
    screen next to Font Awesome, Calciumtrice and Magnific.
-4. The interrogation-room backdrop (Magnific / rawpixel.com) requires attribution — the
-   credits screen must carry "Image by rawpixel.com on Magnific". The carinderia
-   backdrop (`settings/canteen.jpg`) has no license at all and has to be replaced or
-   cleared before the build is submitted.
-5. Font Awesome Free icons are CC BY 4.0 — the credits screen must include an attribution
-   line for Font Awesome (fontawesome.com) since these are not the CC0 subset. The same
-   screen must carry "Portrait Pack by Calciumtrice, usable under Creative Commons
-   Attribution 3.0 license." for the four original portraits.
+4. ~~The interrogation-room backdrop (Magnific / rawpixel.com) requires attribution — the
+   credits screen must carry "Image by rawpixel.com on Magnific".~~ On the screen since
+   2026-09-20. The carinderia backdrop (`settings/canteen.jpg`) still has no license at
+   all and has to be replaced or cleared before the build is submitted; it is deliberately
+   *not* on the credits screen, since crediting it would present it as licensed.
+5. ~~Font Awesome Free icons are CC BY 4.0 — the credits screen must include an attribution
+   line ... "Portrait Pack by Calciumtrice, usable under Creative Commons Attribution 3.0
+   license."~~ Both on the screen since 2026-09-20, with the music and Freesound lines;
+   `test_credits` pins all ten.
 4. Modern Office 2D Props Pack (nacl1234) forbids standalone redistribution — fine as
    embedded assets in the compiled game, just don't ship the raw PNG/JSON files separately.

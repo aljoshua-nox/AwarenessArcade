@@ -121,6 +121,15 @@ func _unhandled_input(event: InputEvent) -> void:
 		get_viewport().set_input_as_handled()
 
 
+# _unhandled_input never sees a click the line's box consumed itself - a
+# RichTextLabel and its panel both stop the mouse - and the box is the natural
+# place to click to hurry a line along. Same fix the prologue's transcript has.
+func _on_prompt_gui_input(event: InputEvent) -> void:
+	if event is InputEventMouseButton and event.pressed and _is_typing():
+		_finish_typing()
+		prompt_value.accept_event()
+
+
 # The prologue-to-investigation coupling. What the player did to this person
 # while playing the scammer sets how far open the door is, and rewrites the
 # opening beat so the room reflects it.
@@ -364,10 +373,12 @@ func _build_ui() -> void:
 	var prompt_panel := PanelContainer.new()
 	prompt_panel.custom_minimum_size = Vector2(0, 260)
 	prompt_panel.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	prompt_panel.gui_input.connect(_on_prompt_gui_input)
 	right_column.add_child(prompt_panel)
 	prompt_value = RichTextLabel.new()
 	prompt_value.bbcode_enabled = true
 	prompt_value.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	prompt_value.gui_input.connect(_on_prompt_gui_input)
 	prompt_panel.add_child(prompt_value)
 
 	present_evidence_button = Button.new()

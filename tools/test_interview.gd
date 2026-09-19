@@ -278,6 +278,22 @@ func _test_typewriter() -> void:
 	_check(view.prompt_value.visible_ratio == 1.0, "skip reveals the full prompt")
 	await _close(view)
 
+	# A click on the line's box reveals the rest, as the prologue's transcript
+	# does. The box consumes the click itself, so the scene's _unhandled_input
+	# never got it and the walkthrough's "click to skip" was only true off the box.
+	view = await _open(CASE_MARIA)
+	_check(view._is_typing(), "the next prompt is typing")
+	var click := InputEventMouseButton.new()
+	click.button_index = MOUSE_BUTTON_LEFT
+	click.pressed = true
+	_check(view.prompt_value.gui_input.is_connected(view._on_prompt_gui_input), "the box listens for a click")
+	_check(view.prompt_value.get_parent().gui_input.is_connected(view._on_prompt_gui_input), "and so does its panel")
+	view._on_prompt_gui_input(click)
+	_check(not view._is_typing() and view.prompt_value.visible_ratio == 1.0, "a click on the box reveals the whole line")
+	view._on_prompt_gui_input(click)
+	_check(view.prompt_value.visible_ratio == 1.0, "a second click on a finished line is harmless")
+	await _close(view)
+
 
 func _test_choice_costs() -> void:
 	print("\n[choice costs]")

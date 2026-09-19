@@ -27,7 +27,9 @@ func _ready() -> void:
 
 
 func _physics_process(_delta: float) -> void:
-	var direction := Input.get_vector("ui_left", "ui_right", "ui_up", "ui_down")
+	# move_* carries the arrows and WASD both. The ui_* actions this used to read
+	# are arrows only, so the hint's "WASD" was a lie until 2026-09-19.
+	var direction := Input.get_vector("move_left", "move_right", "move_up", "move_down")
 	velocity = direction * move_speed
 
 	if direction != Vector2.ZERO:

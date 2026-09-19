@@ -75,6 +75,7 @@ func _run() -> void:
 	await _test_statement_budget_doors()
 	await _test_briefing_on_arrival()
 	await _test_desk_door()
+	_test_movement_keys()
 
 	print("\n%d checks, %d failed" % [checks, failures.size()])
 	for f in failures:
@@ -727,3 +728,26 @@ func _test_desk_door() -> void:
 	var road := await _open(TERMINAL_SCENE)
 	_check(road.exit_doors.is_empty(), "Terminal Road has no desk")
 	await _close(road)
+
+
+# The hint on every walkable scene promises WASD or arrows. The player reads
+# the move_* actions, so both sets have to be on them - the ui_* actions it
+# used to read are arrows only, and WASD did nothing.
+func _test_movement_keys() -> void:
+	print("
+[movement keys]")
+	var expected := {
+		"move_left": [KEY_LEFT, KEY_A], "move_right": [KEY_RIGHT, KEY_D],
+		"move_up": [KEY_UP, KEY_W], "move_down": [KEY_DOWN, KEY_S],
+	}
+	for action in expected:
+		_check(InputMap.has_action(action), "%s exists" % action)
+		var keys: Array = []
+		for event in InputMap.action_get_events(action):
+			if event is InputEventKey:
+				keys.append((event as InputEventKey).keycode)
+		for key in expected[action]:
+			_check(keys.has(key), "%s answers to %s" % [action, OS.get_keycode_string(key)])
+	var player_script: Script = load("res://scripts/exploration/exploration_player.gd")
+	_check(player_script.source_code.contains("\"move_left\", \"move_right\", \"move_up\", \"move_down\""),
+		"the player reads the move_* actions")

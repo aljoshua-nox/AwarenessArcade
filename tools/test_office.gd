@@ -57,6 +57,7 @@ func _run() -> void:
 	await _test_fourth_floor()
 	await _test_detective_desk()
 	await _test_floor_prompts()
+	await _test_camera_fenced()
 	_test_ambience()
 	await _test_inspection_panel()
 	await _test_prologue_logs_calls()
@@ -476,11 +477,42 @@ func _test_detective_desk() -> void:
 
 
 # Station and exit prompts float over the thing, the way the street's do.
+# A camera with no limits centres on a player by the left wall and shows a
+# half-screen of void beside the room. Every floor fences it to the room.
+func _test_camera_fenced() -> void:
+	print("
+[the camera stays in the room]")
+	for scene_path in [OFFICE_SCENE, "res://scenes/exploration/office_floor_four.tscn", SessionState.DESK_SCENE]:
+		SessionState.reset_session()
+		var view: Node = load(scene_path).instantiate()
+		add_child(view)
+		await get_tree().process_frame
+		var camera: Camera2D = view.player.get_node("Camera2D")
+		var room: Vector2 = get_viewport().get_visible_rect().size
+		_check(camera.limit_left == 0 and camera.limit_top == 0 and camera.limit_right == int(room.x)
+			and camera.limit_bottom == int(room.y),
+			"%s fences the camera to the room (%d,%d..%d,%d)" % [scene_path.get_file(), camera.limit_left,
+			camera.limit_top, camera.limit_right, camera.limit_bottom])
+		_check(camera.zoom.x >= 1.0, "...and the view is no wider than the room (zoom %.1f)" % camera.zoom.x)
+		remove_child(view)
+		view.queue_free()
+		await get_tree().process_frame
+
+
 func _test_floor_prompts() -> void:
 	print("\n[prompts on the floor]")
 	SessionState.reset_session()
 	var view := await _open()
-	_check(view.prompt_bubble != null and not view.prompt_bubble.visible, "the prompt starts hidden")
+	# The spawn is a step inside the street door, so once physics has run the
+	# door's prompt is up. Waiting for it makes the check deterministic: read
+	# before the first physics step it was hidden, after it shown, and the
+	# suite flipped between the two with the machine's load.
+	await get_tree().physics_frame
+	await get_tree().physics_frame
+	_check(view.prompt_bubble != null and view.prompt_bubble.visible and view.prompt_bubble.text == view.portal.prompt_text,
+		"the spawn is inside the street door's reach, so its prompt is up (%s)" % view.prompt_bubble.text)
+	view._on_portal_exited(view.portal)
+	_check(not view.prompt_bubble.visible, "stepping off it hides the prompt")
 	_check(not view.station_label.visible and not view.portal_label.visible, "the corner labels stay off")
 	var ledger := _station(view, "The call list")
 	view._on_station_entered(view.player, ledger)

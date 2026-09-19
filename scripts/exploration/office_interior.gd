@@ -157,6 +157,23 @@ func _ready() -> void:
 	portal.player_exited.connect(_on_portal_exited)
 	_build_hud()
 	_build_map()
+	_fence_camera()
+
+
+# The rooms are one screen; the player's camera would otherwise centre on a
+# player standing by the left wall and show half a screen of nothing beyond
+# it. Seen at the desk, where the spawn is nearest the wall. The streets do
+# the same against their map size.
+func _fence_camera() -> void:
+	var camera := player.get_node_or_null("Camera2D") as Camera2D
+	if camera == null:
+		return
+	var room := get_viewport().get_visible_rect().size
+	camera.limit_left = 0
+	camera.limit_top = 0
+	camera.limit_right = int(room.x)
+	camera.limit_bottom = int(room.y)
+	camera.reset_smoothing()
 
 
 func _unhandled_input(event: InputEvent) -> void:

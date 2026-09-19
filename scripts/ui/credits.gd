@@ -53,8 +53,12 @@ static func required_entries(data: Dictionary) -> Array:
 
 func _unhandled_input(event: InputEvent) -> void:
 	if event.is_action_pressed("ui_cancel"):
-		_back()
+		# Handled first, then leave: change_scene_to_file() takes this node out
+		# of the tree at once, and a node outside the tree has no viewport to
+		# mark. The other way round was a script error in the editor and an
+		# access violation in the exported release build (found 2026-09-20).
 		get_viewport().set_input_as_handled()
+		_back()
 
 
 func _back() -> void:

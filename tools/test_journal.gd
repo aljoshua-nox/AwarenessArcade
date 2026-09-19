@@ -133,6 +133,7 @@ func _test_objective_route() -> void:
 	_check(_state("flip_operator") == CaseJournal.OBJECTIVE_DONE, "the flip completes it")
 	_check(_state("confront_director") == CaseJournal.OBJECTIVE_ACTIVE, "and opens the director's door")
 	_check(_state("name_owner") == CaseJournal.OBJECTIVE_ACTIVE, "and the question of the owner")
+	_check(_tracked() == "name_owner", "the HUD tracks the owner's name ahead of the director's door (%s)" % _tracked())
 	_check(_state("turn_recruit") == CaseJournal.OBJECTIVE_LOCKED,
 		"the fourth floor stays unmentioned until the player has a reason to know it exists")
 
@@ -143,6 +144,7 @@ func _test_objective_route() -> void:
 
 	SessionState.add_evidence({"id": "ev_owner_name", "label": "The Name Above The Floors"})
 	_check(_state("name_owner") == CaseJournal.OBJECTIVE_DONE, "the owner's name in the file completes the last one")
+	_check(_tracked() == "confront_director", "and the HUD moves on to the director's door (%s)" % _tracked())
 
 	SessionState.record_interview_outcome("elena_cruz", "full_takedown")
 	_check(_state("confront_director") == CaseJournal.OBJECTIVE_DONE, "confronting the director completes it")

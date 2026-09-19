@@ -36,9 +36,16 @@
       "complete_when": {"flag": "suspect_flipped"}
     },
     {
+      "id": "name_owner",
+      "title": "Name who owns the building",
+      "detail": "The floor directors answer to a name on the leases, and Elena's floor only comes down with its owner if that name is in the file - without it, the building stands. Two people have seen it: the closer in the tower lobby on Terminal Road, who will trade it for two statements with names on them, and the director of the fourth floor, up the stairwell from the call floor, whose door opens once one of her recruits has turned. Get it before you open Elena's door.",
+      "unlock_when": {"any": [{"flag": "suspect_flipped"}, {"flag": "witness_flipped"}]},
+      "complete_when": {"evidence": "ev_owner_name"}
+    },
+    {
       "id": "confront_director",
       "title": "Confront the floor director",
-      "detail": "The operator named her. Her door is at the far end of the call floor, past the desks - walk the floor before you open it. Two statements from the people her floor called will hold her.",
+      "detail": "The operator named her. Her door is at the far end of the call floor, past the desks - walk the floor before you open it. Two statements from the people her floor called will hold her; the owner's name in the file is what brings the building down with her. Her door is the end of the case.",
       "unlock_when": {"flag": "suspect_flipped"},
       "complete_when": {"interviewed": "elena_cruz"}
     },
@@ -55,13 +62,6 @@
         {"milestone": "The Ad Is The Script"}
       ]},
       "complete_when": {"flag": "witness_flipped"}
-    },
-    {
-      "id": "name_owner",
-      "title": "Name who owns the building",
-      "detail": "The floor directors answer to a name on the leases. Whoever runs a whole floor has seen it, and so has whoever closes the calls the floors transfer out. Without the name in the file, the building stands.",
-      "unlock_when": {"any": [{"flag": "suspect_flipped"}, {"flag": "witness_flipped"}]},
-      "complete_when": {"evidence": "ev_owner_name"}
     }
   ]
 }

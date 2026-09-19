@@ -247,7 +247,13 @@ func _test_director_door_gate() -> void:
 	view = await _open()
 	door = _station(view, "Floor director's office")
 	_check(bool(door.get("is_confrontation", false)), "the door becomes the confrontation once Marco flips")
-	_check(str(door.get("prompt", "")) == "Confront the Operation", "unlocked door prompts the confrontation")
+	_check(str(door.get("prompt", "")) == "Confront the Operation - nobody has named the owner yet",
+		"unlocked door prompts the confrontation and says the name is missing (%s)" % str(door.get("prompt", "")))
+	await _close(view)
+	SessionState.add_evidence({"id": SessionState.OWNER_NAME_EVIDENCE, "label": "The Name Above The Floors"})
+	view = await _open()
+	door = _station(view, "Floor director's office")
+	_check(str(door.get("prompt", "")) == "Confront the Operation", "with the name in the file the nudge goes")
 	await _close(view)
 
 

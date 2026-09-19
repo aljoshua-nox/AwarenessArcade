@@ -25,6 +25,11 @@ func director_nameplate() -> String:
 	return "R. OCAMPO"
 
 
+# Rowena's door is a way to the owner's name, not the end of the case.
+func confrontation_ends_case() -> bool:
+	return false
+
+
 func director_unlocked() -> bool:
 	return SessionState.witness_flipped
 

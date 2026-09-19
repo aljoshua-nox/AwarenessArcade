@@ -267,6 +267,16 @@ func has_evidence(item_id: String) -> bool:
 	return false
 
 
+## The one item that separates the full takedown from The Building Stands:
+## the owner's name, granted by Dennis or Rowena. Elena's check asks for it,
+## and every door on the way to her nudges while it is missing.
+const OWNER_NAME_EVIDENCE := "ev_owner_name"
+
+
+func owner_named() -> bool:
+	return has_evidence(OWNER_NAME_EVIDENCE)
+
+
 func reset_prologue() -> void:
 	calls_made = 0
 	victims_affected = 0

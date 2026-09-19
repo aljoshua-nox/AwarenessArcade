@@ -286,7 +286,11 @@ func _setup_office_portal() -> void:
 		return
 	portal.target_scene = portal_target_scene
 	if SessionState.suspect_flipped:
-		portal.prompt_text = "Enter the call center"
+		# A playtester took six statements to Elena and got The Building
+		# Stands, never having heard that the owner's name was a thing to get.
+		# The door says so while it is missing; so does hers, and the journal.
+		portal.prompt_text = "Enter the call center" if SessionState.owner_named() \
+			else "Enter the call center - nobody has named the owner yet"
 	elif SessionState.case_locked:
 		# Marco is gone, so the office holds nothing the player can reach. The
 		# door becomes the way to close an investigation that cannot be closed.

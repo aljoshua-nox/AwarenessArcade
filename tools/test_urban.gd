@@ -164,8 +164,15 @@ func _test_locked_case() -> void:
 	SessionState.case_locked = true
 	SessionState.suspect_flipped = true
 	view = await _open()
-	_check(view.portal.prompt_text == "Enter the call center",
+	_check(view.portal.prompt_text.begins_with("Enter the call center"),
 		"a flipped suspect keeps the confrontation open")
+	# The door says what is still missing, until it is not.
+	_check(view.portal.prompt_text.contains("nobody has named the owner"),
+		"...and nudges while the owner's name is not in the file (%s)" % view.portal.prompt_text)
+	await _close(view)
+	SessionState.add_evidence({"id": SessionState.OWNER_NAME_EVIDENCE, "label": "The Name Above The Floors"})
+	view = await _open()
+	_check(view.portal.prompt_text == "Enter the call center", "with the name in the file the nudge goes")
 	await _close(view)
 
 	# A district with no office parks the scene's portal where nothing reaches it.

@@ -120,6 +120,12 @@ func director_nameplate() -> String:
 	return "E. CRUZ"
 
 
+# Whether this floor's confrontation is the one that ends the case. Elena's is;
+# Rowena's, upstairs, is one of the two places the owner's name comes from.
+func confrontation_ends_case() -> bool:
+	return true
+
+
 # What unlocks the director's door on this floor. Elena's opens when Marco
 # flips; Rowena's when Bea turns.
 func director_unlocked() -> bool:
@@ -575,9 +581,15 @@ func _add_director_door() -> void:
 	else:
 		body += " There is someone moving behind the blinds."
 
+	var prompt := "Examine the director's door"
+	if not locked:
+		prompt = "Confront the Operation"
+		# The last door before the ending: say what is still missing.
+		if confrontation_ends_case() and not SessionState.owner_named():
+			prompt += " - nobody has named the owner yet"
 	var data := {
 		"title": "Floor director's office",
-		"prompt": "Confront the Operation" if not locked else "Examine the director's door",
+		"prompt": prompt,
 		"body": body,
 		"is_confrontation": not locked,
 	}

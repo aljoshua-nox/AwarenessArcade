@@ -62,7 +62,9 @@
 		{"line": "Writing with a felt tip pen by MoKoLoKo (freesound.org/s/325133), CC-BY 4.0 - the journal's pen.", "required": true, "key": "MoKoLoKo"},
 		{"line": "Steps-Tile_3a by nuFF3 (freesound.org/s/477357), CC-BY 4.0 - footsteps.", "required": true, "key": "nuFF3"},
 		{"line": "turning pages book slow quickly by jephwallace (freesound.org/s/318615), CC0. intercom bell phone hang up by martian (freesound.org/s/575853), CC0."},
-		{"line": "Dial tone by giddster (freesound.org/s/360480). Notification sound (handmade) by kila_vat (freesound.org/s/434379). Phone ringing 5 by AUDACITIER (freesound.org/s/629201)."},
+		{"line": "Notification Sound (handmade) by kila_vat (freesound.org/s/434379), CC-BY 4.0 - a report filed.", "required": true, "key": "kila_vat"},
+		{"line": "Phone Ringing #5 by AUDACITIER (freesound.org/s/629201), CC-BY 4.0 - the ring.", "required": true, "key": "AUDACITIER"},
+		{"line": "Dial tone by giddster (freesound.org/s/360480), CC0."},
 		{"line": "Interface Sounds by Kenney (kenney.nl), CC0: every click, tab, door, chime and buzz."}
 	  ]
 	}

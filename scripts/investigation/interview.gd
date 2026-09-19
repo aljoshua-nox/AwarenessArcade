@@ -16,6 +16,24 @@ const CHOICE_BUTTON_COUNT := 4
 # drift apart. Preloaded rather than used as a global class - see that file.
 const TextStyle := preload("res://scripts/systems/text_style.gd")
 
+# Where an interview happens decides what is behind it. A case names its
+# `person.setting`; the photo for it lives at the path below, and a setting
+# whose photo has not been added yet falls back to the office - so a victim's
+# kitchen table stops looking like a call floor the moment home.jpg exists,
+# and nothing breaks until it does. The validator holds the vocabulary.
+const DEFAULT_BACKGROUND := "res://assets/art/backgrounds/jose-losada-DyFjxmHt3Es-unsplash.jpg"
+const SETTING_BACKGROUNDS := {
+	"office": DEFAULT_BACKGROUND,
+	"call_floor": "res://assets/art/backgrounds/pexels-yankrukov-8867271.jpg",
+	"interrogation": "res://assets/art/backgrounds/settings/interrogation.jpg",
+	"home": "res://assets/art/backgrounds/settings/home.jpg",
+	"boarding_house": "res://assets/art/backgrounds/settings/boarding_house.jpg",
+	"shop": "res://assets/art/backgrounds/settings/shop.jpg",
+	"canteen": "res://assets/art/backgrounds/settings/canteen.jpg",
+	"site": "res://assets/art/backgrounds/settings/site.jpg",
+	"lobby": "res://assets/art/backgrounds/settings/lobby.jpg",
+}
+
 var portrait_rect: TextureRect
 var person_value: RichTextLabel
 var cooperation_value: Label
@@ -62,6 +80,7 @@ var opening_node_id: String = ""
 # True when the case opened on its hesitant node - the witness refused for want
 # of standing. No statement was taken, so none is spent.
 var hesitant_visit: bool = false
+var background: TextureRect
 
 # The keys a node's `dispositions` block may override. Only the opening beat
 # used to vary with the prologue; everything after it was the case as written
@@ -77,6 +96,7 @@ const NODE_OVERRIDE_KEYS := ["prompt", "choices", "evidence_hint", "evidence_pro
 func _ready() -> void:
 	_build_ui()
 	_load_case()
+	_set_background(str(person.get("setting", "")))
 	_apply_disposition()
 	_resolve_evidence()
 	_refresh_person_panel()
@@ -231,11 +251,26 @@ func _determine_start_node() -> String:
 	return default_start
 
 
+## The photo a setting resolves to right now: its own if the file has been
+## added and imported, the office otherwise.
+static func background_for(setting: String) -> String:
+	var path := str(SETTING_BACKGROUNDS.get(setting, DEFAULT_BACKGROUND))
+	if ResourceLoader.exists(path):
+		return path
+	return DEFAULT_BACKGROUND
+
+
+func _set_background(setting: String) -> void:
+	if background == null:
+		return
+	background.texture = load(background_for(setting))
+
+
 func _build_ui() -> void:
 	set_anchors_preset(Control.PRESET_FULL_RECT)
 
-	var background := TextureRect.new()
-	background.texture = load("res://assets/art/backgrounds/jose-losada-DyFjxmHt3Es-unsplash.jpg")
+	background = TextureRect.new()
+	background.texture = load(DEFAULT_BACKGROUND)
 	background.set_anchors_preset(Control.PRESET_FULL_RECT)
 	background.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 	background.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_COVERED

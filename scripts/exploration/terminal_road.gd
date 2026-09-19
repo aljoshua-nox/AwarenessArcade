@@ -97,7 +97,8 @@ const BLOCK_BUILDINGS := [
 ]
 
 const CAR_SPOTS := [200.0, 700.0, 1250.0, 1750.0]
-const TREE_SPOTS := [Vector2(1440.0, 950.0), Vector2(1650.0, 620.0), Vector2(1850.0, 900.0)]
+# No trees - see urban_exterior.gd. The table stays for the layout test.
+const TREE_SPOTS := []
 const LAMP_TOP_X := [450.0, 900.0, 1650.0]
 const LAMP_BOTTOM_X := [450.0, 1100.0, 1650.0]
 

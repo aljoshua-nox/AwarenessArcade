@@ -8,6 +8,7 @@
     "age": 41,
     "occupation": "Owns a small print shop",
     "role": "Victim",
+    "setting": "shop",
     "script": "lottery",
     "portrait": "res://assets/art/portraits/lady 3.png",
     "traits": "Under financial pressure. Keeps trading while she talks. Has stopped expecting help.",
@@ -274,7 +275,7 @@
       }
     },
     "ask_call": {
-      "prompt": "\"A release fee. Small - I checked the amount twice, it was less than one print run. Then a tax charge, because the money had cleared into a holding account daw. Then a courier bond, because it was being delivered physically.\" She looks up. \"Every single time, that was supposed to be the last one.\"",
+      "prompt": "\"A release fee. Small - I checked the amount twice, it was less than one print run. Then a tax charge, because the money was already in a holding account, he said. Then a courier bond, because it was being delivered physically.\" She looks up. \"Every single time, that was supposed to be the last one.\"",
       "choices": [
         {
           "text": "Say that last part again. Every time it was supposed to be the last one.",
@@ -283,7 +284,7 @@
       ],
       "dispositions": {
         "resistant": {
-          "prompt": "\"A prize. A trade raffle through my paper supplier daw - a hundred fifty thousand, for equipment. And a release fee to be paid today, which he called a bond and said would come back to me with the prize.\" She looks up. \"I told him to just deduct it from the prize. He hung up.\"",
+          "prompt": "\"A prize. He said it was a trade raffle through my paper supplier - a hundred fifty thousand, for equipment. And a release fee to be paid today, which he called a bond and said would come back to me with the prize.\" She looks up. \"I told him to just deduct it from the prize. He hung up.\"",
           "choices": [
             {
               "text": "Say that part again. It would come back to you with the prize.",
@@ -292,7 +293,7 @@
           ]
         },
         "unfinished": {
-          "prompt": "\"A prize. A trade raffle through the supplier daw, a hundred fifty thousand, for equipment. He was getting to what he needed from me when the line cut.\" She shrugs. \"They all cut off eventually.\"",
+          "prompt": "\"A prize. A trade raffle through the supplier, he said - a hundred fifty thousand, for equipment. He was getting to what he needed from me when the line cut.\" She shrugs. \"They all cut off eventually.\"",
           "choices": [
             {
               "text": "The next sentence was going to be a fee. Let's look at how that goes.",

@@ -97,6 +97,7 @@ func _run() -> void:
 	await _test_fourth_floor_director()
 	await _test_closer()
 	await _test_statement_budget()
+	await _test_setting_backgrounds()
 
 	print("\n%d checks, %d failed" % [checks, failures.size()])
 	for f in failures:
@@ -1090,3 +1091,31 @@ func _open_at(case_path: String, credibility: int) -> Node:
 	add_child(view)
 	await get_tree().process_frame
 	return view
+
+
+# A victim's kitchen is not a call floor. The case names where it happens, the
+# interview picks the photo for it, and a photo not yet added falls back to the
+# office instead of a missing texture.
+func _test_setting_backgrounds() -> void:
+	print("\n[where the interview happens]")
+	var script: Script = load("res://scripts/investigation/interview.gd")
+	var default_bg: String = script.DEFAULT_BACKGROUND
+	_check(ResourceLoader.exists(default_bg), "the fallback photo exists")
+	_check(script.background_for("office") == default_bg, "the office is the default photo")
+	_check(script.background_for("not_a_setting") == default_bg, "an unknown setting falls back to it")
+	_check(script.background_for("") == default_bg, "so does a case with none")
+	var call_floor: String = script.SETTING_BACKGROUNDS["call_floor"]
+	_check(ResourceLoader.exists(call_floor) and script.background_for("call_floor") == call_floor,
+		"the call floor has its own photo in the repo already")
+	var home: String = script.SETTING_BACKGROUNDS["home"]
+	if ResourceLoader.exists(home):
+		_check(script.background_for("home") == home, "a home photo, once added, is used")
+	else:
+		_check(script.background_for("home") == default_bg, "until a home photo is added, homes fall back to the office")
+
+	var view := await _open(CASE_MARIA)
+	_check(str(view.person.get("setting", "")) == "home", "Maria is interviewed at home")
+	_check(view.background != null and view.background.texture != null, "the interview draws a background")
+	_check(view.background.texture.resource_path == script.background_for("home"),
+		"...and it is the one her setting resolves to")
+	await _close(view)

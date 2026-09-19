@@ -7,6 +7,7 @@
     "age": 81,
     "occupation": "Retired schoolteacher",
     "role": "Victim",
+    "setting": "home",
     "script": "family_emergency",
     "portrait": "res://assets/art/portraits/teddy.png",
     "traits": "Widower; lives alone. Courteous to a fault. Talks about his grandson before he talks about the money.",

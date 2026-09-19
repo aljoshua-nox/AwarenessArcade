@@ -154,7 +154,7 @@ const OFFICE_ROW_INDEX := 3
 
 # Positions are constrained, not decorative. A block building is 124.8 wide, so
 # each entry occupies [x, x + 124.8] at y 520-702.4, and that band already
-# contains the two side streets ([520,616] and [1400,1496]), the trees at y 600
+# contains the two side streets ([520,616] and [1400,1496]), formerly trees at y 600
 # (x 400, 1000, 1550) and a pedestrian at x 700. An earlier five-across layout
 # put one house in the middle of a side street and another through a tree. The
 # fourth house sits in the right-hand pocket past the second side street, clear
@@ -167,11 +167,10 @@ const BLOCK_BUILDINGS := [
 ]
 
 const CAR_SPOTS := [300.0, 650.0, 1250.0, 1600.0, 1800.0]
-const TREE_SPOTS := [
-	Vector2(400.0, 600.0), Vector2(650.0, 950.0), Vector2(1000.0, 600.0),
-	Vector2(1250.0, 950.0), Vector2(1550.0, 600.0), Vector2(1850.0, 950.0),
-	Vector2(300.0, 950.0),
-]
+# No trees: the only tree tile in the city set is a thin green stalk that read
+# as a bottle standing on the grass (removed 2026-09-19). The table and the
+# layout test's tree check stay, so a proper tree can be put back as rows here.
+const TREE_SPOTS := []
 const LAMP_TOP_X := [350.0, 900.0, 1450.0]
 const LAMP_BOTTOM_X := [350.0, 900.0, 1300.0]
 

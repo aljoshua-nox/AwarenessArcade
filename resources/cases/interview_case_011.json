@@ -7,6 +7,7 @@
     "age": 55,
     "occupation": "Floor Director",
     "role": "Suspect",
+    "setting": "call_floor",
     "portrait": "res://assets/art/portraits/rowena.png",
     "traits": "Twenty years on floors like this one. Does not negotiate, does not raise her voice, and does not lie where a denial will do."
   },

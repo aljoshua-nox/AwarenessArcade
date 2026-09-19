@@ -8,6 +8,7 @@
     "age": 20,
     "occupation": "Recent graduate, job-hunting",
     "role": "Victim",
+    "setting": "home",
     "script": "job_offer",
     "portrait": "res://assets/art/portraits/trish.png",
     "traits": "Earnest and a little embarrassed. Has the whole thing saved on her phone. Wants to be told it was not a stupid mistake.",
@@ -163,7 +164,7 @@
       ]
     },
     "ask_ad": {
-      "prompt": "\"Customer service. No experience needed, training provided, five slots left, batch starts Monday.\" She reads it off the screen in the voice of somebody who has read it a hundred times since. \"I messaged the number and HR Ms. Dela Cruz replied in four minutes. Four minutes. I'd been waiting weeks for anybody to reply.\" A breath. \"She asked for my resume, and then she said congratulations, I was shortlisted, and there was a training and uniform fee. Refundable on the first payday daw.\"",
+      "prompt": "\"Customer service. No experience needed, training provided, five slots left, batch starts Monday.\" She reads it off the screen in the voice of somebody who has read it a hundred times since. \"I messaged the number and HR Ms. Dela Cruz replied in four minutes. Four minutes. I'd been waiting weeks for anybody to reply.\" A breath. \"She asked for my resume, and then she said congratulations, I was shortlisted, and there was a training and uniform fee. Refundable daw, on the first payday.\"",
       "choices": [
         {
           "text": "Stay on that word. Refundable.",

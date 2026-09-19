@@ -7,6 +7,7 @@
     "age": 22,
     "occupation": "Call floor operator, two months",
     "role": "Witness",
+    "setting": "boarding_house",
     "portrait": "res://assets/art/portraits/bea.png",
     "traits": "Answered a customer-service advertisement and found herself reading scripts. Stayed because the pay was real and the rent was due. Will defend the job until she sees what it did to someone she knows.",
     "min_credibility": 65,

@@ -364,6 +364,37 @@ for tid in sorted(catalogue_ids - reachable):
 
 print(f"tactic_catalogue.json: {len(catalogue_ids)} tactics, {len(reachable)} reachable")
 
+# --- Settings ----------------------------------------------------------------
+# Every case names where its interview happens (`person.setting`), and the
+# interview picks its background from that. The vocabulary is the keys of
+# SETTING_BACKGROUNDS in interview.gd, read from the script so the two cannot
+# drift; a setting the engine does not know would silently fall back to the
+# office photo, which is the bug this exists to catch.
+settings_vocab = set()
+interview_path = os.path.join(base, "scripts", "investigation", "interview.gd")
+if os.path.exists(interview_path):
+    with open(interview_path, encoding="utf-8") as fh:
+        in_block = False
+        for line in fh:
+            if line.startswith("const SETTING_BACKGROUNDS"):
+                in_block = True
+                continue
+            if in_block:
+                if line.strip().startswith("}"):
+                    break
+                m = re.match(r'\s*"(\w+)":', line)
+                if m:
+                    settings_vocab.add(m.group(1))
+if not settings_vocab:
+    errors.append("interview.gd: could not read SETTING_BACKGROUNDS - the settings check has nothing to check against")
+for f, data in parsed.items():
+    name = os.path.basename(f)
+    setting = data.get("person", {}).get("setting", "")
+    if not setting:
+        errors.append(f"{name}: person has no setting - the interview needs to know where it happens")
+    elif settings_vocab and setting not in settings_vocab:
+        errors.append(f"{name}: setting '{setting}' is not one of {sorted(settings_vocab)} (interview.gd SETTING_BACKGROUNDS)")
+
 # --- The briefing ------------------------------------------------------------
 # The desk sergeant's brief on the case journal's first tab. Prose like any
 # other, so it gets the register lint and the one-copy rule below; on top of

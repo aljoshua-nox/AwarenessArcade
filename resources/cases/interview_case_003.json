@@ -2,293 +2,294 @@
   "case_id": "interview_case_003",
   "title": "The Interrogation of Marco Navarro",
   "person": {
-    "person_id": "marco_navarro",
-    "name": "Marco Navarro",
-    "age": 29,
-    "occupation": "Call floor operator",
-    "role": "Suspect",
-    "portrait": "res://assets/art/portraits/fella 2.png",
-    "traits": "Defensive and deflects blame upward. Cracks when confronted with specific victim details."
+	"person_id": "marco_navarro",
+	"name": "Marco Navarro",
+	"age": 29,
+	"occupation": "Call floor operator",
+	"role": "Suspect",
+	"setting": "interrogation",
+	"portrait": "res://assets/art/portraits/fella 2.png",
+	"traits": "Defensive and deflects blame upward. Cracks when confronted with specific victim details."
   },
   "evidence": [],
   "start_node": "intro",
   "failure_node": "end_lawyered",
   "nodes": {
-    "intro": {
-      "prompt": "Marco leans back, arms crossed. \"I don't know what you think I did. It's a call center. People call about all kinds of things.\"",
-      "choices": [
-        {
-          "text": "I'm not here for you, Marco. I'm here for whoever hands you the scripts.",
-          "next": "deny_node",
-          "cooperation": 12
-        },
-        {
-          "text": "Let's talk about the calls made from your floor this month.",
-          "next": "deny_node"
-        },
-        {
-          "text": "Every call from that floor is going under your name. Start talking.",
-          "next": "hostile",
-          "cooperation": -16
-        }
-      ]
-    },
-    "hostile": {
-      "prompt": "He laughs once, no humor in it. \"Under my name. Okay.\" He shifts, and something closes behind his eyes. \"Then I think I'll stop talking and make a phone call of my own.\"",
-      "choices": [
-        {
-          "text": "Nobody's putting the whole floor on you. I want the people above you.",
-          "next": "deny_node",
-          "cooperation": 10
-        },
-        {
-          "text": "Make your call. It won't change what the victims already told me.",
-          "next": "press_hostile",
-          "cooperation": -12
-        }
-      ]
-    },
-    "press_hostile": {
-      "prompt": "\"Then you don't need me, right?\" He turns his chair a little away from you and says nothing for a while.",
-      "cooperation": -8,
-      "choices": [
-        {
-          "text": "Ease off. Tell him you want the operation, not him.",
-          "next": "deny_node",
-          "cooperation": 8
-        },
-        {
-          "text": "Keep pressing.",
-          "next": "end_lawyered"
-        }
-      ]
-    },
-    "deny_node": {
-      "prompt": "\"I just call the names on the list. I don't write the scripts, I don't choose who's on it. That's not on me.\" He shifts in the chair and adds, like it settles something: \"And whatever they told you, I'm on the morning shift. Seven to two. After that I'm not even in the building.\"",
-      "claim": "Marco Navarro, on the record: seven to two, mornings only, not in the building afterwards.",
-      "evidence_prompt": true,
-      "evidence_hint": "Two ways through him. A victim who is willing to go on record moves him - documents on their own do not. But he just volunteered something you can check, and something you can check can be wrong.",
-      "accepts_evidence": [
-        {
-          "evidence_id": "ev_remote_access_log",
-          "contradicts": true,
-          "contradiction_note": "The session runs 23:04 to 23:41, under his own operator ID. By his own account he left the building nine hours before that.",
-          "next": "caught_shift",
-          "response": "You put the log on the table and turn it so he can read the time stamp himself. He reads it twice, and the second time is slower.",
-          "cooperation": 22
-        },
-        {
-          "evidence_id": "test_maria_confirmed",
-          "next": "half_crack",
-          "response": "His jaw tightens. \"...Okay, maybe that one call. That still doesn't prove I was the one running things.\"",
-          "cooperation": 20
-        },
-        {
-          "evidence_id": "test_evelyn_confirmed",
-          "next": "half_crack",
-          "response": "\"Marsh.\" The name is out before he can stop it, and he shuts his mouth. \"...She didn't even pay. Why is she the one talking to you?\"",
-          "cooperation": 20,
-          "responses": {
-            "harmed": "\"Marsh.\" The name is out before he can stop it, and he shuts his mouth. \"...She paid? The bookkeeper paid?\" He almost laughs, and doesn't. \"Then the list was right about her.\"",
-            "unfinished": "\"Marsh.\" The name is out before he can stop it, and he shuts his mouth. \"...That one dropped. Somebody logged off mid-call.\" A beat. \"Why is she the one talking to you?\""
-          }
-        },
-        {
-          "evidence_id": "test_lina_confirmed",
-          "next": "half_crack",
-          "response": "He reads the amount on the transfer and something goes out of him. \"That one wasn't mine.\" A beat. \"But I know whose desk it came from.\"",
-          "cooperation": 20,
-          "responses": {
-            "resistant": "\"Reyes. The print shop.\" He reads her notes in the margin - his own lines in somebody else's handwriting - and something goes out of him. \"That one wasn't mine.\" A beat. \"But I know whose desk it came from.\"",
-            "unfinished": "\"Reyes.\" He reads the number off her note and something goes out of him. \"That one dropped. Somebody logged off mid-call.\" A beat. \"But I know whose desk it came from.\""
-          }
-        },
-        {
-          "evidence_id": "test_kevin_confirmed",
-          "next": "half_crack",
-          "response": "He shifts in his seat. \"Fine. Maybe. Doesn't mean I'm the one you should be looking at.\"",
-          "cooperation": 20
-        },
-        {
-          "evidence_id": "test_teddy_confirmed",
-          "next": "half_crack",
-          "response": "He reads the name at the top. \"Villanueva.\" Something moves behind his face and gets put away again. \"That one had a grandson's name next to it on the sheet. I remember thinking, that's a lot of detail for a list.\"",
-          "cooperation": 20,
-          "responses": {
-            "resistant": "He reads the name at the top. \"Villanueva. The one who called his daughter.\" A short laugh with nothing in it. \"The note came back DO NOT RECONTACT - CHECKS. You don't get a lot of those.\"",
-            "unfinished": "He reads the name at the top. \"Villanueva.\" He frowns. \"That one dropped. Somebody logged off mid-call.\" A beat. \"There was a grandson's name next to it on the sheet. I remember that.\""
-          }
-        },
-        {
-          "accepts_scripts": ["bank_fraud", "lottery", "tech_support", "family_emergency", "government", "utility"],
-          "next": "half_crack",
-          "response": "He reads the name at the top of the statement and his jaw tightens. \"...Okay. Maybe that one call.\" He does not look up. \"That still doesn't prove I was the one running things.\"",
-          "cooperation": 20
-        },
-        {
-          "evidence_id": "ev_phishing_text",
-          "next": "deny_node",
-          "response": "He barely glances at it. \"A text message. From a number that isn't mine, to a person I've never met.\" He is right, and he knows it: a document with no witness attached does not put him in the room.",
-          "cooperation": -6,
-          "wrong": true
-        },
-        {
-          "evidence_id": "ev_popup_screenshot",
-          "next": "deny_node",
-          "response": "\"That's a screenshot of a website. Anybody can get one of those.\" Without somebody willing to say what happened next, it is a picture, not a case.",
-          "cooperation": -6,
-          "wrong": true
-        }
-      ],
-      "choices": [
-        {
-          "text": "Tell me about the list. Where does it come from?",
-          "next": "tactic_quiz_list"
-        },
-        {
-          "text": "Sooner or later you're going to have to explain the pattern.",
-          "next": "deny_partial"
-        }
-      ]
-    },
-    "tactic_quiz_list": {
-      "tactic_quiz": {
-        "setup": "\"The list,\" he says, like it's the most boring thing in the world. \"It comes down from upstairs. Names, numbers, notes in the margin. I dial what they give me.\"",
-        "tactic_id": "reused_victim_list",
-        "tactic": "The reused victim list",
-        "question": "Notes in the margin. What is a list like that actually made of?",
-        "milestone": {
-          "title": "Tactic Identified: The Reused Victim List",
-          "detail": "Learned that scam operations buy and resell lists of people who previously engaged - which is why answering or staying on the line once leads to being targeted repeatedly and harder."
-        },
-        "options": [
-          {
-            "text": "People who already responded to a scam once - bought or traded between operations.",
-            "correct": true,
-            "cooperation": 14,
-            "feedback": "These get sold between operations as lists of people who are known to answer. Engaging once - even just staying on the line to argue - marks a number as live, and it gets called again by somebody with a script that fits you better. That is why victims are so often hit more than once."
-          },
-          {
-            "text": "Phone numbers dialed at random until someone answers.",
-            "cooperation": -8,
-            "feedback": "Random dialing exists at the cheap end, but it barely pays. The notes in the margin give it away: somebody wrote down what worked on each person before. This list has a history attached to it."
-          },
-          {
-            "text": "Customers leaked from inside the bank being impersonated.",
-            "cooperation": -8,
-            "feedback": "Insider leaks happen, but they are not needed here. Lists of people who already engaged with a scam are traded openly between operations - no bank breach required."
-          }
-        ],
-        "next": "list_followup"
-      }
-    },
-    "list_followup": {
-      "prompt": "Marco doesn't like that you know that. \"...Yeah. The good lists cost more. You dial somebody who's been caught before, they're already halfway there.\" He stops, aware he has said too much.",
-      "cooperation": 5,
-      "choices": [
-        {
-          "text": "Somebody who's been called before. You mean somebody like Maria Santos.",
-          "next": "deny_node"
-        }
-      ]
-    },
-    "caught_shift": {
-      "prompt": "\"...Nights too. Sometimes.\" Marco sits back. \"That was stupid. I didn't have to say the hours.\" He looks at the log again, almost annoyed at it. \"You would never have known, right? Nobody keeps the logs.\"",
-      "cooperation": 6,
-      "milestone": {
-        "title": "Account Broken: The Shift That Wasn't",
-        "detail": "Marco Navarro volunteered a specific alibi and a timestamped record disproved it. A rehearsed story survives being doubted; it does not survive being checked against something written down at the time."
-      },
-      "choices": [
-        {
-          "text": "You didn't have to say the hours. People telling the truth usually don't.",
-          "next": "half_crack"
-        }
-      ]
-    },
-    "half_crack": {
-      "prompt": "\"Look, everybody on that floor made calls like that. Pinning it on me doesn't get you the people actually running it.\"",
-      "evidence_prompt": true,
-      "evidence_hint": "He is hiding behind 'everybody did it.' A second, separate testimony should close that door.",
-      "accepts_evidence": [
-        {
-          "evidence_id": "test_maria_confirmed",
-          "next": "full_crack",
-          "response": "\"...Two of them. Two different people telling you the same thing.\" His arms drop.",
-          "cooperation": 25
-        },
-        {
-          "evidence_id": "test_evelyn_confirmed",
-          "next": "full_crack",
-          "response": "\"She refused, and she still ended up in a file.\" He rubs his face. \"You get that that means the list is the product, right? Not the call.\"",
-          "cooperation": 25,
-          "responses": {
-            "harmed": "\"She paid, and she'll get called again.\" He rubs his face. \"You get that that means the list is the product, right? Not the call.\"",
-            "unfinished": "\"The line dropped, and she still ended up in a file.\" He rubs his face. \"You get that that means the list is the product, right? Not the call.\""
-          }
-        },
-        {
-          "evidence_id": "test_lina_confirmed",
-          "next": "full_crack",
-          "response": "\"That's two.\" He looks at the transfer slip for a long time. \"She kept paying because we kept telling her the next one was the last one. That was the script. That was actually written down.\"",
-          "cooperation": 25,
-          "responses": {
-            "resistant": "\"That's two.\" He looks at her notes for a long time. \"She wrote down the part about the fee coming back with the prize. That was the script. That was written down, and now it's written down twice.\"",
-            "unfinished": "\"That's two.\" He looks at the note for a long time. \"That one never got to the fee. Doesn't matter. The script is the same from the first line, and she has the first line.\""
-          }
-        },
-        {
-          "evidence_id": "test_kevin_confirmed",
-          "next": "full_crack",
-          "response": "\"...Two of them. Two different people telling you the same thing.\" His arms drop.",
-          "cooperation": 25
-        },
-        {
-          "accepts_scripts": ["bank_fraud", "lottery", "tech_support", "family_emergency", "government", "utility"],
-          "next": "full_crack",
-          "response": "He looks at the two statements side by side and stops pretending they have nothing to do with each other. \"Different scripts. Same sheet.\" His arms drop.",
-          "cooperation": 25
-        }
-      ],
-      "choices": [
-        {
-          "text": "Then give me a name, and let's stop pretending you're just a guy on the phone.",
-          "next": "deny_partial"
-        }
-      ]
-    },
-    "deny_partial": {
-      "prompt": "Marco stonewalls you. Without a second, separate testimony tying him to specific victims, he has nothing to fear from this conversation yet.",
-      "outcome": "partial",
-      "choices": []
-    },
-    "full_crack": {
-      "prompt": "Marco finally deflates. \"Okay - okay. It's not just me. There's a whole floor running five different scripts. We get bonuses on the ones who cry.\" He hears himself say it. \"I can give you names, if it keeps me out of the worst of this.\"",
-      "milestone": {
-        "title": "Whistleblower Secured",
-        "detail": "Marco Navarro agreed to identify the wider call-center operation once confronted with two independent victim testimonies."
-      },
-      "choices": [
-        {
-          "text": "Tell me everything, starting with who runs the floor.",
-          "next": "end_whistleblower"
-        }
-      ]
-    },
-    "end_whistleblower": {
-      "prompt": "Marco's statement, with two confirmed victim testimonies behind it, is enough to move on the call center itself. This is no longer circumstantial - it is a built case.",
-      "outcome": "whistleblower",
-      "choices": []
-    },
-    "end_lawyered": {
-      "locks_case": true,
-      "prompt": "Marco folds his hands and looks past you at the wall. \"I'm done answering questions.\" Within the hour there's a lawyer in the building, and the one person who could have named the floor above him is not saying another word to you.",
-      "outcome": "failure",
-      "milestone": {
-        "title": "Suspect Lost",
-        "detail": "Marco Navarro shut down under pressure. A low-level operator who feels he'll carry the whole operation alone has no reason to name anyone above him."
-      },
-      "choices": []
-    }
+	"intro": {
+	  "prompt": "Marco leans back, arms crossed. \"I don't know what you think I did. It's a call center. People call about all kinds of things.\"",
+	  "choices": [
+		{
+		  "text": "I'm not here for you, Marco. I'm here for whoever hands you the scripts.",
+		  "next": "deny_node",
+		  "cooperation": 12
+		},
+		{
+		  "text": "Let's talk about the calls made from your floor this month.",
+		  "next": "deny_node"
+		},
+		{
+		  "text": "Every call from that floor is going under your name. Start talking.",
+		  "next": "hostile",
+		  "cooperation": -16
+		}
+	  ]
+	},
+	"hostile": {
+	  "prompt": "He laughs once, no humor in it. \"Under my name. Okay.\" He shifts, and something closes behind his eyes. \"Then I think I'll stop talking and make a phone call of my own.\"",
+	  "choices": [
+		{
+		  "text": "Nobody's putting the whole floor on you. I want the people above you.",
+		  "next": "deny_node",
+		  "cooperation": 10
+		},
+		{
+		  "text": "Make your call. It won't change what the victims already told me.",
+		  "next": "press_hostile",
+		  "cooperation": -12
+		}
+	  ]
+	},
+	"press_hostile": {
+	  "prompt": "\"Then you don't need me, right?\" He turns his chair a little away from you and says nothing for a while.",
+	  "cooperation": -8,
+	  "choices": [
+		{
+		  "text": "Ease off. Tell him you want the operation, not him.",
+		  "next": "deny_node",
+		  "cooperation": 8
+		},
+		{
+		  "text": "Keep pressing.",
+		  "next": "end_lawyered"
+		}
+	  ]
+	},
+	"deny_node": {
+	  "prompt": "\"I just call the names on the list. I don't write the scripts, I don't choose who's on it. That's not on me.\" He shifts in the chair and adds, like it settles something: \"And whatever they told you, I'm on the morning shift. Seven to two. After that I'm not even in the building.\"",
+	  "claim": "Marco Navarro, on the record: seven to two, mornings only, not in the building afterwards.",
+	  "evidence_prompt": true,
+	  "evidence_hint": "Two ways through him. A victim who is willing to go on record moves him - documents on their own do not. But he just volunteered something you can check, and something you can check can be wrong.",
+	  "accepts_evidence": [
+		{
+		  "evidence_id": "ev_remote_access_log",
+		  "contradicts": true,
+		  "contradiction_note": "The session runs 23:04 to 23:41, under his own operator ID. By his own account he left the building nine hours before that.",
+		  "next": "caught_shift",
+		  "response": "You put the log on the table and turn it so he can read the time stamp himself. He reads it twice, and the second time is slower.",
+		  "cooperation": 22
+		},
+		{
+		  "evidence_id": "test_maria_confirmed",
+		  "next": "half_crack",
+		  "response": "His jaw tightens. \"...Okay, maybe that one call. That still doesn't prove I was the one running things.\"",
+		  "cooperation": 20
+		},
+		{
+		  "evidence_id": "test_evelyn_confirmed",
+		  "next": "half_crack",
+		  "response": "\"Marsh.\" The name is out before he can stop it, and he shuts his mouth. \"...She didn't even pay. Why is she the one talking to you?\"",
+		  "cooperation": 20,
+		  "responses": {
+			"harmed": "\"Marsh.\" The name is out before he can stop it, and he shuts his mouth. \"...She paid? The bookkeeper paid?\" He almost laughs, and doesn't. \"Then the list was right about her.\"",
+			"unfinished": "\"Marsh.\" The name is out before he can stop it, and he shuts his mouth. \"...That one dropped. Somebody logged off mid-call.\" A beat. \"Why is she the one talking to you?\""
+		  }
+		},
+		{
+		  "evidence_id": "test_lina_confirmed",
+		  "next": "half_crack",
+		  "response": "He reads the amount on the transfer and something goes out of him. \"That one wasn't mine.\" A beat. \"But I know whose desk it came from.\"",
+		  "cooperation": 20,
+		  "responses": {
+			"resistant": "\"Reyes. The print shop.\" He reads her notes in the margin - his own lines in somebody else's handwriting - and something goes out of him. \"That one wasn't mine.\" A beat. \"But I know whose desk it came from.\"",
+			"unfinished": "\"Reyes.\" He reads the number off her note and something goes out of him. \"That one dropped. Somebody logged off mid-call.\" A beat. \"But I know whose desk it came from.\""
+		  }
+		},
+		{
+		  "evidence_id": "test_kevin_confirmed",
+		  "next": "half_crack",
+		  "response": "He shifts in his seat. \"Fine. Maybe. Doesn't mean I'm the one you should be looking at.\"",
+		  "cooperation": 20
+		},
+		{
+		  "evidence_id": "test_teddy_confirmed",
+		  "next": "half_crack",
+		  "response": "He reads the name at the top. \"Villanueva.\" Something moves behind his face and gets put away again. \"That one had a grandson's name next to it on the sheet. I remember thinking, that's a lot of detail for a list.\"",
+		  "cooperation": 20,
+		  "responses": {
+			"resistant": "He reads the name at the top. \"Villanueva. The one who called his daughter.\" A short laugh with nothing in it. \"The note came back DO NOT RECONTACT - CHECKS. You don't get a lot of those.\"",
+			"unfinished": "He reads the name at the top. \"Villanueva.\" He frowns. \"That one dropped. Somebody logged off mid-call.\" A beat. \"There was a grandson's name next to it on the sheet. I remember that.\""
+		  }
+		},
+		{
+		  "accepts_scripts": ["bank_fraud", "lottery", "tech_support", "family_emergency", "government", "utility"],
+		  "next": "half_crack",
+		  "response": "He reads the name at the top of the statement and his jaw tightens. \"...Okay. Maybe that one call.\" He does not look up. \"That still doesn't prove I was the one running things.\"",
+		  "cooperation": 20
+		},
+		{
+		  "evidence_id": "ev_phishing_text",
+		  "next": "deny_node",
+		  "response": "He barely glances at it. \"A text message. From a number that isn't mine, to a person I've never met.\" He is right, and he knows it: a document with no witness attached does not put him in the room.",
+		  "cooperation": -6,
+		  "wrong": true
+		},
+		{
+		  "evidence_id": "ev_popup_screenshot",
+		  "next": "deny_node",
+		  "response": "\"That's a screenshot of a website. Anybody can get one of those.\" Without somebody willing to say what happened next, it is a picture, not a case.",
+		  "cooperation": -6,
+		  "wrong": true
+		}
+	  ],
+	  "choices": [
+		{
+		  "text": "Tell me about the list. Where does it come from?",
+		  "next": "tactic_quiz_list"
+		},
+		{
+		  "text": "Sooner or later you're going to have to explain the pattern.",
+		  "next": "deny_partial"
+		}
+	  ]
+	},
+	"tactic_quiz_list": {
+	  "tactic_quiz": {
+		"setup": "\"The list,\" he says, like it's the most boring thing in the world. \"It comes down from upstairs. Names, numbers, notes in the margin. I dial what they give me.\"",
+		"tactic_id": "reused_victim_list",
+		"tactic": "The reused victim list",
+		"question": "Notes in the margin. What is a list like that actually made of?",
+		"milestone": {
+		  "title": "Tactic Identified: The Reused Victim List",
+		  "detail": "Learned that scam operations buy and resell lists of people who previously engaged - which is why answering or staying on the line once leads to being targeted repeatedly and harder."
+		},
+		"options": [
+		  {
+			"text": "People who already responded to a scam once - bought or traded between operations.",
+			"correct": true,
+			"cooperation": 14,
+			"feedback": "These get sold between operations as lists of people who are known to answer. Engaging once - even just staying on the line to argue - marks a number as live, and it gets called again by somebody with a script that fits you better. That is why victims are so often hit more than once."
+		  },
+		  {
+			"text": "Phone numbers dialed at random until someone answers.",
+			"cooperation": -8,
+			"feedback": "Random dialing exists at the cheap end, but it barely pays. The notes in the margin give it away: somebody wrote down what worked on each person before. This list has a history attached to it."
+		  },
+		  {
+			"text": "Customers leaked from inside the bank being impersonated.",
+			"cooperation": -8,
+			"feedback": "Insider leaks happen, but they are not needed here. Lists of people who already engaged with a scam are traded openly between operations - no bank breach required."
+		  }
+		],
+		"next": "list_followup"
+	  }
+	},
+	"list_followup": {
+	  "prompt": "Marco doesn't like that you know that. \"...Yeah. The good lists cost more. You dial somebody who's been caught before, they're already halfway there.\" He stops, aware he has said too much.",
+	  "cooperation": 5,
+	  "choices": [
+		{
+		  "text": "Somebody who's been called before. You mean somebody like Maria Santos.",
+		  "next": "deny_node"
+		}
+	  ]
+	},
+	"caught_shift": {
+	  "prompt": "\"...Nights too. Sometimes.\" Marco sits back. \"That was stupid. I didn't have to say the hours.\" He looks at the log again, almost annoyed at it. \"You would never have known, right? Nobody keeps the logs.\"",
+	  "cooperation": 6,
+	  "milestone": {
+		"title": "Account Broken: The Shift That Wasn't",
+		"detail": "Marco Navarro volunteered a specific alibi and a timestamped record disproved it. A rehearsed story survives being doubted; it does not survive being checked against something written down at the time."
+	  },
+	  "choices": [
+		{
+		  "text": "You didn't have to say the hours. People telling the truth usually don't.",
+		  "next": "half_crack"
+		}
+	  ]
+	},
+	"half_crack": {
+	  "prompt": "\"Look, everybody on that floor made calls like that. Pinning it on me doesn't get you the people actually running it.\"",
+	  "evidence_prompt": true,
+	  "evidence_hint": "He is hiding behind 'everybody did it.' A second, separate testimony should close that door.",
+	  "accepts_evidence": [
+		{
+		  "evidence_id": "test_maria_confirmed",
+		  "next": "full_crack",
+		  "response": "\"...Two of them. Two different people telling you the same thing.\" His arms drop.",
+		  "cooperation": 25
+		},
+		{
+		  "evidence_id": "test_evelyn_confirmed",
+		  "next": "full_crack",
+		  "response": "\"She refused, and she still ended up in a file.\" He rubs his face. \"You get that that means the list is the product, right? Not the call.\"",
+		  "cooperation": 25,
+		  "responses": {
+			"harmed": "\"She paid, and she'll get called again.\" He rubs his face. \"You get that that means the list is the product, right? Not the call.\"",
+			"unfinished": "\"The line dropped, and she still ended up in a file.\" He rubs his face. \"You get that that means the list is the product, right? Not the call.\""
+		  }
+		},
+		{
+		  "evidence_id": "test_lina_confirmed",
+		  "next": "full_crack",
+		  "response": "\"That's two.\" He looks at the transfer slip for a long time. \"She kept paying because we kept telling her the next one was the last one. That was the script. That was actually written down.\"",
+		  "cooperation": 25,
+		  "responses": {
+			"resistant": "\"That's two.\" He looks at her notes for a long time. \"She wrote down the part about the fee coming back with the prize. That was the script. That was written down, and now it's written down twice.\"",
+			"unfinished": "\"That's two.\" He looks at the note for a long time. \"That one never got to the fee. Doesn't matter. The script is the same from the first line, and she has the first line.\""
+		  }
+		},
+		{
+		  "evidence_id": "test_kevin_confirmed",
+		  "next": "full_crack",
+		  "response": "\"...Two of them. Two different people telling you the same thing.\" His arms drop.",
+		  "cooperation": 25
+		},
+		{
+		  "accepts_scripts": ["bank_fraud", "lottery", "tech_support", "family_emergency", "government", "utility"],
+		  "next": "full_crack",
+		  "response": "He looks at the two statements side by side and stops pretending they have nothing to do with each other. \"Different scripts. Same sheet.\" His arms drop.",
+		  "cooperation": 25
+		}
+	  ],
+	  "choices": [
+		{
+		  "text": "Then give me a name, and let's stop pretending you're just a guy on the phone.",
+		  "next": "deny_partial"
+		}
+	  ]
+	},
+	"deny_partial": {
+	  "prompt": "Marco stonewalls you. Without a second, separate testimony tying him to specific victims, he has nothing to fear from this conversation yet.",
+	  "outcome": "partial",
+	  "choices": []
+	},
+	"full_crack": {
+	  "prompt": "Marco finally deflates. \"Okay - okay. It's not just me. There's a whole floor running five different scripts. We get bonuses on the ones who cry.\" He hears himself say it. \"I can give you names, if it keeps me out of the worst of this.\"",
+	  "milestone": {
+		"title": "Whistleblower Secured",
+		"detail": "Marco Navarro agreed to identify the wider call-center operation once confronted with two independent victim testimonies."
+	  },
+	  "choices": [
+		{
+		  "text": "Tell me everything, starting with who runs the floor.",
+		  "next": "end_whistleblower"
+		}
+	  ]
+	},
+	"end_whistleblower": {
+	  "prompt": "Marco's statement, with two confirmed victim testimonies behind it, is enough to move on the call center itself. This is no longer circumstantial - it is a built case.",
+	  "outcome": "whistleblower",
+	  "choices": []
+	},
+	"end_lawyered": {
+	  "locks_case": true,
+	  "prompt": "Marco folds his hands and looks past you at the wall. \"I'm done answering questions.\" Within the hour there's a lawyer in the building, and the one person who could have named the floor above him is not saying another word to you.",
+	  "outcome": "failure",
+	  "milestone": {
+		"title": "Suspect Lost",
+		"detail": "Marco Navarro shut down under pressure. A low-level operator who feels he'll carry the whole operation alone has no reason to name anyone above him."
+	  },
+	  "choices": []
+	}
   }
 }

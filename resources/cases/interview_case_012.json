@@ -7,6 +7,7 @@
     "age": 49,
     "occupation": "Canteen cook",
     "role": "Victim",
+    "setting": "canteen",
     "script": "utility",
     "portrait": "res://assets/art/portraits/carmen.png",
     "traits": "Runs a canteen and a household of five. Sharp, not naive - the script was built for exactly her evening. Keeps serving while she talks and expects you to eat.",
@@ -104,7 +105,7 @@
       ]
     },
     "ask_call": {
-      "prompt": "\"A text first. FINAL NOTICE, all capital letters, thirty minutes. Then the call, a minute after - a man, very polite, very sorry, the system was automatic daw and he couldn't stop it himself unless the reconnection fee was settled while he was on the line.\" She sets a glass down harder than she means to. \"Reconnection. It wasn't even disconnected. He said the fee is what stops the disconnection. At six o'clock, with the rice on, that made sense. It made complete sense.\"",
+      "prompt": "\"A text first. FINAL NOTICE, all capital letters, thirty minutes. Then the call, a minute after - a man, very polite, very sorry, the system was automatic daw, and he couldn't stop it himself unless the reconnection fee was settled while he was on the line.\" She sets a glass down harder than she means to. \"Reconnection. It wasn't even disconnected. He said the fee is what stops the disconnection. At six o'clock, with the rice on, that made sense. It made complete sense.\"",
       "choices": [
         {
           "text": "Stay on six o'clock for a moment.",

@@ -7,6 +7,7 @@
     "age": 27,
     "occupation": "Floor Director",
     "role": "Suspect",
+    "setting": "call_floor",
     "portrait": "res://assets/art/portraits/lady 4.png",
     "traits": "Composed and calculating. Switches quickly from denial to negotiation when cornered."
   },

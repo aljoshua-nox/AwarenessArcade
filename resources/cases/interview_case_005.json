@@ -7,6 +7,7 @@
     "age": 74,
     "occupation": "Retired bookkeeper",
     "role": "Victim",
+    "setting": "home",
     "script": "lottery",
     "portrait": "res://assets/art/portraits/lady 2.png",
     "traits": "Careful with money. Checks things twice. Annoyed rather than shaken.",
@@ -222,7 +223,7 @@
       }
     },
     "ask_call": {
-      "prompt": "\"A very pleasant young man. I had won a regional raffle daw - four hundred-something thousand. All that was left was the release fee, and could I settle it today, because the draw closes at five.\"",
+      "prompt": "\"A very polite young man. He said I won in a regional raffle - four hundred-something thousand. All that was left was the release fee, and he asked if I could settle it today, because the draw was closing at five.\"",
       "choices": [
         {
           "text": "Say the part about the fee again. Exactly the way he said it.",
@@ -231,10 +232,10 @@
       ],
       "dispositions": {
         "harmed": {
-          "prompt": "\"A very pleasant young man. I had won a regional raffle daw - four hundred-something thousand. There was a release fee, and it had to be settled today, because the draw closes at five.\" She folds her hands. \"I settled it.\""
+          "prompt": "\"A very polite young man. He said I won in a regional raffle - four hundred-something thousand. There was a release fee, he said, and it had to be settled today, because the draw was closing at five.\" She folds her hands. \"I settled it.\""
         },
         "unfinished": {
-          "prompt": "\"A very pleasant young man. I had won a regional raffle daw, and he was getting to what was needed to release it when the line cut.\" She frowns. \"I've had a week to think about what the next sentence was going to be. My sister got one of these calls. I know what it was.\""
+          "prompt": "\"A very polite young man. He said I won in a regional raffle, and he was getting to what I had to do to release it when the line cut.\" She frowns. \"I've had a week to think about what the next sentence was going to be. My sister got one of these calls. I know what it was.\""
         }
       }
     },

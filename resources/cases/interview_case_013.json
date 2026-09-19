@@ -7,6 +7,7 @@
     "age": 38,
     "occupation": "Call floor closer",
     "role": "Suspect",
+    "setting": "lobby",
     "portrait": "res://assets/art/portraits/dennis.png",
     "traits": "The one a stalled call is transferred to. Has done this longer than anyone in the building and feels nothing about it. Has heard every pressure line, because he wrote half of them."
   },

@@ -7,6 +7,7 @@
     "age": 36,
     "occupation": "Construction foreman",
     "role": "Victim",
+    "setting": "site",
     "script": "government",
     "portrait": "res://assets/art/portraits/joel.png",
     "traits": "Six months into a site contract, sends the fifteenth's pay home. Angrier at himself than at the caller. Gives you exactly the time he said he would.",

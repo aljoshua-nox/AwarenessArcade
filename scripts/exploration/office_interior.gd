@@ -54,7 +54,9 @@ const OBJ_MONITOR := Rect2(17.0, 6.0, 14.0, 15.0)
 const OBJ_CABINET := Rect2(96.0, 2.0, 16.0, 26.0)
 const OBJ_FILE_CABINET := Rect2(48.0, 64.0, 16.0, 32.0)
 const OBJ_COOLER := Rect2(16.0, 64.0, 16.0, 24.0)
-const OBJ_PLANT := Rect2(48.0, 48.0, 17.0, 18.0)
+# The plant's pixels are x 56-71, y 49-63 on the sheet. The old rect started
+# eight pixels to the left, so it drew half a pot and a slice of empty sheet.
+const OBJ_PLANT := Rect2(56.0, 49.0, 16.0, 15.0)
 const OBJ_SOFA := Rect2(99.0, 70.0, 26.0, 19.0)
 const OBJ_EASEL := Rect2(70.0, 66.0, 20.0, 26.0)
 const OBJ_DOOR := Rect2(128.0, 50.0, 32.0, 34.0)

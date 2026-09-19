@@ -2,482 +2,483 @@
   "case_id": "interview_case_002",
   "title": "The Kevin Dizon Call",
   "person": {
-    "person_id": "kevin_d",
-    "name": "Kevin Dizon",
-    "age": 24,
-    "occupation": "Office worker",
-    "role": "Victim",
-    "script": "tech_support",
-    "portrait": "res://assets/art/portraits/fella 3.png",
-    "traits": "Busy and distracted. Embarrassed he let a stranger into his laptop.",
-    "min_credibility": 60,
-    "hesitant_start": "hesitant_intro",
-    "dispositions": {
-      "harmed": {
-        "cooperation": 34,
-        "prompt": "Kevin has the laptop with him, closed, and keeps one hand flat on the lid the whole time. \"I've read about this happening to other people. I always thought, how, how do you fall for that.\" He shrugs, tries a laugh, and it doesn't land. \"Anyway. It's a lot of money to be stupid about.\"",
-        "note": "He paid you. The self-blame in this room is doing the caller's work for them - he will minimize what happened unless you make it safe not to."
-      },
-      "resistant": {
-        "cooperation": 62,
-        "prompt": "Kevin drops into the chair mid-sentence. \"Okay, so - the warning pop-up, the fake scan, the whole thing. I hung up.\" He is still worked up about it. \"But they had my name. My actual name. That's the part I can't get over. Where did they get that?\"",
-        "note": "He hung up on you. That leaves nothing to trace - but he recalls the script better than most people who paid, because he was listening to it rather than panicking through it."
-      },
-      "unfinished": {
-        "cooperation": 44,
-        "prompt": "Kevin checks the time before he sits. \"Somebody called about my laptop and then the line dropped. That's the whole story.\" He is already half out of the conversation. \"Is this really worth a house visit?\"",
-        "note": "Your call to him was cut off. He does not believe anything happened, which makes getting his attention the first problem to solve."
-      }
-    }
+	"person_id": "kevin_d",
+	"name": "Kevin Dizon",
+	"age": 24,
+	"occupation": "Office worker",
+	"role": "Victim",
+	"setting": "home",
+	"script": "tech_support",
+	"portrait": "res://assets/art/portraits/fella 3.png",
+	"traits": "Busy and distracted. Embarrassed he let a stranger into his laptop.",
+	"min_credibility": 60,
+	"hesitant_start": "hesitant_intro",
+	"dispositions": {
+	  "harmed": {
+		"cooperation": 34,
+		"prompt": "Kevin has the laptop with him, closed, and keeps one hand flat on the lid the whole time. \"I've read about this happening to other people. I always thought, how, how do you fall for that.\" He shrugs, tries a laugh, and it doesn't land. \"Anyway. It's a lot of money to be stupid about.\"",
+		"note": "He paid you. The self-blame in this room is doing the caller's work for them - he will minimize what happened unless you make it safe not to."
+	  },
+	  "resistant": {
+		"cooperation": 62,
+		"prompt": "Kevin drops into the chair mid-sentence. \"Okay, so - the warning pop-up, the fake scan, the whole thing. I hung up.\" He is still worked up about it. \"But they had my name. My actual name. That's the part I can't get over. Where did they get that?\"",
+		"note": "He hung up on you. That leaves nothing to trace - but he recalls the script better than most people who paid, because he was listening to it rather than panicking through it."
+	  },
+	  "unfinished": {
+		"cooperation": 44,
+		"prompt": "Kevin checks the time before he sits. \"Somebody called about my laptop and then the line dropped. That's the whole story.\" He is already half out of the conversation. \"Is this really worth a house visit?\"",
+		"note": "Your call to him was cut off. He does not believe anything happened, which makes getting his attention the first problem to solve."
+	  }
+	}
   },
   "evidence": [
-    {
-      "id": "ev_popup_screenshot",
-      "tactic_id": "manufactured_fear",
-      "label": "Fake Tech-Support Pop-up",
-      "description": "A screenshot of a browser pop-up claiming Kevin's device was infected, with a number to call immediately.",
-      "tactic": "Manufactured fear: a fake virus warning designed to panic the victim into calling."
-    },
-    {
-      "id": "ev_callback_log",
-      "only_for": [
-        "resistant",
-        "unfinished"
-      ],
-      "label": "Kevin's Callback Log",
-      "description": "A screenshot of his phone's call history: the number he dialed off the pop-up, and the callback nineteen minutes later from the number on the community notice.",
-      "tactic": "A 'support line' that has to call you back is a line of victims being worked in turn, not a help desk.",
-      "tactic_id": "reused_victim_list"
-    },
-    {
-      "id": "ev_remote_access_log",
-      "tactic_id": "remote_access",
-      "label": "Remote Access Log",
-      "description": "A log showing a stranger connected to Kevin's laptop for several minutes before he disconnected it.",
-      "tactic": "Posing as technical support to gain direct access to a victim's device.",
-      "dispositions": {
-        "resistant": {
-          "omit": true
-        },
-        "unfinished": {
-          "omit": true
-        }
-      }
-    },
-    {
-      "id": "ev_fee_receipt",
-      "tactic_id": "invented_fee",
-      "label": "Removal Fee Receipt",
-      "description": "A payment receipt for a 'malware removal fee' charged during the call.",
-      "tactic": "Charging a fee to 'fix' a problem that was invented in the first place.",
-      "dispositions": {
-        "resistant": {
-          "omit": true
-        },
-        "unfinished": {
-          "omit": true
-        }
-      }
-    },
-    {
-      "id": "ev_distracted_note",
-      "label": "Distracted at Work Note",
-      "description": "A note that Kevin was juggling several tasks when the call came in.",
-      "tactic": ""
-    }
+	{
+	  "id": "ev_popup_screenshot",
+	  "tactic_id": "manufactured_fear",
+	  "label": "Fake Tech-Support Pop-up",
+	  "description": "A screenshot of a browser pop-up claiming Kevin's device was infected, with a number to call immediately.",
+	  "tactic": "Manufactured fear: a fake virus warning designed to panic the victim into calling."
+	},
+	{
+	  "id": "ev_callback_log",
+	  "only_for": [
+		"resistant",
+		"unfinished"
+	  ],
+	  "label": "Kevin's Callback Log",
+	  "description": "A screenshot of his phone's call history: the number he dialed off the pop-up, and the callback nineteen minutes later from the number on the community notice.",
+	  "tactic": "A 'support line' that has to call you back is a line of victims being worked in turn, not a help desk.",
+	  "tactic_id": "reused_victim_list"
+	},
+	{
+	  "id": "ev_remote_access_log",
+	  "tactic_id": "remote_access",
+	  "label": "Remote Access Log",
+	  "description": "A log showing a stranger connected to Kevin's laptop for several minutes before he disconnected it.",
+	  "tactic": "Posing as technical support to gain direct access to a victim's device.",
+	  "dispositions": {
+		"resistant": {
+		  "omit": true
+		},
+		"unfinished": {
+		  "omit": true
+		}
+	  }
+	},
+	{
+	  "id": "ev_fee_receipt",
+	  "tactic_id": "invented_fee",
+	  "label": "Removal Fee Receipt",
+	  "description": "A payment receipt for a 'malware removal fee' charged during the call.",
+	  "tactic": "Charging a fee to 'fix' a problem that was invented in the first place.",
+	  "dispositions": {
+		"resistant": {
+		  "omit": true
+		},
+		"unfinished": {
+		  "omit": true
+		}
+	  }
+	},
+	{
+	  "id": "ev_distracted_note",
+	  "label": "Distracted at Work Note",
+	  "description": "A note that Kevin was juggling several tasks when the call came in.",
+	  "tactic": ""
+	}
   ],
   "start_node": "intro",
   "failure_node": "end_shutdown",
   "nodes": {
-    "hesitant_intro": {
-      "prompt": "Kevin barely looks up from his phone. \"Look, I already feel dumb enough about this. I don't really want to go through it with somebody I don't know.\"",
-      "choices": [
-        {
-          "text": "I understand. I'll come back when I have more to show you.",
-          "next": "end_partial_hesitant"
-        }
-      ]
-    },
-    "end_partial_hesitant": {
-      "prompt": "Kevin isn't ready to open up. Standing with the other witnesses first might change his mind.",
-      "outcome": "partial",
-      "choices": []
-    },
-    "intro": {
-      "prompt": "Kevin rubs his eyes. \"I still don't know how I let that guy into my laptop. Kind of embarrassing, ha.\"",
-      "choices": [
-        {
-          "text": "It happens to careful people too. Can you walk me through it?",
-          "next": "ask_call"
-        },
-        {
-          "text": "Before we start - you're not the one in trouble here. He is.",
-          "next": "reassure",
-          "cooperation": 8
-        },
-        {
-          "text": "You gave a stranger remote access to your own laptop. Walk me through how that happened.",
-          "next": "shame_him",
-          "cooperation": -14
-        }
-      ],
-      "dispositions": {
-        "resistant": {
-          "choices": [
-            {
-              "text": "It happens to careful people too. Can you walk me through it?",
-              "next": "ask_call"
-            },
-            {
-              "text": "Before we start - you're not the one in trouble here. He is.",
-              "next": "reassure",
-              "cooperation": 8
-            },
-            {
-              "text": "You called a number you found in a browser pop-up. Walk me through how that happened.",
-              "next": "shame_him",
-              "cooperation": -14
-            }
-          ]
-        },
-        "unfinished": {
-          "choices": [
-            {
-              "text": "It happens to careful people too. Can you walk me through it?",
-              "next": "ask_call"
-            },
-            {
-              "text": "Before we start - you're not the one in trouble here. He is.",
-              "next": "reassure",
-              "cooperation": 8
-            },
-            {
-              "text": "You called a number you found in a browser pop-up. Walk me through how that happened.",
-              "next": "shame_him",
-              "cooperation": -14
-            }
-          ]
-        }
-      }
-    },
-    "reassure": {
-      "prompt": "He finally puts the phone face down. \"...Okay. Yeah. Everyone I told so far mostly just laughed at me.\"",
-      "cooperation": 4,
-      "choices": [
-        {
-          "text": "It's not funny. It's a script, and it works. Start from the pop-up.",
-          "next": "ask_call"
-        }
-      ]
-    },
-    "shame_him": {
-      "prompt": "His jaw sets. \"Right. Because you've never had a bad day, obviously.\" He picks his phone back up. \"It said my laptop was infected. I called. That's the whole story.\"",
-      "choices": [
-        {
-          "text": "That was out of line, sorry. These pop-ups are designed to work on anyone.",
-          "next": "reassure",
-          "cooperation": 8
-        },
-        {
-          "text": "Fine. Then let's go through it faster.",
-          "next": "ask_call_cold",
-          "cooperation": -8
-        }
-      ]
-    },
-    "ask_call": {
-      "prompt": "\"A pop-up filled the whole screen. Said my laptop was infected, my files were at risk, call this support number immediately. So I called, got put on hold, and then a 'technician' called me back.\" He rubs his eyes. \"He sounded exactly like real tech support. So I let him remote in to 'fix' it.\"",
-      "choices": [
-        {
-          "text": "Hold on. Let's look at that pop-up first.",
-          "next": "tactic_quiz_popup"
-        }
-      ],
-      "dispositions": {
-        "resistant": {
-          "prompt": "\"A pop-up filled the whole screen. Said my laptop was infected, my files were at risk, call this support number immediately. So I called, got put on hold, and then a 'technician' called me back.\" He shakes his head. \"He wanted to remote in to 'fix' it. I hung up before he got what he wanted.\""
-        },
-        "unfinished": {
-          "prompt": "\"A pop-up filled the whole screen. Said my laptop was infected, my files were at risk, call this support number immediately. So I called, got put on hold, and then a 'technician' called me back.\" He shrugs. \"And then the line dropped. That's it. I never found out what he wanted.\""
-        }
-      }
-    },
-    "ask_call_cold": {
-      "prompt": "\"Pop-up. Support number. Callback. Guy remoted in. Charged me. I hung up.\" He shrugs. \"What else do you want?\"",
-      "cooperation": -6,
-      "choices": [
-        {
-          "text": "The pop-up. Let's start there.",
-          "next": "tactic_quiz_popup"
-        }
-      ],
-      "dispositions": {
-        "resistant": {
-          "prompt": "\"Pop-up. Support number. Callback. Guy wanted remote access. I hung up.\" He shrugs. \"What else do you want?\""
-        },
-        "unfinished": {
-          "prompt": "\"Pop-up. Support number. Callback. Line dropped.\" He shrugs. \"What else do you want?\""
-        }
-      }
-    },
-    "tactic_quiz_popup": {
-      "tactic_quiz": {
-        "setup": "You pull up the screenshot. A red banner fills the browser window: [i]\"THREAT DETECTED - 3 infected files found. Do not restart your device. Call support immediately.\"[/i]",
-        "tactic_id": "impossible_scan",
-        "tactic": "The impossible scan",
-        "question": "What is the one fact that proves this pop-up was fake, before anybody even called the number?",
-        "milestone": {
-          "title": "Tactic Identified: The Impossible Scan",
-          "detail": "Recognized that a web page in a browser cannot scan a device's files - so any pop-up claiming to have found infections is fabricated by definition."
-        },
-        "options": [
-          {
-            "text": "A web page in a browser cannot scan the files on your computer.",
-            "correct": true,
-            "cooperation": 12,
-            "feedback": "A website cannot see the files on your computer. It cannot count your infected files because it cannot see them. Any page that claims a specific number of threats made that number up - which makes every one of these pop-ups fake, no exceptions."
-          },
-          {
-            "text": "Real antivirus software never uses red warning banners.",
-            "cooperation": -8,
-            "feedback": "Plenty of real security tools use alarming colors. Judging by looks is exactly the trap - these pages are designed to look right. What gives it away is that a browser page cannot scan the machine at all."
-          },
-          {
-            "text": "The message had a phone number instead of a support link.",
-            "cooperation": -6,
-            "feedback": "A phone number is a strong warning sign - real security software fixes things in the software, it does not ask you to call a stranger. But the airtight proof is simpler: the page could never have detected anything in the first place."
-          },
-          {
-            "text": "It told him not to restart his device.",
-            "cooperation": -6,
-            "feedback": "That line is there to stop him closing the page and clearing his head, so you are reading the intent right. Still, the fact that settles it is that a web page cannot look at his files to begin with."
-          }
-        ],
-        "next": "ask_evidence"
-      }
-    },
-    "ask_evidence": {
-      "prompt": "Kevin stares at the screenshot. \"...It never scanned anything. It just said it did.\"",
-      "evidence_prompt": true,
-      "evidence_hint": "Him believing it is one thing. You need something that proves a stranger actually got into that laptop.",
-      "accepts_evidence": [
-        {
-          "evidence_id": "ev_remote_access_log",
-          "next": "confirm_access",
-          "response": "Kevin exhales. \"Right, the access log. I forgot I still had that saved.\"",
-          "cooperation": 20
-        },
-        {
-          "evidence_id": "ev_popup_screenshot",
-          "next": "ask_evidence",
-          "response": "\"That's the one.\" It shows what convinced him, but it is the bait, not proof of what the caller did next.",
-          "cooperation": 4
-        },
-        {
-          "evidence_id": "ev_fee_receipt",
-          "next": "ask_evidence",
-          "response": "He winces at the amount. \"For fixing a problem that was never there.\" He pushes the receipt back across the table.",
-          "cooperation": 6
-        },
-        {
-          "evidence_id": "ev_distracted_note",
-          "next": "ask_evidence",
-          "response": "\"I mean, sure, I was busy, but that's not really the point?\" He looks a little annoyed.",
-          "cooperation": -8,
-          "wrong": true
-        }
-      ],
-      "choices": [
-        {
-          "text": "Did he ask you to pay for anything?",
-          "next": "press_fee"
-        },
-        {
-          "text": "That's a good start, thank you.",
-          "next": "end_partial"
-        }
-      ],
-      "dispositions": {
-        "resistant": {
-          "choices": [
-            {
-              "text": "What did he ask you for, before you hung up?",
-              "next": "press_fee"
-            },
-            {
-              "text": "That's a good start, thank you.",
-              "next": "end_partial"
-            }
-          ],
-          "evidence_hint": "He hung up before anyone got in, so there is no session and no receipt. What matters is that the callback reached him - and where it came from.",
-          "accepts_evidence": [
-            {
-              "evidence_id": "ev_callback_log",
-              "next": "confirm_access",
-              "response": "Kevin pulls up the screenshot. \"Yeah. I dialed the number on the pop-up, and nineteen minutes later that number called me back.\" He points at it. \"Same one as on the bulletin board down the road. I checked.\"",
-              "cooperation": 10
-            },
-            {
-              "evidence_id": "ev_popup_screenshot",
-              "next": "ask_evidence",
-              "response": "\"That's the one.\" It shows what convinced him, but it is the bait, not proof of what the caller did next.",
-              "cooperation": 4
-            },
-            {
-              "evidence_id": "ev_distracted_note",
-              "next": "ask_evidence",
-              "response": "\"I mean, sure, I was busy, but that's not really the point?\" He looks a little annoyed.",
-              "cooperation": -8,
-              "wrong": true
-            }
-          ]
-        },
-        "unfinished": {
-          "choices": [
-            {
-              "text": "How far did he get before the line dropped?",
-              "next": "press_fee"
-            },
-            {
-              "text": "That's a good start, thank you.",
-              "next": "end_partial"
-            }
-          ],
-          "evidence_hint": "The call never finished, so there is nothing to trace on the laptop. What matters is that the callback reached him - and where it came from.",
-          "accepts_evidence": [
-            {
-              "evidence_id": "ev_callback_log",
-              "next": "confirm_access",
-              "response": "Kevin pulls up the screenshot. \"Yeah. I dialed the number on the pop-up, and nineteen minutes later that number called me back.\" He points at it. \"Same one as on the bulletin board down the road. I checked.\"",
-              "cooperation": 10
-            },
-            {
-              "evidence_id": "ev_popup_screenshot",
-              "next": "ask_evidence",
-              "response": "\"That's the one.\" It shows what convinced him, but it is the bait, not proof of what the caller did next.",
-              "cooperation": 4
-            },
-            {
-              "evidence_id": "ev_distracted_note",
-              "next": "ask_evidence",
-              "response": "\"I mean, sure, I was busy, but that's not really the point?\" He looks a little annoyed.",
-              "cooperation": -8,
-              "wrong": true
-            }
-          ]
-        }
-      }
-    },
-    "press_fee": {
-      "prompt": "\"A 'removal fee.' I paid it just to get him off the phone faster.\" He shakes his head. \"He made up the problem, then charged me to make it go away.\"",
-      "cooperation": 6,
-      "choices": [
-        {
-          "text": "Can you show me anything that backs this up?",
-          "next": "ask_evidence"
-        },
-        {
-          "text": "That's a good start, thank you.",
-          "next": "end_partial"
-        }
-      ],
-      "dispositions": {
-        "resistant": {
-          "prompt": "\"A 'support tool.' He wanted it on the laptop so he could remote in.\" He shakes his head. \"I said no, and then I thought - wait, I never gave the hotline my name. They had it before I said a word.\""
-        },
-        "unfinished": {
-          "prompt": "\"He didn't get to ask for anything. He was still telling me how bad it was when the line dropped.\" He shrugs. \"Anticlimactic. I just sat there for a while.\""
-        }
-      }
-    },
-    "confirm_access": {
-      "prompt": "\"He was in for about six minutes before I panicked and pulled the cable.\" Kevin pushes the log across the table. \"Six minutes is a long time to be somewhere you're not supposed to be.\"",
-      "cooperation": 10,
-      "milestone": {
-        "title": "Second Witness Secured",
-        "detail": "Kevin Dizon confirmed the remote-access session once shown the connection log - a different opening script, the same operation."
-      },
-      "choices": [
-        {
-          "text": "This matches what another victim told me. Thank you, Kevin.",
-          "next": "end_success"
-        }
-      ],
-      "dispositions": {
-        "resistant": {
-          "prompt": "\"They called me back. From a number that's on a bulletin board down the road.\" Kevin pushes the phone across the table. \"I saved it because I wanted to know who has my name. Turns out a lot of people do.\"",
-          "milestone": {
-            "title": "Second Witness Secured",
-            "detail": "Kevin Dizon confirmed the callback and the number it came from - a different opening script, the same line."
-          }
-        },
-        "unfinished": {
-          "prompt": "\"They called me back. From a number that's on a bulletin board down the road.\" Kevin pushes the phone across the table. \"I saved it because I wanted to know who has my name. Turns out a lot of people do.\"",
-          "milestone": {
-            "title": "Second Witness Secured",
-            "detail": "Kevin Dizon confirmed the callback and the number it came from - a different opening script, the same line."
-          }
-        }
-      }
-    },
-    "end_success": {
-      "prompt": "Kevin's access log shows the same rushed, fear-based script that was used on Maria - a different angle, the same operation.",
-      "outcome": "success",
-      "grants_evidence": [
-        {
-          "id": "test_kevin_confirmed",
-          "label": "Kevin's Confirmed Testimony",
-          "description": "Kevin confirmed a stranger remotely accessed his laptop after a fake virus warning, then charged a bogus removal fee.",
-          "tactic": "A second independent testimony confirms this is a repeatable, scripted operation."
-        }
-      ],
-      "choices": [],
-      "dispositions": {
-        "resistant": {
-          "prompt": "Kevin's call log ties the callback to the same number the street keeps naming - a different opening script, the same operation.",
-          "grants_evidence": [
-            {
-              "id": "test_kevin_confirmed",
-              "label": "Kevin's Confirmed Testimony",
-              "description": "Kevin confirmed a fake virus warning and a callback from the operation's number; he hung up before anything was taken.",
-              "tactic": "A second independent testimony confirms this is a repeatable, scripted operation."
-            }
-          ]
-        },
-        "unfinished": {
-          "prompt": "Kevin's call log ties the callback to the same number the street keeps naming - a different opening script, the same operation.",
-          "grants_evidence": [
-            {
-              "id": "test_kevin_confirmed",
-              "label": "Kevin's Confirmed Testimony",
-              "description": "Kevin confirmed a fake virus warning and a callback from the operation's number; the line dropped before anything was taken.",
-              "tactic": "A second independent testimony confirms this is a repeatable, scripted operation."
-            }
-          ]
-        }
-      }
-    },
-    "end_partial": {
-      "prompt": "You have Kevin's account, but nothing yet that ties it to the operation behind it.",
-      "outcome": "partial",
-      "choices": []
-    },
-    "end_shutdown": {
-      "prompt": "Kevin pockets his phone and stands. \"You know what, I have work.\" He's already at the door. \"Just put me down as not pursuing it.\" The access log goes back into a folder you will not get to see again.",
-      "outcome": "failure",
-      "milestone": {
-        "title": "Witness Lost",
-        "detail": "Kevin Dizon disengaged. Shame is the reason most tech-support scam victims never report - and unreported cases are what let the same script keep running."
-      },
-      "choices": [],
-      "dispositions": {
-        "resistant": {
-          "prompt": "Kevin pockets his phone and stands. \"You know what, I have work.\" He's already at the door. \"Just put me down as not pursuing it.\" The call log stays on his phone, and you will not be shown it again."
-        },
-        "unfinished": {
-          "prompt": "Kevin pockets his phone and stands. \"You know what, I have work.\" He's already at the door. \"Just put me down as not pursuing it.\" The call log stays on his phone, and you will not be shown it again."
-        }
-      }
-    }
+	"hesitant_intro": {
+	  "prompt": "Kevin barely looks up from his phone. \"Look, I already feel dumb enough about this. I don't really want to go through it with somebody I don't know.\"",
+	  "choices": [
+		{
+		  "text": "I understand. I'll come back when I have more to show you.",
+		  "next": "end_partial_hesitant"
+		}
+	  ]
+	},
+	"end_partial_hesitant": {
+	  "prompt": "Kevin isn't ready to open up. Standing with the other witnesses first might change his mind.",
+	  "outcome": "partial",
+	  "choices": []
+	},
+	"intro": {
+	  "prompt": "Kevin rubs his eyes. \"I still don't know how I let that guy into my laptop. Kind of embarrassing, ha.\"",
+	  "choices": [
+		{
+		  "text": "It happens to careful people too. Can you walk me through it?",
+		  "next": "ask_call"
+		},
+		{
+		  "text": "Before we start - you're not the one in trouble here. He is.",
+		  "next": "reassure",
+		  "cooperation": 8
+		},
+		{
+		  "text": "You gave a stranger remote access to your own laptop. Walk me through how that happened.",
+		  "next": "shame_him",
+		  "cooperation": -14
+		}
+	  ],
+	  "dispositions": {
+		"resistant": {
+		  "choices": [
+			{
+			  "text": "It happens to careful people too. Can you walk me through it?",
+			  "next": "ask_call"
+			},
+			{
+			  "text": "Before we start - you're not the one in trouble here. He is.",
+			  "next": "reassure",
+			  "cooperation": 8
+			},
+			{
+			  "text": "You called a number you found in a browser pop-up. Walk me through how that happened.",
+			  "next": "shame_him",
+			  "cooperation": -14
+			}
+		  ]
+		},
+		"unfinished": {
+		  "choices": [
+			{
+			  "text": "It happens to careful people too. Can you walk me through it?",
+			  "next": "ask_call"
+			},
+			{
+			  "text": "Before we start - you're not the one in trouble here. He is.",
+			  "next": "reassure",
+			  "cooperation": 8
+			},
+			{
+			  "text": "You called a number you found in a browser pop-up. Walk me through how that happened.",
+			  "next": "shame_him",
+			  "cooperation": -14
+			}
+		  ]
+		}
+	  }
+	},
+	"reassure": {
+	  "prompt": "He finally puts the phone face down. \"...Okay. Yeah. Everyone I told so far mostly just laughed at me.\"",
+	  "cooperation": 4,
+	  "choices": [
+		{
+		  "text": "It's not funny. It's a script, and it works. Start from the pop-up.",
+		  "next": "ask_call"
+		}
+	  ]
+	},
+	"shame_him": {
+	  "prompt": "His jaw sets. \"Right. Because you've never had a bad day, obviously.\" He picks his phone back up. \"It said my laptop was infected. I called. That's the whole story.\"",
+	  "choices": [
+		{
+		  "text": "That was out of line, sorry. These pop-ups are designed to work on anyone.",
+		  "next": "reassure",
+		  "cooperation": 8
+		},
+		{
+		  "text": "Fine. Then let's go through it faster.",
+		  "next": "ask_call_cold",
+		  "cooperation": -8
+		}
+	  ]
+	},
+	"ask_call": {
+	  "prompt": "\"A pop-up filled the whole screen. Said my laptop was infected, my files were at risk, call this support number immediately. So I called, got put on hold, and then a 'technician' called me back.\" He rubs his eyes. \"He sounded exactly like real tech support. So I let him remote in to 'fix' it.\"",
+	  "choices": [
+		{
+		  "text": "Hold on. Let's look at that pop-up first.",
+		  "next": "tactic_quiz_popup"
+		}
+	  ],
+	  "dispositions": {
+		"resistant": {
+		  "prompt": "\"A pop-up filled the whole screen. Said my laptop was infected, my files were at risk, call this support number immediately. So I called, got put on hold, and then a 'technician' called me back.\" He shakes his head. \"He wanted to remote in to 'fix' it. I hung up before he got what he wanted.\""
+		},
+		"unfinished": {
+		  "prompt": "\"A pop-up filled the whole screen. Said my laptop was infected, my files were at risk, call this support number immediately. So I called, got put on hold, and then a 'technician' called me back.\" He shrugs. \"And then the line dropped. That's it. I never found out what he wanted.\""
+		}
+	  }
+	},
+	"ask_call_cold": {
+	  "prompt": "\"Pop-up. Support number. Callback. Guy remoted in. Charged me. I hung up.\" He shrugs. \"What else do you want?\"",
+	  "cooperation": -6,
+	  "choices": [
+		{
+		  "text": "The pop-up. Let's start there.",
+		  "next": "tactic_quiz_popup"
+		}
+	  ],
+	  "dispositions": {
+		"resistant": {
+		  "prompt": "\"Pop-up. Support number. Callback. Guy wanted remote access. I hung up.\" He shrugs. \"What else do you want?\""
+		},
+		"unfinished": {
+		  "prompt": "\"Pop-up. Support number. Callback. Line dropped.\" He shrugs. \"What else do you want?\""
+		}
+	  }
+	},
+	"tactic_quiz_popup": {
+	  "tactic_quiz": {
+		"setup": "You pull up the screenshot. A red banner fills the browser window: [i]\"THREAT DETECTED - 3 infected files found. Do not restart your device. Call support immediately.\"[/i]",
+		"tactic_id": "impossible_scan",
+		"tactic": "The impossible scan",
+		"question": "What is the one fact that proves this pop-up was fake, before anybody even called the number?",
+		"milestone": {
+		  "title": "Tactic Identified: The Impossible Scan",
+		  "detail": "Recognized that a web page in a browser cannot scan a device's files - so any pop-up claiming to have found infections is fabricated by definition."
+		},
+		"options": [
+		  {
+			"text": "A web page in a browser cannot scan the files on your computer.",
+			"correct": true,
+			"cooperation": 12,
+			"feedback": "A website cannot see the files on your computer. It cannot count your infected files because it cannot see them. Any page that claims a specific number of threats made that number up - which makes every one of these pop-ups fake, no exceptions."
+		  },
+		  {
+			"text": "Real antivirus software never uses red warning banners.",
+			"cooperation": -8,
+			"feedback": "Plenty of real security tools use alarming colors. Judging by looks is exactly the trap - these pages are designed to look right. What gives it away is that a browser page cannot scan the machine at all."
+		  },
+		  {
+			"text": "The message had a phone number instead of a support link.",
+			"cooperation": -6,
+			"feedback": "A phone number is a strong warning sign - real security software fixes things in the software, it does not ask you to call a stranger. But the airtight proof is simpler: the page could never have detected anything in the first place."
+		  },
+		  {
+			"text": "It told him not to restart his device.",
+			"cooperation": -6,
+			"feedback": "That line is there to stop him closing the page and clearing his head, so you are reading the intent right. Still, the fact that settles it is that a web page cannot look at his files to begin with."
+		  }
+		],
+		"next": "ask_evidence"
+	  }
+	},
+	"ask_evidence": {
+	  "prompt": "Kevin stares at the screenshot. \"...It never scanned anything. It just said it did.\"",
+	  "evidence_prompt": true,
+	  "evidence_hint": "Him believing it is one thing. You need something that proves a stranger actually got into that laptop.",
+	  "accepts_evidence": [
+		{
+		  "evidence_id": "ev_remote_access_log",
+		  "next": "confirm_access",
+		  "response": "Kevin exhales. \"Right, the access log. I forgot I still had that saved.\"",
+		  "cooperation": 20
+		},
+		{
+		  "evidence_id": "ev_popup_screenshot",
+		  "next": "ask_evidence",
+		  "response": "\"That's the one.\" It shows what convinced him, but it is the bait, not proof of what the caller did next.",
+		  "cooperation": 4
+		},
+		{
+		  "evidence_id": "ev_fee_receipt",
+		  "next": "ask_evidence",
+		  "response": "He winces at the amount. \"For fixing a problem that was never there.\" He pushes the receipt back across the table.",
+		  "cooperation": 6
+		},
+		{
+		  "evidence_id": "ev_distracted_note",
+		  "next": "ask_evidence",
+		  "response": "\"I mean, sure, I was busy, but that's not really the point?\" He looks a little annoyed.",
+		  "cooperation": -8,
+		  "wrong": true
+		}
+	  ],
+	  "choices": [
+		{
+		  "text": "Did he ask you to pay for anything?",
+		  "next": "press_fee"
+		},
+		{
+		  "text": "That's a good start, thank you.",
+		  "next": "end_partial"
+		}
+	  ],
+	  "dispositions": {
+		"resistant": {
+		  "choices": [
+			{
+			  "text": "What did he ask you for, before you hung up?",
+			  "next": "press_fee"
+			},
+			{
+			  "text": "That's a good start, thank you.",
+			  "next": "end_partial"
+			}
+		  ],
+		  "evidence_hint": "He hung up before anyone got in, so there is no session and no receipt. What matters is that the callback reached him - and where it came from.",
+		  "accepts_evidence": [
+			{
+			  "evidence_id": "ev_callback_log",
+			  "next": "confirm_access",
+			  "response": "Kevin pulls up the screenshot. \"Yeah. I dialed the number on the pop-up, and nineteen minutes later that number called me back.\" He points at it. \"Same one as on the bulletin board down the road. I checked.\"",
+			  "cooperation": 10
+			},
+			{
+			  "evidence_id": "ev_popup_screenshot",
+			  "next": "ask_evidence",
+			  "response": "\"That's the one.\" It shows what convinced him, but it is the bait, not proof of what the caller did next.",
+			  "cooperation": 4
+			},
+			{
+			  "evidence_id": "ev_distracted_note",
+			  "next": "ask_evidence",
+			  "response": "\"I mean, sure, I was busy, but that's not really the point?\" He looks a little annoyed.",
+			  "cooperation": -8,
+			  "wrong": true
+			}
+		  ]
+		},
+		"unfinished": {
+		  "choices": [
+			{
+			  "text": "How far did he get before the line dropped?",
+			  "next": "press_fee"
+			},
+			{
+			  "text": "That's a good start, thank you.",
+			  "next": "end_partial"
+			}
+		  ],
+		  "evidence_hint": "The call never finished, so there is nothing to trace on the laptop. What matters is that the callback reached him - and where it came from.",
+		  "accepts_evidence": [
+			{
+			  "evidence_id": "ev_callback_log",
+			  "next": "confirm_access",
+			  "response": "Kevin pulls up the screenshot. \"Yeah. I dialed the number on the pop-up, and nineteen minutes later that number called me back.\" He points at it. \"Same one as on the bulletin board down the road. I checked.\"",
+			  "cooperation": 10
+			},
+			{
+			  "evidence_id": "ev_popup_screenshot",
+			  "next": "ask_evidence",
+			  "response": "\"That's the one.\" It shows what convinced him, but it is the bait, not proof of what the caller did next.",
+			  "cooperation": 4
+			},
+			{
+			  "evidence_id": "ev_distracted_note",
+			  "next": "ask_evidence",
+			  "response": "\"I mean, sure, I was busy, but that's not really the point?\" He looks a little annoyed.",
+			  "cooperation": -8,
+			  "wrong": true
+			}
+		  ]
+		}
+	  }
+	},
+	"press_fee": {
+	  "prompt": "\"A 'removal fee.' I paid it just to get him off the phone faster.\" He shakes his head. \"He made up the problem, then charged me to make it go away.\"",
+	  "cooperation": 6,
+	  "choices": [
+		{
+		  "text": "Can you show me anything that backs this up?",
+		  "next": "ask_evidence"
+		},
+		{
+		  "text": "That's a good start, thank you.",
+		  "next": "end_partial"
+		}
+	  ],
+	  "dispositions": {
+		"resistant": {
+		  "prompt": "\"A 'support tool.' He wanted it on the laptop so he could remote in.\" He shakes his head. \"I said no, and then I thought - wait, I never gave the hotline my name. They had it before I said a word.\""
+		},
+		"unfinished": {
+		  "prompt": "\"He didn't get to ask for anything. He was still telling me how bad it was when the line dropped.\" He shrugs. \"Anticlimactic. I just sat there for a while.\""
+		}
+	  }
+	},
+	"confirm_access": {
+	  "prompt": "\"He was in for about six minutes before I panicked and pulled the cable.\" Kevin pushes the log across the table. \"Six minutes is a long time to be somewhere you're not supposed to be.\"",
+	  "cooperation": 10,
+	  "milestone": {
+		"title": "Second Witness Secured",
+		"detail": "Kevin Dizon confirmed the remote-access session once shown the connection log - a different opening script, the same operation."
+	  },
+	  "choices": [
+		{
+		  "text": "This matches what another victim told me. Thank you, Kevin.",
+		  "next": "end_success"
+		}
+	  ],
+	  "dispositions": {
+		"resistant": {
+		  "prompt": "\"They called me back. From a number that's on a bulletin board down the road.\" Kevin pushes the phone across the table. \"I saved it because I wanted to know who has my name. Turns out a lot of people do.\"",
+		  "milestone": {
+			"title": "Second Witness Secured",
+			"detail": "Kevin Dizon confirmed the callback and the number it came from - a different opening script, the same line."
+		  }
+		},
+		"unfinished": {
+		  "prompt": "\"They called me back. From a number that's on a bulletin board down the road.\" Kevin pushes the phone across the table. \"I saved it because I wanted to know who has my name. Turns out a lot of people do.\"",
+		  "milestone": {
+			"title": "Second Witness Secured",
+			"detail": "Kevin Dizon confirmed the callback and the number it came from - a different opening script, the same line."
+		  }
+		}
+	  }
+	},
+	"end_success": {
+	  "prompt": "Kevin's access log shows the same rushed, fear-based script that was used on Maria - a different angle, the same operation.",
+	  "outcome": "success",
+	  "grants_evidence": [
+		{
+		  "id": "test_kevin_confirmed",
+		  "label": "Kevin's Confirmed Testimony",
+		  "description": "Kevin confirmed a stranger remotely accessed his laptop after a fake virus warning, then charged a bogus removal fee.",
+		  "tactic": "A second independent testimony confirms this is a repeatable, scripted operation."
+		}
+	  ],
+	  "choices": [],
+	  "dispositions": {
+		"resistant": {
+		  "prompt": "Kevin's call log ties the callback to the same number the street keeps naming - a different opening script, the same operation.",
+		  "grants_evidence": [
+			{
+			  "id": "test_kevin_confirmed",
+			  "label": "Kevin's Confirmed Testimony",
+			  "description": "Kevin confirmed a fake virus warning and a callback from the operation's number; he hung up before anything was taken.",
+			  "tactic": "A second independent testimony confirms this is a repeatable, scripted operation."
+			}
+		  ]
+		},
+		"unfinished": {
+		  "prompt": "Kevin's call log ties the callback to the same number the street keeps naming - a different opening script, the same operation.",
+		  "grants_evidence": [
+			{
+			  "id": "test_kevin_confirmed",
+			  "label": "Kevin's Confirmed Testimony",
+			  "description": "Kevin confirmed a fake virus warning and a callback from the operation's number; the line dropped before anything was taken.",
+			  "tactic": "A second independent testimony confirms this is a repeatable, scripted operation."
+			}
+		  ]
+		}
+	  }
+	},
+	"end_partial": {
+	  "prompt": "You have Kevin's account, but nothing yet that ties it to the operation behind it.",
+	  "outcome": "partial",
+	  "choices": []
+	},
+	"end_shutdown": {
+	  "prompt": "Kevin pockets his phone and stands. \"You know what, I have work.\" He's already at the door. \"Just put me down as not pursuing it.\" The access log goes back into a folder you will not get to see again.",
+	  "outcome": "failure",
+	  "milestone": {
+		"title": "Witness Lost",
+		"detail": "Kevin Dizon disengaged. Shame is the reason most tech-support scam victims never report - and unreported cases are what let the same script keep running."
+	  },
+	  "choices": [],
+	  "dispositions": {
+		"resistant": {
+		  "prompt": "Kevin pockets his phone and stands. \"You know what, I have work.\" He's already at the door. \"Just put me down as not pursuing it.\" The call log stays on his phone, and you will not be shown it again."
+		},
+		"unfinished": {
+		  "prompt": "Kevin pockets his phone and stands. \"You know what, I have work.\" He's already at the door. \"Just put me down as not pursuing it.\" The call log stays on his phone, and you will not be shown it again."
+		}
+	  }
+	}
   }
 }

@@ -2,449 +2,450 @@
   "case_id": "interview_case_001",
   "title": "The Maria Santos Call",
   "person": {
-    "person_id": "maria_santos",
-    "name": "Maria Santos",
-    "age": 67,
-    "occupation": "Retired clerk",
-    "role": "Victim",
-    "script": "bank_fraud",
-    "portrait": "res://assets/art/portraits/lady 1.png",
-    "traits": "Worried about her savings. Trusts formal-sounding language. Embarrassed about what happened.",
-    "min_credibility": 55,
-    "hesitant_start": "hesitant_intro",
-    "dispositions": {
-      "harmed": {
-        "cooperation": 34,
-        "prompt": "Maria doesn't look up when you sit down. Her hands stay flat on the table, on either side of a bank statement she has folded and unfolded so many times the crease has gone soft. \"I already said everything. To the bank, to my son.\" A pause. \"He keeps asking me how I didn't notice.\"",
-        "note": "The number that called her was yours. She is not being difficult - she is ashamed, and shame is quiet. It is also why most of this never gets reported."
-      },
-      "resistant": {
-        "cooperation": 62,
-        "prompt": "Maria is talking before you have even sat down. \"Good. Somebody official, finally.\" She pushes a notepad across the table - a phone number, a date, the time she hung up. \"I knew. Halfway through, I knew already. And I've been waiting three weeks for somebody to come and ask me about it.\"",
-        "note": "She refused the call you made. Nothing was taken, so there is nothing on paper - only her word, and she is more than willing to give it."
-      },
-      "unfinished": {
-        "cooperation": 44,
-        "prompt": "Maria watches you sit down, guarded. \"The phone rang, I answered, and then it just... stopped. Nothing happened.\" She turns her cup a little on the saucer. \"So I don't know what you want from me. Was something supposed to happen?\"",
-        "note": "Your call to her never finished. She does not know what she avoided, which makes her difficult to alarm and difficult to help."
-      }
-    }
+	"person_id": "maria_santos",
+	"name": "Maria Santos",
+	"age": 67,
+	"occupation": "Retired clerk",
+	"role": "Victim",
+	"setting": "home",
+	"script": "bank_fraud",
+	"portrait": "res://assets/art/portraits/lady 1.png",
+	"traits": "Worried about her savings. Trusts formal-sounding language. Embarrassed about what happened.",
+	"min_credibility": 55,
+	"hesitant_start": "hesitant_intro",
+	"dispositions": {
+	  "harmed": {
+		"cooperation": 34,
+		"prompt": "Maria doesn't look up when you sit down. Her hands stay flat on the table, on either side of a bank statement she has folded and unfolded so many times the crease has gone soft. \"I already said everything. To the bank, to my son.\" A pause. \"He keeps asking me how I didn't notice.\"",
+		"note": "The number that called her was yours. She is not being difficult - she is ashamed, and shame is quiet. It is also why most of this never gets reported."
+	  },
+	  "resistant": {
+		"cooperation": 62,
+		"prompt": "Maria is talking before you have even sat down. \"Good. Somebody official, finally.\" She pushes a notepad across the table - a phone number, a date, the time she hung up. \"I knew. Halfway through, I knew already. And I've been waiting three weeks for somebody to come and ask me about it.\"",
+		"note": "She refused the call you made. Nothing was taken, so there is nothing on paper - only her word, and she is more than willing to give it."
+	  },
+	  "unfinished": {
+		"cooperation": 44,
+		"prompt": "Maria watches you sit down, guarded. \"The phone rang, I answered, and then it just... stopped. Nothing happened.\" She turns her cup a little on the saucer. \"So I don't know what you want from me. Was something supposed to happen?\"",
+		"note": "Your call to her never finished. She does not know what she avoided, which makes her difficult to alarm and difficult to help."
+	  }
+	}
   },
   "evidence": [
-    {
-      "id": "ev_call_transcript",
-      "tactic_id": "authority_impersonation",
-      "label": "Call Transcript",
-      "description": "A recorded transcript of a caller claiming to be from Maria's bank, warning about a suspicious login.",
-      "tactic": "Impersonating a trusted authority (the bank) to lower the victim's guard."
-    },
-    {
-      "id": "ev_phishing_text",
-      "tactic_id": "manufactured_urgency",
-      "label": "Phishing Text Message",
-      "description": "A text message with a fake bank link and a warning about account suspension, sent minutes before the call.",
-      "tactic": "Manufactured urgency: threatening account loss to force a fast, unverified reaction."
-    },
-    {
-      "id": "ev_maria_statement",
-      "only_for": [
-        "harmed"
-      ],
-      "label": "Maria's Bank Statement",
-      "description": "The statement she has been folding and unfolding: one transfer out, minutes after the call, against the code she read aloud.",
-      "tactic": "Reading a one-time code aloud hands over the one check the bank built to stop exactly this transfer.",
-      "tactic_id": "verification_denial"
-    },
-    {
-      "id": "ev_scam_report",
-      "tactic_id": "repeated_script",
-      "label": "Community Scam Report",
-      "description": "A neighborhood report matching the same caller number to another attempted scam.",
-      "tactic": "Recognizing repeated scripts is one of the fastest ways to confirm a scam pattern."
-    },
-    {
-      "id": "ev_bank_alert",
-      "tactic_id": "verification_denial",
-      "label": "Bank Security Alert",
-      "description": "An internal bank notice describing unusual transfer pressure and urgent account-verification language.",
-      "tactic": "Real banks do not pressure customers to 'verify' by acting immediately over the phone."
-    },
-    {
-      "id": "ev_internet_note",
-      "label": "Slow Internet Note",
-      "description": "A stray note that Maria's internet connection was slow earlier that day.",
-      "tactic": ""
-    }
+	{
+	  "id": "ev_call_transcript",
+	  "tactic_id": "authority_impersonation",
+	  "label": "Call Transcript",
+	  "description": "A recorded transcript of a caller claiming to be from Maria's bank, warning about a suspicious login.",
+	  "tactic": "Impersonating a trusted authority (the bank) to lower the victim's guard."
+	},
+	{
+	  "id": "ev_phishing_text",
+	  "tactic_id": "manufactured_urgency",
+	  "label": "Phishing Text Message",
+	  "description": "A text message with a fake bank link and a warning about account suspension, sent minutes before the call.",
+	  "tactic": "Manufactured urgency: threatening account loss to force a fast, unverified reaction."
+	},
+	{
+	  "id": "ev_maria_statement",
+	  "only_for": [
+		"harmed"
+	  ],
+	  "label": "Maria's Bank Statement",
+	  "description": "The statement she has been folding and unfolding: one transfer out, minutes after the call, against the code she read aloud.",
+	  "tactic": "Reading a one-time code aloud hands over the one check the bank built to stop exactly this transfer.",
+	  "tactic_id": "verification_denial"
+	},
+	{
+	  "id": "ev_scam_report",
+	  "tactic_id": "repeated_script",
+	  "label": "Community Scam Report",
+	  "description": "A neighborhood report matching the same caller number to another attempted scam.",
+	  "tactic": "Recognizing repeated scripts is one of the fastest ways to confirm a scam pattern."
+	},
+	{
+	  "id": "ev_bank_alert",
+	  "tactic_id": "verification_denial",
+	  "label": "Bank Security Alert",
+	  "description": "An internal bank notice describing unusual transfer pressure and urgent account-verification language.",
+	  "tactic": "Real banks do not pressure customers to 'verify' by acting immediately over the phone."
+	},
+	{
+	  "id": "ev_internet_note",
+	  "label": "Slow Internet Note",
+	  "description": "A stray note that Maria's internet connection was slow earlier that day.",
+	  "tactic": ""
+	}
   ],
   "start_node": "intro",
   "failure_node": "end_shutdown",
   "nodes": {
-    "hesitant_intro": {
-      "prompt": "Maria opens the door but keeps the chain on. \"My son said not to talk to anybody else about it unless they can show me it's going somewhere.\" She glances past you at the street. \"Is it? Going somewhere?\"",
-      "choices": [
-        {
-          "text": "Not yet. I'd rather be honest with you than promise something. I'll come back when it is.",
-          "next": "end_partial_hesitant"
-        }
-      ]
-    },
-    "end_partial_hesitant": {
-      "prompt": "The chain stays on. She is not refusing to help - she is refusing to be the only one helping, which is a different thing, and a fair one.",
-      "outcome": "partial",
-      "choices": []
-    },
-    "intro": {
-      "prompt": "Maria sits with her hands folded on the table, still a little shaken. \"I already told the bank everything. Ay, do we really have to go through it again?\"",
-      "choices": [
-        {
-          "text": "No rush, Maria. How are you doing?",
-          "next": "ask_wellbeing"
-        },
-        {
-          "text": "I just need to hear it from you. What happened on that call?",
-          "next": "ask_call"
-        },
-        {
-          "text": "Let's make this quick. I still have a lot of people to see today.",
-          "next": "rush_her",
-          "cooperation": -14
-        }
-      ]
-    },
-    "rush_her": {
-      "prompt": "Her hands tighten. \"A lot of people. Of course.\" She looks at the table. \"I'm just one more on your list. That's what I get for being stupid enough to answer the phone.\"",
-      "choices": [
-        {
-          "text": "Sorry, that came out wrong. You're not just a name on a list, and this wasn't stupidity.",
-          "next": "apologize",
-          "cooperation": 8
-        },
-        {
-          "text": "I didn't say that. Let's just go through the call.",
-          "next": "ask_call_cold",
-          "cooperation": -8
-        }
-      ]
-    },
-    "apologize": {
-      "prompt": "She lets out a breath. \"...Thank you. Everyone keeps telling me I should have known better. It helps to hear somebody say it's not like that.\"",
-      "cooperation": 4,
-      "choices": [
-        {
-          "text": "These calls are made to work on careful people. Can you walk me through it?",
-          "next": "ask_call"
-        }
-      ]
-    },
-    "ask_wellbeing": {
-      "prompt": "\"Embarrassed, mostly. Thirty years I handled money at the office. I should have known better, diba?\"",
-      "cooperation": 8,
-      "choices": [
-        {
-          "text": "It's not your fault. These calls are designed to fool anyone. Walk me through it?",
-          "next": "ask_call"
-        }
-      ],
-      "dispositions": {
-        "unfinished": {
-          "prompt": "\"Unsettled, mostly. Three weeks na, and I still look at the phone before I pick it up.\""
-        }
-      }
-    },
-    "ask_call": {
-      "prompt": "\"Somebody called, said he was from the fraud department of my bank. He said there was a suspicious login on my account, and I had to verify my identity right away or they would freeze everything.\"",
-      "choices": [
-        {
-          "text": "Say that again, slowly. I want to hear exactly how he put it.",
-          "next": "tactic_quiz_urgency"
-        }
-      ],
-      "dispositions": {
-        "unfinished": {
-          "prompt": "\"Somebody called, said he was from the fraud department of my bank. A suspicious login, and I had to verify right away or they would freeze it. And then - nothing. The line went dead, and nobody ever called back.\""
-        }
-      }
-    },
-    "ask_call_cold": {
-      "prompt": "She gives you the short version, eyes on the wall. \"A man said he was from the bank. Suspicious login. Verify right away or they freeze the account. That's it.\"",
-      "cooperation": -6,
-      "choices": [
-        {
-          "text": "Say that again, slowly. I want to hear exactly how he put it.",
-          "next": "tactic_quiz_urgency"
-        }
-      ],
-      "dispositions": {
-        "unfinished": {
-          "prompt": "She gives you the short version, eyes on the wall. \"A man said he was from the bank. Suspicious login. Verify right away. Then the line went. That's it.\""
-        }
-      }
-    },
-    "tactic_quiz_urgency": {
-      "tactic_quiz": {
-        "setup": "You write the line out as she said it: [i]\"Your account has a suspicious login. You need to verify your identity right away, or we'll have to freeze the account.\"[/i]",
-        "tactic_id": "manufactured_urgency",
-        "tactic": "Manufactured urgency",
-        "question": "Which part of that line is the manipulation?",
-        "milestone": {
-          "title": "Tactic Identified: Manufactured Urgency",
-          "detail": "Recognized that the artificial deadline - not the bank's name - was the part engineered to stop the victim from verifying."
-        },
-        "options": [
-          {
-            "text": "\"Right away, or we'll have to freeze the account.\"",
-            "correct": true,
-            "cooperation": 10,
-            "feedback": "The deadline is the scam. A real bank can wait while you hang up and call the number on the back of your card. The rush is there so you never do that."
-          },
-          {
-            "text": "\"Your account has a suspicious login.\"",
-            "cooperation": -8,
-            "feedback": "A suspicious-login warning is something a real bank might actually say - which is exactly why scammers borrow it. On its own it proves nothing. The pressure to act right now is what a real bank would never add."
-          },
-          {
-            "text": "That the caller knew which bank she uses.",
-            "cooperation": -8,
-            "feedback": "Knowing which bank you use is cheap. They guess the biggest bank in the area, or buy it in a leaked list. Treating it as proof the call is real is exactly how they get you to keep listening."
-          },
-          {
-            "text": "\"Verify your identity.\"",
-            "cooperation": -6,
-            "feedback": "Close. Being asked to 'verify' on a call you did not make is a red flag, but the word doing the work here is the deadline attached to it - that is what took away her time to think."
-          }
-        ],
-        "next": "ask_evidence"
-      }
-    },
-    "ask_evidence": {
-      "prompt": "\"So it was the rushing.\" She frowns at her hands. \"He kept saying there was no time.\"",
-      "evidence_prompt": true,
-      "evidence_hint": "Something on paper or on her phone should back this up. Anything that arrived around the time of the call is worth showing her.",
-      "accepts_evidence": [
-        {
-          "evidence_id": "ev_phishing_text",
-          "next": "confirm_phishing",
-          "response": "Maria's eyes widen. \"That's it! That's the text I got right before he called. I forgot I still had it.\"",
-          "cooperation": 20
-        },
-        {
-          "evidence_id": "ev_call_transcript",
-          "next": "ask_evidence",
-          "response": "\"Yes, that's how he talked. Very official.\" It matches her story, but it is her own words coming back to her - it adds nothing she has not already given you.",
-          "cooperation": 4
-        },
-        {
-          "evidence_id": "ev_bank_alert",
-          "next": "ask_evidence",
-          "response": "She reads the notice twice. \"So the bank knew already that people were getting calls like this. And they still almost got me.\"",
-          "cooperation": 6
-        },
-        {
-          "evidence_id": "ev_scam_report",
-          "next": "ask_evidence",
-          "response": "\"Somebody on my street got the same call?\" Something in the way she sits changes - less shame, more anger.",
-          "cooperation": 6
-        },
-        {
-          "evidence_id": "ev_internet_note",
-          "next": "ask_evidence",
-          "response": "\"What does my internet have to do with this?\" She looks a little put off.",
-          "cooperation": -8,
-          "wrong": true
-        }
-      ],
-      "choices": [
-        {
-          "text": "Did they ask you to send money, or to read out any codes?",
-          "next": "press_details"
-        },
-        {
-          "text": "Thank you, Maria. That's a good start.",
-          "next": "end_partial"
-        }
-      ],
-      "dispositions": {
-        "harmed": {
-          "choices": [
-            {
-              "text": "What did they ask you for, in the end?",
-              "next": "press_details"
-            },
-            {
-              "text": "Thank you, Maria. That's a good start.",
-              "next": "end_partial"
-            }
-          ],
-          "accepts_evidence": [
-            {
-              "evidence_id": "ev_phishing_text",
-              "next": "confirm_phishing",
-              "response": "Maria's eyes widen. \"That's it! That's the text I got right before he called. I forgot I still had it.\"",
-              "cooperation": 20
-            },
-            {
-              "evidence_id": "ev_maria_statement",
-              "next": "ask_evidence",
-              "response": "She does not look at it. \"I know what it says. The bank went through it with me, and then my son did.\"",
-              "cooperation": 4
-            },
-            {
-              "evidence_id": "ev_call_transcript",
-              "next": "ask_evidence",
-              "response": "\"Yes, that's how he talked. Very official.\" It matches her story, but it is her own words coming back to her - it adds nothing she has not already given you.",
-              "cooperation": 4
-            },
-            {
-              "evidence_id": "ev_bank_alert",
-              "next": "ask_evidence",
-              "response": "She reads the notice twice. \"So the bank knew already that people were getting calls like this.\" She puts it down. \"They knew, and they still let it happen to me.\"",
-              "cooperation": 6
-            },
-            {
-              "evidence_id": "ev_scam_report",
-              "next": "ask_evidence",
-              "response": "\"Somebody on my street got the same call?\" Something in the way she sits changes - less shame, more anger.",
-              "cooperation": 6
-            },
-            {
-              "evidence_id": "ev_internet_note",
-              "next": "ask_evidence",
-              "response": "\"What does my internet have to do with this?\" She looks a little put off.",
-              "cooperation": -8,
-              "wrong": true
-            }
-          ]
-        },
-        "unfinished": {
-          "prompt": "\"So it was the rushing.\" She frowns at her hands. \"He had only just started rushing me when it stopped.\"",
-          "choices": [
-            {
-              "text": "How far did he get before the line cut?",
-              "next": "press_details"
-            },
-            {
-              "text": "Thank you, Maria. That's a good start.",
-              "next": "end_partial"
-            }
-          ],
-          "accepts_evidence": [
-            {
-              "evidence_id": "ev_phishing_text",
-              "next": "confirm_phishing",
-              "response": "Maria's eyes widen. \"That's it! That's the text I got right before he called. I forgot I still had it.\"",
-              "cooperation": 20
-            },
-            {
-              "evidence_id": "ev_call_transcript",
-              "next": "ask_evidence",
-              "response": "\"Yes, that's how he talked. Very official.\" It matches her story, but it is her own words coming back to her - it adds nothing she has not already given you.",
-              "cooperation": 4
-            },
-            {
-              "evidence_id": "ev_bank_alert",
-              "next": "ask_evidence",
-              "response": "She reads the notice twice. \"So the bank knew. And nobody said a word to me until you came.\"",
-              "cooperation": 6
-            },
-            {
-              "evidence_id": "ev_scam_report",
-              "next": "ask_evidence",
-              "response": "\"Somebody on my street got the same call?\" Something in the way she sits changes - less shame, more anger.",
-              "cooperation": 6
-            },
-            {
-              "evidence_id": "ev_internet_note",
-              "next": "ask_evidence",
-              "response": "\"What does my internet have to do with this?\" She looks a little put off.",
-              "cooperation": -8,
-              "wrong": true
-            }
-          ]
-        }
-      }
-    },
-    "press_details": {
-      "prompt": "\"They wanted the code from a text message, to 'verify' me daw. I almost read it out. But he got impatient with me, and that's when it stopped sounding like a bank.\"",
-      "cooperation": 6,
-      "choices": [
-        {
-          "text": "That instinct saved your savings. Is there anything else you can show me?",
-          "next": "ask_evidence"
-        },
-        {
-          "text": "Thank you, Maria. That's a good start.",
-          "next": "end_partial"
-        }
-      ],
-      "dispositions": {
-        "harmed": {
-          "prompt": "\"They wanted the code from the text message. To 'verify' me daw.\" She looks at her hands. \"I read it out. All six numbers, slowly, like you would for somebody who's helping you. He even thanked me.\"",
-          "choices": [
-            {
-              "text": "Reading it out is what the whole call was for. Is there anything else you can show me?",
-              "next": "ask_evidence"
-            },
-            {
-              "text": "Thank you, Maria. That's a good start.",
-              "next": "end_partial"
-            }
-          ]
-        },
-        "unfinished": {
-          "prompt": "\"They never got as far as asking me for anything.\" She turns the cup again. \"That's what I can't figure out. What was it for?\"",
-          "choices": [
-            {
-              "text": "It was for a code on your phone. They never got to it. Is there anything else you can show me?",
-              "next": "ask_evidence"
-            },
-            {
-              "text": "Thank you, Maria. That's a good start.",
-              "next": "end_partial"
-            }
-          ]
-        }
-      }
-    },
-    "confirm_phishing": {
-      "prompt": "\"A link - 'your account will be suspended.' I didn't click it, but I kept it.\" She hands you her phone. \"Look at the time. Four minutes before the call. Four minutes. They wanted me scared already before I even picked up.\"",
-      "cooperation": 10,
-      "milestone": {
-        "title": "Key Witness Secured",
-        "detail": "Maria Santos confirmed the phishing text arrived minutes before the call - the fear was set up before the scammer ever spoke."
-      },
-      "choices": [
-        {
-          "text": "That's the pattern. Thank you for trusting me with this.",
-          "next": "end_success"
-        }
-      ]
-    },
-    "end_success": {
-      "prompt": "Maria's statement, the text, and the caller's lines all point to the same operation. It is enough to tie this call to a bigger outfit.",
-      "outcome": "success",
-      "grants_evidence": [
-        {
-          "id": "test_maria_confirmed",
-          "label": "Maria's Confirmed Testimony",
-          "description": "Maria formally confirmed the phishing text and the bank-impersonation call matched a single scripted operation.",
-          "tactic": "A confirmed victim testimony is strong enough to confront a suspect with."
-        }
-      ],
-      "choices": []
-    },
-    "end_partial": {
-      "prompt": "You have a rough account of the call, but nothing yet that ties it to the operation behind it. It is a start, but the case needs more.",
-      "outcome": "partial",
-      "choices": []
-    },
-    "end_shutdown": {
-      "prompt": "Maria stands up before you finish. \"I think I've had enough of people asking me what I did wrong.\" She goes inside and the door closes quietly. Whatever she still had - the text, the timing, the name he used - goes with her.",
-      "outcome": "failure",
-      "milestone": {
-        "title": "Witness Lost",
-        "detail": "Maria Santos withdrew from the interview. Victims who are made to feel blamed for being targeted usually stop reporting - which is exactly what keeps these operations running."
-      },
-      "choices": []
-    }
+	"hesitant_intro": {
+	  "prompt": "Maria opens the door but keeps the chain on. \"My son said not to talk to anybody else about it unless they can show me it's going somewhere.\" She glances past you at the street. \"Is it? Going somewhere?\"",
+	  "choices": [
+		{
+		  "text": "Not yet. I'd rather be honest with you than promise something. I'll come back when it is.",
+		  "next": "end_partial_hesitant"
+		}
+	  ]
+	},
+	"end_partial_hesitant": {
+	  "prompt": "The chain stays on. She is not refusing to help - she is refusing to be the only one helping, which is a different thing, and a fair one.",
+	  "outcome": "partial",
+	  "choices": []
+	},
+	"intro": {
+	  "prompt": "Maria sits with her hands folded on the table, still a little shaken. \"I already told the bank everything. Ay, do we really have to go through it again?\"",
+	  "choices": [
+		{
+		  "text": "No rush, Maria. How are you doing?",
+		  "next": "ask_wellbeing"
+		},
+		{
+		  "text": "I just need to hear it from you. What happened on that call?",
+		  "next": "ask_call"
+		},
+		{
+		  "text": "Let's make this quick. I still have a lot of people to see today.",
+		  "next": "rush_her",
+		  "cooperation": -14
+		}
+	  ]
+	},
+	"rush_her": {
+	  "prompt": "Her hands tighten. \"A lot of people. Of course.\" She looks at the table. \"I'm just one more on your list. That's what I get for being stupid enough to answer the phone.\"",
+	  "choices": [
+		{
+		  "text": "Sorry, that came out wrong. You're not just a name on a list, and this wasn't stupidity.",
+		  "next": "apologize",
+		  "cooperation": 8
+		},
+		{
+		  "text": "I didn't say that. Let's just go through the call.",
+		  "next": "ask_call_cold",
+		  "cooperation": -8
+		}
+	  ]
+	},
+	"apologize": {
+	  "prompt": "She lets out a breath. \"...Thank you. Everyone keeps telling me I should have known better. It helps to hear somebody say it's not like that.\"",
+	  "cooperation": 4,
+	  "choices": [
+		{
+		  "text": "These calls are made to work on careful people. Can you walk me through it?",
+		  "next": "ask_call"
+		}
+	  ]
+	},
+	"ask_wellbeing": {
+	  "prompt": "\"Embarrassed, mostly. Thirty years I handled money at the office. I should have known better, diba?\"",
+	  "cooperation": 8,
+	  "choices": [
+		{
+		  "text": "It's not your fault. These calls are designed to fool anyone. Walk me through it?",
+		  "next": "ask_call"
+		}
+	  ],
+	  "dispositions": {
+		"unfinished": {
+		  "prompt": "\"Unsettled, mostly. Three weeks na, and I still look at the phone before I pick it up.\""
+		}
+	  }
+	},
+	"ask_call": {
+	  "prompt": "\"Somebody called, said he was from the fraud department of my bank. He said there was a suspicious login on my account, and I had to verify my identity right away or they would freeze everything.\"",
+	  "choices": [
+		{
+		  "text": "Say that again, slowly. I want to hear exactly how he put it.",
+		  "next": "tactic_quiz_urgency"
+		}
+	  ],
+	  "dispositions": {
+		"unfinished": {
+		  "prompt": "\"Somebody called, said he was from the fraud department of my bank. A suspicious login, and I had to verify right away or they would freeze it. And then - nothing. The line went dead, and nobody ever called back.\""
+		}
+	  }
+	},
+	"ask_call_cold": {
+	  "prompt": "She gives you the short version, eyes on the wall. \"A man said he was from the bank. Suspicious login. Verify right away or they freeze the account. That's it.\"",
+	  "cooperation": -6,
+	  "choices": [
+		{
+		  "text": "Say that again, slowly. I want to hear exactly how he put it.",
+		  "next": "tactic_quiz_urgency"
+		}
+	  ],
+	  "dispositions": {
+		"unfinished": {
+		  "prompt": "She gives you the short version, eyes on the wall. \"A man said he was from the bank. Suspicious login. Verify right away. Then the line went. That's it.\""
+		}
+	  }
+	},
+	"tactic_quiz_urgency": {
+	  "tactic_quiz": {
+		"setup": "You write the line out as she said it: [i]\"Your account has a suspicious login. You need to verify your identity right away, or we'll have to freeze the account.\"[/i]",
+		"tactic_id": "manufactured_urgency",
+		"tactic": "Manufactured urgency",
+		"question": "Which part of that line is the manipulation?",
+		"milestone": {
+		  "title": "Tactic Identified: Manufactured Urgency",
+		  "detail": "Recognized that the artificial deadline - not the bank's name - was the part engineered to stop the victim from verifying."
+		},
+		"options": [
+		  {
+			"text": "\"Right away, or we'll have to freeze the account.\"",
+			"correct": true,
+			"cooperation": 10,
+			"feedback": "The deadline is the scam. A real bank can wait while you hang up and call the number on the back of your card. The rush is there so you never do that."
+		  },
+		  {
+			"text": "\"Your account has a suspicious login.\"",
+			"cooperation": -8,
+			"feedback": "A suspicious-login warning is something a real bank might actually say - which is exactly why scammers borrow it. On its own it proves nothing. The pressure to act right now is what a real bank would never add."
+		  },
+		  {
+			"text": "That the caller knew which bank she uses.",
+			"cooperation": -8,
+			"feedback": "Knowing which bank you use is cheap. They guess the biggest bank in the area, or buy it in a leaked list. Treating it as proof the call is real is exactly how they get you to keep listening."
+		  },
+		  {
+			"text": "\"Verify your identity.\"",
+			"cooperation": -6,
+			"feedback": "Close. Being asked to 'verify' on a call you did not make is a red flag, but the word doing the work here is the deadline attached to it - that is what took away her time to think."
+		  }
+		],
+		"next": "ask_evidence"
+	  }
+	},
+	"ask_evidence": {
+	  "prompt": "\"So it was the rushing.\" She frowns at her hands. \"He kept saying there was no time.\"",
+	  "evidence_prompt": true,
+	  "evidence_hint": "Something on paper or on her phone should back this up. Anything that arrived around the time of the call is worth showing her.",
+	  "accepts_evidence": [
+		{
+		  "evidence_id": "ev_phishing_text",
+		  "next": "confirm_phishing",
+		  "response": "Maria's eyes widen. \"That's it! That's the text I got right before he called. I forgot I still had it.\"",
+		  "cooperation": 20
+		},
+		{
+		  "evidence_id": "ev_call_transcript",
+		  "next": "ask_evidence",
+		  "response": "\"Yes, that's how he talked. Very official.\" It matches her story, but it is her own words coming back to her - it adds nothing she has not already given you.",
+		  "cooperation": 4
+		},
+		{
+		  "evidence_id": "ev_bank_alert",
+		  "next": "ask_evidence",
+		  "response": "She reads the notice twice. \"So the bank knew already that people were getting calls like this. And they still almost got me.\"",
+		  "cooperation": 6
+		},
+		{
+		  "evidence_id": "ev_scam_report",
+		  "next": "ask_evidence",
+		  "response": "\"Somebody on my street got the same call?\" Something in the way she sits changes - less shame, more anger.",
+		  "cooperation": 6
+		},
+		{
+		  "evidence_id": "ev_internet_note",
+		  "next": "ask_evidence",
+		  "response": "\"What does my internet have to do with this?\" She looks a little put off.",
+		  "cooperation": -8,
+		  "wrong": true
+		}
+	  ],
+	  "choices": [
+		{
+		  "text": "Did they ask you to send money, or to read out any codes?",
+		  "next": "press_details"
+		},
+		{
+		  "text": "Thank you, Maria. That's a good start.",
+		  "next": "end_partial"
+		}
+	  ],
+	  "dispositions": {
+		"harmed": {
+		  "choices": [
+			{
+			  "text": "What did they ask you for, in the end?",
+			  "next": "press_details"
+			},
+			{
+			  "text": "Thank you, Maria. That's a good start.",
+			  "next": "end_partial"
+			}
+		  ],
+		  "accepts_evidence": [
+			{
+			  "evidence_id": "ev_phishing_text",
+			  "next": "confirm_phishing",
+			  "response": "Maria's eyes widen. \"That's it! That's the text I got right before he called. I forgot I still had it.\"",
+			  "cooperation": 20
+			},
+			{
+			  "evidence_id": "ev_maria_statement",
+			  "next": "ask_evidence",
+			  "response": "She does not look at it. \"I know what it says. The bank went through it with me, and then my son did.\"",
+			  "cooperation": 4
+			},
+			{
+			  "evidence_id": "ev_call_transcript",
+			  "next": "ask_evidence",
+			  "response": "\"Yes, that's how he talked. Very official.\" It matches her story, but it is her own words coming back to her - it adds nothing she has not already given you.",
+			  "cooperation": 4
+			},
+			{
+			  "evidence_id": "ev_bank_alert",
+			  "next": "ask_evidence",
+			  "response": "She reads the notice twice. \"So the bank knew already that people were getting calls like this.\" She puts it down. \"They knew, and they still let it happen to me.\"",
+			  "cooperation": 6
+			},
+			{
+			  "evidence_id": "ev_scam_report",
+			  "next": "ask_evidence",
+			  "response": "\"Somebody on my street got the same call?\" Something in the way she sits changes - less shame, more anger.",
+			  "cooperation": 6
+			},
+			{
+			  "evidence_id": "ev_internet_note",
+			  "next": "ask_evidence",
+			  "response": "\"What does my internet have to do with this?\" She looks a little put off.",
+			  "cooperation": -8,
+			  "wrong": true
+			}
+		  ]
+		},
+		"unfinished": {
+		  "prompt": "\"So it was the rushing.\" She frowns at her hands. \"He had only just started rushing me when it stopped.\"",
+		  "choices": [
+			{
+			  "text": "How far did he get before the line cut?",
+			  "next": "press_details"
+			},
+			{
+			  "text": "Thank you, Maria. That's a good start.",
+			  "next": "end_partial"
+			}
+		  ],
+		  "accepts_evidence": [
+			{
+			  "evidence_id": "ev_phishing_text",
+			  "next": "confirm_phishing",
+			  "response": "Maria's eyes widen. \"That's it! That's the text I got right before he called. I forgot I still had it.\"",
+			  "cooperation": 20
+			},
+			{
+			  "evidence_id": "ev_call_transcript",
+			  "next": "ask_evidence",
+			  "response": "\"Yes, that's how he talked. Very official.\" It matches her story, but it is her own words coming back to her - it adds nothing she has not already given you.",
+			  "cooperation": 4
+			},
+			{
+			  "evidence_id": "ev_bank_alert",
+			  "next": "ask_evidence",
+			  "response": "She reads the notice twice. \"So the bank knew. And nobody said a word to me until you came.\"",
+			  "cooperation": 6
+			},
+			{
+			  "evidence_id": "ev_scam_report",
+			  "next": "ask_evidence",
+			  "response": "\"Somebody on my street got the same call?\" Something in the way she sits changes - less shame, more anger.",
+			  "cooperation": 6
+			},
+			{
+			  "evidence_id": "ev_internet_note",
+			  "next": "ask_evidence",
+			  "response": "\"What does my internet have to do with this?\" She looks a little put off.",
+			  "cooperation": -8,
+			  "wrong": true
+			}
+		  ]
+		}
+	  }
+	},
+	"press_details": {
+	  "prompt": "\"They wanted the code from a text message, to 'verify' me daw. I almost read it out. But he got impatient with me, and that's when it stopped sounding like a bank.\"",
+	  "cooperation": 6,
+	  "choices": [
+		{
+		  "text": "That instinct saved your savings. Is there anything else you can show me?",
+		  "next": "ask_evidence"
+		},
+		{
+		  "text": "Thank you, Maria. That's a good start.",
+		  "next": "end_partial"
+		}
+	  ],
+	  "dispositions": {
+		"harmed": {
+		  "prompt": "\"They wanted the code from the text message. To 'verify' me daw.\" She looks at her hands. \"I read it out. All six numbers, slowly, like you would for somebody who's helping you. He even thanked me.\"",
+		  "choices": [
+			{
+			  "text": "Reading it out is what the whole call was for. Is there anything else you can show me?",
+			  "next": "ask_evidence"
+			},
+			{
+			  "text": "Thank you, Maria. That's a good start.",
+			  "next": "end_partial"
+			}
+		  ]
+		},
+		"unfinished": {
+		  "prompt": "\"They never got as far as asking me for anything.\" She turns the cup again. \"That's what I can't figure out. What was it for?\"",
+		  "choices": [
+			{
+			  "text": "It was for a code on your phone. They never got to it. Is there anything else you can show me?",
+			  "next": "ask_evidence"
+			},
+			{
+			  "text": "Thank you, Maria. That's a good start.",
+			  "next": "end_partial"
+			}
+		  ]
+		}
+	  }
+	},
+	"confirm_phishing": {
+	  "prompt": "\"A link - 'your account will be suspended.' I didn't click it, but I kept it.\" She hands you her phone. \"Look at the time. Four minutes before the call. Four minutes. They wanted me scared already before I even picked up.\"",
+	  "cooperation": 10,
+	  "milestone": {
+		"title": "Key Witness Secured",
+		"detail": "Maria Santos confirmed the phishing text arrived minutes before the call - the fear was set up before the scammer ever spoke."
+	  },
+	  "choices": [
+		{
+		  "text": "That's the pattern. Thank you for trusting me with this.",
+		  "next": "end_success"
+		}
+	  ]
+	},
+	"end_success": {
+	  "prompt": "Maria's statement, the text, and the caller's lines all point to the same operation. It is enough to tie this call to a bigger outfit.",
+	  "outcome": "success",
+	  "grants_evidence": [
+		{
+		  "id": "test_maria_confirmed",
+		  "label": "Maria's Confirmed Testimony",
+		  "description": "Maria formally confirmed the phishing text and the bank-impersonation call matched a single scripted operation.",
+		  "tactic": "A confirmed victim testimony is strong enough to confront a suspect with."
+		}
+	  ],
+	  "choices": []
+	},
+	"end_partial": {
+	  "prompt": "You have a rough account of the call, but nothing yet that ties it to the operation behind it. It is a start, but the case needs more.",
+	  "outcome": "partial",
+	  "choices": []
+	},
+	"end_shutdown": {
+	  "prompt": "Maria stands up before you finish. \"I think I've had enough of people asking me what I did wrong.\" She goes inside and the door closes quietly. Whatever she still had - the text, the timing, the name he used - goes with her.",
+	  "outcome": "failure",
+	  "milestone": {
+		"title": "Witness Lost",
+		"detail": "Maria Santos withdrew from the interview. Victims who are made to feel blamed for being targeted usually stop reporting - which is exactly what keeps these operations running."
+	  },
+	  "choices": []
+	}
   }
 }

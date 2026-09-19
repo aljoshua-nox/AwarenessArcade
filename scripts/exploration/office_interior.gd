@@ -81,7 +81,10 @@ const DESK_COLUMNS := [340.0, 500.0, 660.0, 820.0, 980.0]
 
 const STATION_SIZE := Vector2(104.0, 92.0)
 const DIRECTOR_DOOR_POSITION := Vector2(1090.0, 268.0)
-const EXIT_DOOR_POSITION := Vector2(190.0, 262.0)
+# Where the way out sits on the back wall. The floors keep it at the left;
+# the desk moves it along, because with the camera fenced to the room the
+# left end of that wall sits under the HUD's text.
+var exit_door_position := Vector2(190.0, 262.0)
 # The stairwell up, on the back wall between the last window and the director's
 # carpet - the stairs sit beside the director's office because the other
 # director's office sits above it. Coming back down lands just in front of it.
@@ -387,7 +390,7 @@ func _build_map() -> void:
 	_build_call_floor()
 	_build_props()
 
-	portal.global_position = EXIT_DOOR_POSITION
+	portal.global_position = exit_door_position
 	portal_label.visible = false
 	station_label.visible = false
 
@@ -419,7 +422,7 @@ func _build_room_shell(viewport_size: Vector2) -> void:
 
 func _build_back_wall_fittings() -> void:
 	# Way out, at the left of the back wall.
-	_add_prop(OFFICE_WALLS, WALL_DOORWAY, Vector2(EXIT_DOOR_POSITION.x, WALL_BASE + 4.0), 2.1, -30)
+	_add_prop(OFFICE_WALLS, WALL_DOORWAY, Vector2(exit_door_position.x, WALL_BASE + 4.0), 2.1, -30)
 
 	for x in [430.0, 620.0]:
 		_add_prop(OFFICE_WALLS, WALL_WINDOW, Vector2(x, WALL_BASE - 6.0), 1.9, -32)

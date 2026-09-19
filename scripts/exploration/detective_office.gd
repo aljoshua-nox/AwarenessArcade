@@ -33,6 +33,11 @@ func _init() -> void:
 	# A quiet room: the call floor's bed, well down, until a room tone exists.
 	ambience_path = "res://assets/audio/ambience/call_floor.ogg"
 	ambience_db = -22.0
+	# The door sits between the map board and the first window, and the
+	# player starts under it: the wall's left end is under the HUD's lines,
+	# where the STREET plate and the door prompt were unreadable.
+	exit_door_position = Vector2(520.0, 262.0)
+	player_spawn = Vector2(520.0, 330.0)
 
 
 # No director here, and no floor above.
@@ -57,9 +62,9 @@ func tools_collected() -> bool:
 # --- The room -----------------------------------------------------------------
 
 func _build_back_wall_fittings() -> void:
-	# The way out, at the left of the back wall.
-	_add_prop(OFFICE_WALLS, WALL_DOORWAY, Vector2(EXIT_DOOR_POSITION.x, WALL_BASE + 4.0), 2.1, -30)
-	_add_wall_plate(Vector2(EXIT_DOOR_POSITION.x, 118.0), "STREET")
+	# The way out, clear of the HUD's corner.
+	_add_prop(OFFICE_WALLS, WALL_DOORWAY, Vector2(exit_door_position.x, WALL_BASE + 4.0), 2.1, -30)
+	_add_wall_plate(Vector2(exit_door_position.x, 118.0), "STREET")
 
 	for x in [620.0, 860.0]:
 		_add_prop(OFFICE_WALLS, WALL_WINDOW, Vector2(x, WALL_BASE - 6.0), 1.9, -32)

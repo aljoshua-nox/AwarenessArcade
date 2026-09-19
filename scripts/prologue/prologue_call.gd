@@ -260,6 +260,9 @@ func _build_ui() -> void:
 		var button := Button.new()
 		button.custom_minimum_size = Vector2(0, 40)
 		button.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+		# No keyboard focus: a clicked slot would otherwise stay lit on the
+		# next beat's line, which reads as a hint. Same as the interview.
+		button.focus_mode = Control.FOCUS_NONE
 		button.pressed.connect(_on_choice_pressed.bind(index))
 		right_column.add_child(button)
 		choice_buttons.append(button)

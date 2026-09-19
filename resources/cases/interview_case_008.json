@@ -226,7 +226,7 @@
         {
           "evidence_id": "ev_trish_fee_receipt",
           "next": "confirm",
-          "response": "She has the receipt saved next to the chat. \"A person's name. Not a company. I noticed that after.\" She says [i]after[/i] the way people do.",
+          "response": "She has the receipt saved next to the chat. \"A person's name, not a company. I only noticed that afterward.\" Everybody notices afterward.",
           "cooperation": 20
         },
         {
@@ -359,15 +359,15 @@
       ],
       "dispositions": {
         "resistant": {
-          "prompt": "\"That nobody paid. That's all - nobody in her batch paid anything, and then who is this, and then send me the number.\" Trish turns the phone over in her hands. \"She got the job off this same ad two months ago. Actually got it. I think she got in trouble for replying. She hasn't answered me since.\""
+          "prompt": "\"Bea said nobody paid. That's all she said - nobody in her batch paid anything, then 'who is this,' then 'send me the number.'\" Trish turns the phone over in her hands. \"She got the job off this same ad two months ago. Actually got it. I think she got in trouble for replying. She hasn't answered me since.\""
         },
         "unfinished": {
-          "prompt": "\"That nobody paid. I messaged her after the line cut, and she said nobody in her batch paid anything, and who was it, and I sent the number.\" Trish turns the phone over in her hands. \"She got the job off this same ad two months ago. Actually got it. She hasn't answered me since. I don't know if I was lucky or if they just dropped me.\""
+          "prompt": "\"Bea said nobody paid. I messaged her after the line cut. She said nobody in her batch paid anything, asked who it was, and I sent her the number.\" Trish turns the phone over in her hands. \"She got the job off this same ad two months ago. Actually got it. She hasn't answered me since. I don't know if I was lucky or if they just dropped me.\""
         }
       }
     },
     "confirm": {
-      "prompt": "\"Two thousand five hundred.\" Trish says the number like it is not very much, which is how she has decided to survive it. \"It was my money for board exam review.\" She looks up. \"Write down that it looked real. Please. Somebody else is going to think it looks real.\"",
+      "prompt": "\"Two thousand five hundred.\" Trish says it as if it were a small amount, and saying it that way is how she is getting through this. \"It was my money for board exam review.\" She looks up. \"Please put in your report that it looked real. The next person is going to think it looks real too, and I don't want them told they should have known.\"",
       "cooperation": 10,
       "milestone": {
         "title": "Witness Secured: The Job That Cost Money",
@@ -381,7 +381,7 @@
       ],
       "dispositions": {
         "resistant": {
-          "prompt": "\"One message,\" Trish says. \"That's what it took. One message to somebody who actually got hired.\" She locks the phone. \"Write down that it was that easy to check. Somebody else won't check, and it'll be because she said congratulations first.\"",
+          "prompt": "\"One message,\" Trish says. \"That's what it took. One message to somebody who actually got hired.\" She locks the phone. \"Write down that it was that easy to check. The next person won't check, and it'll be because they heard 'congratulations' before they heard 'fee.'\"",
           "milestone": {
             "title": "Witness Secured: The Job That Cost Money",
             "detail": "Trish Lim put an advertisement, a chat-only recruiter and a one-message check on the same night - the job-offer script, and the name of the batchmate it hired instead of robbing."

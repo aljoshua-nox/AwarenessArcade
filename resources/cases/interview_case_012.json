@@ -61,7 +61,7 @@
       "choices": []
     },
     "intro": {
-      "prompt": "Two o'clock, between lunch and dinner, and the canteen is empty except for the rice cooker ticking. Carmen wipes the counter in front of you and puts a plate down whether you want it or not. \"You're the one going door to door. Sit, sit. Eat first.\" She does not sit. \"Thirty minutes, they said. Thirty minutes and the lights go out. I have three kids doing homework at that table at six o'clock.\"",
+      "prompt": "Two o'clock, between lunch and dinner, and the canteen is empty except for the rice cooker ticking. Carmen wipes the counter in front of you and puts a plate down whether you want it or not. \"You're the one going door to door. Sit, sit. Eat first.\" She does not sit. \"A text, then a call. Pay the reconnection fee in thirty minutes, they said, or the electricity gets cut. It was six in the evening. I have three kids doing homework at that table at six, and the rice was on.\"",
       "choices": [
         {
           "text": "Start with the message. What did it say, exactly?",
@@ -105,7 +105,7 @@
       ]
     },
     "ask_call": {
-      "prompt": "\"A text first. FINAL NOTICE, all capital letters, thirty minutes. Then the call, a minute after - a man, very polite, very sorry, the system was automatic daw, and he couldn't stop it himself unless the reconnection fee was settled while he was on the line.\" She sets a glass down harder than she means to. \"Reconnection. It wasn't even disconnected. He said the fee is what stops the disconnection. At six o'clock, with the rice on, that made sense. It made complete sense.\"",
+      "prompt": "\"A text first. FINAL NOTICE, all capital letters: disconnection in thirty minutes for non-payment, settle the reconnection fee now. Then the call, a minute after - a man, very polite, very sorry, the system was automatic daw, and he couldn't stop it himself unless the reconnection fee was settled while he was on the line.\" She sets a glass down harder than she means to. \"Reconnection. It wasn't even disconnected. My bill was paid. He said the fee is what stops the disconnection, and at six o'clock, with the rice on, that made sense. It made complete sense.\"",
       "choices": [
         {
           "text": "Stay on six o'clock for a moment.",
@@ -114,7 +114,7 @@
       ]
     },
     "ask_call_cold": {
-      "prompt": "\"A text. Thirty minutes. Then a man, polite, the system was automatic, pay the reconnection fee on the line or the lights go.\" Flat, and to the counter. \"It wasn't even disconnected. He said the fee stops it. That's all.\"",
+      "prompt": "\"A text saying my electricity gets cut in thirty minutes. Then a man, polite, the system was automatic, pay the reconnection fee on the line or the lights go.\" Flat, and to the counter. \"It wasn't even disconnected. My bill was paid. He said the fee stops it. That's all.\"",
       "cooperation": -6,
       "choices": [
         {
@@ -125,7 +125,7 @@
     },
     "tactic_quiz_fear": {
       "tactic_quiz": {
-        "setup": "You put the message beside what she told you: [i]FINAL NOTICE - 30 MINUTES[/i], a polite man who was very sorry, and six o'clock in this house with the lights off, three kids and the rice half cooked.",
+        "setup": "Put together, this is the call: a text - [i]FINAL NOTICE - 30 MINUTES[/i] - then a polite, apologetic man from \"the electric company\" saying her power would be cut in thirty minutes unless she paid a reconnection fee while he was on the line. It was six in the evening, three kids at the table, the rice on. And her bill was already paid.",
         "tactic_id": "manufactured_fear",
         "tactic": "The picture you supply yourself",
         "question": "What was the caller actually threatening her with?",
@@ -167,7 +167,7 @@
         {
           "evidence_id": "ev_carmen_cashin_receipt",
           "next": "confirm",
-          "response": "She takes it out of the cash box without being asked. \"Six twelve. Eighteen minutes to spare.\" It goes on the counter next to the plate.",
+          "response": "She takes it out of the cash box without being asked. \"Six twelve. Eighteen minutes before the lights were supposed to go.\" It goes on the counter next to the plate.",
           "cooperation": 20
         },
         {

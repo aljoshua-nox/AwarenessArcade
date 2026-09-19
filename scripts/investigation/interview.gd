@@ -428,6 +428,10 @@ func _build_ui() -> void:
 		var button := Button.new()
 		button.custom_minimum_size = Vector2(0, 40)
 		button.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+		# A clicked button keeps keyboard focus, and the theme draws focus like
+		# hover - so after a choice, the next node's button in the same slot lit
+		# up, and on a quiz that read as the answer being pointed at.
+		button.focus_mode = Control.FOCUS_NONE
 		button.pressed.connect(_on_choice_pressed.bind(index))
 		right_column.add_child(button)
 		choice_buttons.append(button)

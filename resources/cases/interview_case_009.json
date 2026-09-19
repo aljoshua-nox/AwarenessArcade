@@ -227,7 +227,7 @@
       "choices": []
     },
     "end_partial": {
-      "prompt": "You have Bea's account of the job, and she is still calling it a job. Nothing yet ties her to the floor above, or her to you.",
+      "prompt": "You have Bea's account of the job, and she is still calling it a job. Nothing yet ties her to the floor above, and nothing yet has given her a reason to trust you.",
       "outcome": "partial",
       "choices": []
     },

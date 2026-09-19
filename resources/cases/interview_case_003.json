@@ -90,7 +90,7 @@
 		  "response": "\"Marsh.\" The name is out before he can stop it, and he shuts his mouth. \"...She didn't even pay. Why is she the one talking to you?\"",
 		  "cooperation": 20,
 		  "responses": {
-			"harmed": "\"Marsh.\" The name is out before he can stop it, and he shuts his mouth. \"...She paid? The bookkeeper paid?\" He almost laughs, and doesn't. \"Then the list was right about her.\"",
+			"harmed": "\"Marsh.\" The name is out before he can stop it, and he shuts his mouth. \"...She paid? The bookkeeper paid?\" He almost laughs, and doesn't. \"Then the note on the list was right about her.\"",
 			"unfinished": "\"Marsh.\" The name is out before he can stop it, and he shuts his mouth. \"...That one dropped. Somebody logged off mid-call.\" A beat. \"Why is she the one talking to you?\""
 		  }
 		},

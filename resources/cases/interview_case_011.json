@@ -103,7 +103,7 @@
       ]
     },
     "caught_callback": {
-      "prompt": "For the first time she does not have the next sentence ready. \"A callback,\" she says again, to the folder. \"From your tool,\" you say. \"To a man who asked for nothing but a way to close a pop-up.\" She closes the folder, which is the first thing she has done with it.",
+      "prompt": "For the first time she does not have the next sentence ready. \"A callback,\" she says again, to the folder. \"From your floor's support tool,\" you say, \"to a man who called a number off a pop-up and wanted nothing but to close it.\" She closes the folder, which is the first thing she has done with it.",
       "cooperation": 10,
       "milestone": {
         "title": "Account Broken: The Floor That Never Dials Out",
@@ -117,7 +117,7 @@
       ]
     },
     "bea_node": {
-      "prompt": "\"She told me about the folder by the door,\" you say. Rowena looks at the folder by the door, and does not look away from it fast enough. \"Probationary employees see a great many things they do not understand.\" \"She understood the two columns.\"",
+      "prompt": "\"She told me about the recruitment folder by the door,\" you say. Rowena looks at the folder by the door, and does not look away from it fast enough. \"Probationary employees see a great many things they do not understand.\" \"She understood the two columns,\" you say. \"Who paid the fee, and who got hired. They never share a name.\"",
       "cooperation": 10,
       "milestone": {
         "title": "The Recruit Named The Folder",

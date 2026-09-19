@@ -292,6 +292,14 @@ func _test_typewriter() -> void:
 	_check(not view._is_typing() and view.prompt_value.visible_ratio == 1.0, "a click on the box reveals the whole line")
 	view._on_prompt_gui_input(click)
 	_check(view.prompt_value.visible_ratio == 1.0, "a second click on a finished line is harmless")
+	# A clicked choice kept keyboard focus, which the theme draws like hover,
+	# so the next node's button in that slot looked picked out - on a quiz,
+	# like the answer. The choices take no focus.
+	var focusless := true
+	for button in view.choice_buttons:
+		if (button as Button).focus_mode != Control.FOCUS_NONE:
+			focusless = false
+	_check(focusless, "choice buttons take no keyboard focus, so no slot stays lit into the next node")
 	await _close(view)
 
 

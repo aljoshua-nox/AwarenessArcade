@@ -94,6 +94,7 @@ const NODE_OVERRIDE_KEYS := ["prompt", "choices", "evidence_hint", "evidence_pro
 
 
 func _ready() -> void:
+	AudioManager.stop_ambience()
 	_build_ui()
 	_load_case()
 	_set_background(str(person.get("setting", "")))

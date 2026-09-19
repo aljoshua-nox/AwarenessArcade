@@ -214,7 +214,7 @@ const TRANSIT := {
 
 func _init() -> void:
 	map_title = "Terminal Road"
-	map_hint = "Move with WASD or arrow keys. Press Enter at a door to interact."
+	map_hint = "WASD or arrows to walk  \u00b7  Enter at a door or a person  \u00b7  J journal  \u00b7  Esc menu"
 	player_spawn = Vector2(1448.0, 120.0)
 
 

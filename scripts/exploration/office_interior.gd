@@ -9,7 +9,9 @@ extends Node2D
 ## floors; the building has two you can walk.
 
 @export var map_title: String = "Call Floor - 3F"
-@export var map_hint: String = "Move with WASD or arrow keys. Press Enter to examine what you find."
+@export var map_hint: String = "WASD or arrows to walk  \u00b7  Enter to examine  \u00b7  J journal  \u00b7  Esc menu"
+## The looping bed under this floor, if the file exists (see assets/audio/ambience/).
+@export var ambience_path: String = "res://assets/audio/ambience/call_floor.mp3"
 @export_file("*.tscn") var portal_target_scene: String = "res://scenes/exploration/urban_exterior.tscn"
 @export var player_spawn: Vector2 = Vector2(190, 320)
 @export var movement_bounds: Rect2 = Rect2(Vector2(96, 240), Vector2(1096, 424))
@@ -24,6 +26,7 @@ extends Node2D
 @onready var hud: CanvasLayer = $HUD
 
 const TextStyle := preload("res://scripts/systems/text_style.gd")
+const PromptBubble := preload("res://scripts/exploration/prompt_bubble.gd")
 
 const CONFRONTATION_SCENE := "res://scenes/investigation/interview.tscn"
 const CASE_ELENA := "res://resources/cases/interview_case_004.json"
@@ -90,6 +93,11 @@ var inspect_panel: PanelContainer
 var inspect_title: Label
 var inspect_body: RichTextLabel
 var station_label: Label
+# The prompt that floats over the active station or the exit door.
+var prompt_bubble: Label
+var active_portal: ScenePortal = null
+const STATION_LIFT := 104.0
+const EXIT_LIFT := 60.0
 var standing_label: Label
 var statements_label: Label
 var objective_label: Label
@@ -130,6 +138,10 @@ func exit_prompt() -> String:
 func _ready() -> void:
 	title_label.text = map_title
 	hint_label.text = map_hint
+	portal_label.visible = false
+	prompt_bubble = PromptBubble.new()
+	add_child(prompt_bubble)
+	AudioManager.play_ambience(ambience_path)
 	# Coming down the stairs lands in front of them, not at the street door.
 	if SessionState.has_office_return_spawn:
 		player.global_position = SessionState.office_return_spawn
@@ -179,9 +191,9 @@ func _take_stairs() -> void:
 # --- Inspection UI -----------------------------------------------------------
 
 func _build_hud() -> void:
+	# Kept off screen: prompts float over the station now. Stays a node so the
+	# capture tools and tests that read it keep working.
 	station_label = Label.new()
-	station_label.offset_left = 20.0
-	station_label.offset_top = 102.0
 	station_label.visible = false
 	hud.add_child(station_label)
 
@@ -189,14 +201,14 @@ func _build_hud() -> void:
 	# indoors does not lose sight of the case.
 	standing_label = Label.new()
 	standing_label.offset_left = 20.0
-	standing_label.offset_top = 158.0
+	standing_label.offset_top = 74.0
 	standing_label.text = "Standing: %d" % SessionState.detective_credibility
 	standing_label.add_theme_color_override("font_color", Color.html(TextStyle.COLOR_HINT))
 	hud.add_child(standing_label)
 
 	statements_label = Label.new()
 	statements_label.offset_left = 20.0
-	statements_label.offset_top = 186.0
+	statements_label.offset_top = 102.0
 	statements_label.text = "Statements: %d of %d" % [SessionState.statements_taken, SessionState.STATEMENT_BUDGET]
 	statements_label.add_theme_color_override("font_color",
 		Color.html(TextStyle.COLOR_WRONG) if SessionState.statements_left() <= 1 else Color.html(TextStyle.COLOR_HINT))
@@ -204,7 +216,7 @@ func _build_hud() -> void:
 
 	objective_label = Label.new()
 	objective_label.offset_left = 20.0
-	objective_label.offset_top = 214.0
+	objective_label.offset_top = 130.0
 	objective_label.add_theme_color_override("font_color", Color.html(TextStyle.COLOR_TACTIC))
 	hud.add_child(objective_label)
 	_refresh_objective_label()
@@ -260,7 +272,7 @@ func _open_inspection(station: Dictionary) -> void:
 	inspect_title.text = str(station.get("title", ""))
 	inspect_body.text = _station_body(station)
 	inspect_panel.visible = true
-	station_label.visible = false
+	prompt_bubble.hide_bubble()
 	player.velocity = Vector2.ZERO
 	player.set_physics_process(false)
 
@@ -281,8 +293,7 @@ func _close_inspection() -> void:
 	inspect_panel.visible = false
 	player.set_physics_process(true)
 	if not active_station.is_empty():
-		station_label.text = str(active_station.get("prompt", ""))
-		station_label.visible = true
+		_show_station_prompt(active_station)
 
 
 func _station_body(station: Dictionary) -> String:
@@ -574,8 +585,8 @@ func _on_station_entered(body: Node, entry: Dictionary) -> void:
 	if not body.is_in_group("player"):
 		return
 	active_station = entry
-	station_label.text = str(entry.get("prompt", ""))
-	station_label.visible = not inspection_open
+	if not inspection_open:
+		_show_station_prompt(entry)
 
 
 func _on_station_exited(body: Node, entry: Dictionary) -> void:
@@ -583,7 +594,14 @@ func _on_station_exited(body: Node, entry: Dictionary) -> void:
 		return
 	if active_station.get("area", null) == entry.get("area", null):
 		active_station = {}
-		station_label.visible = false
+		prompt_bubble.hide_bubble()
+
+
+func _show_station_prompt(station: Dictionary) -> void:
+	var area: Area2D = station.get("area", null)
+	var anchor: Vector2 = area.global_position if area != null else player.global_position
+	station_label.text = str(station.get("prompt", ""))
+	prompt_bubble.show_above(anchor, station_label.text, STATION_LIFT)
 
 
 # --- Existing map helpers ----------------------------------------------------
@@ -673,18 +691,20 @@ func _add_sprite(texture: Texture2D, position: Vector2, scale: Vector2, z_index:
 
 
 func _can_enter_portal() -> bool:
-	if portal_label.visible:
+	if active_portal == portal:
 		return true
 	return player.global_position.distance_to(portal.global_position) <= 120.0
 
 
 func _on_portal_entered(portal_node: ScenePortal) -> void:
-	portal_label.text = portal_node.prompt_text
-	portal_label.visible = true
+	active_portal = portal_node
+	prompt_bubble.show_above(portal_node.global_position, portal_node.prompt_text, EXIT_LIFT)
 
 
-func _on_portal_exited(_portal_node: ScenePortal) -> void:
-	portal_label.visible = false
+func _on_portal_exited(portal_node: ScenePortal) -> void:
+	if active_portal == portal_node:
+		active_portal = null
+		prompt_bubble.hide_bubble()
 
 
 func _transition_to_scene(scene_path: String) -> void:

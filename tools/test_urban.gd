@@ -76,6 +76,7 @@ func _run() -> void:
 	await _test_briefing_on_arrival()
 	await _test_desk_door()
 	_test_movement_keys()
+	await _test_prompts_and_markers()
 
 	print("\n%d checks, %d failed" % [checks, failures.size()])
 	for f in failures:
@@ -622,7 +623,6 @@ func _test_statement_budget_doors() -> void:
 	view.player.global_position = evelyn.global_position
 	_check(not view._can_enter_interview(), "Enter at a closed door does nothing")
 	view.active_interview_portal = null
-	view.interview_label.visible = false
 	view.player.global_position = marco.global_position
 	_check(view._can_enter_interview(), "Enter at the suspect's door still works")
 	await _close(view)
@@ -711,9 +711,9 @@ func _test_desk_door() -> void:
 
 	# The door is a door: standing at it must not read as the office or a stop.
 	terrace.player.global_position = door.global_position
-	terrace.portal_label.visible = true
+	terrace.active_portal = door
 	_check(not terrace._can_enter_portal(), "standing at the desk's door is not standing at the office")
-	terrace.portal_label.visible = false
+	terrace.active_portal = null
 	var door_rect := _area_rect(door, terrace.INTERVIEW_PORTAL_SIZE)
 	var collisions := 0
 	for stop in terrace.street_stops:
@@ -751,3 +751,80 @@ func _test_movement_keys() -> void:
 	var player_script: Script = load("res://scripts/exploration/exploration_player.gd")
 	_check(player_script.source_code.contains("\"move_left\", \"move_right\", \"move_up\", \"move_down\""),
 		"the player reads the move_* actions")
+
+
+# Prompts float over the door, the stop or the exit the player is standing at,
+# and every interview door wears a marker saying how things stand with the
+# person behind it - the same reading the journal's People page gives.
+func _test_prompts_and_markers() -> void:
+	print("\n[prompts over doors, markers on them]")
+	SessionState.reset_session()
+	var view := await _open()
+	# The street's spawn is at the desk's door, so the first thing the player
+	# sees is that door's prompt.
+	_check(view.prompt_bubble != null and view.prompt_bubble.visible and view.prompt_bubble.text == "Go in to your desk",
+		"at spawn the prompt is the desk's door (%s)" % (view.prompt_bubble.text if view.prompt_bubble else "?"))
+	_check(not view.portal_label.visible and not view.interview_label.visible, "the corner labels stay off")
+	view._on_portal_exited(view.active_portal)
+	_check(not view.prompt_bubble.visible, "stepping off it hides the prompt")
+
+	var evelyn := _door_for(view, "interview_case_005.json")
+	view._on_interview_entered(evelyn)
+	_check(view.prompt_bubble.visible and view.prompt_bubble.text == evelyn.prompt_text,
+		"standing at a door shows its prompt (%s)" % view.prompt_bubble.text)
+	_check(view.prompt_bubble.global_position.y < evelyn.global_position.y - 40.0, "...above the door")
+	var center_x: float = view.prompt_bubble.global_position.x + view.prompt_bubble.size.x * 0.5
+	_check(absf(center_x - evelyn.global_position.x) < 2.0, "...centered on it")
+	view._on_interview_exited(evelyn)
+	_check(not view.prompt_bubble.visible, "leaving the door hides it")
+
+	view._on_portal_entered(view.portal)
+	_check(view.prompt_bubble.visible and view.prompt_bubble.text == view.portal.prompt_text, "the office door prompts too")
+	_check(view._can_enter_portal(), "and counts as in reach of the office")
+	view._on_portal_exited(view.portal)
+	_check(not view.prompt_bubble.visible and view.active_portal == null, "leaving it clears both")
+
+	var stop: Dictionary = view.street_stops[0]
+	view._on_stop_entered(view.player, stop)
+	_check(view.prompt_bubble.visible and view.prompt_bubble.text == str(stop.get("prompt", "")), "a stop prompts")
+	view._open_stop(stop)
+	_check(not view.prompt_bubble.visible, "reading it hides the prompt")
+	view._close_stop()
+	_check(view.prompt_bubble.visible, "closing brings the prompt back")
+	view._on_stop_exited(view.player, stop)
+	_check(not view.prompt_bubble.visible, "walking off hides it")
+
+	# Markers: one per interview door, all "?" on a fresh case.
+	var doors: Array = view.interview_portals
+	_check(view.door_markers.size() == doors.size(), "every interview door has a marker (%d of %d)" % [view.door_markers.size(), doors.size()])
+	var fresh := 0
+	for door in doors:
+		if str(view.door_markers.get(door, {}).get("glyph", "")) == "?":
+			fresh += 1
+	_check(fresh == doors.size(), "a fresh case marks every door as unvisited (%d)" % fresh)
+	await _close(view)
+
+	# The markers follow the case.
+	SessionState.record_interview_outcome("evelyn_marsh", "success")
+	SessionState.record_interview_outcome("maria_santos", "partial", true)
+	SessionState.record_interview_outcome("kevin_d", "failure")
+	SessionState.record_statement("kevin_d", "Victim", "failure", false)
+	SessionState.record_interview_outcome("marco_navarro", "failure")
+	view = await _open()
+	_check(_glyph(view, "interview_case_005.json") == "\u2713", "a statement on record is a check")
+	_check(_glyph(view, "interview_case_001.json") == "!", "turned away for want of standing is a bang")
+	_check(_glyph(view, "interview_case_002.json") == "\u00d7", "a witness who will not talk again is a cross")
+	_check(_glyph(view, "interview_case_003.json") == "!", "a suspect who shut the door is a bang, not a cross - his door still opens")
+	_check(_glyph(view, "interview_case_007.json") == "?", "an unvisited door stays a question mark")
+	await _close(view)
+
+	SessionState.reset_session()
+	SessionState.statements_taken = SessionState.STATEMENT_BUDGET
+	view = await _open()
+	_check(_glyph(view, "interview_case_007.json") == "\u00d7", "a spent budget crosses out the witnesses not yet taken")
+	_check(_glyph(view, "interview_case_003.json") == "?", "...but not the suspect")
+	await _close(view)
+
+
+func _glyph(view: Node, case_file: String) -> String:
+	return str(view.door_markers.get(_door_for(view, case_file), {}).get("glyph", "?"))

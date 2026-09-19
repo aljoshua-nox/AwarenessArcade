@@ -28,8 +28,10 @@ const TABLE_TAKEN_NOTE := "Press N at any time to open the notebook."
 
 func _init() -> void:
 	map_title = "Anti-Fraud Desk"
-	map_hint = "Move with WASD or arrow keys. Press Enter to pick things up."
+	map_hint = "WASD or arrows to walk  \u00b7  Enter to pick up or read  \u00b7  J journal  \u00b7  Esc menu"
 	portal_target_scene = DESK_STREET_SCENE
+	# The desk is a quiet room; the call floor's bed would be wrong here.
+	ambience_path = "res://assets/audio/ambience/office.mp3"
 
 
 # No director here, and no floor above.
@@ -164,8 +166,8 @@ func _refresh_tools() -> void:
 	if not active_station.is_empty() and station_label.visible:
 		station_label.text = str(active_station.get("prompt", ""))
 	portal.prompt_text = exit_prompt()
-	if portal_label.visible:
-		portal_label.text = portal.prompt_text
+	if active_portal == portal:
+		prompt_bubble.show_above(portal.global_position, portal.prompt_text, EXIT_LIFT)
 	CaseJournal.refresh_availability()
 
 

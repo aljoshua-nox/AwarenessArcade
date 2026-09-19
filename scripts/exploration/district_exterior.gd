@@ -13,9 +13,12 @@ extends Node2D
 ## own and returns them, so tests can still read them off the instance.
 
 const TextStyle := preload("res://scripts/systems/text_style.gd")
+const PromptBubble := preload("res://scripts/exploration/prompt_bubble.gd")
 
 @export var map_title: String = "District"
-@export var map_hint: String = "Move with WASD or arrow keys. Press Enter at a door to interact."
+@export var map_hint: String = "WASD or arrows to walk  \u00b7  Enter at a door or a person  \u00b7  J journal  \u00b7  Esc menu"
+## The looping bed under this street, if the file exists (see assets/audio/ambience/).
+@export var ambience_path: String = "res://assets/audio/ambience/street.mp3"
 @export_file("*.tscn") var portal_target_scene: String = "res://scenes/exploration/office_interior.tscn"
 @export var player_spawn: Vector2 = Vector2(150, 950)
 @export var movement_bounds: Rect2 = Rect2(Vector2(48, 48), Vector2(1824, 984))
@@ -41,7 +44,15 @@ var portal_case_paths: Dictionary = {}
 # prompt says which; Enter does nothing.
 var portal_blocked: Dictionary = {}
 var active_interview_portal: ScenePortal = null
+# Whichever office, transit or exit portal the player is standing in, if any.
+var active_portal: ScenePortal = null
 var transit_portal: ScenePortal = null
+# The prompt that floats over the active door, stop or exit.
+var prompt_bubble: Label
+const DOOR_LIFT := 84.0
+const STOP_LIFT := 64.0
+# What each interview door's marker shows, by portal - the layout test reads it.
+var door_markers: Dictionary = {}
 # Doors to somewhere that is neither an interview nor the call floor - the
 # detective's desk. A district places one from its _build_buildings() with
 # _place_exit_door(); the street remembers the door on the way in, so the way
@@ -58,7 +69,6 @@ var built_labels: Array[Rect2] = []
 
 var street_stops: Array[Dictionary] = []
 var active_stop: Dictionary = {}
-var stop_label: Label
 var inspect_panel: PanelContainer
 var inspect_title: Label
 var inspect_body: RichTextLabel
@@ -231,6 +241,13 @@ func has_office() -> bool:
 func _ready() -> void:
 	title_label.text = map_title
 	hint_label.text = map_hint
+	# Prompts float over the map now; the HUD's corner labels stay in the scene
+	# files but never show.
+	portal_label.visible = false
+	interview_label.visible = false
+	prompt_bubble = PromptBubble.new()
+	add_child(prompt_bubble)
+	AudioManager.play_ambience(ambience_path)
 	if SessionState.has_urban_return_spawn:
 		player.global_position = SessionState.urban_return_spawn
 		SessionState.has_urban_return_spawn = false
@@ -405,8 +422,46 @@ func _place_interviewee_door(row: String, slot: int, building_rect: Rect2, door_
 			continue
 		if i < interview_portals.size():
 			interview_portals[i].global_position = door_base + Vector2(0.0, 14.0)
+			_add_door_marker(interview_portals[i], door_base, _case_person(str(entry["case"])))
 		_add_building_label(building_rect, str(entry["label"]), label_y)
 		return
+
+
+# A badge over the door saying how things stand with the person behind it -
+# the same reading the journal's People page gives, so a street can be walked
+# without opening the journal to know which doors are still worth knocking on.
+func _add_door_marker(door: ScenePortal, door_base: Vector2, person: Dictionary) -> void:
+	var marker: Dictionary = CaseJournal.door_marker(person)
+	door_markers[door] = marker
+	var size := Vector2(24.0, 24.0)
+	var top_left := door_base + Vector2(-size.x * 0.5, -DOOR_LIFT + 6.0)
+
+	var shadow := ColorRect.new()
+	shadow.color = Color(0.06, 0.06, 0.09, 0.75)
+	shadow.position = top_left + Vector2(2.0, 2.0)
+	shadow.size = size
+	shadow.z_index = 40
+	decor.add_child(shadow)
+
+	var face := ColorRect.new()
+	face.color = Color.html(str(marker.get("color", TextStyle.COLOR_TACTIC)))
+	face.position = top_left
+	face.size = size
+	face.z_index = 41
+	decor.add_child(face)
+
+	var glyph := Label.new()
+	glyph.text = str(marker.get("glyph", "?"))
+	glyph.position = top_left
+	glyph.size = size
+	glyph.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	glyph.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	glyph.add_theme_font_override("font", load(TextStyle.FONT_SYSTEM))
+	glyph.add_theme_font_size_override("font_size", 17)
+	glyph.add_theme_color_override("font_color", Color(0.10, 0.09, 0.05))
+	glyph.add_theme_constant_override("outline_size", 0)
+	glyph.z_index = 42
+	decor.add_child(glyph)
 
 
 func _setup_camera_limits() -> void:
@@ -854,25 +909,19 @@ func _add_car(spawn_position: Vector2, tint: Color) -> void:
 # --- Street stops ------------------------------------------------------------
 
 func _build_stop_ui() -> void:
-	stop_label = Label.new()
-	stop_label.offset_left = 20.0
-	stop_label.offset_top = 130.0
-	stop_label.visible = false
-	hud.add_child(stop_label)
-
 	# The case's two numbers, always visible. Standing gates seven of the
 	# doors and used to show only on the summary screen; a budget the player
 	# did not know about would read as unfair the first time it bit.
 	standing_label = Label.new()
 	standing_label.offset_left = 20.0
-	standing_label.offset_top = 158.0
+	standing_label.offset_top = 74.0
 	standing_label.text = "Standing: %d" % SessionState.detective_credibility
 	standing_label.add_theme_color_override("font_color", Color.html(TextStyle.COLOR_HINT))
 	hud.add_child(standing_label)
 
 	statements_label = Label.new()
 	statements_label.offset_left = 20.0
-	statements_label.offset_top = 186.0
+	statements_label.offset_top = 102.0
 	statements_label.text = "Statements: %d of %d" % [SessionState.statements_taken, SessionState.STATEMENT_BUDGET]
 	statements_label.add_theme_color_override("font_color",
 		Color.html(TextStyle.COLOR_WRONG) if SessionState.statements_left() <= 1 else Color.html(TextStyle.COLOR_HINT))
@@ -881,7 +930,7 @@ func _build_stop_ui() -> void:
 	# The journal's first open objective, so the case has a direction on screen.
 	objective_label = Label.new()
 	objective_label.offset_left = 20.0
-	objective_label.offset_top = 214.0
+	objective_label.offset_top = 130.0
 	objective_label.add_theme_color_override("font_color", Color.html(TextStyle.COLOR_TACTIC))
 	hud.add_child(objective_label)
 	_refresh_objective_label()
@@ -994,8 +1043,8 @@ func _on_stop_entered(body: Node, entry: Dictionary) -> void:
 	if not body.is_in_group("player"):
 		return
 	active_stop = entry
-	stop_label.text = str(entry.get("prompt", ""))
-	stop_label.visible = not inspection_open
+	if not inspection_open:
+		prompt_bubble.show_above(entry.get("position", Vector2.ZERO), str(entry.get("prompt", "")), STOP_LIFT)
 
 
 func _on_stop_exited(body: Node, entry: Dictionary) -> void:
@@ -1003,7 +1052,7 @@ func _on_stop_exited(body: Node, entry: Dictionary) -> void:
 		return
 	if active_stop.get("area", null) == entry.get("area", null):
 		active_stop = {}
-		stop_label.visible = false
+		prompt_bubble.hide_bubble()
 
 
 func _stop_body(stop: Dictionary) -> String:
@@ -1027,7 +1076,7 @@ func _open_stop(stop: Dictionary) -> void:
 	inspect_title.text = str(stop.get("title", ""))
 	inspect_body.text = _stop_body(stop)
 	inspect_panel.visible = true
-	stop_label.visible = false
+	prompt_bubble.hide_bubble()
 	player.velocity = Vector2.ZERO
 	player.set_physics_process(false)
 
@@ -1056,8 +1105,7 @@ func _close_stop() -> void:
 	inspect_panel.visible = false
 	player.set_physics_process(true)
 	if not active_stop.is_empty():
-		stop_label.text = str(active_stop.get("prompt", ""))
-		stop_label.visible = true
+		prompt_bubble.show_above(active_stop.get("position", Vector2.ZERO), str(active_stop.get("prompt", "")), STOP_LIFT)
 
 
 # Read off the milestones rather than a counter of its own, so it survives the
@@ -1075,15 +1123,13 @@ func _cited_number_count() -> int:
 # --- Doors -------------------------------------------------------------------
 
 func _can_enter_portal() -> bool:
-	# The label is shared with the transit portal and the exit doors, so it is
-	# only evidence of being at the office door when that is the one in reach.
-	if portal_label.visible and not _transit_in_reach() and _exit_door_in_reach() == null:
+	if active_portal == portal:
 		return true
 	return player.global_position.distance_to(portal.global_position) <= 40.0
 
 
 func _can_enter_interview() -> bool:
-	if interview_label.visible and active_interview_portal != null:
+	if active_interview_portal != null:
 		return not portal_blocked.has(active_interview_portal)
 	for interview_portal in interview_portals:
 		if player.global_position.distance_to(interview_portal.global_position) <= 40.0:
@@ -1092,25 +1138,28 @@ func _can_enter_interview() -> bool:
 	return false
 
 
+# The office door, the way to the other district and the desk's door all
+# report here; whichever the player is in is the active one.
 func _on_portal_entered(portal_node: ScenePortal) -> void:
-	portal_label.text = portal_node.prompt_text
-	portal_label.visible = true
+	active_portal = portal_node
+	prompt_bubble.show_above(portal_node.global_position, portal_node.prompt_text, DOOR_LIFT)
 
 
-func _on_portal_exited(_portal_node: ScenePortal) -> void:
-	portal_label.visible = false
+func _on_portal_exited(portal_node: ScenePortal) -> void:
+	if active_portal == portal_node:
+		active_portal = null
+		prompt_bubble.hide_bubble()
 
 
 func _on_interview_entered(portal_node: ScenePortal) -> void:
 	active_interview_portal = portal_node
-	interview_label.text = portal_node.prompt_text
-	interview_label.visible = true
+	prompt_bubble.show_above(portal_node.global_position, portal_node.prompt_text, DOOR_LIFT)
 
 
 func _on_interview_exited(portal_node: ScenePortal) -> void:
 	if active_interview_portal == portal_node:
 		active_interview_portal = null
-		interview_label.visible = false
+		prompt_bubble.hide_bubble()
 
 
 func _transition_to_scene(scene_path: String) -> void:

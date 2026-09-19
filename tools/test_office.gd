@@ -56,6 +56,8 @@ func _run() -> void:
 	await _test_director_door_gate()
 	await _test_fourth_floor()
 	await _test_detective_desk()
+	await _test_floor_prompts()
+	_test_ambience()
 	await _test_inspection_panel()
 	await _test_prologue_logs_calls()
 	_test_outcome_vocabulary()
@@ -469,3 +471,49 @@ func _test_detective_desk() -> void:
 	remove_child(again)
 	again.queue_free()
 	await get_tree().process_frame
+
+
+# Station and exit prompts float over the thing, the way the street's do.
+func _test_floor_prompts() -> void:
+	print("\n[prompts on the floor]")
+	SessionState.reset_session()
+	var view := await _open()
+	_check(view.prompt_bubble != null and not view.prompt_bubble.visible, "the prompt starts hidden")
+	_check(not view.station_label.visible and not view.portal_label.visible, "the corner labels stay off")
+	var ledger := _station(view, "The call list")
+	view._on_station_entered(view.player, ledger)
+	_check(view.prompt_bubble.visible and view.prompt_bubble.text == str(ledger.get("prompt", "")),
+		"standing at a station shows its prompt (%s)" % view.prompt_bubble.text)
+	var area: Area2D = ledger.get("area")
+	_check(view.prompt_bubble.global_position.y < area.global_position.y - 80.0, "...above its marker")
+	view._open_inspection(ledger)
+	_check(not view.prompt_bubble.visible, "reading it hides the prompt")
+	view._close_inspection()
+	_check(view.prompt_bubble.visible, "closing brings it back")
+	view._on_station_exited(view.player, ledger)
+	_check(not view.prompt_bubble.visible, "walking off hides it")
+
+	view._on_portal_entered(view.portal)
+	_check(view.prompt_bubble.visible and view.prompt_bubble.text == view.portal.prompt_text, "the exit door prompts")
+	_check(view._can_enter_portal(), "and counts as in reach")
+	view._on_portal_exited(view.portal)
+	_check(not view.prompt_bubble.visible and view.active_portal == null, "leaving it clears both")
+	await _close(view)
+
+
+# A bed under a scene is one file away: the scene names it, the manager plays
+# it if it exists and stays silent if it does not.
+func _test_ambience() -> void:
+	print("\n[ambience]")
+	AudioManager.play_ambience("res://assets/audio/ambience/not_here.mp3")
+	_check(not AudioManager.ambience_playing(), "a bed that is not in the repo plays nothing")
+	_check(AudioManager.ambience_path.is_empty(), "and leaves no path behind")
+	var stand_in := "res://assets/audio/sfx/434379__kila_vat__notification-sound-handmade.mp3"
+	AudioManager.play_ambience(stand_in)
+	_check(AudioManager.ambience_path == stand_in, "a file that exists is taken up")
+	_check(AudioManager._ambience_player.stream != null and bool(AudioManager._ambience_player.stream.get("loop")),
+		"and set to loop")
+	AudioManager.play_ambience(stand_in)
+	_check(AudioManager.ambience_path == stand_in, "asking for the same bed again keeps it")
+	AudioManager.stop_ambience()
+	_check(not AudioManager.ambience_playing() and AudioManager.ambience_path.is_empty(), "stopping clears it")

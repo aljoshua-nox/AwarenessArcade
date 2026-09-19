@@ -2,6 +2,7 @@ extends Control
 
 
 func _ready() -> void:
+	AudioManager.stop_ambience()
 	_build_ui()
 	SessionState.reset_session()
 

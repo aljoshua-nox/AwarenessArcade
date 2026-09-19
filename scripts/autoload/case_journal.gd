@@ -511,6 +511,31 @@ func _person_status(person: Dictionary, place: Dictionary) -> Array:
 	return ["Costs no statement", TextStyle.COLOR_HINT]
 
 
+## What the marker over a person's door shows, from the same state the People
+## page reads, so the two never disagree. {glyph, color}: "?" not yet visited,
+## "!" turned away or shut down (come back with more), a check for a statement
+## or a flip on record, "x" for a door that will not open again.
+func door_marker(person: Dictionary) -> Dictionary:
+	var person_id := str(person.get("person_id", ""))
+	var role := str(person.get("role", ""))
+	var outcome := str(SessionState.interview_outcomes.get(person_id, ""))
+	var takes_statement: bool = SessionState.STATEMENT_ROLES.has(role)
+	if takes_statement and SessionState.is_witness_closed(person_id):
+		return {"glyph": "\u00d7", "color": TextStyle.COLOR_WRONG}
+	match outcome:
+		"success", "whistleblower", "turned", "owner_named":
+			return {"glyph": "\u2713", "color": TextStyle.COLOR_CORRECT}
+		"partial":
+			return {"glyph": "\u2713", "color": TextStyle.COLOR_TACTIC}
+		"failure":
+			return {"glyph": "!", "color": TextStyle.COLOR_WRONG}
+		SessionState.OUTCOME_HESITANT:
+			return {"glyph": "!", "color": TextStyle.COLOR_HINT}
+	if takes_statement and SessionState.statements_left() <= 0:
+		return {"glyph": "\u00d7", "color": TextStyle.COLOR_WRONG}
+	return {"glyph": "?", "color": TextStyle.COLOR_TACTIC}
+
+
 func _fill_people(page: VBoxContainer) -> void:
 	_add_note(page, "Every door in the case: where it is, what it takes to open, and how it went.")
 	var box := _add_scrolling_box(page)

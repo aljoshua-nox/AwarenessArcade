@@ -31,8 +31,9 @@ license file bundled, or license terms require per-file checking).
 > Props, Pixel Life – Desk Essentials, 25 Portrait Pixel Art pack1 (terms never
 > stated), FG11 Trial (unidentifiable, folder marked "Trial"), MetroCity +
 > MetroCity 2.0 (CC0, simply unused), and the `Modern_City_GameKit/` folder —
-> 319 files, ~12 MB. See the note on the `urban/` sheets below before assuming
-> the GameKit question is closed.
+> 319 files, ~12 MB. The GameKit itself was identified on 2026-09-20 — it is
+> mimakuma's *Modern City Game Kit*, free with credit — and the files the game
+> kept from it (the `urban/` sheets and the player sprite) are credited below.
 
 
 ## Art
@@ -49,12 +50,12 @@ license file bundled, or license terms require per-file checking).
 | PixelOffice pack (characters + office props) | `assets/art/maps/PixelOffice/` | itch.io asset pack ("PixelOffice") | CC0 | ✅ |
 | Free Office Pixel Art | `assets/art/maps/free-office-pixel-art/` | arlantr — [itch.io](https://arlantr.itch.io/) / [OpenGameArt](https://opengameart.org/users/arlantr) | Free to use, credit appreciated | ✅ |
 | Little Bits: Office (tileset + businessman1 character) | `assets/art/maps/Little_Bits_Office_tileset/` | AdricCustoms — [itch.io](https://adriccustoms.itch.io/little-bits-office) | Name-your-own-price; creator states use is unrestricted ("Use it for whatever you like"). No formal license text published | ✅ identified, terms informal |
-| Urban tile sheets — **three of these build the city block** (`walls_grass_roof` = every building, `doors_windows` = every door, `props` = lampposts) | `assets/art/maps/urban/` | ⚠️ **Unidentified — the one remaining licensing question.** Byte-identical copies of files from the removed `Modern_City_GameKit/` pack. **Checked against Kenney's RPG Urban Pack (2026-09-08): not a match.** Only `urban_map.png` in this folder is Kenney's — it is `Tilemap/tilemap.png` byte for byte, and it is unused. The other five are a different pack in a visibly different style: freely-arranged detailed sprites, not Kenney's strict flat 16x16 grid | ⚠️ unknown | ⚠️ **unresolved — ask whoever downloaded the art.** Three searches found nothing |
+| Modern City Game Kit — urban tile sheets: **four of these build the city block** (`walls_grass_roof` = every building, `doors_windows` = every door, `props` = lampposts, `buses_cars` = Terminal Road's vehicles; `road_pavements` is unused) | `assets/art/maps/urban/` | mimakuma — [itch.io](https://mimakuma.itch.io/modern-city-game-kit) (identified 2026-09-20: the removed `Modern_City_GameKit/` folder was this pack whole — Aseprite sources, SVGs, the detective, two NPCs, traffic lights, GUI — and these sheets are its `PNG/` folder byte for byte. **Not Kenney**, despite the folder's stray Kenney copy in the next row) | **Free; credit required.** Author's terms: *"You may use this pack for commercial and noncommercial projects. You can edit the assets for your own needs. Please credit me (mimakuma) as the original creator of the assets if you decide to use them in your project."* On the credits screen | ✅ |
 | Kenney RPG Urban Pack tilemap (stray copy) | `assets/art/maps/urban/urban_map.png` | Kenney (kenney.nl) — byte-identical to `kenney_rpg-urban-pack/Tilemap/tilemap.png` | CC0 | ✅ (unused; a duplicate of a file already in the repo) |
 | Street terrain — pavements, road, grass, cars, trees (`TILES_DIR` in `urban_exterior.gd`) | `assets/art/maps/kenney_roguelike-modern-city/Tiles/` | Kenney (kenney.nl) | CC0 | ✅ |
 | Office tile sheets — floor and wall tiles used by the call floor (`floor_tiles`, `wall_tiles`; other props unused) | `assets/art/maps/office/` | ⚠️ unidentified; did not match the removed GameKit pack, so a separate source | ⚠️ unknown | ⚠️ needs source lookup |
 | Numbered character pack (`pack/pack/1.png`…) | `assets/art/characters/pack/` | ⚠️ unidentified — no bundled license found | ⚠️ unknown | ⚠️ needs source lookup |
-| Player detective sprite (idle/walk, 4 directions) | `assets/art/characters/player/` | ⚠️ unidentified — likely custom or from one of the packs above | ⚠️ unknown | ⚠️ needs source lookup |
+| Player detective sprite (idle/walk, 4 directions) | `assets/art/characters/player/` | mimakuma — Modern City Game Kit, the same pack as the urban sheets (identified 2026-09-20: all eight files hash-match the pack's `Characters/PNG/Detective/` sheets) | Free; credit required — covered by the mimakuma line on the credits screen | ✅ |
 | Portrait Pack (`fella 1`, `fella 2`, `lady 1`, `lady 2`) | `assets/art/portraits/` | Calciumtrice — [OpenGameArt](https://opengameart.org/content/portrait-pack) (identified 2026-09-12; the "C" monogram bottom-right is the artist's) | **CC-BY 3.0** — attribution required. Author's notice: *"Portrait Pack by Calciumtrice, usable under Creative Commons Attribution 3.0 license."* | ✅ |
 | Portraits (`lady 3`, `lady 4`, `fella 3`, `fella 4`) | `assets/art/portraits/` | **AI-generated**, produced by the team (2026-09-09 to 2026-09-12); 1254x1254 RGB | No third-party license — generated for this project. No attribution owed to anyone; the generator used is not recorded here | ✅ |
 | Portraits (`teddy`, `joel`, `trish`, `carmen`, `dennis`, `bea`, `rowena`, `gus`) | `assets/art/portraits/` | **AI-generated**, produced by the team (2026-09-12) from the briefs in the workspace's `future-cast.md`; 1254x1254 RGB. Added to the repo 2026-09-15 ahead of the characters they are for; `teddy` became Teodoro Villanueva (`interview_case_007`), `trish` Patricia Lim (`008`), `bea` Bea Santiago (`009`) and `joel` Joel Abad (`010`) the same day, `rowena` Rowena Ocampo (`011`), `carmen` Carmen Salazar (`012`) and `dennis` Dennis Mercado (`013`) on 2026-09-16; `gus` is deliberately unreferenced - the owner has no interview, only a name, and the portrait is held for an epilogue | No third-party license — generated for this project. Same terms as the row above | ✅ |
@@ -126,14 +127,18 @@ The album's other two tracks (*Tybarne*, *Dio e popolo*) were moved to `download
 
 ## Open items
 
-1. **Identify the `urban/` tile sheets.** They draw the city block the whole investigation
-   walks around, and nobody knows where they came from. Ask whoever downloaded the art —
-   their itch.io library or browser download history will answer it far faster than
-   searching. Failing that, replace them with the Kenney *Roguelike Modern City* / *RPG
-   Urban Pack* already in this project, both CC0.
+1. ~~**Identify the `urban/` tile sheets.**~~ Identified 2026-09-20: the whole removed
+   `Modern_City_GameKit/` folder was mimakuma's *Modern City Game Kit* (itch.io, free,
+   credit required), found by its name once the folder's Aseprite sources and named
+   characters ruled Kenney out. The four sheets the game uses and the player sprite are
+   its files. The credit line went on the credits screen the same day; `test_credits`
+   pins it with the others.
 2. Identify the remaining ⚠️ art: the `office/` floor and wall tiles, the numbered `pack/`
-   character sheets, and the player detective sprite. All sixteen portraits are resolved:
-   four are Calciumtrice's pack (CC-BY 3.0), twelve are AI-generated by the team.
+   character sheets, and — found 2026-09-20, **not yet in this file at all** —
+   `assets/art/characters/24by24ModernRPGGuy.png`, which `district_exterior.gd` loads as
+   the first street NPC (`NPC_A_TEXTURE`). It is not from the GameKit. All sixteen
+   portraits are resolved: four are Calciumtrice's pack (CC-BY 3.0), twelve are
+   AI-generated by the team.
 3. ~~Confirm the three prologue Freesound SFX still marked ⚠️ (360480, 434379, 629201).~~
    Read off their pages 2026-09-20: the dial tone is CC0; the notification and the ring
    are CC-BY 4.0 and went on the credits screen the same day. Nothing in the build is
@@ -141,8 +146,8 @@ The album's other two tracks (*Tybarne*, *Dio e popolo*) were moved to `download
 4. ~~The interrogation-room backdrop (Magnific / rawpixel.com) requires attribution — the
    credits screen must carry "Image by rawpixel.com on Magnific".~~ On the screen since
    2026-09-20. ~~The carinderia backdrop (`settings/canteen.jpg`) has no license at all.~~
-   Replaced the same day with a Pexels photo (Denniz Futalan); nothing in the build is
-   unlicensed now except the `urban/` tile sheets in item 1.
+   Replaced the same day with a Pexels photo (Denniz Futalan). With item 1 closed, nothing
+   the build ships is unlicensed; the item 2 files are unidentified, not known-unlicensed.
 5. ~~Font Awesome Free icons are CC BY 4.0 — the credits screen must include an attribution
    line ... "Portrait Pack by Calciumtrice, usable under Creative Commons Attribution 3.0
    license."~~ Both on the screen since 2026-09-20, with the music and Freesound lines;

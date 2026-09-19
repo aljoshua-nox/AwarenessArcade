@@ -24,6 +24,7 @@ const MUST_CARRY := [
 	"Music by GloryToTheMachine",
 	"Produced by Julie Damsgaard/Spring Spring/Spring Enterprises @ https://spring-enterprises.neocities.org",
 	"kevp888", "qubodup", "MoKoLoKo", "nuFF3", "kila_vat", "AUDACITIER",
+	"mimakuma",
 ]
 
 var failures: Array[String] = []

@@ -31,6 +31,7 @@
 	{
 	  "title": "Tiles and sprites",
 	  "entries": [
+		{"line": "Modern City Game Kit by mimakuma (mimakuma.itch.io), free with credit: the buildings, doors and lampposts of both streets, Terminal Road's cars and bus, and the detective you walk as.", "required": true, "key": "mimakuma"},
 		{"line": "Kenney (kenney.nl), CC0: Roguelike Modern City, RPG Urban Pack, UI Pack and RPG Expansion, Input Prompts, Background Elements, Kenney Fonts."},
 		{"line": "PixelOffice, CC0: the call floor's people and props."},
 		{"line": "Free Office Pixel Art by arlantr (arlantr.itch.io), free to use with credit."},

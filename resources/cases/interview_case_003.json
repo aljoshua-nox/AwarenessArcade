@@ -154,7 +154,7 @@
 	},
 	"tactic_quiz_list": {
 	  "tactic_quiz": {
-		"setup": "\"The list,\" he says, like it's the most boring thing in the world. \"It comes down from upstairs. Names, numbers, notes in the margin. I dial what they give me.\"",
+		"setup": "\"The list,\" he says, like it's the most boring thing in the world. \"It gets handed to us. Names, numbers, notes in the margin. I dial what they give me.\"",
 		"tactic_id": "reused_victim_list",
 		"tactic": "The reused victim list",
 		"question": "Notes in the margin. What is a list like that actually made of?",

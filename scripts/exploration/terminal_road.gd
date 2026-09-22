@@ -152,7 +152,7 @@ const STREET_STOPS := [
 		"marker": TextStyle.MARK_TACTIC,
 		"cites_name": true,
 		"milestone_title": "The Name On The Fence",
-		"milestone_detail": "The construction site on Terminal Road is branded with the same company as the tower - the operation has more than one address.",
+		"milestone_detail": "The construction site on Terminal Road is branded with the same company as the tower - the company has more than one address.",
 	},
 	{
 		"position": Vector2(620.0, 216.0),

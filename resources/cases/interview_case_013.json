@@ -9,7 +9,7 @@
     "role": "Suspect",
     "setting": "lobby",
     "portrait": "res://assets/art/portraits/dennis.png",
-    "traits": "The one a stalled call is transferred to. Has done this longer than anyone in the building and feels nothing about it. Has heard every pressure line, because he wrote half of them."
+    "traits": "The one a stalled call is transferred to. Has done this longer than anyone on either floor and feels nothing about it. Has heard every pressure line, because he wrote half of them."
   },
   "evidence": [],
   "start_node": "start",
@@ -44,7 +44,7 @@
       ]
     },
     "hostile": {
-      "prompt": "\"Charge me with what?\" He does not raise his voice; he has never needed to. \"Talking? I talk for a living. Everybody in this building talks for a living. You want the one who dials, and I don't dial.\" The lanyard turns once in his fingers. \"Eight minutes.\"",
+      "prompt": "\"Charge me with what?\" He does not raise his voice; he has never needed to. \"Talking? I talk for a living. Everybody in this business talks for a living. You want the one who dials, and I don't dial.\" The lanyard turns once in his fingers. \"Eight minutes.\"",
       "choices": [
         {
           "text": "Then tell me about the ones you don't dial.",
@@ -224,7 +224,7 @@
       "outcome": "failure",
       "milestone": {
         "title": "The Closer Went Upstairs",
-        "detail": "Dennis Mercado ended the interview and reported it upward. The one man who could have named the building's owner is the one man the owner hears from first."
+        "detail": "Dennis Mercado ended the interview and reported it upward. The one man who could have named the operation's owner is the one man the owner hears from first."
       },
       "choices": []
     }

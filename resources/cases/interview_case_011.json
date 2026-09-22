@@ -34,7 +34,7 @@
       ]
     },
     "soft_open": {
-      "prompt": "\"It does what the sign says.\" She folds her hands on the folder. \"Customers call us with a device problem. We walk them through it. We send an invoice. The invoices are on file downstairs, and the license is on the wall behind you.\" It is. It is real. That is the point of it.",
+      "prompt": "\"It does what the sign says.\" She folds her hands on the folder. \"Customers call us with a device problem. We walk them through it. We send an invoice. The invoices are on file, and the license is on the wall behind you.\" It is. It is real. That is the point of it.",
       "choices": [
         {
           "text": "Then let's talk about the calls.",
@@ -55,7 +55,7 @@
       "prompt": "\"Nobody on this floor dials out.\" She says it like a fact about the weather. \"Customers call us. We have never made an outbound call in the history of this floor, and you will not find a phone bill that says otherwise.\" She has not looked at the folder once. She is not going to.",
       "claim": "Rowena Ocampo, on the record: this floor makes no outbound calls; customers call in.",
       "evidence_prompt": true,
-      "evidence_hint": "She has just told you the one thing this floor never does. Somebody downstairs has an account of being called back.",
+      "evidence_hint": "She has just told you the one thing this floor never does. One of the people this floor called has an account of being called back.",
       "accepts_evidence": [
         {
           "evidence_id": "test_kevin_confirmed",
@@ -93,7 +93,7 @@
       ],
       "choices": [
         {
-          "text": "Every page of the script downstairs is initialed R.O.",
+          "text": "Every page of the script in that rack is initialed R.O.",
           "next": "pressure_node"
         },
         {
@@ -134,7 +134,7 @@
       "prompt": "\"You have a complaint and a story. I have a business license.\" She turns the folder face down, which is not the same as putting it away. \"Is there anything else?\"",
       "choices": [
         {
-          "text": "There's the script downstairs with your initials on every page.",
+          "text": "There's the script in that rack with your initials on every page.",
           "next": "pressure_node"
         },
         {

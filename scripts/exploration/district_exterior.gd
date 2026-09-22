@@ -526,7 +526,7 @@ func _file_case_unresolved() -> void:
 	SessionState.investigation_case_title = "The Call Center Investigation"
 	SessionState.investigation_person_name = "No suspect in custody"
 	SessionState.investigation_outcome = "insufficient_evidence"
-	SessionState.investigation_outcome_note = "Marco Navarro stopped talking and the operation above him was never named. What is on file describes a series of calls and nobody who made them."
+	SessionState.investigation_outcome_note = "Marco Navarro stopped talking and the people above him were never named. What is on file describes a series of calls and nobody who made them."
 	SessionState.has_urban_return_spawn = false
 	_transition_to_scene("res://scenes/investigation/investigation_end.tscn")
 

@@ -213,7 +213,7 @@
       ]
     },
     "end_turned": {
-      "prompt": "Bea's account - the advertisement, the chat interview, the training cards, the cash on Fridays and the director in the back office - is the first word from inside the fourth floor. The building has a second door now.",
+      "prompt": "Bea's account - the advertisement, the chat interview, the training cards, the cash on Fridays and the director in the back office - is the first word from inside the fourth floor. The fourth floor is open to you now.",
       "outcome": "turned",
       "grants_evidence": [
         {

@@ -710,7 +710,13 @@ func _refresh_cooperation_display() -> void:
 
 func _start_quiz(quiz: Dictionary, lead_in: String) -> void:
 	quiz_active = true
-	current_quiz = quiz
+	# Every case file lists the right answer first, and a player noticed. Deal
+	# the options in a fresh order each time the quiz opens; _answer_quiz reads
+	# the same dealt array, so the index it gets is the button that was pressed.
+	current_quiz = quiz.duplicate()
+	var dealt: Array = (quiz.get("options", []) as Array).duplicate()
+	dealt.shuffle()
+	current_quiz["options"] = dealt
 	present_evidence_button.visible = false
 	evidence_panel.visible = false
 	end_interview_button.visible = false
@@ -724,7 +730,7 @@ func _start_quiz(quiz: Dictionary, lead_in: String) -> void:
 		body = "%s\n\n%s" % [lead_in, body]
 	_reveal_prompt(body)
 
-	var options: Array = quiz.get("options", [])
+	var options: Array = current_quiz.get("options", [])
 	for index in range(choice_buttons.size()):
 		var button := choice_buttons[index]
 		if index < options.size():

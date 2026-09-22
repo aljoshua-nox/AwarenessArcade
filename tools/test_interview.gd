@@ -328,8 +328,19 @@ func _test_quiz() -> void:
 			options += 1
 	_check(options == 4, "quiz shows all 4 options (got %d)" % options)
 
+	# Every case file lists the right answer first. The deal has to move it -
+	# twelve deals all landing in slot 0 is one chance in sixteen million.
+	var raw_quiz: Dictionary = view.current_node.get("tactic_quiz", {})
+	var dealt_elsewhere := false
+	for i in range(12):
+		view._start_quiz(raw_quiz, "")
+		if _quiz_answer(view, true) != 0:
+			dealt_elsewhere = true
+	_check(dealt_elsewhere, "the correct option is dealt to more than the first slot")
+	_check(view.current_quiz.get("options", []).size() == 4, "a deal keeps every option")
+
 	var before: int = view.cooperation
-	view._on_choice_pressed(1)  # a wrong answer
+	view._on_choice_pressed(_quiz_answer(view, false))  # a wrong answer
 	_check(not view.quiz_active, "quiz closes after answering")
 	_check(view.cooperation < before, "wrong answer costs cooperation")
 	_check(SessionState.tactic_reads_total == 1, "wrong answer still counts as a tactic read")
@@ -342,7 +353,7 @@ func _test_quiz() -> void:
 	view = await _open(CASE_MARIA)
 	view._on_choice_pressed(1)
 	view._on_choice_pressed(0)
-	view._on_choice_pressed(0)  # correct
+	view._on_choice_pressed(_quiz_answer(view, true))  # correct
 	_check(SessionState.tactic_reads_correct == 1, "correct answer is scored")
 	_check(SessionState.reflection_milestones.size() > 0, "correct answer records a milestone")
 	await _close(view)
@@ -353,7 +364,7 @@ func _test_evidence() -> void:
 	var view := await _open(CASE_MARIA)
 	view._on_choice_pressed(1)
 	view._on_choice_pressed(0)
-	view._on_choice_pressed(0)  # through the quiz to ask_evidence
+	view._on_choice_pressed(_quiz_answer(view, true))  # through the quiz to ask_evidence
 	_check(view.present_evidence_button.visible, "Present Evidence is offered")
 
 	var decoy := _index_of(view, "ev_internet_note")
@@ -395,7 +406,7 @@ func _test_antifarming() -> void:
 	var after_first: int = view.cooperation
 	view._on_choice_pressed(0)  # on to ask_call
 	view._on_choice_pressed(0)  # into the quiz
-	view._on_choice_pressed(0)  # correct, on to ask_evidence
+	view._on_choice_pressed(_quiz_answer(view, true))  # correct, on to ask_evidence
 	view._on_choice_pressed(0)  # press_details
 	view._on_choice_pressed(0)  # back to ask_evidence - revisit, no re-award
 	_check(view.cooperation > after_first, "progress still earns cooperation")
@@ -451,7 +462,7 @@ func _test_text_voices() -> void:
 	_check(quiz_text.contains("IBMPlexMono"), "the quiz question uses the system font")
 	_check(quiz_text.contains("CASE NOTE"), "the quiz question is marked as a system line")
 
-	view._on_choice_pressed(1)  # wrong answer
+	view._on_choice_pressed(_quiz_answer(view, false))  # wrong answer
 	var wrong_text: String = view.prompt_value.text
 	_check(wrong_text.contains("MISREAD"), "a wrong read is marked MISREAD")
 	_check(wrong_text.contains("[color=#ff8368]"), "a wrong read is colored as a miss")
@@ -463,7 +474,7 @@ func _test_text_voices() -> void:
 	view = await _open(CASE_MARIA)
 	view._on_choice_pressed(1)
 	view._on_choice_pressed(0)
-	view._on_choice_pressed(0)  # correct answer
+	view._on_choice_pressed(_quiz_answer(view, true))  # correct answer
 	var right_text: String = view.prompt_value.text
 	_check(right_text.contains("TACTIC READ"), "a correct read is marked TACTIC READ")
 	_check(right_text.contains("[color=#78d08b]"), "a correct read is colored as a hit")
@@ -509,7 +520,7 @@ func _test_evidence_scoping() -> void:
 
 	view._on_choice_pressed(1)
 	view._on_choice_pressed(0)
-	view._on_choice_pressed(0)  # through the quiz to ask_evidence
+	view._on_choice_pressed(_quiz_answer(view, true))  # through the quiz to ask_evidence
 	view._on_present_evidence_pressed()
 
 	_check(SessionState.investigation_inventory.size() == 6,
@@ -688,7 +699,11 @@ func _test_disposition_variants() -> void:
 	_check(_index_of(view, "ev_quote_notes") >= 0, "...but she has the note she was writing")
 	view._load_node("tactic_quiz_escalation")
 	_check(view.prompt_value.text.contains("cut off before the fee"), "the quiz is reframed for a call that cut off")
-	_check(view.choice_buttons[0].text.contains("each new fee looks small"), "...with the same options, because they are the lesson")
+	var dealt_texts: Array[String] = []
+	for b in view.choice_buttons:
+		if b.visible:
+			dealt_texts.append(b.text)
+	_check("".join(dealt_texts).contains("each new fee looks small"), "...with the same options, because they are the lesson")
 	await _close(view)
 
 
@@ -1246,3 +1261,13 @@ func _test_breadth_and_spent_testimony() -> void:
 	marco._present_evidence_index(_index_of(marco, "test_maria_confirmed"))
 	_check(marco.current_node_id == "full_crack", "a second, independent statement does")
 	await _close(marco)
+
+# Quiz options are shuffled when the quiz opens, so a test that wants the right
+# (or a wrong) answer has to look at the buttons as dealt rather than press a
+# fixed slot.
+func _quiz_answer(view: Node, correct: bool) -> int:
+	var options: Array = view.current_quiz.get("options", [])
+	for i in range(options.size()):
+		if bool(options[i].get("correct", false)) == correct:
+			return i
+	return -1

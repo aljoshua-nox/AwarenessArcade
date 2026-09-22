@@ -133,7 +133,7 @@ func _capture_evidence_list() -> void:
 	# list focused - the state where the whole panel used to wash out.
 	view._on_choice_pressed(1)
 	view._on_choice_pressed(0)
-	view._on_choice_pressed(0)
+	view._on_choice_pressed(_quiz_answer(view, true))
 	view._on_present_evidence_pressed()
 	view._finish_typing()
 	await get_tree().process_frame
@@ -166,3 +166,13 @@ func _capture_harmed_opening() -> void:
 	remove_child(view)
 	view.queue_free()
 	await get_tree().process_frame
+
+# Quiz options are shuffled when the quiz opens, so a test that wants the right
+# (or a wrong) answer has to look at the buttons as dealt rather than press a
+# fixed slot.
+func _quiz_answer(view: Node, correct: bool) -> int:
+	var options: Array = view.current_quiz.get("options", [])
+	for i in range(options.size()):
+		if bool(options[i].get("correct", false)) == correct:
+			return i
+	return -1

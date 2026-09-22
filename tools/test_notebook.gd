@@ -323,7 +323,7 @@ func _test_learned_in_an_interview() -> void:
 
 	view._on_choice_pressed(1)
 	view._on_choice_pressed(0)
-	view._on_choice_pressed(0)  # through the quiz to the evidence step
+	view._on_choice_pressed(_quiz_answer(view, true))  # through the quiz to the evidence step
 	_check(SessionState.has_learned_tactic("manufactured_urgency"),
 		"answering the tactic quiz records it in the notebook")
 
@@ -338,3 +338,13 @@ func _test_learned_in_an_interview() -> void:
 	var context := str(SessionState.get_learned_tactic("manufactured_urgency").get("context", ""))
 	_check(context.contains("Maria"), "the entry remembers who it was learned from (%s)" % context)
 	await _close(view)
+
+# Quiz options are shuffled when the quiz opens, so a test that wants the right
+# (or a wrong) answer has to look at the buttons as dealt rather than press a
+# fixed slot.
+func _quiz_answer(view: Node, correct: bool) -> int:
+	var options: Array = view.current_quiz.get("options", [])
+	for i in range(options.size()):
+		if bool(options[i].get("correct", false)) == correct:
+			return i
+	return -1

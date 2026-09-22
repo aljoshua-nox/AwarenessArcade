@@ -63,6 +63,12 @@ var visited_nodes: Dictionary = {}
 # Same guard for evidence: showing the same item at the same node twice re-reads
 # the response but pays out cooperation only once.
 var presented_evidence: Dictionary = {}
+# Items that have already moved this interview to a new node, keyed by id. A
+# suspect who has answered for one witness's statement at his denial does not
+# answer for the same statement again at the next node - "a second, independent
+# testimony" has to be a second one. Corroboration that loops back to the same
+# node is not spent; only a hit that advanced is.
+var spent_evidence: Dictionary = {}
 var answered_quizzes: Dictionary = {}
 var quiz_active: bool = false
 var current_quiz: Dictionary = {}
@@ -511,10 +517,22 @@ func _load_node(node_id: String, lead_in: String = "") -> void:
 			# "Any N testimonies from victims of these scripts." This is how a
 			# confrontation stays reachable by witnesses written after it - a
 			# check that named ids would have to be edited for every new victim.
+			#
+			# `min_distinct_scripts` counts SCRIPTS instead of testimonies. Two
+			# lottery victims prove one script; the case against an operation
+			# running six of them needs to show more than one, so the ending
+			# that reaches the top asks for breadth, not a head count.
+			var scripts_held: Dictionary = {}
 			for item in SessionState.investigation_inventory:
-				if _script_set_covers(evidence_check["required_scripts"], str(item.get("script", ""))):
+				var script := str(item.get("script", ""))
+				if _script_set_covers(evidence_check["required_scripts"], script):
 					held += 1
-			needed = maxi(1, int(evidence_check.get("min_matching", 1)))
+					scripts_held[script] = true
+			if evidence_check.has("min_distinct_scripts"):
+				held = scripts_held.size()
+				needed = maxi(1, int(evidence_check["min_distinct_scripts"]))
+			else:
+				needed = maxi(1, int(evidence_check.get("min_matching", 1)))
 		else:
 			var required: Array = evidence_check.get("required_evidence", [])
 			for required_id in required:
@@ -864,6 +882,10 @@ func _present_evidence_index(index: int) -> void:
 
 	var entry := _accepting_entry(item)
 	if not entry.is_empty():
+		var advances := str(entry.get("next", current_node_id)) != current_node_id
+		if advances and not bool(entry.get("wrong", false)) and spent_evidence.has(item_id) and str(spent_evidence[item_id]) != current_node_id:
+			_refuse_spent(item)
+			return
 		# A suspect shown Evelyn's testimony should not say "she didn't even
 		# pay" to a player who took her money. `responses` is keyed by the
 		# disposition of the person the item came from, with `response` as
@@ -906,10 +928,22 @@ func _present_evidence_index(index: int) -> void:
 		if is_wrong and not repeated:
 			evidence_misses += 1
 		var next_node := str(entry.get("next", current_node_id))
+		if next_node != current_node_id and not is_wrong:
+			spent_evidence[item_id] = current_node_id
 		_load_node(next_node, response)
 		return
 
 	_handle_evidence_miss(item)
+
+
+# The same statement put on the table a second time. Not a misread - the item
+# is real and it did its work - so it costs nothing and counts against nothing;
+# it just does not move the room again.
+func _refuse_spent(item: Dictionary) -> void:
+	var label := str(item.get("label", "That"))
+	_load_node(current_node_id, _system_line(TextStyle.MARK_HINT,
+		"%s is already on the table. It moved this conversation once and will not move it again - a second, independent account might." % label,
+		TextStyle.COLOR_HINT))
 
 
 # The row this node answers an item with: one that names the item, or failing

@@ -99,6 +99,7 @@ func _run() -> void:
 	await _test_statement_budget()
 	await _test_setting_backgrounds()
 	await _test_suspect_doors_are_checkpoints()
+	await _test_breadth_and_spent_testimony()
 
 	print("\n%d checks, %d failed" % [checks, failures.size()])
 	for f in failures:
@@ -1172,3 +1173,67 @@ func _test_suspect_doors_are_checkpoints() -> void:
 			var held: Array = checkpoint.get("state", {}).get("investigation_inventory", [])
 			_check(held.is_empty(), "...before this interview's evidence is seeded (%d held)" % held.size())
 		await _close(view)
+
+
+# Two rules for what a case is made of. Elena's check counts SCRIPTS, not
+# statements: two lottery victims prove one desk's work, and the ending that
+# reaches the top needs the operation shown running more than one script. And a
+# statement that already moved Marco once does not move him again - the hint
+# says "a second, independent testimony", and it means it.
+func _test_breadth_and_spent_testimony() -> void:
+	print("
+[breadth, not head count - and no double-dipping a statement]")
+
+	# Two witnesses to the same script land on partial justice.
+	SessionState.reset_session()
+	SessionState.detective_credibility = GATE_CLEAR
+	SessionState.suspect_flipped = true
+	SessionState.add_evidence({"id": "test_evelyn_confirmed", "label": "E", "person_id": "evelyn_marsh", "script": "lottery"})
+	SessionState.add_evidence({"id": "test_lina_confirmed", "label": "L", "person_id": "lina_reyes", "script": "lottery"})
+	SessionState.pending_case_path = CASE_ELENA
+	var elena: Node = load(INTERVIEW_SCENE).instantiate()
+	add_child(elena)
+	await get_tree().process_frame
+	elena._load_node("final_check")
+	_check(elena.current_node_id == "end_partial_justice",
+		"two lottery testimonies prove one script and land on partial justice (landed on %s)" % elena.current_node_id)
+	_check(elena.prompt_value.text.contains("the one script you could prove"), "...and the ending says why")
+	await _close(elena)
+
+	# Two witnesses to two scripts clear it.
+	SessionState.reset_session()
+	SessionState.detective_credibility = GATE_CLEAR
+	SessionState.suspect_flipped = true
+	SessionState.add_evidence({"id": "test_evelyn_confirmed", "label": "E", "person_id": "evelyn_marsh", "script": "lottery"})
+	SessionState.add_evidence({"id": "test_maria_confirmed", "label": "M", "person_id": "maria_santos", "script": "bank_fraud"})
+	SessionState.pending_case_path = CASE_ELENA
+	elena = load(INTERVIEW_SCENE).instantiate()
+	add_child(elena)
+	await get_tree().process_frame
+	elena._load_node("final_check")
+	_check(elena.current_node_id == "end_building_stands",
+		"a lottery and a bank testimony show two scripts and clear the check (landed on %s)" % elena.current_node_id)
+	await _close(elena)
+
+	# Marco: the same statement does not crack him twice.
+	SessionState.reset_session()
+	SessionState.detective_credibility = GATE_CLEAR
+	SessionState.add_evidence({"id": "test_evelyn_confirmed", "label": "Evelyn's Confirmed Testimony", "person_id": "evelyn_marsh", "script": "lottery"})
+	SessionState.add_evidence({"id": "test_maria_confirmed", "label": "Maria's Confirmed Testimony", "person_id": "maria_santos", "script": "bank_fraud"})
+	SessionState.pending_case_path = CASE_MARCO
+	var marco: Node = load(INTERVIEW_SCENE).instantiate()
+	add_child(marco)
+	await get_tree().process_frame
+	marco._load_node("deny_node")
+	marco._present_evidence_index(_index_of(marco, "test_evelyn_confirmed"))
+	_check(marco.current_node_id == "half_crack", "one statement cracks him")
+	var before: int = marco.cooperation
+	var misses: int = marco.evidence_misses
+	marco._present_evidence_index(_index_of(marco, "test_evelyn_confirmed"))
+	_check(marco.current_node_id == "half_crack", "the same statement again does not flip him")
+	_check(marco.prompt_value.text.contains("already on the table"), "...and the player is told why")
+	_check(marco.cooperation == before, "...at no cost to the room")
+	_check(marco.evidence_misses == misses, "...and it is not scored as a misread")
+	marco._present_evidence_index(_index_of(marco, "test_maria_confirmed"))
+	_check(marco.current_node_id == "full_crack", "a second, independent statement does")
+	await _close(marco)

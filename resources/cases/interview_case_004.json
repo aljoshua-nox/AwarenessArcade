@@ -96,15 +96,24 @@
     },
     "final_check": {
       "evidence_check": {
-        "required_scripts": ["bank_fraud", "lottery", "tech_support", "family_emergency", "government", "utility"],
-        "min_matching": 2,
+        "required_scripts": [
+          "bank_fraud",
+          "lottery",
+          "tech_support",
+          "family_emergency",
+          "government",
+          "utility"
+        ],
+        "min_distinct_scripts": 2,
         "next_if_met": "owner_check",
         "next_if_not_met": "end_partial_justice"
       }
     },
     "owner_check": {
       "evidence_check": {
-        "required_evidence": ["ev_owner_name"],
+        "required_evidence": [
+          "ev_owner_name"
+        ],
         "next_if_met": "end_full_takedown",
         "next_if_not_met": "end_building_stands"
       }
@@ -137,7 +146,7 @@
       "choices": []
     },
     "end_partial_justice": {
-      "prompt": "The raid takes in Marco and a handful of floor operators, but without a second confirmed testimony, the people who built and ran the operation slip through the paperwork. The scripts survive. So do the lists. Some justice, not all of it.",
+      "prompt": "The raid takes in Marco and the desks that worked the one script you could prove. But every statement in your file tells the same story, and one story is one desk's work, not an operation's - the other scripts on that floor were never put on record, so the people who wrote them slip through the paperwork. Those scripts survive. So do the lists. Some justice, not all of it.",
       "outcome": "partial_justice",
       "choices": []
     }

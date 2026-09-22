@@ -127,9 +127,18 @@ for f, data in parsed.items():
                     errors.append(f"{name}: {nid}.evidence_check unknown evidence '{eid}'")
             if by_script:
                 check_script_set(ec["required_scripts"], f"{name}: {nid}.evidence_check.required_scripts")
-                if not isinstance(ec.get("min_matching"), int) or ec["min_matching"] < 1:
-                    errors.append(f"{name}: {nid}.evidence_check.required_scripts needs min_matching >= 1"
+                # A script check counts either testimonies (`min_matching`) or
+                # distinct scripts (`min_distinct_scripts`) - one of the two.
+                has_count = isinstance(ec.get("min_matching"), int) and ec["min_matching"] >= 1
+                has_breadth = isinstance(ec.get("min_distinct_scripts"), int) and ec["min_distinct_scripts"] >= 1
+                if has_count == has_breadth:
+                    errors.append(f"{name}: {nid}.evidence_check.required_scripts needs exactly one of"
+                                  f" min_matching or min_distinct_scripts (>= 1)"
                                   f" - 'every testimony of these scripts' is not a thing a player can be asked to hold")
+                if has_breadth and isinstance(ec["required_scripts"], list) and "*" not in ec["required_scripts"] \
+                        and ec["min_distinct_scripts"] > len(ec["required_scripts"]):
+                    errors.append(f"{name}: {nid}.evidence_check asks for {ec['min_distinct_scripts']} distinct scripts"
+                                  f" but only lists {len(ec['required_scripts'])}")
         q = node.get("tactic_quiz")
         if q:
             opts = q.get("options", [])
@@ -1014,6 +1023,11 @@ for f, data in parsed.items():
             if available < ec["min_matching"]:
                 errors.append(f"{name}: {nid}.evidence_check asks for {ec['min_matching']} testimonies from"
                               f" {ec['required_scripts']} but only {available} exist")
+        if "required_scripts" in ec and isinstance(ec.get("min_distinct_scripts"), int):
+            scripts_available = {t["script"] for t in testimonies.values() if set_covers(ec["required_scripts"], t["script"])}
+            if len(scripts_available) < ec["min_distinct_scripts"]:
+                errors.append(f"{name}: {nid}.evidence_check asks for {ec['min_distinct_scripts']} distinct scripts from"
+                              f" {ec['required_scripts']} but witnesses only cover {sorted(scripts_available)}")
 
 
 # --- Prose lint: the interview must not contradict the prologue --------------

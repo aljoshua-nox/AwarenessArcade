@@ -22,7 +22,7 @@ const OUTCOME_MESSAGES := {
 	"building_stands": "Both call floors are gone. The company that leased them to the operation was never named by anyone inside, and a landlord nobody names signs the next lease.",
 	"failure": "This lead has gone cold. The person you spoke with wasn't willing to give you anything more.",
 	"full_takedown": "Every testimony you gathered held up, and someone inside named the owner. The operation is being dismantled from the top down - the building, not just the people who made the calls in it.",
-	"partial_justice": "The callers face consequences, but the case wasn't strong enough to reach whoever was really running things.",
+	"partial_justice": "The callers face consequences, but every statement you gathered proved the same script. One script is one desk, not an operation - and the people running the rest of the floor were never reached.",
 	"bribed": "The investigation ends here - not because the evidence ran out, but because it stopped being pursued.",
 	"insufficient_evidence": "The file closes with nobody charged. The calls are documented, the people who took them are on record, and the operation that made them is still a phone number nobody can attach a name to.",
 }

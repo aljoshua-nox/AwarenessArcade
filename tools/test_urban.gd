@@ -159,6 +159,18 @@ func _test_locked_case() -> void:
 		"filing it records the lockout ending (%s)" % SessionState.investigation_outcome)
 	await _close(view)
 
+	# Six statements spent, no testimony, Marco stonewalling: the same door.
+	SessionState.reset_session()
+	SessionState.statements_taken = SessionState.STATEMENT_BUDGET
+	view = await _open()
+	_check(SessionState.case_stuck(), "a spent budget with no flipped operator is a stuck case")
+	_check(view.portal.prompt_text == "File the case as unresolved",
+		"a stuck case turns the office door into the way out too (%s)" % view.portal.prompt_text)
+	await _close(view)
+	SessionState.reset_session()
+	SessionState.statements_taken = SessionState.STATEMENT_BUDGET - 1
+	_check(not SessionState.case_stuck(), "one statement left is not stuck")
+
 	# A flipped suspect outranks the flag - that case is still winnable.
 	SessionState.reset_session()
 	SessionState.case_locked = true

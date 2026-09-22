@@ -332,6 +332,8 @@ func _condition_holds(condition: Variant) -> bool:
 	if c.has("flag"):
 		var value: Variant = SessionState.get(str(c["flag"]))
 		return value is bool and value
+	if c.has("case_stuck"):
+		return SessionState.case_stuck() == bool(c["case_stuck"])
 	if c.has("evidence"):
 		return SessionState.has_evidence(str(c["evidence"]))
 	if c.has("milestone"):

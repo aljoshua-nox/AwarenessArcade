@@ -168,6 +168,14 @@ func _test_lockout_route() -> void:
 	_check(_state("flip_operator") == CaseJournal.OBJECTIVE_DONE, "a flip after the lock outranks it, as the doors do")
 	_check(_state("file_unresolved") == CaseJournal.OBJECTIVE_DONE, "and the filing is no longer needed")
 
+	# The other way to run out of case: every statement spent, nobody flipped,
+	# no lawyer. Found in play - the journal had nothing to say and no door led out.
+	SessionState.reset_session()
+	SessionState.record_interview_outcome("marco_navarro", "partial")
+	SessionState.statements_taken = SessionState.STATEMENT_BUDGET
+	_check(_state("file_unresolved") == CaseJournal.OBJECTIVE_ACTIVE, "a spent budget with the operator stonewalling opens the filing too")
+	_check(_state("flip_operator") == CaseJournal.OBJECTIVE_ACTIVE, "...while the flip stays open, in case something held still moves him")
+
 
 # Every door in the game, with its place and the state of its person.
 func _test_people_page() -> void:

@@ -258,6 +258,21 @@ func statements_left() -> int:
 	return maxi(0, STATEMENT_BUDGET - statements_taken)
 
 
+# Every statement spent and the operator not flipped: nothing new can be
+# brought to him, so unless the player still holds a testimony he has not seen,
+# the file closes as it stands. Found in play by taking every bad choice six
+# times over - the case simply had no ending left. Same door as a lawyered-up
+# Marco, without the lawyer.
+func case_stuck() -> bool:
+	return statements_left() <= 0 and not suspect_flipped
+
+
+# Whether the office door offers to file the case unresolved. A flipped suspect
+# outranks both flags: that case is still winnable.
+func case_can_be_filed() -> bool:
+	return (case_locked or case_stuck()) and not suspect_flipped
+
+
 func is_witness_closed(person_id: String) -> bool:
 	return closed_witnesses.has(person_id)
 

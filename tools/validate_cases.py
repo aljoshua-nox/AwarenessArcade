@@ -451,7 +451,7 @@ else:
 # files and from the string literals of the exploration scripts, which is where
 # the street stops and the office stations declare theirs.
 CONDITION_KEYS = {"any", "statements_at_least", "credibility_at_least", "interviewed",
-                  "flag", "evidence", "milestone"}
+                  "flag", "evidence", "milestone", "case_stuck"}
 OBJECTIVE_FIELDS = {"id", "title", "detail", "unlock_when", "complete_when", "failed_when", "failed_detail"}
 person_ids = {data.get("person", {}).get("person_id", "") for data in parsed.values()}
 session_flags = set()
@@ -504,6 +504,8 @@ def check_condition(cond, where):
         errors.append(f"objectives.json: {where} names flag '{value}', not a bool on SessionState")
     elif key == "evidence" and value not in global_evidence:
         errors.append(f"objectives.json: {where} names evidence '{value}', which nothing grants")
+    elif key == "case_stuck" and not isinstance(value, bool):
+        errors.append(f"objectives.json: {where} case_stuck must be true or false")
     elif key == "milestone" and value not in milestone_titles:
         errors.append(f"objectives.json: {where} names milestone '{value}', which nothing records")
 

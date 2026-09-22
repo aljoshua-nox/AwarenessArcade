@@ -291,9 +291,10 @@ func _setup_office_portal() -> void:
 		# The door says so while it is missing; so does hers, and the journal.
 		portal.prompt_text = "Enter the call center" if SessionState.owner_named() \
 			else "Enter the call center - nobody has named the owner yet"
-	elif SessionState.case_locked:
-		# Marco is gone, so the office holds nothing the player can reach. The
-		# door becomes the way to close an investigation that cannot be closed.
+	elif SessionState.case_can_be_filed():
+		# Marco is gone, or every statement is spent and he never flipped, so the
+		# office holds nothing the player can reach. The door becomes the way to
+		# close an investigation that cannot be closed.
 		portal.prompt_text = "File the case as unresolved"
 	else:
 		portal.prompt_text = "Enter the offices"
@@ -508,7 +509,7 @@ func _unhandled_input(event: InputEvent) -> void:
 		_remember_return_spawn(door.global_position)
 		_transition_to_scene(door.target_scene)
 	elif event.is_action_pressed("ui_accept") and has_office() and _can_enter_portal():
-		if SessionState.case_locked and not SessionState.suspect_flipped:
+		if SessionState.case_can_be_filed():
 			_file_case_unresolved()
 			return
 		_remember_return_spawn(portal.global_position)

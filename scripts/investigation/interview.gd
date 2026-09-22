@@ -650,6 +650,12 @@ func _load_node(node_id: String, lead_in: String = "") -> void:
 			SessionState.witness_flipped = true
 		if outcome == "failure":
 			_play_sting(false)
+		# The last statement is spent and the operator has not flipped: say where
+		# the case goes from here, or the player walks a street with nothing on it.
+		if SessionState.case_stuck() and not SessionState.case_locked:
+			prompt_value.text += "\n\n" + _system_line(TextStyle.MARK_HINT,
+				"No statements left to take. Unless something you are already holding moves the operator, the office door on Sampaguita Street will take the file as it stands.",
+				TextStyle.COLOR_HINT)
 
 	_refresh_cooperation_display()
 

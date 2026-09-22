@@ -94,7 +94,7 @@
       ],
       "choices": [
         {
-          "text": "Marco cried. You know that.",
+          "text": "Marco broke. You know that.",
           "next": "pressed"
         },
         {
@@ -112,13 +112,13 @@
       },
       "choices": [
         {
-          "text": "Marco cried, you know. When it was put in front of him.",
+          "text": "Marco broke, you know. When the statements were put in front of him.",
           "next": "pressed"
         }
       ]
     },
     "pressed": {
-      "prompt": "\"Marco cried because Marco is twenty-nine and thinks the list is a person.\" He checks the watch. \"I've heard every line you have. The frozen account, the officer at four, the grandson in a jail cell. I wrote half of them. Pressure doesn't work on the man who sells it.\" He looks at you properly for the first time. \"Evidence might. Show me two people with names, and I'll tell you where the names go.\"",
+      "prompt": "\"Marco broke because Marco is twenty-nine and still thinks the names on the list are people.\" He checks the watch. \"I've heard every line you have. The frozen account, the officer at four, the grandson in a jail cell. I wrote half of them. Pressure doesn't work on the man who sells it.\" He looks at you properly for the first time. \"Evidence might. Show me two people with names, and I'll tell you where the names go.\"",
       "evidence_prompt": true,
       "evidence_hint": "He has named his price: not pressure, a second person with a name. Any witness from either floor.",
       "accepts_evidence": [

@@ -283,7 +283,7 @@
 	},
 	"end_lawyered": {
 	  "locks_case": true,
-	  "prompt": "Marco folds his hands and looks past you at the wall. \"I'm done answering questions.\" Within the hour there's a lawyer in the building, and the one person who could have named the floor above him is not saying another word to you.",
+	  "prompt": "Marco folds his hands and looks past you at the wall. \"I'm done answering questions.\" Within the hour there's a lawyer in the building, and the one person who could have named his director is not saying another word to you.",
 	  "outcome": "failure",
 	  "milestone": {
 		"title": "Suspect Lost",

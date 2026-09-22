@@ -502,7 +502,7 @@ func _person_status(person: Dictionary, place: Dictionary) -> Array:
 		"success":
 			return ["Statement on record", TextStyle.COLOR_CORRECT]
 		"whistleblower":
-			return ["Flipped - he named the floor above him", TextStyle.COLOR_CORRECT]
+			return ["Flipped - he named his director", TextStyle.COLOR_CORRECT]
 		"turned":
 			return ["Turned - she will say what her floor does", TextStyle.COLOR_CORRECT]
 		"owner_named":

@@ -21,12 +21,12 @@
     },
     {
       "id": "flip_operator",
-      "title": "Get the operator to name the floor above him",
-      "detail": "He will not give up the floor for nothing. What moves him is a witness he called: a statement from someone on his floor's list, presented to his face.",
+      "title": "Get the name of the director",
+      "detail": "He will not give up his director for nothing. What moves him is a witness he called: a statement from someone on his floor's list, presented to his face.",
       "unlock_when": {"interviewed": "marco_navarro"},
       "complete_when": {"flag": "suspect_flipped"},
       "failed_when": {"flag": "case_locked"},
-      "failed_detail": "He stopped talking and asked for a lawyer. Nobody else on the floor will name the office above it - unless a witness he called can still be found and brought back to him."
+      "failed_detail": "He stopped talking and asked for a lawyer. Nobody else on the floor will name the director - unless a witness he called can still be found and brought back to him."
     },
     {
       "id": "file_unresolved",

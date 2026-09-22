@@ -523,7 +523,7 @@ func _build_stations() -> void:
 	_add_station({
 		"title": "Bonus board",
 		"prompt": "Examine the bonus board",
-		"body": "A whiteboard by the water cooler, a printed and laminated header across the top of it: %s - FLOOR 3 - MONTHLY INCENTIVES. Names down the left, a running tally to the right. The last column is headed ESCALATED and carries a bonus rate double the others. Under it, someone has drawn a small smiling face." % SessionState.COMPANY_NAME,
+		"body": "A whiteboard by the water cooler, a printed and laminated header across the top of it: %s - FLOOR 3 - MONTHLY INCENTIVES. Names down the left, a running tally to the right. The last column is headed ESCALATED and carries a bonus rate double the others. Under it, someone has drawn a small smiling face." % SessionState.CALL_FLOOR_NAME.to_upper(),
 		"note": "The operation pays more when the victim becomes distressed, because distress is what stops people thinking. Fear is not a side effect of the business model here. It is the business model.",
 		"note_color": TextStyle.COLOR_WRONG,
 		"marker": TextStyle.MARK_HARM,

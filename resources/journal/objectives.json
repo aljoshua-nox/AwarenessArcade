@@ -37,8 +37,8 @@
     },
     {
       "id": "name_owner",
-      "title": "Name who owns the building",
-      "detail": "The floor directors answer to a name on the leases, and Elena's floor only comes down with its owner if that name is in the file - without it, the building stands. Two people have seen it: the closer in the tower lobby on Terminal Road, who will trade it for two statements with names on them, and the director of the fourth floor, up the stairwell from the call floor, whose door opens once one of her recruits has turned. Get it before you open Elena's door.",
+      "title": "Name who owns the call floors",
+      "detail": "The floor directors answer to a name on the leases, and Elena's floor only comes down with its owner if that name is in the file - without it, the owner walks. Two people have seen it: the closer in the tower lobby on Terminal Road, who will trade it for two statements with names on them, and the director of the fourth floor, up the stairwell from the call floor, whose door opens once one of her recruits has turned. Get it before you open Elena's door.",
       "unlock_when": {"any": [{"flag": "suspect_flipped"}, {"flag": "witness_flipped"}]},
       "complete_when": {"evidence": "ev_owner_name"}
     },

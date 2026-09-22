@@ -60,6 +60,15 @@ func _take_exit() -> void:
 # Four exhibits, in the same four places as the floor below, so the player who
 # has walked one floor knows how to walk the other. What they show is what this
 # floor does that the one below does not.
+# The short names people use for the two floors - the first word of each.
+func _call_floor_short() -> String:
+	return SessionState.CALL_FLOOR_NAME.split(" ")[0]
+
+
+func _tech_floor_short() -> String:
+	return SessionState.TECH_FLOOR_NAME.split(" ")[0]
+
+
 func _build_stations() -> void:
 	_add_station({
 		"title": "The remote-access script",
@@ -78,7 +87,7 @@ func _build_stations() -> void:
 		"title": "The session log",
 		"prompt": "Examine the session log",
 		"body": "A printout on the supervisor's desk: SUPPORT TOOL - SESSIONS THIS WEEK. Columns for operator ID, start, end, outcome. Most IDs begin 4F. A handful begin 3F, all of them late at night - one of them, 3F-07 NAVARRO, from 23:04 to 23:41, outcome PAID.",
-		"note": "The call floor downstairs uses this floor's tool after hours. A floor-3 operator who says he was never in the building at night has his ID on a floor-4 printout. The floors share a script, a list and a login; they only pretend to be different companies on the door.",
+		"note": "%s downstairs uses %s's tool after hours. A floor-3 operator who says he was never in the building at night has his ID on a floor-4 printout. The floors share a script, a list and a login; %s and %s are two names on two doors and one operation." % [_call_floor_short(), _tech_floor_short(), _call_floor_short(), _tech_floor_short()],
 		"note_color": TextStyle.COLOR_HINT,
 		"marker": TextStyle.MARK_SCENE,
 		"milestone_title": "One Login, Two Floors",
@@ -101,7 +110,7 @@ func _build_stations() -> void:
 	_add_station({
 		"title": "The recruitment folder",
 		"prompt": "Examine the recruitment folder",
-		"body": "A ring binder by the door, RECRUITMENT on the spine. Inside, the advertisement - CUSTOMER SERVICE REPRESENTATIVES, NO EXPERIENCE, TRAINING PROVIDED, 5 SLOTS LEFT - printed and dated, one copy per month, the same five slots every time. Behind it, a list of applicants in two columns: PAID FEE and HIRED. The columns never share a name.",
+		"body": "A ring binder by the door, RECRUITMENT on the spine. Inside, the advertisement - %s. CUSTOMER SERVICE REPRESENTATIVES, NO EXPERIENCE, TRAINING PROVIDED, 5 SLOTS LEFT - printed and dated, one copy per month, the same five slots every time. Behind it, a list of applicants in two columns: PAID FEE and HIRED. The columns never share a name." % SessionState.TECH_FLOOR_NAME.to_upper(),
 		"note": "The advertisement is itself one of the scripts. Applicants who pay the training fee are victims; applicants who do not are interviewed and become operators. The floor recruits its staff and its marks from the same page, and the page decides which is which by whether they can pay.",
 		"note_color": TextStyle.COLOR_TACTIC,
 		"marker": TextStyle.MARK_TACTIC,

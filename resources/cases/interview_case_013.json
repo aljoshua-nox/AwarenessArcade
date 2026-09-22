@@ -198,13 +198,13 @@
       }
     },
     "end_named": {
-      "prompt": "\"{company}.\" He says it like a man giving directions. \"Fifth floor. No elevator access - you take the stairs past four and there's a door with a card reader, and behind it there's a man who signs the leases, signs the bonus board, and signs nothing with his own name on it that ever leaves the building.\" He holds up the lanyard, and the card on it, and puts it in your hand. \"Nine minutes. They want me upstairs. I'd rather it was you.\"",
+      "prompt": "\"{company}.\" He says it like a man giving directions. \"This tower. Fifth floor - keycard only. The elevator won't stop there without one, and the stairs past four end at a door with a card reader. Behind it is the man who signs ClearLine's lease and Summit's lease, signs the bonus board, and signs nothing with his own name on it that ever leaves this building.\" He holds up the lanyard, and the card on it, and puts it in your hand. \"Nine minutes. They want me upstairs. I'd rather it was you.\"",
       "outcome": "owner_named",
       "grants_evidence": [
         {
           "id": "ev_owner_name",
           "label": "The Name Above The Floors",
-          "description": "{company} - the company that leases both floors of the building and the ground on Terminal Road, named from inside. The fifth floor has no elevator access and a door with a card reader.",
+          "description": "{company} - the company that owns the tower and the site on Terminal Road, and the building on Sampaguita Street whose upper floors it leases to {call_floor} and {tech_floor}. Named from inside. The tower's fifth floor is keycard only, behind a door with a card reader.",
           "tactic": "An operation is owned by whoever signs the leases, not by whoever reads the scripts - and the owner's name is the one thing no call ever mentions."
         }
       ],

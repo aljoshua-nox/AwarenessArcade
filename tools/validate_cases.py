@@ -1227,7 +1227,7 @@ one_copy = {}
 if os.path.exists(session_state_path):
     with open(session_state_path, encoding="utf-8") as fh:
         for line in fh:
-            m = re.match(r'const (OPERATION_NUMBER|COMPANY_NAME) := "([^"]+)"', line.strip())
+            m = re.match(r'const (OPERATION_NUMBER|COMPANY_NAME|CALL_FLOOR_NAME|TECH_FLOOR_NAME) := "([^"]+)"', line.strip())
             if m:
                 one_copy[m.group(1)] = m.group(2)
 
@@ -1242,7 +1242,8 @@ def one_copy_walk(obj, where):
     elif isinstance(obj, str):
         for name, literal in one_copy.items():
             if literal.lower() in obj.lower():
-                token = "{number}" if name == "OPERATION_NUMBER" else "{company}"
+                token = {"OPERATION_NUMBER": "{number}", "COMPANY_NAME": "{company}",
+                         "CALL_FLOOR_NAME": "{call_floor}", "TECH_FLOOR_NAME": "{tech_floor}"}[name]
                 errors.append(f"{where} spells out {name} - write {token} and let the engine print the one copy")
 
 

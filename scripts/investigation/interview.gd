@@ -225,6 +225,9 @@ func _resolve_evidence() -> void:
 
 func _stamp_source(item: Dictionary) -> Dictionary:
 	var stamped := item.duplicate()
+	for field in ["label", "description", "tactic"]:
+		if stamped.has(field):
+			stamped[field] = _expand_tokens(str(stamped[field]))
 	if not stamped.has("person_id"):
 		stamped["person_id"] = str(person.get("person_id", ""))
 	return stamped
@@ -1003,7 +1006,8 @@ func _style_dialogue(raw: String) -> String:
 # read a constant, so it writes {number} or {company} and gets the string here;
 # the validator refuses a case that spells either out.
 func _expand_tokens(raw: String) -> String:
-	return raw.replace("{company}", SessionState.COMPANY_NAME).replace("{number}", SessionState.OPERATION_NUMBER)
+	return raw.replace("{company}", SessionState.COMPANY_NAME).replace("{number}", SessionState.OPERATION_NUMBER) \
+		.replace("{call_floor}", SessionState.CALL_FLOOR_NAME).replace("{tech_floor}", SessionState.TECH_FLOOR_NAME)
 
 
 func _system_line(marker: String, body: String, color: String) -> String:

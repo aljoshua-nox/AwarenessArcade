@@ -296,7 +296,7 @@ func _setup_office_portal() -> void:
 		# door becomes the way to close an investigation that cannot be closed.
 		portal.prompt_text = "File the case as unresolved"
 	else:
-		portal.prompt_text = "Enter the office"
+		portal.prompt_text = "Enter %s" % SessionState.CALL_FLOOR_NAME
 	portal.player_entered.connect(_on_portal_entered)
 	portal.player_exited.connect(_on_portal_exited)
 
@@ -578,7 +578,7 @@ func _build_buildings() -> void:
 		var door_base := _add_shop_door(rect)
 		if i == office_row_index():
 			portal.global_position = door_base + Vector2(0.0, 14.0)
-			_add_building_label(rect, "OFFICE")
+			_add_building_label(rect, SessionState.CALL_FLOOR_NAME.split(" ")[0].to_upper())
 		else:
 			_place_interviewee_door("street", i, rect, door_base)
 
@@ -1081,6 +1081,8 @@ func _stop_body(stop: Dictionary) -> String:
 		body = body % SessionState.OPERATION_NUMBER
 	elif bool(stop.get("cites_name", false)):
 		body = body % SessionState.COMPANY_NAME
+	elif bool(stop.get("cites_call_floor", false)):
+		body = body % SessionState.CALL_FLOOR_NAME.split(" ")[0]
 	parts.append(TextStyle.dialogue(body))
 	var note := str(stop.get("note", ""))
 	if not note.is_empty():

@@ -211,8 +211,8 @@ func _test_ledger_reads_back_prologue() -> void:
 	# The company's name is printed by the street (the tower's directory, the
 	# site billboard) and by this floor's bonus board, and it has to be the
 	# same string in all three - the player is meant to notice, unprompted.
-	_check(view._station_body(_station(view, "Bonus board")).contains(SessionState.COMPANY_NAME),
-		"the bonus board prints the same company name the street does")
+	_check(view._station_body(_station(view, "Bonus board")).contains(SessionState.CALL_FLOOR_NAME.to_upper()),
+		"the bonus board prints the call floor's own name, not the company's")
 	_check(body.contains("IBMPlexMono"), "the ledger renders in the system voice")
 
 	view._open_inspection(ledger)

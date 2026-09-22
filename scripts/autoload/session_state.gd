@@ -40,10 +40,15 @@ const AWARENESS_UNTESTED := "untested"  # never reached a tactic quiz
 const OPERATION_NUMBER := "0917-555-0142"
 
 # The second district's version of the same trick. The company that owns the
-# floors is named on the tower the player cannot get past the lobby of, on the
-# hoarding of the site down the road, and - once the boss exists - on the call
-# floor's own bonus board. Same rule: one copy, and nothing points it out.
+# floors is named on the tower the player cannot get past the lobby of and on
+# the hoarding of the site down the road. Same rule: one copy, and nothing
+# points it out.
 const COMPANY_NAME := "VALDERRAMA HOLDINGS"
+# The names on the operation's own two doors, on Sampaguita Street. Neither is
+# the company's: the link between these and COMPANY_NAME is the thing a witness
+# has to say on record. Case files write {call_floor} and {tech_floor}.
+const CALL_FLOOR_NAME := "ClearLine Support Services"
+const TECH_FLOOR_NAME := "Summit Technical Services"
 
 # The prologue's only session-level pressure besides the shift clock. A victim
 # who catches on and keeps the number files a report; this many and the floor

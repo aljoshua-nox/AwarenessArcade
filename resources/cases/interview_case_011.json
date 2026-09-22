@@ -16,7 +16,7 @@
   "failure_node": "end_stonewalled",
   "nodes": {
     "start": {
-      "prompt": "The fourth floor is quieter than the third. Forty desks, forty headsets, and at the back a desk with nothing on it but a phone and a folder. The woman behind it has silver hair in a low bun and does not stand. \"You have walked up a flight of stairs into a licensed technical support service.\" She says it the way a clerk reads back an address. \"I would like to know on whose authority.\"",
+      "prompt": "The fourth floor is quieter than the third. Forty desks, forty headsets, and at the back a desk with nothing on it but a phone and a folder. The woman behind it has silver hair in a low bun and does not stand. \"You have walked up a flight of stairs into {tech_floor}, which is a licensed technical support service.\" She says it the way a clerk reads back an address. \"I would like to know on whose authority.\"",
       "choices": [
         {
           "text": "The authority of the people this floor called.",
@@ -202,19 +202,19 @@
       }
     },
     "end_named": {
-      "prompt": "Rowena Ocampo looks at the two statements on her desk - a customer this floor called, and an applicant this floor sorted - and at the door, and at the phone, and does not pick up the phone. \"The floors are leased,\" she says at last. \"Both of them. From the company on the sign outside.\" She writes the name on the back of the folder in block capitals, the way she must have watched a thousand customers write down a session code, and turns it toward you. {company}. \"I run a floor. I do not own the building. If you want the building, that is where it is.\"",
+      "prompt": "Rowena Ocampo looks at the two statements on her desk - a customer this floor called, and an applicant this floor sorted - and at the door, and at the phone, and does not pick up the phone. \"The floors are leased,\" she says at last. \"ClearLine's and mine. From the company that owns the tower on Terminal Road.\" She writes the name on the back of the folder in block capitals, the way she must have watched a thousand customers write down a session code, and turns it toward you. {company}. \"I run a floor. I do not own the building. If you want the owner, that is where he is.\"",
       "outcome": "owner_named",
       "grants_evidence": [
         {
           "id": "ev_owner_name",
           "label": "The Name Above The Floors",
-          "description": "{company} - the company that leases both floors of the building and the ground on Terminal Road, named by the fourth floor's director. \"I run a floor. I do not own the building.\"",
+          "description": "{company} - the company that owns the tower and the site on Terminal Road, and this building, whose upper floors it leases to {call_floor} and {tech_floor}. Named by the fourth floor's director. \"I run a floor. I do not own the building.\"",
           "tactic": "An operation is owned by whoever signs the leases, not by whoever reads the scripts - and the owner's name is the one thing no call ever mentions."
         }
       ],
       "milestone": {
         "title": "Director Named",
-        "detail": "Rowena Ocampo, faced with a witness from each of her floor's two scams, put a name to the company that leases the building - the operation has an owner, and the owner is not on either floor."
+        "detail": "Rowena Ocampo, faced with a witness from each of her floor's two scams, put a name to the company that owns the building - the operation has an owner, and the owner is not on either floor."
       },
       "choices": []
     },

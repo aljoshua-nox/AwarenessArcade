@@ -117,11 +117,13 @@ const NPC_SPOTS := [
 
 # The street's stops. Two need no character - the company's name on the tower
 # and on the site hoarding; `cites_name` prints SessionState.COMPANY_NAME the
-# way `cites_number` prints the operation's number on the terrace, the call
-# floor's bonus board will print it too, and reading both earns the pattern
-# milestone. The rest arrive with the people whose stories they set up: the
-# cafe owner and the neighbor with Trish and Bea, the site worker with Joel,
-# the remittance clerk with Carmen. Nothing points anything out.
+# way `cites_number` prints the operation's number on the terrace, and reading
+# both earns the pattern milestone. The rest arrive with the people whose
+# stories they set up: the cafe owner and the neighbor with Trish and Bea, the
+# site worker with Joel, the remittance clerk with Carmen - and Miguel at the
+# bus bay, who links the call floor's name to the tower's as rumor, which is
+# not a record (`cites_call_floor` prints that name). Nothing points anything
+# out.
 # The directory beside the tower's doors - clear of the door itself, which is
 # Dennis's - keeps the company's name on the street.
 const DIRECTORY_STOP_POSITION := Vector2(1215.0, 262.0)
@@ -131,13 +133,13 @@ const STREET_STOPS := [
 		"is_fixture": true,
 		"title": "Building directory",
 		"prompt": "Read the building directory",
-		"body": "A brass directory beside the glass doors, polished, the letters set by hand. %s. 3F - CUSTOMER SERVICE. 4F - TECHNICAL SUPPORT. 5F - HOLDINGS, NO ELEVATOR ACCESS. Under it, on an easel, a smaller sign: RECEPTION CLOSED TO THE PUBLIC.",
-		"note": "A business that scams people still has a lobby and a directory. The name is real; so are the floor numbers. What the floors say they do is not - and the floor without elevator access is the one the directory says least about.",
+		"body": "A brass directory beside the glass doors. %s - HEAD OFFICE. 2F - VALDERRAMA PROPERTIES. 3F - VALDERRAMA CONSTRUCTION. 4F - VH LEASING AND MANAGEMENT. 5F - EXECUTIVE OFFICES, KEYCARD ACCESS ONLY. A standee beside it: RECEPTION CLOSED TO THE PUBLIC.",
+		"note": "A property company, with a lobby, a directory and a reception closed to the public. Nothing here makes a call. A name on a sign proves a company exists; what it pays for is on the leases, and the leases are upstairs behind a card reader. Someone who has been up there has to say it.",
 		"note_color": TextStyle.COLOR_HINT,
 		"marker": TextStyle.MARK_HINT,
 		"cites_name": true,
 		"milestone_title": "The Name On The Door",
-		"milestone_detail": "The tower on Terminal Road carries a company name, two floors described as services, and a fifth floor with no elevator access - the operation has a front door the public is not allowed through, and an owner above it.",
+		"milestone_detail": "The tower on Terminal Road carries a company name, a directory of ordinary departments, and a fifth floor the elevator will not stop at without a keycard - a front door the public is not allowed through, and an owner above it.",
 	},
 	{
 		"position": Vector2(1130.0, 535.0),
@@ -198,6 +200,18 @@ const STREET_STOPS := [
 		"marker": TextStyle.MARK_HARM,
 		"milestone_title": "Nobody Says It In Front Of Her Mother",
 		"milestone_detail": "A whole street knows about a young woman's lost fee and keeps it from her family - the silence around a scam is part of how it keeps running.",
+	},
+	{
+		"position": Vector2(480.0, 620.0),
+		"title": "Miguel, at the bus bay",
+		"prompt": "Talk to Miguel",
+		"body": "A man in office clothes on the bench, bag on his lap, letting buses go by.\n\"%s? I lasted two weeks there. Third floor, Sampaguita.\"\n\"Training was: read the card, don't answer questions, don't let them hang up. I asked who owns the place. The trainer said, 'Sir, HR is in the tower.'\"\nHe tips his head at the glass building down the road.\n\"Pay came in cash, in an envelope. No payslip. The envelope had a logo on it, and it wasn't the call center's. It was the tower's.\"",
+		"note": "Cash in an envelope with the wrong logo is a story, not a record. The leases are the record, and someone who has been past the card reader has to name them.",
+		"note_color": TextStyle.COLOR_HINT,
+		"marker": TextStyle.MARK_HINT,
+		"cites_call_floor": true,
+		"milestone_title": "HR Is In The Tower",
+		"milestone_detail": "A former trainee on the call floor was sent to the tower for HR and paid from an envelope with the owner's logo - the link between the call floor and the company exists as rumor before it exists as evidence.",
 	},
 ]
 

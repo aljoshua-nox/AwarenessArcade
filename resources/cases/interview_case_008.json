@@ -371,7 +371,7 @@
       "cooperation": 10,
       "milestone": {
         "title": "Witness Secured: The Job That Cost Money",
-        "detail": "Trish Lim put an advertisement, a chat-only recruiter and a cash-in to a personal account on the same week - the job-offer script, and the name of a batchmate it hired instead of robbing."
+        "detail": "Trish Lim put an advertisement, a chat-only recruiter and a cash-in to a personal account on the same week - the job-offer scam, and the name of a batchmate it hired instead of robbing."
       },
       "choices": [
         {
@@ -384,50 +384,50 @@
           "prompt": "\"One message,\" Trish says. \"That's what it took. One message to somebody who actually got hired.\" She locks the phone. \"Write down that it was that easy to check. The next person won't check, and it'll be because they heard 'congratulations' before they heard 'fee.'\"",
           "milestone": {
             "title": "Witness Secured: The Job That Cost Money",
-            "detail": "Trish Lim put an advertisement, a chat-only recruiter and a one-message check on the same night - the job-offer script, and the name of the batchmate it hired instead of robbing."
+            "detail": "Trish Lim put an advertisement, a chat-only recruiter and a one-message check on the same night - the job-offer scam, and the name of the batchmate it hired instead of robbing."
           }
         },
         "unfinished": {
           "prompt": "\"I never found out what the next sentence was,\" Trish says. \"Bea told me instead. One message.\" She locks the phone. \"Write down that I would have paid. I had written SHORTLISTED at the top of the page. I would have paid.\"",
           "milestone": {
             "title": "Witness Secured: The Job That Cost Money",
-            "detail": "Trish Lim put an advertisement, a chat-only recruiter and a call that dropped mid-sentence on the same night - the job-offer script, and the name of the batchmate it hired instead of robbing."
+            "detail": "Trish Lim put an advertisement, a chat-only recruiter and a call that dropped mid-sentence on the same night - the job-offer scam, and the name of the batchmate it hired instead of robbing."
           }
         }
       }
     },
     "end_success": {
-      "prompt": "Trish's receipt, the chat and the advertisement put a recruiter, a fee and a personal account on one week - the job-offer script, and a batchmate who answered the same advertisement and was hired by it.",
+      "prompt": "Trish's receipt, the chat and the advertisement put a recruiter, a fee and a personal account on one week - the job-offer scam, and a batchmate who answered the same advertisement and was hired by it.",
       "outcome": "success",
       "grants_evidence": [
         {
           "id": "test_trish_confirmed",
           "label": "Trish's Confirmed Testimony",
-          "description": "Trish Lim confirmed the job-offer script - an advertisement, a chat-only recruiter, a refundable training fee that was neither - and named Bea Santiago as hired off the same advertisement.",
+          "description": "Trish Lim confirmed the job-offer scam - an advertisement, a chat-only recruiter, a refundable training fee that was neither - and named Bea Santiago as hired off the same advertisement.",
           "tactic": "A victim who paid leaves a trail, and this one leads to the floor's recruiting, not only its calls."
         }
       ],
       "choices": [],
       "dispositions": {
         "resistant": {
-          "prompt": "Trish's chat, the advertisement and Bea's reply put a recruiter, a fee that was never paid and a batchmate who was hired on one night - the job-offer script, and the one-message check that beat it.",
+          "prompt": "Trish's chat, the advertisement and Bea's reply put a recruiter, a fee that was never paid and a batchmate who was hired on one night - the job-offer scam, and the one-message check that beat it.",
           "grants_evidence": [
             {
               "id": "test_trish_confirmed",
               "label": "Trish's Confirmed Testimony",
-              "description": "Trish Lim confirmed the job-offer script - an advertisement, a chat-only recruiter, a refundable training fee that was neither - refused it after one message to Bea Santiago, hired off the same advertisement, and gave Bea the number.",
+              "description": "Trish Lim confirmed the job-offer scam - an advertisement, a chat-only recruiter, a refundable training fee that was neither - refused it after one message to Bea Santiago, hired off the same advertisement, and gave Bea the number.",
               "tactic": "A witness who checked still proves the operation exists - and this one checked with someone inside it."
             }
           ]
         },
         "unfinished": {
-          "prompt": "Trish's chat, the advertisement and Bea's reply put a recruiter, a call that dropped and a batchmate who was hired on one night - the job-offer script, and what it would have cost.",
+          "prompt": "Trish's chat, the advertisement and Bea's reply put a recruiter, a call that dropped and a batchmate who was hired on one night - the job-offer scam, and what it would have cost.",
           "grants_evidence": [
             {
               "id": "test_trish_confirmed",
               "label": "Trish's Confirmed Testimony",
-              "description": "Trish Lim confirmed the job-offer script - an advertisement, a chat-only recruiter, a refundable training fee that was neither - the call dropped before the fee, and Bea Santiago, hired off the same advertisement, told her afterward that nobody in her batch paid.",
-              "tactic": "A call that never resolved still proves the script was running, and who it was aimed at."
+              "description": "Trish Lim confirmed the job-offer scam - an advertisement, a chat-only recruiter, a refundable training fee that was neither - the call dropped before the fee, and Bea Santiago, hired off the same advertisement, told her afterward that nobody in her batch paid.",
+              "tactic": "A call that never resolved still proves the scam was running, and who it was aimed at."
             }
           ]
         }

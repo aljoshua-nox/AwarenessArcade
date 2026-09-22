@@ -138,7 +138,7 @@
             "text": "Nothing he could do. The threat was the picture of six o'clock in the dark, and she supplied that picture herself.",
             "correct": true,
             "cooperation": 12,
-            "feedback": "That is the mechanism. He could not touch her electricity; the account was paid. What he had was a time - thirty minutes - and a word - disconnected - and she did the rest, because she knows what that evening looks like better than he ever could. Fear scripts are aimed at what a person cannot afford to lose, and they let the person fill in the details. A caller who makes you picture the worst is a caller who has nothing else."
+            "feedback": "That is the mechanism. He could not touch her electricity; the account was paid. What he had was a time - thirty minutes - and a word - disconnected - and she did the rest, because she knows what that evening looks like better than he ever could. Scams built on fear aim at what a person cannot afford to lose, and they let the person fill in the details. A caller who makes you picture the worst is a caller who has nothing else."
           },
           {
             "text": "A disconnection the company was about to carry out.",
@@ -220,7 +220,7 @@
       "cooperation": 10,
       "milestone": {
         "title": "Witness Secured: Thirty Minutes To Six",
-        "detail": "Carmen Salazar put a thirty-minute notice, a polite caller with her account number and a cash-in on the same evening - the utility-disconnection script, aimed at a household at dinnertime."
+        "detail": "Carmen Salazar put a thirty-minute notice, a polite caller with her account number and a cash-in on the same evening - the utility-disconnection scam, aimed at a household at dinnertime."
       },
       "choices": [
         {
@@ -230,14 +230,14 @@
       ]
     },
     "end_success": {
-      "prompt": "Carmen's receipt, the message and the real bill put a fake notice, a real account number and eighteen hundred and fifty pesos on one evening - the utility-disconnection script, read off the same list as every other call.",
+      "prompt": "Carmen's receipt, the message and the real bill put a fake notice, a real account number and eighteen hundred and fifty pesos on one evening - the utility-disconnection scam, worked off the same list as every other call.",
       "outcome": "success",
       "grants_evidence": [
         {
           "id": "test_carmen_confirmed",
           "label": "Carmen's Confirmed Testimony",
-          "description": "Carmen Salazar confirmed the utility-disconnection script - a thirty-minute notice, a polite caller with her account number, a 'reconnection fee' for a service that was never cut - and the cash-in it produced.",
-          "tactic": "A victim who paid leaves a trail. Hers is the script that threatens an evening, not a fortune."
+          "description": "Carmen Salazar confirmed the utility-disconnection scam - a thirty-minute notice, a polite caller with her account number, a 'reconnection fee' for a service that was never cut - and the cash-in it produced.",
+          "tactic": "A victim who paid leaves a trail. Hers is the scam that threatens an evening, not a fortune."
         }
       ],
       "choices": []

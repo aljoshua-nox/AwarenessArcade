@@ -359,7 +359,7 @@
       "cooperation": 10,
       "milestone": {
         "title": "Witness Secured: The Warrant That Never Existed",
-        "detail": "Joel Abad put a reference number, a deadline and a cash-in on the same afternoon - the government-warrant script, the fourth one the floor runs, with a face on it at last."
+        "detail": "Joel Abad put a reference number, a deadline and a cash-in on the same afternoon - the government-warrant scam, the fourth one the floor runs, with a face on it at last."
       },
       "choices": [
         {
@@ -372,50 +372,50 @@
           "prompt": "\"Four minutes,\" Joel says. \"Site phone to the real office. She laughed, and then she stopped laughing and took the number.\" He lays the log beside the cement bag. \"Write down that it took four minutes. Somebody should know it only takes four minutes.\"",
           "milestone": {
             "title": "Witness Secured: The Warrant That Never Existed",
-            "detail": "Joel Abad put a reference number, a deadline and a four-minute check on the same afternoon - the government-warrant script, the fourth one the floor runs, with a face on it at last."
+            "detail": "Joel Abad put a reference number, a deadline and a four-minute check on the same afternoon - the government-warrant scam, the fourth one the floor runs, with a face on it at last."
           }
         },
         "unfinished": {
           "prompt": "\"Four minutes,\" Joel says. \"Site phone to the real office, after. She laughed at me and I still didn't know what I was asking.\" He lays the log beside the cement bag. \"Write down that nobody called back. Somebody should have.\"",
           "milestone": {
             "title": "Witness Secured: The Warrant That Never Existed",
-            "detail": "Joel Abad put a reference number, a deadline and a four-minute check on the same afternoon - the government-warrant script, the fourth one the floor runs, with a face on it at last."
+            "detail": "Joel Abad put a reference number, a deadline and a four-minute check on the same afternoon - the government-warrant scam, the fourth one the floor runs, with a face on it at last."
           }
         }
       }
     },
     "end_success": {
-      "prompt": "Joel's cash-in slip and the number on the cement bag put a desk, a deadline and sixteen thousand pesos on one afternoon - the government-warrant script, read off the same list as every other call.",
+      "prompt": "Joel's cash-in slip and the number on the cement bag put a desk, a deadline and sixteen thousand pesos on one afternoon - the government-warrant scam, worked off the same list as every other call.",
       "outcome": "success",
       "grants_evidence": [
         {
           "id": "test_joel_confirmed",
           "label": "Joel's Confirmed Testimony",
-          "description": "Joel Abad confirmed the government-warrant script - an enforcement desk, a reference number, an officer at four - and the cash-in it produced.",
-          "tactic": "A victim who paid leaves a trail. His is the script that uses a badge instead of a prize."
+          "description": "Joel Abad confirmed the government-warrant scam - an enforcement desk, a reference number, an officer at four - and the cash-in it produced.",
+          "tactic": "A victim who paid leaves a trail. His is the scam that uses a badge instead of a prize."
         }
       ],
       "choices": [],
       "dispositions": {
         "resistant": {
-          "prompt": "Joel's site phone log and the number on the cement bag put a desk, a deadline and a four-minute check on one afternoon - the government-warrant script, read off the same list as every other call.",
+          "prompt": "Joel's site phone log and the number on the cement bag put a desk, a deadline and a four-minute check on one afternoon - the government-warrant scam, worked off the same list as every other call.",
           "grants_evidence": [
             {
               "id": "test_joel_confirmed",
               "label": "Joel's Confirmed Testimony",
-              "description": "Joel Abad confirmed the government-warrant script - an enforcement desk, a reference number, an officer at four - and that one call to the real office ended it.",
+              "description": "Joel Abad confirmed the government-warrant scam - an enforcement desk, a reference number, an officer at four - and that one call to the real office ended it.",
               "tactic": "A witness who checked still proves the operation exists - and proves the check takes four minutes."
             }
           ]
         },
         "unfinished": {
-          "prompt": "Joel's site phone log and the number on the cement bag put a desk, a deadline and a four-minute check on one afternoon - the government-warrant script, read off the same list as every other call.",
+          "prompt": "Joel's site phone log and the number on the cement bag put a desk, a deadline and a four-minute check on one afternoon - the government-warrant scam, worked off the same list as every other call.",
           "grants_evidence": [
             {
               "id": "test_joel_confirmed",
               "label": "Joel's Confirmed Testimony",
-              "description": "Joel Abad confirmed the government-warrant script - an enforcement desk, a reference number, an officer at four - and that the line dropped before it finished.",
-              "tactic": "A call that never resolved still proves the script was running, and who it was aimed at."
+              "description": "Joel Abad confirmed the government-warrant scam - an enforcement desk, a reference number, an officer at four - and that the line dropped before it finished.",
+              "tactic": "A call that never resolved still proves the scam was running, and who it was aimed at."
             }
           ]
         }
@@ -431,7 +431,7 @@
       "outcome": "failure",
       "milestone": {
         "title": "Witness Lost",
-        "detail": "Joel Abad went back to the pour. Working-age victims report least of all - not from shame, but because the report costs a day they cannot lose, which is the same reason the script worked."
+        "detail": "Joel Abad went back to the pour. Working-age victims report least of all - not from shame, but because the report costs a day they cannot lose, which is the same reason the scam worked."
       },
       "choices": [],
       "dispositions": {

@@ -359,7 +359,7 @@
       "cooperation": 10,
       "milestone": {
         "title": "Witness Secured: The Name On The List",
-        "detail": "Teodoro Villanueva put a name, a number and a transfer on the same afternoon - the family-emergency script, and the list it was read from."
+        "detail": "Teodoro Villanueva put a name, a number and a transfer on the same afternoon - the family-emergency scam, and the list his name was read off."
       },
       "choices": [
         {
@@ -372,50 +372,50 @@
           "prompt": "\"Four minutes,\" Teodoro says. \"That is what it took. One phone call to the person the story was about.\" He lays the penciled note beside his daughter's phone. \"Write that down. Four minutes.\"",
           "milestone": {
             "title": "Witness Secured: The Name On The List",
-            "detail": "Teodoro Villanueva put a name, a number and a four-minute check on the same afternoon - the family-emergency script, and the list it was read from."
+            "detail": "Teodoro Villanueva put a name, a number and a four-minute check on the same afternoon - the family-emergency scam, and the list his name was read off."
           }
         },
         "unfinished": {
           "prompt": "\"Four minutes,\" Teodoro says. \"That is what it took to find out he was at school. Nobody called back to tell me.\" He lays the penciled note beside his daughter's phone. \"Write that down. Somebody should have.\"",
           "milestone": {
             "title": "Witness Secured: The Name On The List",
-            "detail": "Teodoro Villanueva put a name, a number and a four-minute check on the same afternoon - the family-emergency script, and the list it was read from."
+            "detail": "Teodoro Villanueva put a name, a number and a four-minute check on the same afternoon - the family-emergency scam, and the list his name was read off."
           }
         }
       }
     },
     "end_success": {
-      "prompt": "Teodoro's passbook and his penciled note put a name, a number and twenty-two thousand pesos on one afternoon - the family-emergency script, read off the same list as every other call.",
+      "prompt": "Teodoro's passbook and his penciled note put a name, a number and twenty-two thousand pesos on one afternoon - the family-emergency scam, worked off the same list as every other call.",
       "outcome": "success",
       "grants_evidence": [
         {
           "id": "test_teddy_confirmed",
           "label": "Teodoro's Confirmed Testimony",
-          "description": "Teodoro Villanueva confirmed the family-emergency script - a fake attorney, a grandson's name off a list, a bail deadline - and the transfer it produced.",
-          "tactic": "A victim who paid leaves a trail. His is the script that uses love as the lever."
+          "description": "Teodoro Villanueva confirmed the family-emergency scam - a fake attorney, a grandson's name off a list, a bail deadline - and the transfer it produced.",
+          "tactic": "A victim who paid leaves a trail. His is the scam that uses love as the lever."
         }
       ],
       "choices": [],
       "dispositions": {
         "resistant": {
-          "prompt": "Teodoro's penciled note and his daughter's call log put a name, a number and a four-minute check on one afternoon - the family-emergency script, read off the same list as every other call.",
+          "prompt": "Teodoro's penciled note and his daughter's call log put a name, a number and a four-minute check on one afternoon - the family-emergency scam, worked off the same list as every other call.",
           "grants_evidence": [
             {
               "id": "test_teddy_confirmed",
               "label": "Teodoro's Confirmed Testimony",
-              "description": "Teodoro Villanueva confirmed the family-emergency script - a fake attorney, a grandson's name off a list, a bail deadline - and that one call to his daughter ended it.",
+              "description": "Teodoro Villanueva confirmed the family-emergency scam - a fake attorney, a grandson's name off a list, a bail deadline - and that one call to his daughter ended it.",
               "tactic": "A witness who checked still proves the operation exists - and proves the check works."
             }
           ]
         },
         "unfinished": {
-          "prompt": "Teodoro's penciled note and his daughter's call log put a name, a number and a four-minute check on one afternoon - the family-emergency script, read off the same list as every other call.",
+          "prompt": "Teodoro's penciled note and his daughter's call log put a name, a number and a four-minute check on one afternoon - the family-emergency scam, worked off the same list as every other call.",
           "grants_evidence": [
             {
               "id": "test_teddy_confirmed",
               "label": "Teodoro's Confirmed Testimony",
-              "description": "Teodoro Villanueva confirmed the family-emergency script - a fake attorney, a grandson's name off a list, a bail deadline - and that the line dropped before it finished.",
-              "tactic": "A call that never resolved still proves the script was running, and who it was aimed at."
+              "description": "Teodoro Villanueva confirmed the family-emergency scam - a fake attorney, a grandson's name off a list, a bail deadline - and that the line dropped before it finished.",
+              "tactic": "A call that never resolved still proves the scam was running, and who it was aimed at."
             }
           ]
         }

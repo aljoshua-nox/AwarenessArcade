@@ -66,17 +66,17 @@
       "tactic_quiz": {
         "setup": "You think about two of the people this floor called. Maria Santos, sixty-seven, a retired clerk, told her account would be frozen unless she verified right now. Kevin Dizon, twenty-four, works with computers all day, told his files were infected and to call before restarting.",
         "tactic_id": "verification_denial",
-        "tactic": "The pattern behind every script",
-        "question": "Two completely different scripts, two completely different people. What did both scripts actually need in order to work?",
+        "tactic": "The pattern behind every scam",
+        "question": "Two completely different scams, two completely different people. What did both actually need in order to work?",
         "milestone": {
           "title": "The Pattern Named",
-          "detail": "Identified that every script in the operation depended on removing the victim's time to verify - not on the victim being careless, old, or bad with technology."
+          "detail": "Identified that every scam the operation ran depended on removing the victim's time to verify - not on the victim being careless, old, or bad with technology."
         },
         "options": [
           {
             "text": "A reason to act right away, before checking with anybody else.",
             "correct": true,
-            "feedback": "That is the whole operation in one sentence. Every script - bank, tech support, raffle - is built to close the gap between hearing the story and acting on it. The defense is always the same, and it is boring: stop, hang up, and check through a number you already trust. Nothing real is ever lost by waiting ten minutes."
+            "feedback": "That is the whole operation in one sentence. Every scam - bank, tech support, raffle - is built to close the gap between hearing the story and acting on it. The defense is always the same, and it is boring: stop, hang up, and check through a number you already trust. Nothing real is ever lost by waiting ten minutes."
           },
           {
             "text": "A victim who wasn't very good with technology.",
@@ -88,7 +88,7 @@
           },
           {
             "text": "The victim's bank details, obtained in advance.",
-            "feedback": "They had almost nothing in advance. Both scripts were designed to make the victim hand over what was missing. The pressure is not there to use the information - it is there to get it."
+            "feedback": "They had almost nothing in advance. Both calls were designed to make the victim hand over what was missing. The pressure is not there to use the information - it is there to get it."
           }
         ],
         "next": "final_check"
@@ -146,7 +146,7 @@
       "choices": []
     },
     "end_partial_justice": {
-      "prompt": "The raid takes in Marco and the desks that worked the one script you could prove. But every statement in your file tells the same story, and one story is one desk's work, not an operation's - the other scripts on that floor were never put on record, so the people who wrote them slip through the paperwork. Those scripts survive. So do the lists. Some justice, not all of it.",
+      "prompt": "The raid takes in Marco and the desks that worked the one scam you could prove. But every statement in your file tells the same story, and one story is one desk's work, not an operation's - the floor's other scams were never put on record, so the people who wrote their scripts slip through the paperwork. Those scripts survive. So do the lists. Some justice, not all of it.",
       "outcome": "partial_justice",
       "choices": []
     }

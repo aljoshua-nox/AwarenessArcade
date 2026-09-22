@@ -396,7 +396,7 @@
 	  "cooperation": 10,
 	  "milestone": {
 		"title": "Second Witness Secured",
-		"detail": "Kevin Dizon confirmed the remote-access session once shown the connection log - a different opening script, the same operation."
+		"detail": "Kevin Dizon confirmed the remote-access session once shown the connection log - a different scam, the same operation."
 	  },
 	  "choices": [
 		{
@@ -409,20 +409,20 @@
 		  "prompt": "\"They called me back. From a number that's on a bulletin board down the road.\" Kevin pushes the phone across the table. \"I saved it because I wanted to know who has my name. Turns out a lot of people do.\"",
 		  "milestone": {
 			"title": "Second Witness Secured",
-			"detail": "Kevin Dizon confirmed the callback and the number it came from - a different opening script, the same line."
+			"detail": "Kevin Dizon confirmed the callback and the number it came from - a different scam, the same line."
 		  }
 		},
 		"unfinished": {
 		  "prompt": "\"They called me back. From a number that's on a bulletin board down the road.\" Kevin pushes the phone across the table. \"I saved it because I wanted to know who has my name. Turns out a lot of people do.\"",
 		  "milestone": {
 			"title": "Second Witness Secured",
-			"detail": "Kevin Dizon confirmed the callback and the number it came from - a different opening script, the same line."
+			"detail": "Kevin Dizon confirmed the callback and the number it came from - a different scam, the same line."
 		  }
 		}
 	  }
 	},
 	"end_success": {
-	  "prompt": "Kevin's access log shows the same rushed, fear-based script that was used on Maria - a different angle, the same operation.",
+	  "prompt": "Kevin's access log shows the same rushed, fear-based pressure that was used on Maria - a different angle, the same operation.",
 	  "outcome": "success",
 	  "grants_evidence": [
 		{
@@ -435,7 +435,7 @@
 	  "choices": [],
 	  "dispositions": {
 		"resistant": {
-		  "prompt": "Kevin's call log ties the callback to the same number the street keeps naming - a different opening script, the same operation.",
+		  "prompt": "Kevin's call log ties the callback to the same number the street keeps naming - a different scam, the same operation.",
 		  "grants_evidence": [
 			{
 			  "id": "test_kevin_confirmed",
@@ -446,7 +446,7 @@
 		  ]
 		},
 		"unfinished": {
-		  "prompt": "Kevin's call log ties the callback to the same number the street keeps naming - a different opening script, the same operation.",
+		  "prompt": "Kevin's call log ties the callback to the same number the street keeps naming - a different scam, the same operation.",
 		  "grants_evidence": [
 			{
 			  "id": "test_kevin_confirmed",
@@ -468,7 +468,7 @@
 	  "outcome": "failure",
 	  "milestone": {
 		"title": "Witness Lost",
-		"detail": "Kevin Dizon disengaged. Shame is the reason most tech-support scam victims never report - and unreported cases are what let the same script keep running."
+		"detail": "Kevin Dizon disengaged. Shame is the reason most tech-support scam victims never report - and unreported cases are what let the same scam keep running."
 	  },
 	  "choices": [],
 	  "dispositions": {

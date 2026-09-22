@@ -214,12 +214,12 @@
       ],
       "milestone": {
         "title": "Director Named",
-        "detail": "Rowena Ocampo, faced with a witness from each of her floor's two scripts, put a name to the company that leases the building - the operation has an owner, and the owner is not on either floor."
+        "detail": "Rowena Ocampo, faced with a witness from each of her floor's two scams, put a name to the company that leases the building - the operation has an owner, and the owner is not on either floor."
       },
       "choices": []
     },
     "end_denied": {
-      "prompt": "Rowena has denied everything, calmly, and one statement from one of her floor's two scripts is not enough to make her do otherwise. The name on the sign outside stays a name on a sign.",
+      "prompt": "Rowena has denied everything, calmly, and one statement from one of her floor's two scams is not enough to make her do otherwise. The name on the sign outside stays a name on a sign.",
       "outcome": "partial",
       "choices": []
     },

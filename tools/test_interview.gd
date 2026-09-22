@@ -1206,7 +1206,7 @@ func _test_breadth_and_spent_testimony() -> void:
 	elena._load_node("final_check")
 	_check(elena.current_node_id == "end_partial_justice",
 		"two lottery testimonies prove one script and land on partial justice (landed on %s)" % elena.current_node_id)
-	_check(elena.prompt_value.text.contains("the one script you could prove"), "...and the ending says why")
+	_check(elena.prompt_value.text.contains("the one scam you could prove"), "...and the ending says why")
 	await _close(elena)
 
 	# Two witnesses to two scripts clear it.

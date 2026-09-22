@@ -72,7 +72,7 @@ const STREET_STOPS := [
 		"tactic_id": "repeated_script",
 		"cites_number": true,
 		"milestone_title": "The Warning Was Already Up",
-		"milestone_detail": "A community notice on the street named the operation's number and all three of its scripts - the information existed before the case did.",
+		"milestone_detail": "A community notice on the street named the operation's number and three of its scams - the information existed before the case did.",
 	},
 	{
 		"position": Vector2(700.0, 600.0),
@@ -96,7 +96,7 @@ const STREET_STOPS := [
 		"marker": TextStyle.MARK_TACTIC,
 		"tactic_id": "reused_victim_list",
 		"milestone_title": "Called Twice, Six Weeks Apart",
-		"milestone_detail": "One resident was worked twice from the same list under two different scripts - answering once marks a number as live.",
+		"milestone_detail": "One resident was worked twice from the same list under two different scams - answering once marks a number as live.",
 	},
 	{
 		"position": Vector2(740.0, 216.0),
@@ -115,11 +115,11 @@ const STREET_STOPS := [
 		"title": "Carlo, waiting for a jeep",
 		"prompt": "Talk to Carlo",
 		"body": "A man in a work shirt at the curb, one eye on the road. \"Scam calls?\" He laughs. \"Boss, you'd have to be really slow to fall for that. My lola, maybe. Not me - I'd know right away.\" A jeep passes, full, and he doesn't flag it. The laugh fades a little. \"...Why, what do they say when they call?\"",
-		"note": "Everybody thinks they would catch it. The scripts count on exactly that: they are built for someone who is busy, tired or in the middle of something, not someone who is slow. His last question is the honest one.",
+		"note": "Everybody thinks they would catch it. The scams count on exactly that: they are built for someone who is busy, tired or in the middle of something, not someone who is slow. His last question is the honest one.",
 		"note_color": TextStyle.COLOR_TACTIC,
 		"marker": TextStyle.MARK_TACTIC,
 		"milestone_title": "\"You'd Have To Be Gullible\"",
-		"milestone_detail": "The commonest myth about fraud victims, met on the street - confidence that you would spot it is exactly what the scripts count on.",
+		"milestone_detail": "The commonest myth about fraud victims, met on the street - confidence that you would spot it is exactly what the scams count on.",
 	},
 	{
 		"position": Vector2(1750.0, 950.0),

@@ -22,7 +22,7 @@ const OUTCOME_MESSAGES := {
 	"building_stands": "Both call floors are gone. The company that leased them to the operation was never named by anyone inside, and a landlord nobody names signs the next lease.",
 	"failure": "This lead has gone cold. The person you spoke with wasn't willing to give you anything more.",
 	"full_takedown": "Every testimony you gathered held up, and someone inside named the owner. The operation is being dismantled from the top down - the building, not just the people who made the calls in it.",
-	"partial_justice": "The callers face consequences, but every statement you gathered proved the same script. One script is one desk, not an operation - and the people running the rest of the floor were never reached.",
+	"partial_justice": "The callers face consequences, but every statement you gathered came from the same scam. One scam is one desk, not an operation - and the people running the rest of the floor were never reached.",
 	"bribed": "The investigation ends here - not because the evidence ran out, but because it stopped being pursued.",
 	"insufficient_evidence": "The file closes with nobody charged. The calls are documented, the people who took them are on record, and the operation that made them is still a phone number nobody can attach a name to.",
 }
@@ -36,7 +36,7 @@ const AWARENESS_VERDICTS := {
 	"full_takedown": {
 		"sharp": "You did not only close it - you can name every lever they pulled. The office is gone, and so is the part of this that could ever be used on you.",
 		"mixed": "Some of what it ran on still went past you unnamed, though, and those same lines are being read off a script somewhere else tonight.",
-		"blind": "The office is gone. The scripts are not. You took an operation apart without once naming what it actually did to people - and the next crew will use the same three, because they work.",
+		"blind": "The office is gone. The scripts are not. You took an operation apart without once naming what it actually did to people - and the next crew will use the same ones, because they work.",
 	},
 	"building_stands": {
 		"sharp": "You named every lever they pulled and took both floors down with it. What you never got was a name for the man above them - and understanding how a fraud works is not the same as knowing who is paid when it does.",
@@ -384,7 +384,7 @@ func _build_scorecard_text() -> String:
 		if SessionState.tactic_reads_correct == SessionState.tactic_reads_total:
 			lines.append("You named the manipulation every time it was put in front of you.")
 		elif SessionState.tactic_reads_correct == 0:
-			lines.append("The tactics went unnamed. These scripts work precisely because the pressure looks like ordinary procedure.")
+			lines.append("The tactics went unnamed. These scams work precisely because the pressure looks like ordinary procedure.")
 		else:
 			lines.append("Some of the manipulation went unnamed. Reviewing the tactics on file is worth the time.")
 		# Naming the specific misses is the difference between a score and a

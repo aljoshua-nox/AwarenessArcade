@@ -509,7 +509,7 @@ func _build_stations() -> void:
 		"title": "Script binders",
 		"prompt": "Examine the script binders",
 		"body": "Three laminated scripts sit in a rack on the nearest desk, thumbed soft at the corners. BANK VERIFICATION. DEVICE SUPPORT. PRIZE RELEASE. Someone has written in the margin of the first one, in ballpoint: \"if they say they'll call the bank back, remind them the account is frozen NOW.\"",
-		"note": "Three different stories, one identical mechanism: every script is built to remove the few minutes a person needs to check. That is the product being sold here, not the story.",
+		"note": "Three different stories, one identical mechanism: every script is built to remove the few minutes a person needs to check. That is the product being sold here, not the story. None of it goes in the file: a script proves that a floor reads scripts, and the license downstairs says it may. What makes it a case is a person it was read to, on record.",
 		"note_color": TextStyle.COLOR_TACTIC,
 		"marker": TextStyle.MARK_TACTIC,
 		"milestone_title": "The Scripts Are Written Down",
@@ -523,6 +523,9 @@ func _build_stations() -> void:
 		"prompt": "Examine the call list",
 		"body": "A ring binder, open on the supervisor's desk. Column headings in marker: NAME. NUMBER. LAST RESULT. Names run down the page in a dozen different hands, some crossed out, most not. Taped inside the cover, on a strip of card worn soft at the edges, is the number every desk on this floor calls from: %s." % SessionState.OPERATION_NUMBER,
 		"is_ledger": true,
+		"note": "Names and numbers are not victims until one of them says what the call did. This is what a raid will seize - once there is a case to raid for.",
+		"note_color": TextStyle.COLOR_HINT,
+		"marker": TextStyle.MARK_HINT,
 		"milestone_title": "The List Has Your Handwriting On It",
 		"milestone_detail": "The operation's ledger holds the victims the player called during the prologue - proof that a scam list is a durable asset, not a one-time thing.",
 	}, Vector2(660.0, 612.0))

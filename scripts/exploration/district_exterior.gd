@@ -747,6 +747,9 @@ func _add_lamppost(base_position: Vector2) -> void:
 	decor.add_child(sprite)
 
 
+# A pedestrian is solid over their whole sprite, like a car: a stop's zone
+# (STOP_SIZE) is wider than any of them, so the prompt still comes up from
+# beside the person rather than from inside them.
 func _add_npc(npc_position: Vector2, texture: Texture2D, source_rect: Rect2, npc_scale: float, tint: Color) -> void:
 	var sprite := Sprite2D.new()
 	sprite.texture = texture
@@ -758,6 +761,8 @@ func _add_npc(npc_position: Vector2, texture: Texture2D, source_rect: Rect2, npc
 	sprite.position = npc_position
 	sprite.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
 	decor.add_child(sprite)
+	var size := source_rect.size * npc_scale
+	_add_wall_segment(npc_position - size * 0.5, size)
 
 
 # One tile from the Kenney sheet as a free-standing sprite: a cone, a crate,

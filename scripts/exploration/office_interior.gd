@@ -466,34 +466,38 @@ func _build_back_wall_fittings() -> void:
 
 
 func _build_call_floor() -> void:
+	# Desks and chairs are solid; the monitors sit inside their desk's block.
 	for x in DESK_COLUMNS:
-		_add_prop(OFFICE_OBJECTS, OBJ_CHAIR, Vector2(x, DESK_ROW_BACK - 30.0), 2.1, -12)
-		_add_prop(OFFICE_OBJECTS, OBJ_DESK_BACK, Vector2(x, DESK_ROW_BACK), 2.4, -10)
+		_add_prop(OFFICE_OBJECTS, OBJ_CHAIR, Vector2(x, DESK_ROW_BACK - 30.0), 2.1, -12, true)
+		_add_prop(OFFICE_OBJECTS, OBJ_DESK_BACK, Vector2(x, DESK_ROW_BACK), 2.4, -10, true)
 		_add_prop(OFFICE_OBJECTS, OBJ_MONITOR, Vector2(x - 18.0, DESK_ROW_BACK - 30.0), 1.6, -11)
 
 	for x in DESK_COLUMNS:
-		_add_prop(OFFICE_OBJECTS, OBJ_CHAIR, Vector2(x, DESK_ROW_FRONT - 34.0), 2.1, -12)
-		_add_prop(OFFICE_OBJECTS, OBJ_DESK_FRONT, Vector2(x, DESK_ROW_FRONT), 2.4, -10)
+		_add_prop(OFFICE_OBJECTS, OBJ_CHAIR, Vector2(x, DESK_ROW_FRONT - 34.0), 2.1, -12, true)
+		_add_prop(OFFICE_OBJECTS, OBJ_DESK_FRONT, Vector2(x, DESK_ROW_FRONT), 2.4, -10, true)
 		_add_prop(OFFICE_OBJECTS, OBJ_MONITOR, Vector2(x + 16.0, DESK_ROW_FRONT - 36.0), 1.6, -11)
 
 	# Thin divider posts between stations. (The pack's partition_1/2 sprites are
 	# cubicle corner pieces meant to be assembled - standalone they read as
-	# floating brown slabs, so the wall sheet's posts are used instead.)
+	# floating brown slabs, so the wall sheet's posts are used instead.) Not
+	# solid: STAIRS_ARRIVAL lands on the one at x 900, and a 12 px pole is the
+	# kind of thing a player walks into without seeing why.
 	for x in [420.0, 580.0, 740.0, 900.0]:
 		_add_prop(OFFICE_WALLS, WALL_POST, Vector2(x, DESK_ROW_BACK - 6.0), 2.0, -13)
 
 
 func _build_props() -> void:
-	# Water cooler and cabinets belong against the walls, not mid-room.
-	_add_prop(OFFICE_OBJECTS, OBJ_COOLER, Vector2(1168.0, 330.0), 2.3, -8)
-	_add_prop(OFFICE_OBJECTS, OBJ_FILE_CABINET, Vector2(1168.0, 430.0), 2.1, -8)
-	_add_prop(OFFICE_OBJECTS, OBJ_CABINET, Vector2(128.0, 340.0), 2.1, -8)
-	_add_prop(OFFICE_OBJECTS, OBJ_FILE_CABINET, Vector2(128.0, 440.0), 2.1, -8)
+	# Water cooler and cabinets belong against the walls, not mid-room. The
+	# shelf hangs on the back wall, so it stays walkable.
+	_add_prop(OFFICE_OBJECTS, OBJ_COOLER, Vector2(1168.0, 330.0), 2.3, -8, true)
+	_add_prop(OFFICE_OBJECTS, OBJ_FILE_CABINET, Vector2(1168.0, 430.0), 2.1, -8, true)
+	_add_prop(OFFICE_OBJECTS, OBJ_CABINET, Vector2(128.0, 340.0), 2.1, -8, true)
+	_add_prop(OFFICE_OBJECTS, OBJ_FILE_CABINET, Vector2(128.0, 440.0), 2.1, -8, true)
 	_add_prop(OFFICE_OBJECTS, OBJ_SHELF, Vector2(720.0, 262.0), 2.2, -8)
 
-	_add_prop(OFFICE_OBJECTS, OBJ_PLANT, Vector2(126.0, 640.0), 2.4, -8)
-	_add_prop(OFFICE_OBJECTS, OBJ_PLANT, Vector2(1170.0, 640.0), 2.4, -8)
-	_add_prop(OFFICE_OBJECTS, OBJ_SOFA, Vector2(230.0, 668.0), 2.2, -8)
+	_add_prop(OFFICE_OBJECTS, OBJ_PLANT, Vector2(126.0, 640.0), 2.4, -8, true)
+	_add_prop(OFFICE_OBJECTS, OBJ_PLANT, Vector2(1170.0, 640.0), 2.4, -8, true)
+	_add_prop(OFFICE_OBJECTS, OBJ_SOFA, Vector2(230.0, 668.0), 2.2, -8, true)
 
 	_build_stations()
 	_add_director_door()
@@ -511,8 +515,8 @@ func _build_stations() -> void:
 		"milestone_title": "The Scripts Are Written Down",
 		"milestone_detail": "The call floor keeps three interchangeable scripts, each engineered around denying the victim time to verify.",
 	}, Vector2(360.0, 612.0))
-	_add_prop(OFFICE_OBJECTS, OBJ_DESK_FRONT, Vector2(360.0, 604.0), 2.6, -10)
-	_add_prop(OFFICE_OBJECTS, OBJ_SHELF, Vector2(300.0, 596.0), 2.0, -11)
+	_add_prop(OFFICE_OBJECTS, OBJ_DESK_FRONT, Vector2(360.0, 604.0), 2.6, -10, true)
+	_add_prop(OFFICE_OBJECTS, OBJ_SHELF, Vector2(300.0, 596.0), 2.0, -11, true)
 
 	_add_station({
 		"title": "The call list",
@@ -522,7 +526,7 @@ func _build_stations() -> void:
 		"milestone_title": "The List Has Your Handwriting On It",
 		"milestone_detail": "The operation's ledger holds the victims the player called during the prologue - proof that a scam list is a durable asset, not a one-time thing.",
 	}, Vector2(660.0, 612.0))
-	_add_prop(OFFICE_WALLS, WALL_BENCH, Vector2(660.0, 604.0), 1.9, -10)
+	_add_prop(OFFICE_WALLS, WALL_BENCH, Vector2(660.0, 604.0), 1.9, -10, true)
 
 	_add_station({
 		"title": "Bonus board",
@@ -534,7 +538,7 @@ func _build_stations() -> void:
 		"milestone_title": "Distress Is A Performance Metric",
 		"milestone_detail": "The floor pays a doubled bonus rate for calls that escalate a victim into distress - harm is deliberately incentivized, not incidental.",
 	}, Vector2(1000.0, 612.0))
-	_add_prop(OFFICE_OBJECTS, OBJ_EASEL, Vector2(1000.0, 606.0), 2.4, -10)
+	_add_prop(OFFICE_OBJECTS, OBJ_EASEL, Vector2(1000.0, 606.0), 2.4, -10, true)
 
 	_add_station({
 		"title": "The shift schedule",
@@ -701,17 +705,41 @@ func _add_tiled_rect(texture: Texture2D, top_left: Vector2, size: Vector2, tile_
 
 # Place an atlas sprite standing on the floor: base_position is where its
 # bottom edge sits, which makes laying furniture out far easier than centers.
-func _add_prop(texture: Texture2D, region: Rect2, base_position: Vector2, prop_scale: float, z_index: int) -> void:
+# `solid` blocks the player over the whole sprite, the way the street's props
+# do - there is no y-sorting in here, so any overlap would draw the player on
+# top of the desk. The stations' zones reach past their furniture, so a solid
+# desk still prompts from the floor in front of it.
+func _add_prop(texture: Texture2D, region: Rect2, base_position: Vector2, prop_scale: float, z_index: int,
+		solid: bool = false) -> void:
 	var sprite := Sprite2D.new()
 	sprite.texture = texture
 	sprite.region_enabled = true
 	sprite.region_rect = region
 	sprite.centered = true
 	sprite.scale = Vector2(prop_scale, prop_scale)
-	sprite.position = base_position - Vector2(0.0, region.size.y * prop_scale * 0.5)
+	var size := region.size * prop_scale
+	sprite.position = base_position - Vector2(0.0, size.y * 0.5)
 	sprite.z_index = z_index
 	sprite.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
 	decor.add_child(sprite)
+	if solid:
+		_add_wall_segment(base_position - Vector2(size.x * 0.5, size.y), size)
+
+
+# The same body the street's buildings and props stand behind.
+func _add_wall_segment(top_left: Vector2, size: Vector2) -> void:
+	if size.x <= 0.0 or size.y <= 0.0:
+		return
+	var body := StaticBody2D.new()
+	body.collision_layer = 1
+	body.collision_mask = 1
+	body.position = top_left + size * 0.5
+	var shape := CollisionShape2D.new()
+	var rect := RectangleShape2D.new()
+	rect.size = size
+	shape.shape = rect
+	body.add_child(shape)
+	decor.add_child(body)
 
 
 func _add_wall_plate(center: Vector2, text: String) -> void:

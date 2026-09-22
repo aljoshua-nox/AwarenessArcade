@@ -80,23 +80,23 @@ func _build_back_wall_fittings() -> void:
 # Two desks, not forty. Yours, in the middle of the room, and the sergeant's
 # by the window, with nobody at it.
 func _build_call_floor() -> void:
-	_add_prop(OFFICE_OBJECTS, OBJ_CHAIR, Vector2(DESK_POSITION.x, DESK_POSITION.y - 42.0), 2.1, -12)
-	_add_prop(OFFICE_OBJECTS, OBJ_DESK_FRONT, Vector2(DESK_POSITION.x, DESK_POSITION.y - 8.0), 2.6, -10)
+	_add_prop(OFFICE_OBJECTS, OBJ_CHAIR, Vector2(DESK_POSITION.x, DESK_POSITION.y - 42.0), 2.1, -12, true)
+	_add_prop(OFFICE_OBJECTS, OBJ_DESK_FRONT, Vector2(DESK_POSITION.x, DESK_POSITION.y - 8.0), 2.6, -10, true)
 	_add_prop(OFFICE_OBJECTS, OBJ_MONITOR, Vector2(DESK_POSITION.x + 22.0, DESK_POSITION.y - 44.0), 1.6, -11)
 
-	_add_prop(OFFICE_OBJECTS, OBJ_CHAIR, Vector2(900.0, 296.0), 2.1, -12)
-	_add_prop(OFFICE_OBJECTS, OBJ_DESK_BACK, Vector2(900.0, 326.0), 2.4, -10)
+	_add_prop(OFFICE_OBJECTS, OBJ_CHAIR, Vector2(900.0, 296.0), 2.1, -12, true)
+	_add_prop(OFFICE_OBJECTS, OBJ_DESK_BACK, Vector2(900.0, 326.0), 2.4, -10, true)
 	_add_prop(OFFICE_OBJECTS, OBJ_MONITOR, Vector2(882.0, 296.0), 1.6, -11)
 
 
 func _build_props() -> void:
-	_add_prop(OFFICE_OBJECTS, OBJ_FILE_CABINET, Vector2(128.0, 340.0), 2.1, -8)
-	_add_prop(OFFICE_OBJECTS, OBJ_FILE_CABINET, Vector2(128.0, 440.0), 2.1, -8)
-	_add_prop(OFFICE_OBJECTS, OBJ_DESK_BACK, Vector2(TABLE_POSITION.x, TABLE_POSITION.y - 10.0), 2.4, -10)
-	_add_prop(OFFICE_OBJECTS, OBJ_COOLER, Vector2(1168.0, 440.0), 2.3, -8)
-	_add_prop(OFFICE_OBJECTS, OBJ_PLANT, Vector2(126.0, 640.0), 2.4, -8)
-	_add_prop(OFFICE_OBJECTS, OBJ_PLANT, Vector2(1170.0, 640.0), 2.4, -8)
-	_add_prop(OFFICE_OBJECTS, OBJ_SOFA, Vector2(230.0, 668.0), 2.2, -8)
+	_add_prop(OFFICE_OBJECTS, OBJ_FILE_CABINET, Vector2(128.0, 340.0), 2.1, -8, true)
+	_add_prop(OFFICE_OBJECTS, OBJ_FILE_CABINET, Vector2(128.0, 440.0), 2.1, -8, true)
+	_add_prop(OFFICE_OBJECTS, OBJ_DESK_BACK, Vector2(TABLE_POSITION.x, TABLE_POSITION.y - 10.0), 2.4, -10, true)
+	_add_prop(OFFICE_OBJECTS, OBJ_COOLER, Vector2(1168.0, 440.0), 2.3, -8, true)
+	_add_prop(OFFICE_OBJECTS, OBJ_PLANT, Vector2(126.0, 640.0), 2.4, -8, true)
+	_add_prop(OFFICE_OBJECTS, OBJ_PLANT, Vector2(1170.0, 640.0), 2.4, -8, true)
+	_add_prop(OFFICE_OBJECTS, OBJ_SOFA, Vector2(230.0, 668.0), 2.2, -8, true)
 	_build_stations()
 
 

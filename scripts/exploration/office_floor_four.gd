@@ -80,8 +80,8 @@ func _build_stations() -> void:
 		"milestone_title": "The Script Upstairs",
 		"milestone_detail": "The fourth floor keeps one script, longer than the call floor's three, initialed by its director on every page - the remote-access call is written and owned, not improvised.",
 	}, Vector2(360.0, 612.0))
-	_add_prop(OFFICE_OBJECTS, OBJ_DESK_FRONT, Vector2(360.0, 604.0), 2.6, -10)
-	_add_prop(OFFICE_OBJECTS, OBJ_SHELF, Vector2(300.0, 596.0), 2.0, -11)
+	_add_prop(OFFICE_OBJECTS, OBJ_DESK_FRONT, Vector2(360.0, 604.0), 2.6, -10, true)
+	_add_prop(OFFICE_OBJECTS, OBJ_SHELF, Vector2(300.0, 596.0), 2.0, -11, true)
 
 	_add_station({
 		"title": "The session log",
@@ -93,7 +93,7 @@ func _build_stations() -> void:
 		"milestone_title": "One Login, Two Floors",
 		"milestone_detail": "The fourth floor's session log carries floor-3 operator IDs after hours - the building's floors are one operation with two nameplates.",
 	}, Vector2(660.0, 612.0))
-	_add_prop(OFFICE_WALLS, WALL_BENCH, Vector2(660.0, 604.0), 1.9, -10)
+	_add_prop(OFFICE_WALLS, WALL_BENCH, Vector2(660.0, 604.0), 1.9, -10, true)
 
 	_add_station({
 		"title": "The headset rack",
@@ -105,7 +105,7 @@ func _build_stations() -> void:
 		"milestone_title": "Her Name Is On The Rack",
 		"milestone_detail": "The fourth floor's headset rack carries the operator numbers of the people it recruited - one of them a witness who has agreed to talk.",
 	}, Vector2(1000.0, 612.0))
-	_add_prop(OFFICE_OBJECTS, OBJ_EASEL, Vector2(1000.0, 606.0), 2.4, -10)
+	_add_prop(OFFICE_OBJECTS, OBJ_EASEL, Vector2(1000.0, 606.0), 2.4, -10, true)
 
 	_add_station({
 		"title": "The recruitment folder",

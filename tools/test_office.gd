@@ -333,9 +333,25 @@ func _test_fourth_floor() -> void:
 	_check(bool(stairs.get("is_stairs", false)), "the stairwell climbs rather than reads")
 	_check(view.stairs_target() == FLOOR_FOUR_SCENE, "...to the fourth floor")
 	view._take_stairs()
-	_check(SessionState.has_office_return_spawn and SessionState.office_return_spawn == view.STAIRS_ARRIVAL,
-		"climbing remembers where to land coming back down")
+	_check(not SessionState.has_office_return_spawn,
+		"climbing sets no arrival point - the floor above starts at its own door down")
 	await _close(view)
+
+	# Arriving upstairs means standing in front of the stairs down, which is
+	# the fourth floor's exit door - not where the stairs are on the floor below.
+	var arrived: Node = load(FLOOR_FOUR_SCENE).instantiate()
+	add_child(arrived)
+	await get_tree().process_frame
+	_check(arrived.player.global_position == arrived.player_spawn,
+		"the fourth floor starts a climbing player at its own spawn")
+	_check(arrived.player.global_position.distance_to(arrived.portal.global_position) <= 120.0,
+		"...which is in front of the stairs down (%.0f px from the door)" % arrived.player.global_position.distance_to(arrived.portal.global_position))
+	_check(arrived.player.global_position.distance_to(arrived.STAIRS_ARRIVAL) > 120.0,
+		"...and not where the call floor's stairwell is")
+	arrived._take_exit()
+	_check(SessionState.has_office_return_spawn and SessionState.office_return_spawn == arrived.STAIRS_ARRIVAL,
+		"going down remembers to land in front of the call floor's stairs")
+	await _close_node(arrived)
 
 	# Coming back down lands in front of the stairs, not at the street door.
 	view = await _open()

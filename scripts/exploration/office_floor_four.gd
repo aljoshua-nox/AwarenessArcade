@@ -39,13 +39,22 @@ func director_locked_note() -> String:
 
 
 # No floor above this one that the player can walk. The exit door at the left
-# of the back wall is the stairs down.
+# of the back wall is the stairs down, and it is also where a player who has
+# just climbed them appears: player_spawn sits in front of that door.
 func stairs_target() -> String:
 	return ""
 
 
 func exit_prompt() -> String:
 	return "Take the stairs down to the call floor"
+
+
+# Down the stairs. The call floor puts a returning player in front of its
+# stairwell, not at the street door.
+func _take_exit() -> void:
+	SessionState.office_return_spawn = STAIRS_ARRIVAL
+	SessionState.has_office_return_spawn = true
+	super()
 
 
 # Four exhibits, in the same four places as the floor below, so the player who

@@ -87,7 +87,9 @@ const DIRECTOR_DOOR_POSITION := Vector2(1090.0, 268.0)
 var exit_door_position := Vector2(190.0, 262.0)
 # The stairwell up, on the back wall between the last window and the director's
 # carpet - the stairs sit beside the director's office because the other
-# director's office sits above it. Coming back down lands just in front of it.
+# director's office sits above it. STAIRS_ARRIVAL is where the floor above
+# puts a player coming back down: just in front of these stairs. Going up
+# sets nothing - the floor above starts its player at its own way down.
 const STAIRS_POSITION := Vector2(900.0, 268.0)
 const STAIRS_ARRIVAL := Vector2(900.0, 330.0)
 
@@ -157,6 +159,7 @@ func _ready() -> void:
 	AudioManager.stop_music()
 	AudioManager.play_ambience(ambience_path, ambience_db)
 	# Coming down the stairs lands in front of them, not at the street door.
+	# Only the floor above sets this, on its way out (_take_exit).
 	if SessionState.has_office_return_spawn:
 		player.global_position = SessionState.office_return_spawn
 		SessionState.has_office_return_spawn = false
@@ -209,14 +212,22 @@ func _unhandled_input(event: InputEvent) -> void:
 		else:
 			_open_inspection(active_station)
 	elif event.is_action_pressed("ui_accept") and _can_enter_portal():
-		_transition_to_scene(portal.target_scene)
+		_take_exit()
 
 
-# Up the stairs. Coming back down should land here, not at the street door.
+# Up the stairs. The floor above starts its player at its own door down, so
+# there is nothing to remember here. This used to set the return spawn on the
+# way UP, and the floor above consumed it on arrival - the player climbed the
+# stairs and appeared where the stairs are on THIS floor, across the room from
+# the door they had just come through.
 func _take_stairs() -> void:
-	SessionState.office_return_spawn = STAIRS_ARRIVAL
-	SessionState.has_office_return_spawn = true
 	_transition_to_scene(stairs_target())
+
+
+# Out through the door on the back wall. On the call floor that is the street;
+# a floor above overrides this to land in front of the stairs it came up.
+func _take_exit() -> void:
+	_transition_to_scene(portal.target_scene)
 
 
 # --- Inspection UI -----------------------------------------------------------

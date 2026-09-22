@@ -98,6 +98,7 @@ func _run() -> void:
 	await _test_closer()
 	await _test_statement_budget()
 	await _test_setting_backgrounds()
+	await _test_suspect_doors_are_checkpoints()
 
 	print("\n%d checks, %d failed" % [checks, failures.size()])
 	for f in failures:
@@ -1145,3 +1146,29 @@ func _test_setting_backgrounds() -> void:
 	_check(view.background.texture.resource_path == script.background_for("home"),
 		"...and it is the one her setting resolves to")
 	await _close(view)
+
+
+# A suspect's door is where a run commits to its ending, so loading a suspect
+# snapshots the case for the closing screen to reopen from. A witness's door
+# does not - the checkpoint is what makes another ending reachable without
+# doing the witnesses again, not a save at every door.
+func _test_suspect_doors_are_checkpoints() -> void:
+	print("\n[suspect doors are checkpoints]")
+	var view := await _open(CASE_MARIA)
+	_check(SessionState.checkpoints.is_empty(), "a victim's door pushes no checkpoint")
+	await _close(view)
+
+	for suspect in [[CASE_MARCO, "marco_navarro", "Before Marco Navarro"],
+			[CASE_ELENA, "elena_cruz", "Before Elena Cruz"],
+			[CASE_DENNIS, "dennis_mercado", "Before Dennis Mercado"],
+			[CASE_ROWENA, "rowena_ocampo", "Before Rowena Ocampo"]]:
+		view = await _open(str(suspect[0]))
+		_check(SessionState.checkpoints.size() == 1, "%s pushes a checkpoint" % suspect[1])
+		if not SessionState.checkpoints.is_empty():
+			var checkpoint: Dictionary = SessionState.checkpoints[0]
+			_check(str(checkpoint.get("person_id", "")) == str(suspect[1]), "...keyed by person_id")
+			_check(str(checkpoint.get("label", "")) == str(suspect[2]), "...labelled by name (%s)" % checkpoint.get("label", ""))
+			# Taken before the interview seeds its own items into the file.
+			var held: Array = checkpoint.get("state", {}).get("investigation_inventory", [])
+			_check(held.is_empty(), "...before this interview's evidence is seeded (%d held)" % held.size())
+		await _close(view)

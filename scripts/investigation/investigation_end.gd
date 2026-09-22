@@ -2,20 +2,15 @@ extends Control
 
 const TextStyle := preload("res://scripts/systems/text_style.gd")
 
-const FINAL_OUTCOMES := ["full_takedown", "building_stands", "partial_justice", "bribed", "insufficient_evidence"]
-
+# The five closing outcomes are `SessionState.ENDINGS`; a final ending's title
+# is "Case Closed: " over the record's title. These are the mid-case summaries.
 const OUTCOME_LABELS := {
 	"success": "Case Lead Confirmed",
 	"partial": "Investigation Incomplete",
 	"whistleblower": "Whistleblower Secured",
 	"turned": "Witness Turned",
 	"owner_named": "Owner Named",
-	"building_stands": "Case Closed: The Building Stands",
 	"failure": "Lead Lost",
-	"full_takedown": "Case Closed: Operation Dismantled",
-	"partial_justice": "Case Closed: Partial Justice",
-	"bribed": "Case Closed: Compromised",
-	"insufficient_evidence": "Case Closed: Insufficient Evidence",
 }
 
 const OUTCOME_MESSAGES := {
@@ -76,13 +71,21 @@ var milestones_value: RichTextLabel
 var evidence_header: Button
 var milestones_header: Button
 var continue_button: Button
+var reopen_button: Button
+var button_row: HBoxContainer
+# The checkpoint chooser: shown in place of the button row while the player
+# picks a door to go back to.
+var reopen_box: VBoxContainer
+var reopen_list: VBoxContainer
 
 
 func _ready() -> void:
-	# The five true endings get their music; a mid-case summary stays quiet.
-	if FINAL_OUTCOMES.has(SessionState.investigation_outcome):
+	# The five true endings get their music and go on the record; a mid-case
+	# summary does neither.
+	if SessionState.is_final_outcome(SessionState.investigation_outcome):
 		AudioManager.stop_ambience()
 		AudioManager.play_music("ending", -12.0)
+		SessionState.record_ending(SessionState.investigation_outcome)
 	_build_ui()
 	_refresh_view()
 
@@ -197,7 +200,31 @@ func _build_ui() -> void:
 	milestones_header = milestones_section["header"]
 	milestones_value = milestones_section["body"]
 
-	var button_row := HBoxContainer.new()
+	# Reopening the case: the doors the run committed itself at, as buttons.
+	# Takes the button row's place while open, the way the pause menu's
+	# confirm step does.
+	reopen_box = VBoxContainer.new()
+	reopen_box.add_theme_constant_override("separation", 8)
+	reopen_box.visible = false
+	column.add_child(reopen_box)
+
+	var reopen_title := Label.new()
+	reopen_title.text = "Reopen the case from before..."
+	reopen_title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	reopen_box.add_child(reopen_title)
+
+	reopen_list = VBoxContainer.new()
+	reopen_list.add_theme_constant_override("separation", 8)
+	reopen_box.add_child(reopen_list)
+
+	var reopen_back := Button.new()
+	reopen_back.text = "Back"
+	reopen_back.custom_minimum_size = Vector2(160, 40)
+	reopen_back.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
+	reopen_back.pressed.connect(_show_button_row)
+	reopen_box.add_child(reopen_back)
+
+	button_row = HBoxContainer.new()
 	button_row.add_theme_constant_override("separation", 12)
 	button_row.alignment = BoxContainer.ALIGNMENT_CENTER
 	column.add_child(button_row)
@@ -207,6 +234,13 @@ func _build_ui() -> void:
 	continue_button.custom_minimum_size = Vector2(200, 44)
 	continue_button.pressed.connect(_on_continue_pressed)
 	button_row.add_child(continue_button)
+
+	reopen_button = Button.new()
+	reopen_button.text = "Reopen the Case"
+	reopen_button.custom_minimum_size = Vector2(200, 44)
+	reopen_button.tooltip_text = "Go back to a suspect's door with the case as it was, and take it somewhere else."
+	reopen_button.pressed.connect(_on_reopen_pressed)
+	button_row.add_child(reopen_button)
 
 	var main_menu_button := Button.new()
 	main_menu_button.text = "Main Menu"
@@ -280,8 +314,16 @@ func _refresh_view() -> void:
 	else:
 		title_label.text = "%s - %s" % [case_title, person_name]
 	var outcome := SessionState.investigation_outcome
-	outcome_label.text = OUTCOME_LABELS.get(outcome, "Interview Concluded")
-	continue_button.visible = not FINAL_OUTCOMES.has(outcome)
+	var is_final := SessionState.is_final_outcome(outcome)
+	if is_final:
+		outcome_label.text = "Case Closed: %s" % SessionState.ending_title(outcome)
+	else:
+		outcome_label.text = OUTCOME_LABELS.get(outcome, "Interview Concluded")
+	continue_button.visible = not is_final
+	# A closing screen can send the player back to a suspect's door; a mid-case
+	# summary has the street for that.
+	reopen_button.visible = is_final and not SessionState.checkpoints.is_empty()
+	_show_button_row()
 	var note_lines: Array[String] = []
 	note_lines.append(OUTCOME_MESSAGES.get(outcome, ""))
 	note_lines.append(SessionState.investigation_outcome_note)
@@ -289,12 +331,16 @@ func _refresh_view() -> void:
 	if not verdict.is_empty():
 		note_lines.append(verdict)
 	# Two running numbers do not need a paragraph each.
-	note_lines.append("[color=#%s]Cooperation %d / 100     Credibility %d / 100     Statements %d / %d[/color]" % [
-		TextStyle.COLOR_NARRATION,
+	var numbers := "Cooperation %d / 100     Credibility %d / 100     Statements %d / %d" % [
 		SessionState.investigation_cooperation,
 		SessionState.detective_credibility,
 		SessionState.statements_taken,
-		SessionState.STATEMENT_BUDGET])
+		SessionState.STATEMENT_BUDGET]
+	if is_final:
+		# The record is the reason to come back: it says how many are left.
+		numbers += "\nEndings on record: %d of %d" % [
+			SessionState.endings_reached().size(), SessionState.ENDINGS.size()]
+	note_lines.append("[color=#%s]%s[/color]" % [TextStyle.COLOR_NARRATION, numbers])
 	outcome_note.text = "\n\n".join(note_lines)
 
 	scorecard_value.text = _build_scorecard_text()
@@ -318,11 +364,11 @@ func _refresh_view() -> void:
 	_refresh_section_header(milestones_header, milestones_value)
 
 
-# Only the three true endings carry a verdict. The per-interview outcomes are
+# Only the five true endings carry a verdict. The per-interview outcomes are
 # mid-case summaries, where a closing statement on the player's awareness would
 # be premature.
 func _awareness_verdict(outcome: String) -> String:
-	if not FINAL_OUTCOMES.has(outcome):
+	if not SessionState.is_final_outcome(outcome):
 		return ""
 	var tier := SessionState.get_awareness_tier()
 	if tier == SessionState.AWARENESS_UNTESTED:
@@ -393,3 +439,33 @@ func _on_continue_pressed() -> void:
 
 func _on_main_menu_pressed() -> void:
 	SessionState.go_to_menu()
+
+
+# One button per door, oldest first, each saying what the case held when the
+# player went in so they can pick the one that leaves the ending they want
+# open.
+func _on_reopen_pressed() -> void:
+	for child in reopen_list.get_children():
+		reopen_list.remove_child(child)
+		child.queue_free()
+	for index in range(SessionState.checkpoints.size()):
+		var checkpoint: Dictionary = SessionState.checkpoints[index]
+		var button := Button.new()
+		button.text = "%s\n%s" % [str(checkpoint.get("label", "")), _checkpoint_summary(checkpoint.get("state", {}))]
+		button.custom_minimum_size = Vector2(0, 56)
+		button.pressed.connect(SessionState.reopen_case.bind(index))
+		reopen_list.add_child(button)
+	button_row.visible = false
+	reopen_box.visible = true
+
+
+func _show_button_row() -> void:
+	reopen_box.visible = false
+	button_row.visible = true
+
+
+func _checkpoint_summary(state: Dictionary) -> String:
+	var inventory: Array = state.get("investigation_inventory", [])
+	return "Statements %d of %d  -  Credibility %d  -  %d on file" % [
+		int(state.get("statements_taken", 0)), SessionState.STATEMENT_BUDGET,
+		int(state.get("detective_credibility", 0)), inventory.size()]

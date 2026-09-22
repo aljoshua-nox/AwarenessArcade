@@ -463,6 +463,11 @@ func _load_case() -> void:
 	case_data = parsed as Dictionary
 	person = case_data.get("person", {})
 	nodes = case_data.get("nodes", {})
+	# A suspect's door is where a run commits to its ending. The snapshot that
+	# lets a closing screen reopen the case is taken here - before this
+	# interview's items are seeded and before anything in it is answered.
+	if SessionState.CHECKPOINT_ROLES.has(str(person.get("role", ""))):
+		SessionState.push_checkpoint(str(person.get("person_id", "")), "Before %s" % str(person.get("name", "")))
 	evidence_items.clear()
 	for item in case_data.get("evidence", []):
 		if item is Dictionary:

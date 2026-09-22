@@ -7,9 +7,14 @@ extends Node
 ##   godot --path . res://tools/capture_ending.tscn
 ##
 ## Writes ending_collapsed.png and ending_expanded.png under user://, both with
-## a worst-case case file loaded.
+## a worst-case case file loaded; then ending_reopen.png with the checkpoint
+## chooser open over three doors, and menu_case_files.png - the main menu's
+## Case Files with two of five endings on record.
 
 const END_SCENE := "res://scenes/investigation/investigation_end.tscn"
+const MENU_SCENE := "res://scenes/main_menu/main_menu.tscn"
+# The ending screen writes the record, so this run writes a scratch one.
+const SCRATCH_RECORD := "user://capture_endings.cfg"
 
 
 func _ready() -> void:
@@ -72,10 +77,27 @@ func _seed_worst_case() -> void:
 
 
 func _run() -> void:
+	SessionState.ending_record_path = SCRATCH_RECORD
+	SessionState.clear_ending_record()
 	_seed_worst_case()
 	print("seeded %d evidence, %d milestones" % [
 		SessionState.investigation_inventory.size(),
 		SessionState.reflection_milestones.size()])
+
+	# The doors a full run went through, so the chooser has its longest list.
+	var held := SessionState.investigation_inventory.duplicate(true)
+	SessionState.investigation_inventory = held.slice(0, 3)
+	SessionState.statements_taken = 2
+	SessionState.detective_credibility = 68
+	SessionState.push_checkpoint("marco_navarro", "Before Marco Navarro")
+	SessionState.investigation_inventory = held.slice(0, 6)
+	SessionState.statements_taken = 3
+	SessionState.detective_credibility = 86
+	SessionState.push_checkpoint("dennis_mercado", "Before Dennis Mercado")
+	SessionState.investigation_inventory = held
+	SessionState.statements_taken = 4
+	SessionState.detective_credibility = 82
+	SessionState.push_checkpoint("elena_cruz", "Before Elena Cruz")
 
 	var view: Node = load(END_SCENE).instantiate()
 	add_child(view)
@@ -87,4 +109,27 @@ func _run() -> void:
 	await _settle()
 	_save("ending_expanded")
 
+	view._toggle_section(view.evidence_header, view.evidence_value)
+	view._toggle_section(view.milestones_header, view.milestones_value)
+	view._on_reopen_pressed()
+	await _settle()
+	_save("ending_reopen")
+	remove_child(view)
+	view.queue_free()
+
+	# The menu's Case Files, with the takedown above and one more on record.
+	SessionState.record_ending("bribed")
+	var menu: Node = load(MENU_SCENE).instantiate()
+	add_child(menu)
+	await _settle()
+	_save("menu_main")
+	menu._open_case_files()
+	await _settle()
+	_save("menu_case_files")
+	menu._ask_to_clear()
+	await _settle()
+	_save("menu_case_files_clear")
+
+	SessionState.clear_ending_record()
+	await AudioManager.settle()
 	get_tree().quit()

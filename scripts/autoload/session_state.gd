@@ -156,6 +156,64 @@ var objectives_done: Array[String] = []
 # instantiated on its own (a test, a render pass) never opens it unasked.
 var briefing_pending: bool = false
 
+# --- The ending record ---------------------------------------------------------
+# Which of the closing outcomes this copy of the game has ever shown, kept in
+# user://endings.cfg beside the volume setting so it holds between launches.
+# It is a record, not a save - the ids and nothing else, no evidence, no
+# standing, no position - so a player who closes the game keeps a reason to
+# come back for the endings they have not seen. Ordered as the walkthrough
+# numbers them. `steer` is what the menu's Case Files prints for an ending not
+# yet reached: a direction, never the route (the objectives' rule - steer,
+# don't solve).
+const ENDINGS := [
+	{"id": "full_takedown", "title": "Operation Dismantled",
+		"steer": "Bring the whole building down - the floors, and the name above them."},
+	{"id": "building_stands", "title": "The Building Stands",
+		"steer": "Close both floors without anyone inside ever naming who owns them."},
+	{"id": "partial_justice", "title": "Partial Justice",
+		"steer": "Reach the director's door with less than her floor needs."},
+	{"id": "bribed", "title": "Compromised",
+		"steer": "She will offer an envelope. Take it."},
+	{"id": "insufficient_evidence", "title": "Insufficient Evidence",
+		"steer": "Lose the operator for good, then file what the case has."},
+]
+const ENDING_RECORD_PATH := "user://endings.cfg"
+const ENDING_RECORD_SECTION := "endings"
+# Test runners and the capture tools point this at a scratch file, so driving
+# the ending screen through all five outcomes does not fill in the player's
+# real record.
+var ending_record_path: String = ENDING_RECORD_PATH
+
+# --- Reopening the case --------------------------------------------------------
+# A snapshot of the investigation per suspect's door, taken as that interview
+# loads. The suspects are where a run commits to its ending - Marco's lockout,
+# the owner's name, Elena's check and her envelope - and evidence only ever
+# grows, so a snapshot at each of those doors is what makes another ending
+# reachable without the witnesses again. A closing screen offers them; the
+# pause menu never does, or this is an undo button and the statement budget,
+# a failed witness and Marco's lockout stop meaning anything. In memory only,
+# cleared with the investigation: nothing here is a save.
+const CHECKPOINT_ROLES := ["Suspect"]
+var checkpoints: Array[Dictionary] = []
+
+# Everything the detective half tracks, by field, plus the milestones it adds
+# to - the fields reset_investigation() resets, kept in step with it. The
+# prologue's fields stay out on purpose: what the player did on the phone is
+# world history, and a victim's disposition must not change on a reopen.
+const INVESTIGATION_STATE := [
+	"has_urban_return_spawn", "urban_return_spawn", "urban_return_scene",
+	"has_office_return_spawn", "office_return_spawn",
+	"suspect_flipped", "witness_flipped", "case_locked",
+	"journal_collected", "notebook_collected", "objectives_done", "briefing_pending",
+	"investigation_inventory", "investigation_case_title", "investigation_person_name",
+	"investigation_outcome", "investigation_outcome_note", "investigation_cooperation",
+	"investigation_evidence_misses",
+	"tactic_reads_correct", "tactic_reads_total", "tactic_reads", "tactics_learned",
+	"detective_credibility", "interviewed_people", "interview_outcomes",
+	"statements_taken", "closed_witnesses", "interview_credit", "pending_case_path",
+	"reflection_milestones",
+]
+
 
 func record_interview_outcome(person_id: String, outcome: String, hesitant: bool = false) -> void:
 	if not interviewed_people.has(person_id):
@@ -460,7 +518,112 @@ func reset_investigation() -> void:
 	closed_witnesses.clear()
 	interview_credit.clear()
 	pending_case_path = ""
+	checkpoints.clear()
 	session_reset.emit()
+
+
+# --- The ending record ---------------------------------------------------------
+
+func _ending_entry(outcome: String) -> Dictionary:
+	for entry in ENDINGS:
+		if str(entry.get("id", "")) == outcome:
+			return entry
+	return {}
+
+
+func is_final_outcome(outcome: String) -> bool:
+	return not _ending_entry(outcome).is_empty()
+
+
+func ending_title(outcome: String) -> String:
+	return str(_ending_entry(outcome).get("title", ""))
+
+
+# Mark a closing outcome as seen. Anything that is not one of the five is a
+# mid-case summary and leaves the record alone.
+func record_ending(outcome: String) -> void:
+	if not is_final_outcome(outcome):
+		return
+	var config := ConfigFile.new()
+	# A missing file is an empty record, not an error.
+	config.load(ending_record_path)
+	config.set_value(ENDING_RECORD_SECTION, outcome, true)
+	if config.save(ending_record_path) != OK:
+		push_warning("Could not write the ending record to %s" % ending_record_path)
+
+
+# The ids reached so far, in ENDINGS order. Read off the file every time: it is
+# five keys, and the menu and the ending screen must never disagree about it.
+func endings_reached() -> Array[String]:
+	var reached: Array[String] = []
+	var config := ConfigFile.new()
+	if config.load(ending_record_path) != OK:
+		return reached
+	for entry in ENDINGS:
+		var id := str(entry.get("id", ""))
+		if bool(config.get_value(ENDING_RECORD_SECTION, id, false)):
+			reached.append(id)
+	return reached
+
+
+func has_reached_ending(outcome: String) -> bool:
+	return endings_reached().has(outcome)
+
+
+# Deletes the file rather than emptying it, so a cleared record and a fresh
+# install are the same state.
+func clear_ending_record() -> void:
+	if not FileAccess.file_exists(ending_record_path):
+		return
+	if DirAccess.remove_absolute(ending_record_path) != OK:
+		push_warning("Could not clear the ending record at %s" % ending_record_path)
+
+
+# --- Reopening the case --------------------------------------------------------
+
+func snapshot_investigation() -> Dictionary:
+	var state := {}
+	for field in INVESTIGATION_STATE:
+		var value: Variant = get(field)
+		if value is Array or value is Dictionary:
+			value = value.duplicate(true)
+		state[field] = value
+	return state
+
+
+func restore_investigation(state: Dictionary) -> void:
+	for field in INVESTIGATION_STATE:
+		if not state.has(field):
+			continue
+		var value: Variant = state[field]
+		if value is Array or value is Dictionary:
+			# The checkpoint keeps its own copy, so a second reopen starts from
+			# the same place as the first.
+			value = value.duplicate(true)
+		set(field, value)
+	session_reset.emit()
+
+
+# One checkpoint per door, the latest visit: re-entering Marco after Dennis
+# has the name in it, and that is what "before Marco" now means.
+func push_checkpoint(person_id: String, label: String) -> void:
+	if person_id.is_empty():
+		return
+	for index in range(checkpoints.size()):
+		if str(checkpoints[index].get("person_id", "")) == person_id:
+			checkpoints.remove_at(index)
+			break
+	checkpoints.append({"person_id": person_id, "label": label, "state": snapshot_investigation()})
+
+
+# Back to the street that door is on, as the checkpoint left it. The snapshot
+# carries the return scene and spawn the door remembered, so the player lands
+# where they were standing when they went in.
+func reopen_case(index: int) -> void:
+	if index < 0 or index >= checkpoints.size():
+		return
+	restore_investigation(checkpoints[index].get("state", {}))
+	go_to_scene(urban_return_scene)
 
 
 func go_to_scene(scene_path: String) -> void:

@@ -8,6 +8,21 @@ extends Node
 ## all before the awareness verdict was folded into it.
 
 const END_SCENE := "res://scenes/investigation/investigation_end.tscn"
+# Every final ending this suite opens goes on the record, so the record it
+# writes is a scratch one, deleted at the end.
+const SCRATCH_RECORD := "user://test_endings.cfg"
+
+# SessionState's fields that are not investigation state, so they are not in
+# the snapshot a reopened case restores. A new field on SessionState has to be
+# named here or in INVESTIGATION_STATE, or the classification check fails -
+# which is the point: a field nobody classified would silently survive a
+# reopen.
+const PROLOGUE_AND_META_STATE := [
+	"calls_made", "victims_affected", "reports_filed", "profit", "time_left",
+	"prologue_tactics_used", "prologue_end_reason", "prologue_end_note",
+	"prologue_call_log", "prologue_played",
+	"checkpoints", "ending_record_path",
+]
 
 var failures: Array[String] = []
 var checks := 0
@@ -58,6 +73,8 @@ func _seed_reads(correct: int, total: int, missed_names: Array) -> void:
 
 func _run() -> void:
 	print("\n--- investigation ending smoke test ---")
+	SessionState.ending_record_path = SCRATCH_RECORD
+	SessionState.clear_ending_record()
 	await _test_tiers()
 	await _test_verdict_reaches_the_ending()
 	await _test_verdict_changes_with_awareness()
@@ -65,6 +82,10 @@ func _run() -> void:
 	await _test_untested_and_midcase()
 	await _test_sections_start_collapsed()
 	await _test_lockout_ending()
+	await _test_ending_record()
+	await _test_checkpoints()
+	await _test_reopen_from_the_ending()
+	SessionState.clear_ending_record()
 
 	print("\n%d checks, %d failed" % [checks, failures.size()])
 	for f in failures:
@@ -225,3 +246,235 @@ func _test_untested_and_midcase() -> void:
 	_check(not mid.outcome_note.text.contains("name every lever"),
 		"a mid-case summary carries no closing verdict")
 	await _close(mid)
+
+
+# The record on disk: which of the five this copy of the game has shown. It
+# is written by the screen, read by the menu, and is not a save.
+func _test_ending_record() -> void:
+	print("\n[the ending record]")
+	SessionState.clear_ending_record()
+	SessionState.reset_session()
+	_check(SessionState.endings_reached().is_empty(), "a cleared record is empty")
+	_check(not FileAccess.file_exists(SCRATCH_RECORD), "...and there is no file")
+
+	# The table itself: five endings, each titled, each steered, each with a
+	# verdict for every reader.
+	var view := await _open("success")
+	_check(SessionState.ENDINGS.size() == 5, "five endings are on the table")
+	for entry in SessionState.ENDINGS:
+		var id := str(entry.get("id", ""))
+		_check(not str(entry.get("title", "")).is_empty(), "%s has a title" % id)
+		_check(not str(entry.get("steer", "")).is_empty(), "%s has a steer" % id)
+		_check(view.AWARENESS_VERDICTS.has(id), "%s has awareness verdicts" % id)
+		_check(view.OUTCOME_MESSAGES.has(id), "%s has an outcome message" % id)
+		for tier in ["sharp", "mixed", "blind"]:
+			_check(view.AWARENESS_VERDICTS.get(id, {}).has(tier), "%s has a %s verdict" % [id, tier])
+	for id in view.AWARENESS_VERDICTS.keys():
+		_check(SessionState.is_final_outcome(str(id)), "every verdict belongs to an ending on the table (%s)" % id)
+	_check(SessionState.is_final_outcome("bribed"), "a closing outcome is final")
+	_check(not SessionState.is_final_outcome("success"), "a mid-case outcome is not")
+	_check(SessionState.ending_title("building_stands") == "The Building Stands", "the title reads off the table")
+	_check(SessionState.endings_reached().is_empty(), "a mid-case summary is not recorded")
+	await _close(view)
+
+	view = await _open("partial_justice")
+	_check(SessionState.endings_reached() == ["partial_justice"],
+		"a closing screen records its ending (%s)" % str(SessionState.endings_reached()))
+	_check(FileAccess.file_exists(SCRATCH_RECORD), "...on disk")
+	_check(view.outcome_label.text == "Case Closed: Partial Justice", "the closing title reads off the table (%s)" % view.outcome_label.text)
+	_check(view.outcome_note.text.contains("Endings on record: 1 of 5"), "the screen counts the record")
+	await _close(view)
+
+	view = await _open("partial_justice")
+	_check(SessionState.endings_reached().size() == 1, "reaching the same ending twice records it once")
+	await _close(view)
+
+	view = await _open("bribed")
+	_check(SessionState.endings_reached() == ["partial_justice", "bribed"],
+		"the record lists endings in the table's order, not the order reached")
+	_check(view.outcome_note.text.contains("Endings on record: 2 of 5"), "the count follows")
+	await _close(view)
+
+	# It really is the file: a fresh reader sees the same two.
+	var config := ConfigFile.new()
+	_check(config.load(SCRATCH_RECORD) == OK, "the record loads as a config file")
+	_check(bool(config.get_value("endings", "bribed", false)), "...with the ending in it")
+	_check(not bool(config.get_value("endings", "full_takedown", false)), "...and not the ones unreached")
+
+	# Nothing on the record is progress.
+	var keys: Array = config.get_section_keys("endings") if config.has_section("endings") else []
+	for key in keys:
+		_check(SessionState.is_final_outcome(str(key)), "the record holds ending ids and nothing else (%s)" % key)
+
+	_check(SessionState.has_reached_ending("bribed"), "has_reached_ending reads the record")
+	_check(not SessionState.has_reached_ending("full_takedown"), "...and says no for the rest")
+	SessionState.record_ending("success")
+	_check(SessionState.endings_reached().size() == 2, "recording a mid-case outcome by hand does nothing")
+
+	# A new game does not touch it.
+	SessionState.reset_session()
+	_check(SessionState.endings_reached().size() == 2, "the record survives a fresh game")
+
+	SessionState.clear_ending_record()
+	_check(SessionState.endings_reached().is_empty(), "clearing empties it")
+	_check(not FileAccess.file_exists(SCRATCH_RECORD), "...by deleting the file, so cleared and fresh are the same")
+	SessionState.clear_ending_record()
+	_check(true, "clearing an empty record is harmless")
+
+
+# The snapshots a closing screen can go back to: one per suspect's door, the
+# whole detective half and none of the prologue.
+func _test_checkpoints() -> void:
+	print("\n[checkpoints]")
+	SessionState.reset_session()
+
+	# Every field on SessionState is either investigation state (restored) or
+	# prologue/meta state (left alone). Nothing is allowed to be neither.
+	for property in SessionState.get_script().get_script_property_list():
+		var name := str(property.get("name", ""))
+		if name.is_empty() or name.ends_with(".gd"):
+			continue
+		var classified: bool = SessionState.INVESTIGATION_STATE.has(name) or PROLOGUE_AND_META_STATE.has(name)
+		_check(classified, "SessionState.%s is classified as investigation or prologue state" % name)
+	for name in SessionState.INVESTIGATION_STATE:
+		_check(not PROLOGUE_AND_META_STATE.has(name), "%s is not listed on both sides" % name)
+
+	# A run with a prologue behind it, two witnesses in, at Marco's door.
+	# (reset_session() leaves the milestones to reset_prologue(), so an earlier
+	# test's are still here.)
+	SessionState.reset_prologue()
+	SessionState.prologue_played = true
+	SessionState.record_prologue_call("maria_santos", "Maria S.", SessionState.CALL_SUCCESS, 18500, "I paid.")
+	SessionState.detective_credibility = 86
+	SessionState.statements_taken = 2
+	SessionState.add_evidence({"id": "test_evelyn", "label": "Evelyn's testimony", "tactic": "Advance fee"})
+	SessionState.add_evidence({"id": "test_maria", "label": "Maria's testimony", "tactic": "Manufactured urgency"})
+	SessionState.record_interview_outcome("evelyn_marsh", "success")
+	SessionState.record_tactic_read(true, "Manufactured urgency")
+	SessionState.record_reflection_milestone("Two statements", "A case with legs.")
+	SessionState.urban_return_scene = "res://scenes/exploration/urban_exterior.tscn"
+	SessionState.urban_return_spawn = Vector2(100, 200)
+	SessionState.has_urban_return_spawn = true
+	SessionState.push_checkpoint("marco_navarro", "Before Marco Navarro")
+	_check(SessionState.checkpoints.size() == 1, "a suspect's door pushes a checkpoint")
+	_check(str(SessionState.checkpoints[0]["label"]) == "Before Marco Navarro", "...labelled")
+
+	# The case moves on: Marco flips, Dennis names the owner, a third statement.
+	SessionState.suspect_flipped = true
+	SessionState.record_interview_outcome("marco_navarro", "whistleblower")
+	SessionState.add_evidence({"id": SessionState.OWNER_NAME_EVIDENCE, "label": "The Name Above The Floors"})
+	SessionState.statements_taken = 3
+	SessionState.record_tactic_read(false, "The impossible scan")
+	SessionState.record_reflection_milestone("Owner Named", "A name on the leases.")
+	SessionState.urban_return_scene = "res://scenes/exploration/terminal_road.tscn"
+	SessionState.push_checkpoint("dennis_mercado", "Before Dennis Mercado")
+	SessionState.push_checkpoint("elena_cruz", "Before Elena Cruz")
+	_check(SessionState.checkpoints.size() == 3, "each suspect's door is its own checkpoint")
+
+	# Re-entering a door replaces its checkpoint and moves it to the end.
+	SessionState.push_checkpoint("marco_navarro", "Before Marco Navarro")
+	_check(SessionState.checkpoints.size() == 3, "re-entering a suspect does not pile up checkpoints")
+	_check(str(SessionState.checkpoints[2]["person_id"]) == "marco_navarro", "...the latest visit is the one kept, at the end")
+	_check(bool(SessionState.checkpoints[2]["state"]["suspect_flipped"]), "...with the case as it is now")
+	_check(str(SessionState.checkpoints[0]["person_id"]) == "dennis_mercado", "...and the others keep their order")
+	SessionState.push_checkpoint("", "nobody")
+	_check(SessionState.checkpoints.size() == 3, "a door with no person_id pushes nothing")
+
+	# The snapshot is a copy, not a reference.
+	var dennis_state: Dictionary = SessionState.checkpoints[0]["state"]
+	var held_then: int = (dennis_state["investigation_inventory"] as Array).size()
+	SessionState.add_evidence({"id": "test_later", "label": "Something found later"})
+	_check((dennis_state["investigation_inventory"] as Array).size() == held_then, "the snapshot does not change when the case does")
+
+	# Going back: the state before Dennis, the prologue untouched.
+	SessionState.restore_investigation(dennis_state)
+	# 86, +15 for the whistleblower (clamped at 100), -3 for the missed quiz.
+	_check(SessionState.detective_credibility == 97, "credibility is restored (got %d)" % SessionState.detective_credibility)
+	_check(SessionState.statements_taken == 3, "statements are restored")
+	_check(SessionState.has_evidence(SessionState.OWNER_NAME_EVIDENCE), "the evidence held then is held again")
+	_check(not SessionState.has_evidence("test_later"), "...and what came after is gone")
+	_check(SessionState.suspect_flipped, "flags are restored")
+	_check(SessionState.tactic_reads_total == 2, "the quiz record is restored")
+	_check(SessionState.reflection_milestones.size() == 2, "milestones are restored")
+	_check(SessionState.urban_return_scene.ends_with("terminal_road.tscn"), "the return street is the door's")
+	_check(SessionState.prologue_played, "the prologue is still played")
+	_check(SessionState.prologue_call_log.size() == 1, "the call log is untouched")
+	_check(SessionState.checkpoints.size() == 3, "restoring does not drop the checkpoints")
+
+	# A second reopen of the same checkpoint starts from the same place.
+	SessionState.add_evidence({"id": "test_again", "label": "Found again"})
+	SessionState.restore_investigation(dennis_state)
+	_check(not SessionState.has_evidence("test_again"), "a checkpoint can be reopened more than once")
+
+	# The earliest one: before Marco, as first entered.
+	var marco_state: Dictionary = SessionState.checkpoints[2]["state"]
+	_check(bool(marco_state["suspect_flipped"]), "(the replaced Marco checkpoint is the later visit)")
+	SessionState.restore_investigation({"detective_credibility": 86, "suspect_flipped": false, "statements_taken": 2})
+	_check(SessionState.detective_credibility == 86 and not SessionState.suspect_flipped, "a partial state restores only what it names")
+	_check(SessionState.has_evidence(SessionState.OWNER_NAME_EVIDENCE), "...and leaves the rest")
+
+	# Typed arrays survive the round trip.
+	_check(SessionState.interviewed_people.is_typed() and SessionState.interviewed_people.get_typed_builtin() == TYPE_STRING,
+		"interviewed_people is still typed after a restore")
+	SessionState.interviewed_people.append("kevin_dizon")
+	_check(SessionState.interviewed_people.has("kevin_dizon"), "...and still usable")
+
+	# A fresh investigation forgets them; Main Menu goes through reset_session.
+	SessionState.reset_investigation()
+	_check(SessionState.checkpoints.is_empty(), "a fresh investigation has no checkpoints")
+	_check(SessionState.prologue_call_log.size() == 1, "(reset_investigation still keeps the call log)")
+	SessionState.reset_session()
+	_check(SessionState.checkpoints.is_empty(), "a fresh game has none either")
+
+
+# The closing screen offers the checkpoints; a mid-case summary does not.
+func _test_reopen_from_the_ending() -> void:
+	print("\n[reopening from the ending]")
+	_seed_reads(4, 4, [])
+	var view := await _open("full_takedown")
+	_check(not view.reopen_button.visible, "with no checkpoints there is nothing to reopen")
+	await _close(view)
+
+	_seed_reads(4, 4, [])
+	SessionState.statements_taken = 2
+	SessionState.detective_credibility = 68
+	SessionState.add_evidence({"id": "test_evelyn", "label": "Evelyn's testimony"})
+	SessionState.push_checkpoint("marco_navarro", "Before Marco Navarro")
+	SessionState.suspect_flipped = true
+	SessionState.push_checkpoint("elena_cruz", "Before Elena Cruz")
+
+	view = await _open("success")
+	_check(not view.reopen_button.visible, "a mid-case summary does not offer to reopen")
+	_check(view.continue_button.visible, "...it has the street for that")
+	await _close(view)
+
+	view = await _open("full_takedown")
+	_check(view.reopen_button.visible, "a closing screen with checkpoints offers to reopen")
+	_check(not view.continue_button.visible, "...and still hides the street")
+	_check(view.button_row.visible and not view.reopen_box.visible, "the chooser starts closed")
+
+	view._on_reopen_pressed()
+	_check(view.reopen_box.visible and not view.button_row.visible, "opening the chooser takes the button row's place")
+	_check(view.reopen_list.get_child_count() == 2, "one button per checkpoint (got %d)" % view.reopen_list.get_child_count())
+	var first: Button = view.reopen_list.get_child(0)
+	_check(first.text.begins_with("Before Marco Navarro"), "the door is named (%s)" % first.text.get_slice("\n", 0))
+	_check(first.text.contains("Statements 2 of 6"), "...with the statements spent then")
+	_check(first.text.contains("Credibility 68"), "...the standing then")
+	_check(first.text.contains("1 on file"), "...and what was on file")
+	_check(view.reopen_list.get_child(1).text.begins_with("Before Elena Cruz"), "oldest first")
+
+	view._show_button_row()
+	_check(view.button_row.visible and not view.reopen_box.visible, "Back closes the chooser")
+	view._on_reopen_pressed()
+	_check(view.reopen_list.get_child_count() == 2, "opening it again does not double the list")
+	await _close(view)
+
+	# Reopening restores the state; the scene change is the street's business.
+	SessionState.add_evidence({"id": "test_after", "label": "After the ending"})
+	SessionState.restore_investigation(SessionState.checkpoints[0]["state"])
+	_check(not SessionState.suspect_flipped, "reopening before Marco un-flips him")
+	_check(not SessionState.has_evidence("test_after"), "...and drops what came after")
+	_check(SessionState.checkpoints.size() == 2, "...keeping the checkpoints for another go")
+	SessionState.reopen_case(7)
+	_check(SessionState.checkpoints.size() == 2, "an index off the list does nothing")
+	SessionState.reset_session()

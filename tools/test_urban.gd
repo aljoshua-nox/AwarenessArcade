@@ -145,7 +145,7 @@ func _test_locked_case() -> void:
 	print("\n[a case that cannot be carried further]")
 	SessionState.reset_session()
 	var view := await _open()
-	_check(view.portal.prompt_text == "Enter %s" % SessionState.CALL_FLOOR_NAME, "the office reads normally while the case is alive")
+	_check(view.portal.prompt_text == "Enter the offices", "the office reads normally while the case is alive")
 	await _close(view)
 
 	SessionState.reset_session()

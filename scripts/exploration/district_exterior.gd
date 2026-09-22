@@ -296,7 +296,7 @@ func _setup_office_portal() -> void:
 		# door becomes the way to close an investigation that cannot be closed.
 		portal.prompt_text = "File the case as unresolved"
 	else:
-		portal.prompt_text = "Enter %s" % SessionState.CALL_FLOOR_NAME
+		portal.prompt_text = "Enter the offices"
 	portal.player_entered.connect(_on_portal_entered)
 	portal.player_exited.connect(_on_portal_exited)
 
@@ -578,7 +578,7 @@ func _build_buildings() -> void:
 		var door_base := _add_shop_door(rect)
 		if i == office_row_index():
 			portal.global_position = door_base + Vector2(0.0, 14.0)
-			_add_building_label(rect, SessionState.CALL_FLOOR_NAME.split(" ")[0].to_upper())
+			_add_building_label(rect, "OFFICES")
 		else:
 			_place_interviewee_door("street", i, rect, door_base)
 
@@ -682,7 +682,7 @@ func _add_shop_door(building_rect: Rect2) -> Vector2:
 # `label_y` is the label's offset from the building's top. A building whose
 # roof leaves the frame needs it lower than the default or the label does too.
 func _add_building_label(building_rect: Rect2, text: String, label_y: float = 18.0) -> void:
-	# Wide enough for the name: "VALDERRAMA" does not fit the box "OFFICE" does.
+	# Wide enough for the name: "VALDERRAMA" does not fit the box "OFFICES" does.
 	var label_size := Vector2(maxf(96.0, 12.0 * text.length() + 16.0), 22.0)
 	var top_left := Vector2(
 		building_rect.position.x + building_rect.size.x * 0.5 - label_size.x * 0.5,

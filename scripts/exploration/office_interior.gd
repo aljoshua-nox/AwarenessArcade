@@ -8,7 +8,7 @@ extends Node2D
 ## the tech-support floor upstairs, Rowena's. The takedown ending names three
 ## floors; the building has two you can walk.
 
-@export var map_title: String = "Call Floor - 3F"
+@export var map_title: String = ""
 @export var map_hint: String = "WASD or arrows to walk  \u00b7  Enter to examine  \u00b7  J journal  \u00b7  Esc menu"
 ## The looping bed under this floor, if the file exists (see assets/audio/ambience/).
 @export var ambience_path: String = "res://assets/audio/ambience/call_floor.ogg"
@@ -151,6 +151,10 @@ func exit_prompt() -> String:
 
 
 func _ready() -> void:
+	# The call floor is named after the operation's own door, one copy of which
+	# lives on SessionState; a subclass that set its own title in _init keeps it.
+	if map_title.is_empty():
+		map_title = "%s - 3F" % SessionState.CALL_FLOOR_NAME
 	title_label.text = map_title
 	hint_label.text = map_hint
 	portal_label.visible = false

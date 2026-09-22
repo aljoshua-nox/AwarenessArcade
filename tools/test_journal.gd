@@ -182,8 +182,8 @@ func _test_people_page() -> void:
 	_check(names.size() == rows.size(), "no name twice")
 	_check(str(_row("Evelyn Marsh").get("place", "")) == "Sampaguita Street", "Evelyn is on Sampaguita Street")
 	_check(str(_row("Patricia Lim").get("place", "")) == "Terminal Road", "Trish is on Terminal Road")
-	_check(str(_row("Elena Cruz").get("place", "")).begins_with("Call Floor"), "Elena is on the call floor")
-	_check(str(_row("Rowena Ocampo").get("place", "")).begins_with("Tech Support"), "Rowena is upstairs")
+	_check(str(_row("Elena Cruz").get("place", "")).begins_with(SessionState.CALL_FLOOR_NAME), "Elena is on the call floor")
+	_check(str(_row("Rowena Ocampo").get("place", "")).begins_with(SessionState.TECH_FLOOR_NAME), "Rowena is upstairs")
 
 	_check(_status("Evelyn Marsh") == "Will talk", "an ungated witness will talk (%s)" % _status("Evelyn Marsh"))
 	_check(_status("Maria Santos").contains("needs Credibility 55"), "a gated witness names her gate (%s)" % _status("Maria Santos"))

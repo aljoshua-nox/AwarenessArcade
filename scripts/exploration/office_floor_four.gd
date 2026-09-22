@@ -12,7 +12,7 @@ const CALL_FLOOR_SCENE := "res://scenes/exploration/office_interior.tscn"
 
 
 func _init() -> void:
-	map_title = "Tech Support Floor - 4F"
+	map_title = "%s - 4F" % SessionState.TECH_FLOOR_NAME
 	map_hint = "WASD or arrows to walk  \u00b7  Enter to examine  \u00b7  J journal  \u00b7  Esc menu"
 	portal_target_scene = CALL_FLOOR_SCENE
 

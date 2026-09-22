@@ -425,9 +425,9 @@ func _fill_objectives(page: VBoxContainer) -> void:
 const PLACES := [
 	{"name": "Sampaguita Street", "script": "res://scripts/exploration/urban_exterior.gd"},
 	{"name": "Terminal Road", "script": "res://scripts/exploration/terminal_road.gd"},
-	{"name": "Call Floor - 3F", "cases": ["res://resources/cases/interview_case_004.json"],
+	{"name": "{call_floor} - 3F", "cases": ["res://resources/cases/interview_case_004.json"],
 		"door_flag": "suspect_flipped", "door_locked": "The operator has to name her first"},
-	{"name": "Tech Support Floor - 4F", "cases": ["res://resources/cases/interview_case_011.json"],
+	{"name": "{tech_floor} - 4F", "cases": ["res://resources/cases/interview_case_011.json"],
 		"door_flag": "witness_flipped", "door_locked": "Someone on her floor has to turn first"},
 ]
 
@@ -461,6 +461,14 @@ func _place_cases(place: Dictionary) -> Array:
 
 ## One row per door: {name, role, place, gate, status, tone}. `tone` is the
 ## text color the status renders in.
+## The floors are named after the operation's own doors, which live on
+## SessionState as one copy each; a const table cannot read an autoload, so the
+## name carries the token and is expanded here.
+func place_name(place: Dictionary) -> String:
+	var name := str(place.get("name", "")).replace("{call_floor}", SessionState.CALL_FLOOR_NAME)
+	return name.replace("{tech_floor}", SessionState.TECH_FLOOR_NAME)
+
+
 func people_rows() -> Array[Dictionary]:
 	var rows: Array[Dictionary] = []
 	for place in PLACES:
@@ -471,7 +479,7 @@ func people_rows() -> Array[Dictionary]:
 			var row := {
 				"name": str(person.get("name", "")),
 				"role": str(person.get("role", "")),
-				"place": str(place.get("name", "")),
+				"place": place_name(place),
 				"gate": int(person.get("min_credibility", 0)),
 			}
 			var status := _person_status(person, place)

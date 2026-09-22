@@ -237,7 +237,7 @@ for f, data in parsed.items():
                 errors.append(f"{where} overrides {sorted(bad)} - the engine only applies {sorted(NODE_OVERRIDE_KEYS)}")
             if nid == data.get("start_node") and "prompt" in override:
                 errors.append(f"{where} sets a prompt on the start node - the person block's disposition prompt owns that beat")
-            for tf in ("prompt", "evidence_hint"):
+            for tf in ("prompt", "evidence_hint", "note"):
                 if "[color" in str(override.get(tf, "")) or "[font" in str(override.get(tf, "")):
                     errors.append(f"{where}.{tf} carries markup - the engine styles case text")
             choices = override.get("choices", [])

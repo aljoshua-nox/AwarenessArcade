@@ -1072,6 +1072,10 @@ func _test_closer() -> void:
 	dennis = load(INTERVIEW_SCENE).instantiate()
 	add_child(dennis)
 	await get_tree().process_frame
+	# His job description is not evidence of it, and the file says so.
+	dennis._load_node("explains")
+	_check(dennis.prompt_value.text.contains("CASE NOTE") and dennis.prompt_value.text.contains("Nothing he says here is a record"),
+		"the closer's own account of his job carries a case note that it is not a record")
 	dennis._load_node("deny_node")
 	_check(dennis.choice_buttons[0].text.begins_with("Marco will break"), "before Marco flips, the detective says he will (%s)" % dennis.choice_buttons[0].text)
 	dennis._load_node("pressed")

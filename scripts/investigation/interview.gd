@@ -96,7 +96,7 @@ var background: TextureRect
 # these keys, applied when the node loads. Neutral never has an entry, so a
 # skip-the-prologue run is still the case exactly as written.
 const NODE_OVERRIDE_KEYS := ["prompt", "choices", "evidence_hint", "evidence_prompt",
-	"accepts_evidence", "milestone", "grants_evidence", "claim"]
+	"accepts_evidence", "milestone", "grants_evidence", "claim", "note"]
 
 
 func _ready() -> void:
@@ -624,6 +624,12 @@ func _load_node(node_id: String, lead_in: String = "") -> void:
 	var claim := str(current_node.get("claim", ""))
 	if not claim.is_empty():
 		display_prompt = "%s\n\n%s" % [display_prompt, _system_line(TextStyle.MARK_CLAIM, claim, TextStyle.COLOR_HINT)]
+	# A case note the file makes on a node: what the player is looking at, when
+	# a person's own words would leave them wondering (a closer describing his
+	# job is not a record of it).
+	var node_note := str(current_node.get("note", ""))
+	if not node_note.is_empty():
+		display_prompt = "%s\n\n%s" % [display_prompt, _system_line(TextStyle.MARK_HINT, node_note, TextStyle.COLOR_HINT)]
 	# Say out loud that this is the player's own doing, or the mechanic is
 	# invisible - the cooperation bar alone gives them nothing to compare against.
 	if node_id == opening_node_id and not disposition_note.is_empty():

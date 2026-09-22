@@ -18,17 +18,17 @@
       "harmed": {
         "cooperation": 34,
         "prompt": "Lina keeps working while you talk - trimming, stacking, not looking up. \"I filled out the forms. Bank, police, the online portal.\" The paper cutter comes down. \"Nothing came back from any of them, so sorry ha, I'll keep working while we talk.\"",
-        "note": "You took money from this one, and she runs a business on the margin. Every form she filed after your call went unanswered, which is the ordinary experience and the reason people stop filing them."
+        "note": "You took money from this one, and she runs a business with no room to spare. Every form she filed after your call went unanswered, which is the ordinary experience and the reason people stop filing them."
       },
       "resistant": {
         "cooperation": 62,
         "prompt": "\"You're the one about the scam calls?\" Lina wipes her hands and comes over to the counter. \"Good. I have the number, the times, and what he said, because I was writing up quotes when he called and I just kept writing.\"",
-        "note": "She refused the call you made. She has no loss to report and every reason to help, which makes her cheap to work with and thin as evidence."
+        "note": "She refused the call you made. She has no loss to report and every reason to help, which makes her easy to work with, but thin as evidence."
       },
       "unfinished": {
         "cooperation": 44,
         "prompt": "Lina glances up from the counter. \"A call about a prize, and then nothing. It cut off.\" She goes back to the stack. \"That's three of those this month. They all hang up eventually.\"",
-        "note": "Your call to her never finished. She has absorbed these calls as background noise, which is what happens when they arrive often enough."
+        "note": "Your call to her never finished. These calls have become background noise to her, which is what happens when they come often enough."
       }
     }
   },
@@ -64,7 +64,7 @@
       "tactic_id": "reused_victim_list",
       "label": "Callback Log",
       "description": "Lina's phone log showing four further calls from different numbers in the two weeks after she paid.",
-      "tactic": "Paying marks a number as productive. The list is worth more once somebody on it has proved they will pay.",
+      "tactic": "Paying marks a number as one that pays. The list is worth more once somebody on it has proved they will pay.",
       "dispositions": {
         "resistant": {
           "description": "Lina's phone log showing four further calls from different numbers in the two weeks after she hung up."
@@ -79,7 +79,7 @@
       "tactic_id": "verification_denial",
       "label": "Recovery Offer Message",
       "description": "A later message offering to recover Lina's lost money for an upfront administration fee.",
-      "tactic": "The second scam sold to the victims of the first, and the one that gets the least sympathy and the least reporting.",
+      "tactic": "A second scam, sold to the victims of the first - and the one that gets the least sympathy and the fewest reports.",
       "dispositions": {
         "resistant": {
           "omit": true
@@ -353,7 +353,7 @@
           {
             "text": "Because asking for everything at once would exceed her bank's limit.",
             "cooperation": -8,
-            "feedback": "Practical, but not the reason. They split the ask long before any limit comes into it, on amounts a bank would let through without a second look."
+            "feedback": "Practical, but not the reason. They split the amount long before any limit matters, into sums a bank would let through without a second look."
           },
           {
             "text": "Because it gives them more chances to be caught, which they accept.",
@@ -536,7 +536,7 @@
       }
     },
     "confirm_transfers": {
-      "prompt": "The dates do the work on their own - each call timed to land once the last payment had stopped stinging. \"I want it on record somewhere,\" Lina says. \"Not for the money. I know that's gone. I want it written down that it was a system, and not me being a fool.\"",
+      "prompt": "The dates say it on their own - each call timed for after the last payment had stopped stinging. \"I want it on record somewhere,\" Lina says. \"Not for the money. I know that's gone. I want it written down that it was a system, and not me being a fool.\"",
       "cooperation": 10,
       "milestone": {
         "title": "Key Witness Secured: The Money Trail",
@@ -550,7 +550,7 @@
       ],
       "dispositions": {
         "resistant": {
-          "prompt": "The margin does the work on its own - his number, the time, and his lines in her handwriting, written while the paper cutter was still going. \"I want it on record somewhere,\" Lina says. \"Not because I lost anything. Because I saw it coming, and next time I might not.\"",
+          "prompt": "The margin says it on its own - his number, the time, and his lines in her handwriting, written while the paper cutter was still going. \"I want it on record somewhere,\" Lina says. \"Not because I lost anything. Because I saw it coming, and next time I might not.\"",
           "choices": [
             {
               "text": "It's on record. It was a script, and you caught it.",
@@ -563,7 +563,7 @@
           }
         },
         "unfinished": {
-          "prompt": "The margin does the work on its own - his number, the time, and the opening line in her handwriting. \"I want it on record somewhere,\" Lina says. \"They cut off, they call back, they cut off. Somebody should be writing it down.\"",
+          "prompt": "The margin says it on its own - his number, the time, and the opening line in her handwriting. \"I want it on record somewhere,\" Lina says. \"They cut off, they call back, they cut off. Somebody should be writing it down.\"",
           "choices": [
             {
               "text": "It's on record now. Somebody is.",
@@ -596,7 +596,7 @@
             {
               "id": "test_lina_confirmed",
               "label": "Lina's Confirmed Testimony",
-              "description": "Lina Reyes wrote the advance-fee script down as it was read to her and refused it; her callback log shows the number was worked again afterwards.",
+              "description": "Lina Reyes wrote the advance-fee script down as it was read to her and refused it; her callback log shows her number was called again afterwards.",
               "tactic": "A script written down as it was read is the one record that can be matched, word for word, to the next call."
             }
           ]
@@ -607,23 +607,23 @@
             {
               "id": "test_lina_confirmed",
               "label": "Lina's Confirmed Testimony",
-              "description": "Lina Reyes logged a prize call that cut off and the calls that followed from other numbers - the same list, worked in batches.",
-              "tactic": "Three dropped calls in one month, all logged, show a list being worked in batches - the pattern is the evidence."
+              "description": "Lina Reyes logged a prize call that cut off and the calls that followed from other numbers - the same list, called in batches.",
+              "tactic": "Three dropped calls in one month, all logged, show a list being called in batches - the pattern is the evidence."
             }
           ]
         }
       }
     },
     "end_partial": {
-      "prompt": "You have the shape of what happened to her, but not the receipts that would let anybody follow the money. She has them. She just has not been asked for them.",
+      "prompt": "You have the outline of what happened to her, but not the receipts that would let anybody follow the money. She has them. She just has not been asked for them.",
       "outcome": "partial",
       "choices": [],
       "dispositions": {
         "resistant": {
-          "prompt": "You have the shape of what happened to her, but not the sheet she wrote it on. She has it. She just has not been asked for it."
+          "prompt": "You have the outline of what happened to her, but not the sheet she wrote it on. She has it. She just has not been asked for it."
         },
         "unfinished": {
-          "prompt": "You have the shape of what happened to her, but not the sheet she wrote it on. She has it. She just has not been asked for it."
+          "prompt": "You have the outline of what happened to her, but not the sheet she wrote it on. She has it. She just has not been asked for it."
         }
       }
     },

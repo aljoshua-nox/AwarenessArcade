@@ -35,7 +35,7 @@
       "tactic_id": "advance_fee",
       "label": "Prize Release Notice",
       "description": "A text telling Evelyn she has won a regional draw, and that a release fee must be paid before the prize can be sent.",
-      "tactic": "Advance fee: money demanded before money is delivered, which is never how winnings work."
+      "tactic": "Advance fee: asking you to pay before you get paid, which is never how winnings work."
     },
     {
       "id": "ev_release_receipt",
@@ -44,7 +44,7 @@
       ],
       "label": "Release Fee Payment",
       "description": "Evelyn's card statement: the 'release fee' paid the afternoon of the call, to an account that no longer exists.",
-      "tactic": "Advance fee: money demanded before money is delivered, which is never how winnings work.",
+      "tactic": "Advance fee: asking you to pay before you get paid, which is never how winnings work.",
       "tactic_id": "advance_fee"
     },
     {
@@ -64,7 +64,7 @@
       "tactic_id": "reused_victim_list",
       "label": "Store Raffle Stub",
       "description": "The countertop raffle Evelyn entered at a hardware store two months earlier, with her name, address and number written on the slip.",
-      "tactic": "Details given away for a small prize end up on a list. Being contacted is rarely coincidence."
+      "tactic": "Details handed over for a small prize end up on a list. A call like this is rarely a coincidence."
     },
     {
       "id": "ev_shopping_list",
@@ -265,7 +265,7 @@
         "question": "One thing in that sentence is impossible, not just suspicious. Which one?",
         "milestone": {
           "title": "Tactic Identified: Paying To Receive",
-          "detail": "Recognized that money flowing towards the winner is the whole idea of winning - a fee charged before a prize is released is the fraud, not a formality."
+          "detail": "Recognized that money goes to the winner, never from the winner - a fee charged before a prize is released is the fraud itself, not a formality."
         },
         "options": [
           {
@@ -277,12 +277,12 @@
           {
             "text": "That the draw closes at five.",
             "cooperation": -6,
-            "feedback": "Close - the deadline is doing real work, and you have met it before. But an urgent offer that is real is at least possible. A prize you have to buy is not."
+            "feedback": "Close - the deadline matters, and you have met it before. But an urgent offer that is real is at least possible. A prize you have to buy is not."
           },
           {
             "text": "That the sum was oddly specific.",
             "cooperation": -8,
-            "feedback": "Specific figures are chosen exactly because they sound audited. A round number invites doubt; four hundred-something thousand sounds like it came off a spreadsheet."
+            "feedback": "Specific figures are chosen exactly because they sound official. A round number invites doubt; four hundred-something thousand sounds like it came off a spreadsheet."
           },
           {
             "text": "That he was pleasant.",
@@ -427,7 +427,7 @@
       ]
     },
     "confirm_list": {
-      "prompt": "\"A raffle to find out who wants prizes.\" Evelyn sets the stub down carefully, like it might be needed later. \"They weren't fishing. They were working a list, and I put myself on it for a chance at a gift basket.\"",
+      "prompt": "\"A raffle to find out who wants prizes.\" Evelyn sets the stub down carefully, like it might be needed later. \"They weren't guessing. They were calling from a list, and I put myself on it for a chance at a gift basket.\"",
       "cooperation": 10,
       "milestone": {
         "title": "Witness Secured: The List",
@@ -504,7 +504,7 @@
       }
     },
     "end_partial": {
-      "prompt": "You have her account of the call and nothing that shows how they found her. It backs up the script, but it does not move the case forward on its own.",
+      "prompt": "You have her account of the call and nothing that shows how they found her. It matches the script, but it does not move the case forward on its own.",
       "outcome": "partial",
       "choices": []
     },
@@ -513,7 +513,7 @@
       "outcome": "failure",
       "milestone": {
         "title": "Witness Lost",
-        "detail": "Evelyn Marsh withdrew. The people who spot these calls and record them are the cheapest evidence an investigation will ever get, and they stop offering once it is clear nobody wants it."
+        "detail": "Evelyn Marsh withdrew. The people who spot these calls and record them are the easiest evidence an investigation will ever get, and they stop offering once it is clear nobody wants it."
       },
       "choices": [],
       "dispositions": {

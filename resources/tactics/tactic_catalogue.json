@@ -3,13 +3,13 @@
     {
       "id": "authority_impersonation",
       "name": "Impersonating a trusted authority",
-      "summary": "The caller claims to be your bank, a well-known company, or the police. The name does the work before a single fact is checked.",
+      "summary": "The caller claims to be your bank, a well-known company, or the police. The name does the convincing before a single fact is checked.",
       "spot_it": "A caller's claimed identity is not evidence of it. Hang up and dial the number printed on your card, your bill, or the official website - never a number the caller gives you."
     },
     {
       "id": "manufactured_urgency",
       "name": "Manufactured urgency",
-      "summary": "A deadline that exists only inside the call. Your account closes, the fine doubles, the offer expires - all so you act before you verify.",
+      "summary": "A deadline that exists only inside the call. Your account closes, the fine doubles, the offer expires - all so you act before you check.",
       "spot_it": "Real institutions let you call back. If someone insists this cannot wait, that pressure is the product, not a detail."
     },
     {
@@ -33,7 +33,7 @@
     {
       "id": "advance_fee",
       "name": "Paying to receive",
-      "summary": "A fee demanded before a prize, refund, inheritance, loan or job can be released. The money always has to travel towards the stranger first, and each fee is followed by another.",
+      "summary": "A fee demanded before a prize, refund, inheritance, loan or job can be released. The money always has to go to the stranger first, and each fee is followed by another.",
       "spot_it": "Winnings arrive net; nobody charges you to give you money. If you must pay to be paid, it is fraud - and if you have already paid once, the next fee will be framed as the last one."
     },
     {
@@ -51,7 +51,7 @@
     {
       "id": "reused_victim_list",
       "name": "The reused victim list",
-      "summary": "Names and numbers are traded and worked repeatedly. Answering once, even to refuse, confirms a real person is on the end of the line.",
+      "summary": "Names and numbers are traded and called again and again. Answering once, even to refuse, confirms a real person is on the other end of the line.",
       "spot_it": "Being called again is not bad luck. If the calls keep coming, treat the number as known and let unknown callers go to voicemail."
     },
     {

@@ -198,14 +198,14 @@
         "question": "Which part of that would a real government office never do?",
         "milestone": {
           "title": "Tactic Identified: The Office That Never Calls",
-          "detail": "Recognized that a genuine authority writes, gives you a way to contest, and takes payment only at its own counters - a fine payable by phone, to a personal account, on a deadline of hours, is the impersonation, whatever number it quotes."
+          "detail": "Recognized that a real government office writes to you, gives you a way to dispute it, and takes payment only at its own counters - a fine paid by phone, to a personal account, within hours, is a fake, whatever reference number it quotes."
         },
         "options": [
           {
             "text": "Take payment over the phone, to a personal account, on a deadline of a few hours.",
             "correct": true,
             "cooperation": 12,
-            "feedback": "That is the line no office crosses. A real assessment arrives in writing, names a counter or a bank, and gives you a way to dispute it - weeks, not minutes. Everything else in the call is cheap to fake: a reference number is a string of digits, a TIN and an employer are on any bought list. The deadline is the tell, because a real process is slow on purpose."
+            "feedback": "That is the line no office crosses. A real assessment arrives in writing, names a counter or a bank, and gives you a way to dispute it - weeks, not minutes. Everything else in the call is easy to fake: a reference number is a string of digits, a TIN and an employer are on any bought list. The deadline is the tell, because a real process is slow on purpose."
           },
           {
             "text": "Call a taxpayer at his place of work.",
@@ -215,7 +215,7 @@
           {
             "text": "Quote a reference number.",
             "cooperation": -8,
-            "feedback": "Real offices quote reference numbers all the time - which is exactly why a fake one works. A number is the cheapest thing to invent. Judge the call by what it asks for, never by how official it sounds."
+            "feedback": "Real offices quote reference numbers all the time - which is exactly why a fake one works. A number is the easiest thing to invent. Judge the call by what it asks for, never by how official it sounds."
           },
           {
             "text": "Threaten enforcement.",
@@ -359,7 +359,7 @@
       "cooperation": 10,
       "milestone": {
         "title": "Witness Secured: The Warrant That Never Existed",
-        "detail": "Joel Abad put a reference number, a deadline and a cash-in on the same afternoon - the government-warrant scam, the fourth one the floor runs, with a face on it at last."
+        "detail": "Joel Abad put a reference number, a deadline and a cash-in on the same afternoon - the government-warrant scam, the floor's fourth, with a victim's name on it at last."
       },
       "choices": [
         {
@@ -372,14 +372,14 @@
           "prompt": "\"Four minutes,\" Joel says. \"Site phone to the real office. She laughed, and then she stopped laughing and took the number.\" He lays the log beside the cement bag. \"Write down that it took four minutes. Somebody should know it only takes four minutes.\"",
           "milestone": {
             "title": "Witness Secured: The Warrant That Never Existed",
-            "detail": "Joel Abad put a reference number, a deadline and a four-minute check on the same afternoon - the government-warrant scam, the fourth one the floor runs, with a face on it at last."
+            "detail": "Joel Abad put a reference number, a deadline and a four-minute check on the same afternoon - the government-warrant scam, the floor's fourth, with a victim's name on it at last."
           }
         },
         "unfinished": {
           "prompt": "\"Four minutes,\" Joel says. \"Site phone to the real office, after. She laughed at me and I still didn't know what I was asking.\" He lays the log beside the cement bag. \"Write down that nobody called back. Somebody should have.\"",
           "milestone": {
             "title": "Witness Secured: The Warrant That Never Existed",
-            "detail": "Joel Abad put a reference number, a deadline and a four-minute check on the same afternoon - the government-warrant scam, the fourth one the floor runs, with a face on it at last."
+            "detail": "Joel Abad put a reference number, a deadline and a four-minute check on the same afternoon - the government-warrant scam, the floor's fourth, with a victim's name on it at last."
           }
         }
       }
@@ -415,7 +415,7 @@
               "id": "test_joel_confirmed",
               "label": "Joel's Confirmed Testimony",
               "description": "Joel Abad confirmed the government-warrant scam - an enforcement desk, a reference number, an officer at four - and that the line dropped before it finished.",
-              "tactic": "A call that never resolved still proves the scam was running, and who it was aimed at."
+              "tactic": "A call that never finished still proves the scam was running, and who it was aimed at."
             }
           ]
         }

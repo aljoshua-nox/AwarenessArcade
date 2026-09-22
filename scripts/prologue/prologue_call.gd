@@ -447,7 +447,7 @@ func _preview_victim(index: int) -> void:
 	_reset_transcript()
 	if called_indices.has(index):
 		_queue_beats([TextStyle.system(TextStyle.MARK_SCENE,
-			"%s has been worked this shift. The number stays on the list." % str(victim.get("name", "Unknown")),
+			"%s has already been called this shift. The number stays on the list." % str(victim.get("name", "Unknown")),
 			TextStyle.COLOR_NARRATION)])
 	else:
 		_queue_beats([TextStyle.system(TextStyle.MARK_SCENE,
@@ -633,7 +633,7 @@ func _end_current_call(outcome: String, ending: Dictionary = {}, closing_line: S
 		SessionState.record_reflection_milestone("Line Pulled",
 			"Enough of the people you called reported the number that the floor took the line away.")
 		_schedule_shift_end("Line Pulled",
-			"Three of the numbers you worked reported the call. The floor manager pulls your line and hands the list to someone else.")
+			"Three of the people you called reported the call. The floor manager pulls your line and hands the list to someone else.")
 	_refresh_ui()
 
 

@@ -34,7 +34,7 @@
       "tactic_id": "authority_impersonation",
       "label": "The Actual Electric Bill",
       "description": "The real bill for that month, paid at the company's own counter the week before, stamped. An account number, a company name, a due date three weeks away, and a printed line: we will never ask for payment by phone.",
-      "tactic": "Impersonating an authority: the real company writes, names itself, gives you weeks and a counter - the message did none of that, and only the account number, copied off this bill, made it sound like it could."
+      "tactic": "Impersonating an authority: the real company sends a bill with its name on it, gives you weeks to pay, and takes payment at its own counter. The message did none of that. Only the account number, copied off this bill, made it sound real."
     },
     {
       "id": "ev_carmen_budget",
@@ -248,7 +248,7 @@
       "choices": []
     },
     "end_shutdown": {
-      "prompt": "\"Line.\" Carmen nods at the door, where there isn't one yet, and picks up the plate you did not eat from. The receipt goes back into the cash box, the cash box goes under the counter, and the afternoon goes back to being hers.",
+      "prompt": "\"I have customers.\" Carmen nods at the door, where there aren't any yet, and picks up the plate you did not eat from. The receipt goes back into the cash box, the cash box goes under the counter, and the afternoon goes back to being hers.",
       "outcome": "failure",
       "milestone": {
         "title": "Witness Lost",

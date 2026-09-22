@@ -64,7 +64,7 @@
     },
     "tactic_quiz_pattern": {
       "tactic_quiz": {
-        "setup": "You think about two of the people this floor called. Maria Santos, sixty-seven, a retired clerk, told her account would be frozen unless she verified right now. Kevin Dizon, twenty-four, works with computers all day, told his files were infected and to call before restarting.",
+        "setup": "You think about two of the people this floor called. Maria Santos, sixty-seven, a retired clerk, was told her account would be frozen unless she verified right now. Kevin Dizon, twenty-four, who works with computers all day, was told his files were infected and to call before restarting.",
         "tactic_id": "verification_denial",
         "tactic": "The pattern behind every scam",
         "question": "Two completely different scams, two completely different people. What did both actually need in order to work?",
@@ -119,7 +119,7 @@
       }
     },
     "end_bribed": {
-      "prompt": "You walk out with a number in your account and a case that quietly goes nowhere. Marco's statement sits in a drawer, unopened. The forty headsets are back on by Monday, working a list that now has more names on it, with notes in the margin. Somewhere, the witnesses who trusted you are still waiting for a call that is never coming.",
+      "prompt": "You walk out with money in your account and a case that quietly goes nowhere. Marco's statement sits in a drawer, unopened. The forty headsets are back on by Monday, calling a list that now has more names on it, with notes in the margin. Somewhere, the witnesses who trusted you are still waiting for a call that is never coming.",
       "outcome": "bribed",
       "milestone": {
         "title": "Investigation Compromised",
@@ -128,7 +128,7 @@
       "choices": []
     },
     "end_full_takedown": {
-      "prompt": "By evening, officers move through both call floors on Sampaguita Street, and then, on Terminal Road, up the stairs past four to a door with a card reader on it. Scripts, victim lists, payment logs and two leases are seized, and the leases carry a signature. With a second confirmed testimony behind Marco's statement and the name behind the floors in your file, there is enough to charge {company} - the man who signed for the floors, not just the people who read the scripts on them. The lists are the part that matters: every name on them belongs to someone who was going to be called again.",
+      "prompt": "By evening, officers move through both call floors on Sampaguita Street, and then, on Terminal Road, up the stairs past four to a door with a card reader on it. Scripts, victim lists, payment logs and two leases are seized, and the leases carry a signature. With a second confirmed testimony behind Marco's statement and the name behind the floors in your file, there is enough to charge {company} - the company, and the man whose signature is on its leases - and not just the people who read the scripts on the floors. The lists are the part that matters: every name on them belongs to someone who was going to be called again.",
       "outcome": "full_takedown",
       "milestone": {
         "title": "Investigation Breakthrough",

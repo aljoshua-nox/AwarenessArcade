@@ -17,7 +17,7 @@
 	  "harmed": {
 		"cooperation": 34,
 		"prompt": "Kevin has the laptop with him, closed, and keeps one hand flat on the lid the whole time. \"I've read about this happening to other people. I always thought, how, how do you fall for that.\" He shrugs, tries a laugh, and it doesn't land. \"Anyway. It's a lot of money to be stupid about.\"",
-		"note": "He paid you. The self-blame in this room is doing the caller's work for them - he will minimize what happened unless you make it safe not to."
+		"note": "He paid you. The self-blame in this room is doing the caller's work for them - he will play down what happened unless you make it safe for him not to."
 	  },
 	  "resistant": {
 		"cooperation": 62,
@@ -47,7 +47,7 @@
 	  ],
 	  "label": "Kevin's Callback Log",
 	  "description": "A screenshot of his phone's call history: the number he dialed off the pop-up, and the callback nineteen minutes later from the number on the community notice.",
-	  "tactic": "A 'support line' that has to call you back is a line of victims being worked in turn, not a help desk.",
+	  "tactic": "A 'support line' that has to call you back is a list of victims being called back one at a time, not a help desk.",
 	  "tactic_id": "reused_victim_list"
 	},
 	{
@@ -246,7 +246,7 @@
 		  {
 			"text": "The message had a phone number instead of a support link.",
 			"cooperation": -6,
-			"feedback": "A phone number is a strong warning sign - real security software fixes things in the software, it does not ask you to call a stranger. But the airtight proof is simpler: the page could never have detected anything in the first place."
+			"feedback": "A phone number is a strong warning sign - real security software fixes things in the software, it does not ask you to call a stranger. But the proof that settles it is simpler: the page could never have detected anything in the first place."
 		  },
 		  {
 			"text": "It told him not to restart his device.",
@@ -428,8 +428,8 @@
 		{
 		  "id": "test_kevin_confirmed",
 		  "label": "Kevin's Confirmed Testimony",
-		  "description": "Kevin confirmed a stranger remotely accessed his laptop after a fake virus warning, then charged a bogus removal fee.",
-		  "tactic": "A second independent testimony confirms this is a repeatable, scripted operation."
+		  "description": "Kevin confirmed a stranger got into his laptop after a fake virus warning, then charged him a fee to remove a virus that was never there.",
+		  "tactic": "A second testimony from a different victim confirms this is one operation running the same script on everyone."
 		}
 	  ],
 	  "choices": [],
@@ -441,7 +441,7 @@
 			  "id": "test_kevin_confirmed",
 			  "label": "Kevin's Confirmed Testimony",
 			  "description": "Kevin confirmed a fake virus warning and a callback from the operation's number; he hung up before anything was taken.",
-			  "tactic": "A second independent testimony confirms this is a repeatable, scripted operation."
+			  "tactic": "A second testimony from a different victim confirms this is one operation running the same script on everyone."
 			}
 		  ]
 		},
@@ -452,7 +452,7 @@
 			  "id": "test_kevin_confirmed",
 			  "label": "Kevin's Confirmed Testimony",
 			  "description": "Kevin confirmed a fake virus warning and a callback from the operation's number; the line dropped before anything was taken.",
-			  "tactic": "A second independent testimony confirms this is a repeatable, scripted operation."
+			  "tactic": "A second testimony from a different victim confirms this is one operation running the same script on everyone."
 			}
 		  ]
 		}
@@ -468,7 +468,7 @@
 	  "outcome": "failure",
 	  "milestone": {
 		"title": "Witness Lost",
-		"detail": "Kevin Dizon disengaged. Shame is the reason most tech-support scam victims never report - and unreported cases are what let the same scam keep running."
+		"detail": "Kevin Dizon walked away. Shame is the reason most tech-support scam victims never report - and unreported cases are what let the same scam keep running."
 	  },
 	  "choices": [],
 	  "dispositions": {

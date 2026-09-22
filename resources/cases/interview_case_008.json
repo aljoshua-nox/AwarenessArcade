@@ -16,12 +16,12 @@
       "harmed": {
         "cooperation": 34,
         "prompt": "Trish has the receipt open on her phone before you have sat down, and the chat under it, and she does not look at either. \"I know how it looks. I already got the lecture from my mother, and from myself.\" She turns the phone so you can see the screen. \"The recruiter said congratulations. That's what I keep coming back to. She said it first.\"",
-        "note": "You took her board exam money with one word: congratulations. She is not ashamed of wanting the job - she is ashamed of how little it took, and she will minimize it unless you make it safe not to."
+        "note": "You took her board exam money with one word: congratulations. She is not ashamed of wanting the job - she is ashamed of how little it took, and she will play it down unless you make it safe for her not to."
       },
       "resistant": {
         "cooperation": 62,
         "prompt": "Trish has a folder on her phone called EVIDENCE and opens it before you have sat down. \"I said I'd ask Bea first - my batchmate, she got hired off the same ad.\" She scrolls to a message and turns the phone toward you. \"Nobody in her batch paid anything. One message. Then I gave her the number and she went quiet.\" She is a little proud, and a little scared of what the quiet meant.",
-        "note": "She refused the call you made by checking with the one person who would know - and the person who would know works on the fourth floor. She has nothing to trace and a great deal saved."
+        "note": "She refused the call you made by checking with the one person who would know - and the person who would know works on the fourth floor. She has nothing to trace, and everything saved on her phone."
       },
       "unfinished": {
         "cooperation": 44,
@@ -43,7 +43,7 @@
       "tactic_id": "advance_fee",
       "label": "Cash-in Receipt",
       "description": "An e-wallet receipt from the internet cafe's counter: P2,500 to an account in a personal name, memo TRAINING AND UNIFORM, dated the day before the batch that never started.",
-      "tactic": "Advance fee: money demanded before the thing it is supposedly for, which is never how employment works.",
+      "tactic": "Advance fee: paying for a job before the job exists, which is never how getting hired works.",
       "dispositions": {
         "resistant": {
           "omit": true
@@ -69,7 +69,7 @@
       "tactic_id": "verification_denial",
       "label": "Bea's Reply",
       "description": "The message from Bea Santiago, 11:52 that night: nobody in my batch paid anything. who is this. send me the number. And then nothing, since.",
-      "tactic": "Denying time to check: the recruiter said the slot closed at midnight, because one message to someone who had actually been hired ended it - and it did."
+      "tactic": "Denying time to check: the recruiter set a midnight deadline because one message to someone who had actually been hired would end the whole thing - and it did."
     },
     {
       "id": "ev_trish_resume",
@@ -404,7 +404,7 @@
           "id": "test_trish_confirmed",
           "label": "Trish's Confirmed Testimony",
           "description": "Trish Lim confirmed the job-offer scam - an advertisement, a chat-only recruiter, a refundable training fee that was neither - and named Bea Santiago as hired off the same advertisement.",
-          "tactic": "A victim who paid leaves a trail, and this one leads to the floor's recruiting, not only its calls."
+          "tactic": "A victim who paid leaves a trail, and this one leads to how the floor hires, not only how it calls."
         }
       ],
       "choices": [],
@@ -427,7 +427,7 @@
               "id": "test_trish_confirmed",
               "label": "Trish's Confirmed Testimony",
               "description": "Trish Lim confirmed the job-offer scam - an advertisement, a chat-only recruiter, a refundable training fee that was neither - the call dropped before the fee, and Bea Santiago, hired off the same advertisement, told her afterward that nobody in her batch paid.",
-              "tactic": "A call that never resolved still proves the scam was running, and who it was aimed at."
+              "tactic": "A call that never finished still proves the scam was running, and who it was aimed at."
             }
           ]
         }
@@ -443,7 +443,7 @@
       "outcome": "failure",
       "milestone": {
         "title": "Witness Lost",
-        "detail": "Trish Lim disengaged. The youngest victims are told they should have known, and stop saying it happened - which is how the same advertisement keeps running."
+        "detail": "Trish Lim walked away. The youngest victims are told they should have known, and stop saying it happened - which is how the same advertisement keeps running."
       },
       "choices": [],
       "dispositions": {

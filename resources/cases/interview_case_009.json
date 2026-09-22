@@ -185,7 +185,7 @@
       ]
     },
     "press_pay": {
-      "prompt": "\"Cash. Fridays. An envelope with my operator number on it.\" She says it before she can decide not to. \"No payslip. I asked once and the team lead said accounting is upstairs and I don't need to worry about it.\" A pause. \"Upstairs is where the director sits. Ocampo. Nobody goes up unless they're called.\"",
+      "prompt": "\"Cash. Fridays. An envelope with my operator number on it.\" She says it before she can decide not to. \"No payslip. I asked once and the team lead said accounting is at the head office and I don't need to worry about it.\" A pause. \"The director sits in the back office. Ocampo. Nobody goes in unless they're called.\"",
       "cooperation": 6,
       "choices": [
         {
@@ -199,28 +199,28 @@
       ]
     },
     "turned": {
-      "prompt": "Bea sits with the statement in her lap for a long time. \"There's a folder upstairs. Recruitment. It's the same ad, every month, and the ones who pay the fee never get called back, and the ones who don't pay get a chat interview.\" She looks at the headset on the windowsill as if it belongs to somebody else. \"I'll say that. To whoever you need me to say it to. Write it down before I change my mind.\"",
+      "prompt": "Bea sits with the statement in her lap for a long time. \"There's a folder by the door on our floor. Recruitment. It's the same ad, every month, and the ones who pay the fee never get called back, and the ones who don't pay get a chat interview.\" She looks at the headset on the windowsill as if it belongs to somebody else. \"I'll say that. To whoever you need me to say it to. Write it down before I change my mind.\"",
       "cooperation": 10,
       "milestone": {
         "title": "Witness Turned: The Recruit",
-        "detail": "Bea Santiago, hired off the advertisement that scammed her batchmate, agreed to describe the floor above - the recruitment folder, the director who sits upstairs, the envelope with no payslip."
+        "detail": "Bea Santiago, hired off the advertisement that scammed her batchmate, agreed to describe the floor above the call floor - the recruitment folder, the director in the back office, the envelope with no payslip."
       },
       "choices": [
         {
-          "text": "You just gave me the second floor. Thank you, Bea.",
+          "text": "You just gave me the fourth floor. Thank you, Bea.",
           "next": "end_turned"
         }
       ]
     },
     "end_turned": {
-      "prompt": "Bea's account - the advertisement, the chat interview, the training cards, the cash on Fridays and the director upstairs - is the first word from inside the fourth floor. The building has a second door now.",
+      "prompt": "Bea's account - the advertisement, the chat interview, the training cards, the cash on Fridays and the director in the back office - is the first word from inside the fourth floor. The building has a second door now.",
       "outcome": "turned",
       "grants_evidence": [
         {
           "id": "test_bea_turned",
           "script": "job_offer",
           "label": "Bea's Statement",
-          "description": "Bea Santiago, operator 4F-12, on the fourth floor from inside: the advertisement she was hired off, the chat interview, the training cards, the recruitment folder with its two columns, cash on Fridays with no payslip, and the director who sits upstairs.",
+          "description": "Bea Santiago, operator 4F-12, on the fourth floor from inside: the advertisement she was hired off, the chat interview, the training cards, the recruitment folder with its two columns, cash on Fridays with no payslip, and the director in the back office.",
           "tactic": "A recruit's account is the one testimony that describes the operation rather than one of its calls."
         }
       ],
@@ -232,7 +232,7 @@
       "choices": []
     },
     "end_shutdown": {
-      "prompt": "Bea stands and picks the headset up off the windowsill. \"I have a shift.\" At the door she stops without turning around. \"Don't come back here. They'll know.\" You will not find her at the boarding house again, and the folder upstairs stays upstairs.",
+      "prompt": "Bea stands and picks the headset up off the windowsill. \"I have a shift.\" At the door she stops without turning around. \"Don't come back here. They'll know.\" You will not find her at the boarding house again, and the recruitment folder on the fourth floor stays where it is.",
       "outcome": "failure",
       "milestone": {
         "title": "Witness Lost: The Recruit",

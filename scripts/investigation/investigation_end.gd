@@ -16,8 +16,8 @@ const OUTCOME_LABELS := {
 const OUTCOME_MESSAGES := {
 	"success": "You connected the testimony to hard evidence. This lead is strong enough to push the investigation forward.",
 	"partial": "You have a rough picture of what happened, but nothing yet that ties it to the wider operation. The case needs more.",
-	"whistleblower": "The suspect agreed to identify the wider operation. The case against the call center is no longer circumstantial.",
-	"turned": "Someone inside the operation has agreed to say what the floor above does. The building has a second door now.",
+	"whistleblower": "The suspect agreed to identify the wider operation. The case against the call center no longer rests on one person's word.",
+	"turned": "Someone inside the operation has agreed to say what the floor above does. The fourth floor is open to you now.",
 	"owner_named": "Someone inside the building has put a name to the company that owns it. The case has an address above the call floors now - it is in your evidence.",
 	"building_stands": "Both call floors are gone. The company that owns them was never named by anyone inside, and an owner nobody names signs the next lease.",
 	"failure": "This lead has gone cold. The person you spoke with wasn't willing to give you anything more.",

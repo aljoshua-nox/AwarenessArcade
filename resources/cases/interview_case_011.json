@@ -74,13 +74,13 @@
         {
           "evidence_id": "test_trish_confirmed",
           "next": "pressed",
-          "response": "\"Miss Lim applied and was not hired.\" She hands it back. \"That is not a crime. That is a Tuesday.\" It is a Tuesday on which an applicant paid a fee to a floor that never called her back.",
+          "response": "\"Miss Lim applied and was not hired.\" She hands it back. \"That is not a crime. That happens every week.\" It happened, that week, to an applicant who paid a fee to a floor that never called her back.",
           "cooperation": 10
         },
         {
           "accepts_scripts": ["tech_support", "job_offer"],
           "next": "pressed",
-          "response": "She reads it without expression. \"A complaint. We receive them. They go to accounting.\" Accounting is, as far as anybody downstairs knows, upstairs.",
+          "response": "She reads it without expression. \"A complaint. We receive them. They go to accounting.\" Accounting is, as far as anybody on either floor knows, at the head office on Terminal Road.",
           "cooperation": 15
         },
         {
@@ -213,13 +213,13 @@
         }
       ],
       "milestone": {
-        "title": "Director Named",
+        "title": "The Owner Named",
         "detail": "Rowena Ocampo, faced with a witness from each of her floor's two scams, put a name to the company that owns the building - the operation has an owner, and the owner is not on either floor."
       },
       "choices": []
     },
     "end_denied": {
-      "prompt": "Rowena has denied everything, calmly, and one statement from one of her floor's two scams is not enough to make her do otherwise. The name on the sign outside stays a name on a sign.",
+      "prompt": "Rowena has denied everything, calmly, and one statement from one of her floor's two scams is not enough to make her do otherwise. The name on the tower down the road stays a name on a sign.",
       "outcome": "partial",
       "choices": []
     },

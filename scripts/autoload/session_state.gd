@@ -172,11 +172,11 @@ var briefing_pending: bool = false
 # don't solve).
 const ENDINGS := [
 	{"id": "full_takedown", "title": "Operation Dismantled",
-		"steer": "Bring the whole building down - the floors, and the name above them."},
+		"steer": "Bring the whole operation down - the floors, and the company above them."},
 	{"id": "building_stands", "title": "The Building Stands",
 		"steer": "Close both floors without anyone inside ever naming who owns them."},
 	{"id": "partial_justice", "title": "Partial Justice",
-		"steer": "Reach the director's door with less than her floor needs."},
+		"steer": "Reach the director's door with statements that all prove the same scam."},
 	{"id": "bribed", "title": "Compromised",
 		"steer": "She will offer an envelope. Take it."},
 	{"id": "insufficient_evidence", "title": "Insufficient Evidence",

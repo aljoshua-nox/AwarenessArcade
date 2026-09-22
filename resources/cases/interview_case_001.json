@@ -53,7 +53,7 @@
 	  ],
 	  "label": "Maria's Bank Statement",
 	  "description": "The statement she has been folding and unfolding: one transfer out, minutes after the call, against the code she read aloud.",
-	  "tactic": "Reading a one-time code aloud hands over the one check the bank built to stop exactly this transfer.",
+	  "tactic": "Reading a one-time code aloud hands over the one safeguard the bank built to stop exactly this transfer.",
 	  "tactic_id": "verification_denial"
 	},
 	{
@@ -61,14 +61,14 @@
 	  "tactic_id": "repeated_script",
 	  "label": "Community Scam Report",
 	  "description": "A neighborhood report matching the same caller number to another attempted scam.",
-	  "tactic": "Recognizing repeated scripts is one of the fastest ways to confirm a scam pattern."
+	  "tactic": "The same lines turning up at another house is one of the fastest ways to confirm a scam."
 	},
 	{
 	  "id": "ev_bank_alert",
 	  "tactic_id": "verification_denial",
 	  "label": "Bank Security Alert",
 	  "description": "An internal bank notice describing unusual transfer pressure and urgent account-verification language.",
-	  "tactic": "Real banks do not pressure customers to 'verify' by acting immediately over the phone."
+	  "tactic": "A real bank does not pressure you to 'verify' anything right there on the phone."
 	},
 	{
 	  "id": "ev_internet_note",
@@ -189,7 +189,7 @@
 		"question": "Which part of that line is the manipulation?",
 		"milestone": {
 		  "title": "Tactic Identified: Manufactured Urgency",
-		  "detail": "Recognized that the artificial deadline - not the bank's name - was the part engineered to stop the victim from verifying."
+		  "detail": "Recognized that the made-up deadline - not the bank's name - was the part built to stop the victim from checking."
 		},
 		"options": [
 		  {
@@ -206,12 +206,12 @@
 		  {
 			"text": "That the caller knew which bank she uses.",
 			"cooperation": -8,
-			"feedback": "Knowing which bank you use is cheap. They guess the biggest bank in the area, or buy it in a leaked list. Treating it as proof the call is real is exactly how they get you to keep listening."
+			"feedback": "Knowing which bank you use is easy. They guess the biggest bank in the area, or buy it from a leaked list. Treating it as proof the call is real is exactly how they get you to keep listening."
 		  },
 		  {
 			"text": "\"Verify your identity.\"",
 			"cooperation": -6,
-			"feedback": "Close. Being asked to 'verify' on a call you did not make is a red flag, but the word doing the work here is the deadline attached to it - that is what took away her time to think."
+			"feedback": "Close. Being asked to 'verify' on a call you did not make is a red flag, but what actually did the damage here is the deadline attached to it - that is what took away her time to think."
 		  }
 		],
 		"next": "ask_evidence"
@@ -421,13 +421,13 @@
 	  ]
 	},
 	"end_success": {
-	  "prompt": "Maria's statement, the text, and the caller's lines all point to the same operation. It is enough to tie this call to a bigger outfit.",
+	  "prompt": "Maria's statement, the text, and the caller's lines all point to the same operation. It is enough to tie this call to a bigger operation.",
 	  "outcome": "success",
 	  "grants_evidence": [
 		{
 		  "id": "test_maria_confirmed",
 		  "label": "Maria's Confirmed Testimony",
-		  "description": "Maria formally confirmed the phishing text and the bank-impersonation call matched a single scripted operation.",
+		  "description": "Maria confirmed on record that the phishing text and the fake bank call came from the same operation, working from a script.",
 		  "tactic": "A confirmed victim testimony is strong enough to confront a suspect with."
 		}
 	  ],

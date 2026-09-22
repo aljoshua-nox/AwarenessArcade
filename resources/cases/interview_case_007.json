@@ -37,14 +37,14 @@
       "tactic_id": "authority_impersonation",
       "label": "Teodoro's Call Note",
       "description": "A penciled note from the hall table: the time, the caller's name and office - Attorney Salcedo, public attorney's office - and the number, written while the man was still talking.",
-      "tactic": "Impersonating an authority: an office and a title, offered before anything could be checked, so that the name did the checking."
+      "tactic": "Impersonating an authority: an office and a title, given before anything could be checked, so that the title would do the convincing."
     },
     {
       "id": "ev_teddy_passbook",
       "tactic_id": "manufactured_urgency",
       "label": "Passbook Entry",
       "description": "The last line of a savings passbook: a transfer of P22,000 to an account in a stranger's name, forty minutes after the call began.",
-      "tactic": "Manufactured urgency: the whole decision - a grandson, a cell, a deadline - was made inside one telephone call.",
+      "tactic": "Manufactured urgency: the whole decision - a grandson in a jail cell, a deadline - was made inside one phone call.",
       "dispositions": {
         "resistant": {
           "omit": true
@@ -63,7 +63,7 @@
       "tactic_id": "verification_denial",
       "label": "Daughter's Call Log",
       "description": "His daughter's phone: a call from her father at 3:12 that afternoon, four minutes long, and the first thing he asked - is Paolo with you?",
-      "tactic": "Denying time to check: the check that beat the script took four minutes, which is exactly why the caller said there was no time for it."
+      "tactic": "Denying time to check: the check that beat the scam took four minutes, which is exactly why the caller said there was no time for it."
     },
     {
       "id": "ev_teddy_school_slip",
@@ -205,7 +205,7 @@
             "text": "That the name was written down somewhere beside his phone number - nothing more.",
             "correct": true,
             "cooperation": 12,
-            "feedback": "That is all it proves. A grandson's first name is on a raffle slip, a delivery form, a church newsletter, a relative's Facebook - and once it is beside a number on a list, every caller who buys the list has it. The detail felt like proof. It was the cheapest thing on the sheet."
+            "feedback": "That is all it proves. A grandson's first name is on a raffle slip, a delivery form, a church newsletter, a relative's Facebook - and once it is beside a number on a list, every caller who buys the list has it. The detail felt like proof. It was the easiest thing on the sheet to get."
           },
           {
             "text": "That the caller had actually spoken to Paolo.",
@@ -415,7 +415,7 @@
               "id": "test_teddy_confirmed",
               "label": "Teodoro's Confirmed Testimony",
               "description": "Teodoro Villanueva confirmed the family-emergency scam - a fake attorney, a grandson's name off a list, a bail deadline - and that the line dropped before it finished.",
-              "tactic": "A call that never resolved still proves the scam was running, and who it was aimed at."
+              "tactic": "A call that never finished still proves the scam was running, and who it was aimed at."
             }
           ]
         }

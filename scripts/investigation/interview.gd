@@ -993,7 +993,7 @@ func _handle_evidence_miss(item: Dictionary) -> void:
 	var tactic := str(item.get("tactic", ""))
 	var body := ""
 	if tactic.is_empty():
-		body = "%s doesn't show a tactic. It's background detail, not proof of anything, and chasing it costs you the room." % label
+		body = "%s doesn't show a tactic. It's background detail, not proof of anything, and chasing it costs you their cooperation." % label
 	else:
 		body = "%s is real evidence, but not of what you just asked about. Keep it on file - it demonstrates: %s" % [label, tactic]
 

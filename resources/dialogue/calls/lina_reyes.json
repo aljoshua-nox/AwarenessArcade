@@ -4,7 +4,7 @@
 		"name": "Lina Reyes",
 		"age": 41,
 		"occupation": "Owns a small print shop",
-		"traits": "Print shop, trading on the margin. Previous desk noted: saving for a new press, two years. Talks while she works. The machine is the hook.",
+		"traits": "Print shop, barely getting by. Previous desk noted: saving for a new press, two years. Talks while she works. The machine is the hook.",
 		"portrait": "res://assets/art/portraits/lady 3.png",
 		"script": "Prize draw desk",
 		"script_id": "lottery",

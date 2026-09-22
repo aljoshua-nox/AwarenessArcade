@@ -54,12 +54,12 @@
 	  "cooperation": -8,
 	  "choices": [
 		{
-		  "text": "Ease off. Tell him you want the operation, not him.",
+		  "text": "I want the operation, Marco. Not you.",
 		  "next": "deny_node",
 		  "cooperation": 8
 		},
 		{
-		  "text": "Keep pressing.",
+		  "text": "Push him harder.",
 		  "next": "end_lawyered"
 		}
 	  ]
@@ -172,7 +172,7 @@
 		  {
 			"text": "Phone numbers dialed at random until someone answers.",
 			"cooperation": -8,
-			"feedback": "Random dialing exists at the cheap end, but it barely pays. The notes in the margin give it away: somebody wrote down what worked on each person before. This list has a history attached to it."
+			"feedback": "Random dialing happens, but it barely pays. The notes in the margin give it away: somebody wrote down what worked on each person before. This list has a history attached to it."
 		  },
 		  {
 			"text": "Customers leaked from inside the bank being impersonated.",
@@ -221,11 +221,11 @@
 		{
 		  "evidence_id": "test_evelyn_confirmed",
 		  "next": "full_crack",
-		  "response": "\"She refused, and she still ended up in a file.\" He rubs his face. \"You get that that means the list is the product, right? Not the call.\"",
+		  "response": "\"She refused, and she still ended up in a file.\" He rubs his face. \"You get what that means, right? The list is the product. Not the call.\"",
 		  "cooperation": 25,
 		  "responses": {
-			"harmed": "\"She paid, and she'll get called again.\" He rubs his face. \"You get that that means the list is the product, right? Not the call.\"",
-			"unfinished": "\"The line dropped, and she still ended up in a file.\" He rubs his face. \"You get that that means the list is the product, right? Not the call.\""
+			"harmed": "\"She paid, and she'll get called again.\" He rubs his face. \"You get what that means, right? The list is the product. Not the call.\"",
+			"unfinished": "\"The line dropped, and she still ended up in a file.\" He rubs his face. \"You get what that means, right? The list is the product. Not the call.\""
 		  }
 		},
 		{
@@ -277,7 +277,7 @@
 	  ]
 	},
 	"end_whistleblower": {
-	  "prompt": "Marco's statement, with two confirmed victim testimonies behind it, is enough to move on the call center itself. This is no longer circumstantial - it is a built case.",
+	  "prompt": "Marco's statement, with two confirmed victim testimonies behind it, is enough to move on the call center itself. It no longer rests on one person's word - it is a case.",
 	  "outcome": "whistleblower",
 	  "choices": []
 	},

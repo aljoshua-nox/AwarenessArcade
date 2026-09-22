@@ -15,7 +15,7 @@
 	"hang_up_node": "hangs_up",
 	"perspective_variants": {
 		"harmed": [
-			"He had a case number. He had the contractor's name. I had thirty-two men on a pour and he said an officer was coming to the site at four. I paid to make it not happen, and then I checked, an hour after, and there was nothing to check.",
+			"He had a case number. He had the contractor's name. I had thirty-two men pouring concrete and he said an officer was coming to the site at four. I paid to make it not happen, and then I checked, an hour after, and there was nothing to check.",
 			"It was the fifteenth's money. The money that goes home. I told them the site delayed the pay by a week. I'm still telling them that."
 		],
 		"resistant": [
@@ -73,7 +73,7 @@
 			]
 		},
 		"alarmed": {
-			"prompt": "\"A warrant -\" The mixer cuts out completely; somebody has shouted for it to stop. \"I'm on a site. I have thirty-two men on a pour. You can't send anybody here.\" He is scared, and he is angry about being scared, and both are useful.",
+			"prompt": "\"A warrant -\" The mixer cuts out completely; somebody has shouted for it to stop. \"I'm on a site. I have thirty-two men pouring concrete. You can't send anybody here.\" He is scared, and he is angry about being scared, and both are useful.",
 			"choices": [
 				{
 					"text": "Nobody wants to, sir. That's why I'm calling you before the dispatcher does. Ten minutes on this line and there's no visit.",
@@ -225,13 +225,13 @@
 			}
 		},
 		"paid": {
-			"prompt": "He walks to the counter on the corner with the phone against his shoulder and the reference number on the back of his hand in marker. Sixteen thousand - the fifteenth's money, the money that goes home - goes to a name he does not really read, and you read the reference back to him twice so it is filed right. \"Is that it? It's gone?\" It is gone. He goes back to the pour.",
+			"prompt": "He walks to the counter on the corner with the phone against his shoulder and the reference number on the back of his hand in marker. Sixteen thousand - the fifteenth's money, the money that goes home - goes to a name he does not really read, and you read the reference back to him twice so it is filed right. \"Is that it? It's gone?\" It is gone. He goes back to the concrete.",
 			"outcome": "success",
-			"consequence": "He had a case number. He had the contractor's name. I had thirty-two men on a pour and he said an officer was coming to the site at four. I paid to make it not happen, and then I checked, an hour after, and there was nothing to check.",
+			"consequence": "He had a case number. He had the contractor's name. I had thirty-two men pouring concrete and he said an officer was coming to the site at four. I paid to make it not happen, and then I checked, an hour after, and there was nothing to check.",
 			"payout": 16000
 		},
 		"paid_part": {
-			"prompt": "\"I have five on me.\" He cashes in five thousand at the counter on the corner with you in his ear, and reads the reference off the back of his hand. \"Freeze it. I'll settle the rest Monday.\" There is no rest, and there is no Monday, and he goes back to the pour.",
+			"prompt": "\"I have five on me.\" He cashes in five thousand at the counter on the corner with you in his ear, and reads the reference off the back of his hand. \"Freeze it. I'll settle the rest Monday.\" There is no rest, and there is no Monday, and he goes back to the concrete.",
 			"outcome": "partial",
 			"consequence": "I sent five thousand to freeze a warrant that didn't exist. I told myself that was being careful. Five thousand is a week of what goes home.",
 			"payout": 5000
@@ -249,7 +249,7 @@
 			"reports": true
 		},
 		"bail": {
-			"prompt": "\"Wait - what reference? Hello?\" You are already gone. He stands on the road with a marker and half a number on the back of his hand, and then he goes back to the pour, and the pour is fine, and he is not.",
+			"prompt": "\"Wait - what reference? Hello?\" You are already gone. He stands on the road with a marker and half a number on the back of his hand, and then he goes back to the concrete, and the concrete is fine, and he is not.",
 			"outcome": "aborted",
 			"consequence": "Somebody said warrant and then the line cut. I stood on the road for ten minutes waiting for it to ring again. I've been waiting for a letter since. Nothing came."
 		}

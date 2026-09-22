@@ -413,6 +413,15 @@ func _test_antifarming() -> void:
 	add_child(view)
 	await get_tree().process_frame
 	_check(view.current_node_id == "hesitant_intro", "Kevin is hesitant below 60 credibility")
+	# Being turned away is logged as hesitant and pays nothing - a refusal for
+	# want of standing must not grant standing, or every gate opens by knocking.
+	var knocked_at: int = SessionState.detective_credibility
+	view._on_choice_pressed(0)
+	_check(view.current_node_id == "end_partial_hesitant", "the hesitant branch ends at the door")
+	_check(SessionState.detective_credibility == knocked_at,
+		"knocking on a gated door pays no credibility (%d -> %d)" % [knocked_at, SessionState.detective_credibility])
+	_check(SessionState.interview_outcomes.get("kevin_d", "") == SessionState.OUTCOME_HESITANT,
+		"...but the visit is on the record as hesitant")
 	await _close(view)
 
 	SessionState.reset_session()

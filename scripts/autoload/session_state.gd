@@ -224,6 +224,11 @@ func record_interview_outcome(person_id: String, outcome: String, hesitant: bool
 		gain = 15
 	elif outcome == "partial":
 		gain = 5
+	# A refusal at the door for want of standing is logged, but it is not an
+	# interview and it grants no standing. Before this, knocking on a gated door
+	# paid +5, so a detective at 68 could open Lina's 70 by being turned away.
+	if hesitant:
+		gain = 0
 	if gain > 0:
 		# Paid once per person: the best ending they have given, not every visit.
 		var already := int(interview_credit.get(person_id, 0))

@@ -821,7 +821,13 @@ func _test_prompts_and_markers() -> void:
 	SessionState.reset_session()
 	var view := await _open()
 	# The street's spawn is at the desk's door, so the first thing the player
-	# sees is that door's prompt.
+	# sees is that door's prompt. The door is an Area2D, and an overlap is only
+	# reported on the physics step after the body lands in it - one process
+	# frame is not always enough, which made this check flake. Wait for the
+	# physics server to have seen the spawn before reading the bubble.
+	await get_tree().physics_frame
+	await get_tree().physics_frame
+	await get_tree().process_frame
 	_check(view.prompt_bubble != null and view.prompt_bubble.visible and view.prompt_bubble.text == "Go in to your desk",
 		"at spawn the prompt is the desk's door (%s)" % (view.prompt_bubble.text if view.prompt_bubble else "?"))
 	_check(not view.portal_label.visible and not view.interview_label.visible, "the corner labels stay off")

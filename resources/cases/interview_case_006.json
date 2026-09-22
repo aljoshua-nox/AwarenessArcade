@@ -12,7 +12,7 @@
     "script": "lottery",
     "portrait": "res://assets/art/portraits/lady 3.png",
     "traits": "Under financial pressure. Keeps trading while she talks. Has stopped expecting help.",
-    "min_credibility": 70,
+    "min_credibility": 60,
     "hesitant_start": "hesitant_intro",
     "dispositions": {
       "harmed": {

@@ -90,7 +90,7 @@
       "choices": []
     },
     "intro": {
-      "prompt": "Joel gives you exactly the twenty minutes he said, in the site office, with the door open so he can see the work. \"Okay. Go.\" He has the reference number written on a cement bag on the desk, and he does not look at it.",
+      "prompt": "Joel gives you twenty minutes, in the site office, with the door open so he can see the work. \"Okay. Go.\" The case number the caller gave him is written on a cement bag on the desk, and he does not look at it.",
       "choices": [
         {
           "text": "Start with the call. Who did he say he was?",

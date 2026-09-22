@@ -35,7 +35,7 @@ func director_unlocked() -> bool:
 
 
 func director_locked_note() -> String:
-	return "Bea is the way through this door. Until someone who works on this floor is willing to say what it does, there is nothing here to open."
+	return "Bea Santiago, the operator in the boarding house on Terminal Road, is the way through this door. Until someone who works on this floor is willing to say what it does, there is nothing here to open."
 
 
 # No floor above this one that the player can walk. The exit door at the left
@@ -77,7 +77,7 @@ func _build_stations() -> void:
 	_add_station({
 		"title": "The session log",
 		"prompt": "Examine the session log",
-		"body": "A printout on the supervisor's desk: SUPPORT TOOL - SESSIONS THIS WEEK. Columns for operator ID, start, end, outcome. Most IDs begin 4F. A handful begin 3F, all of them late at night - one of them, 3F-07, from 23:04 to 23:41, outcome PAID.",
+		"body": "A printout on the supervisor's desk: SUPPORT TOOL - SESSIONS THIS WEEK. Columns for operator ID, start, end, outcome. Most IDs begin 4F. A handful begin 3F, all of them late at night - one of them, 3F-07 NAVARRO, from 23:04 to 23:41, outcome PAID.",
 		"note": "The call floor downstairs uses this floor's tool after hours. A floor-3 operator who says he was never in the building at night has his ID on a floor-4 printout. The floors share a script, a list and a login; they only pretend to be different companies on the door.",
 		"note_color": TextStyle.COLOR_HINT,
 		"marker": TextStyle.MARK_SCENE,

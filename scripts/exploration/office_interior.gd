@@ -135,7 +135,7 @@ func director_unlocked() -> bool:
 
 
 func director_locked_note() -> String:
-	return "Marco is the way through this door. Until a caller on this floor is willing to name the person running it, there is nothing here to open."
+	return "Marco Navarro, the operator at the shops on Sampaguita Street, is the way through this door. Until a caller on this floor is willing to name the person running it, there is nothing here to open."
 
 
 # The scene the stairwell leads up to, or empty on a floor with no stairs up.
@@ -513,7 +513,7 @@ func _build_stations() -> void:
 	_add_station({
 		"title": "The call list",
 		"prompt": "Examine the call list",
-		"body": "A ring binder, open on the supervisor's desk. Column headings in marker: NAME. NUMBER. LAST RESULT. Names run down the page in a dozen different hands, some crossed out, most not. Taped inside the cover, on a strip of card gone furry at the edges, is the line every desk on this floor dials out on: %s." % SessionState.OPERATION_NUMBER,
+		"body": "A ring binder, open on the supervisor's desk. Column headings in marker: NAME. NUMBER. LAST RESULT. Names run down the page in a dozen different hands, some crossed out, most not. Taped inside the cover, on a strip of card gone furry at the edges, is the number every desk on this floor calls from: %s." % SessionState.OPERATION_NUMBER,
 		"is_ledger": true,
 		"milestone_title": "The List Has Your Handwriting On It",
 		"milestone_detail": "The operation's ledger holds the victims the player called during the prologue - proof that a scam list is a durable asset, not a one-time thing.",
@@ -535,7 +535,7 @@ func _build_stations() -> void:
 	_add_station({
 		"title": "The shift schedule",
 		"prompt": "Examine the shift schedule",
-		"body": "Forty desks. Forty headsets, most still warm. A printed schedule is taped beside the door: the heaviest staffing runs late morning and early evening, with a thinner night shift marked SENIORS / SHIFT WORKERS.",
+		"body": "Forty desks. Forty headsets, most still warm. A printed schedule is taped beside the door: the heaviest staffing runs late morning and early evening, with a thinner night shift, and a note beside it on who to call: SENIORS / SHIFT WORKERS.",
 		"note": "The hours are chosen the way the scripts are. Late morning finds retired people at home alone; the night shift finds people too tired to argue. Being targeted is not evidence of being careless - it is evidence of being reachable at a particular hour.",
 		"note_color": TextStyle.COLOR_HINT,
 		"marker": TextStyle.MARK_SCENE,

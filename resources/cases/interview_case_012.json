@@ -1,6 +1,6 @@
 {
   "case_id": "interview_case_012",
-  "title": "Thirty Minutes To Six",
+  "title": "Thirty Minutes To Pay",
   "person": {
     "person_id": "carmen_salazar",
     "name": "Carmen Salazar",
@@ -219,7 +219,7 @@
       "prompt": "Carmen puts one finger on the receipt. \"One thousand eight-fifty. Three days of stock.\" She takes the finger away. \"Write it down. And write down that the lights were never going off. I want that written somewhere by somebody whose job it is.\"",
       "cooperation": 10,
       "milestone": {
-        "title": "Witness Secured: Thirty Minutes To Six",
+        "title": "Witness Secured: Thirty Minutes To Pay",
         "detail": "Carmen Salazar put a thirty-minute notice, a polite caller with her account number and a cash-in on the same evening - the utility-disconnection scam, aimed at a household at dinnertime."
       },
       "choices": [

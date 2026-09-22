@@ -239,7 +239,7 @@ func _test_director_door_gate() -> void:
 	var door := _station(view, "Floor director's office")
 	_check(not bool(door.get("is_confrontation", false)), "the door is inert before Marco flips")
 	_check(str(door.get("prompt", "")) == "Examine the director's door", "locked door reads as examinable")
-	_check(view._station_body(door).contains("Marco is the way through"), "locked door points at Marco")
+	_check(view._station_body(door).contains("Marco Navarro, the operator at the shops on Sampaguita Street, is the way through"), "locked door points at Marco")
 	await _close(view)
 
 	SessionState.reset_session()
@@ -384,7 +384,7 @@ func _test_fourth_floor() -> void:
 	var door := _station(upstairs, "Floor director's office")
 	_check(not bool(door.get("is_confrontation", false)), "Rowena's door is inert before Bea turns")
 	_check(upstairs._station_body(door).contains("R. OCAMPO"), "the nameplate is hers")
-	_check(upstairs._station_body(door).contains("Bea is the way through"), "the locked door points at Bea")
+	_check(upstairs._station_body(door).contains("Bea Santiago, the operator in the boarding house on Terminal Road, is the way through"), "the locked door points at Bea")
 	await _close_node(upstairs)
 
 	SessionState.reset_session()

@@ -132,7 +132,7 @@ const STREET_STOPS := [
 		"title": "Building directory",
 		"prompt": "Read the building directory",
 		"body": "A brass directory beside the glass doors, polished, the letters set by hand. %s. 3F - CUSTOMER SERVICE. 4F - TECHNICAL SUPPORT. 5F - HOLDINGS, NO ELEVATOR ACCESS. Under it, on an easel, a smaller sign: RECEPTION CLOSED TO THE PUBLIC.",
-		"note": "A business that scams people still has a lobby and a directory. The company's name is real; so are the floor numbers. It is the two words after them that are not - and the floor without elevator access is the one the directory says least about.",
+		"note": "A business that scams people still has a lobby and a directory. The name is real; so are the floor numbers. What the floors say they do is not - and the floor without elevator access is the one the directory says least about.",
 		"note_color": TextStyle.COLOR_HINT,
 		"marker": TextStyle.MARK_HINT,
 		"cites_name": true,

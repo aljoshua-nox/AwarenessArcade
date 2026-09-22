@@ -15,17 +15,17 @@
     "dispositions": {
       "harmed": {
         "cooperation": 34,
-        "prompt": "Trish has the receipt open on her phone before you have sat down, and the chat under it, and she does not look at either. \"I know how it looks. I already got the lecture from my mother, and from myself.\" She turns the phone so you can see the screen. \"She said congratulations. That's what I keep coming back to. She said it first.\"",
-        "note": "You took her board exam money with a word. She is not ashamed of wanting the job - she is ashamed of how little it took, and she will minimize it unless you make it safe not to."
+        "prompt": "Trish has the receipt open on her phone before you have sat down, and the chat under it, and she does not look at either. \"I know how it looks. I already got the lecture from my mother, and from myself.\" She turns the phone so you can see the screen. \"The recruiter said congratulations. That's what I keep coming back to. She said it first.\"",
+        "note": "You took her board exam money with one word: congratulations. She is not ashamed of wanting the job - she is ashamed of how little it took, and she will minimize it unless you make it safe not to."
       },
       "resistant": {
         "cooperation": 62,
-        "prompt": "Trish has a folder on her phone called EVIDENCE and opens it before you have sat down. \"I said I'd ask Bea first.\" She scrolls to a message and turns the phone toward you. \"Nobody in her batch paid anything. One message. Then I gave her the number and she went quiet.\" She is a little proud, and a little scared of what the quiet meant.",
+        "prompt": "Trish has a folder on her phone called EVIDENCE and opens it before you have sat down. \"I said I'd ask Bea first - my batchmate, she got hired off the same ad.\" She scrolls to a message and turns the phone toward you. \"Nobody in her batch paid anything. One message. Then I gave her the number and she went quiet.\" She is a little proud, and a little scared of what the quiet meant.",
         "note": "She refused the call you made by checking with the one person who would know - and the person who would know works on the fourth floor. She has nothing to trace and a great deal saved."
       },
       "unfinished": {
         "cooperation": 44,
-        "prompt": "\"She called to close it, and then the line cut. Mid-sentence.\" Trish says it with the phone face down on the table, for once. \"I sat there with my notebook. SHORTLISTED at the top, and nothing under it.\" A breath. \"Bea told me after. Nobody paid. She hasn't answered me since.\"",
+        "prompt": "\"The recruiter called to close the deal, and then the line cut. Mid-sentence.\" Trish says it with the phone face down on the table, for once. \"I sat there with my notebook. SHORTLISTED at the top, and nothing under it.\" A breath. \"My batchmate Bea told me after - she got hired off the same ad. Nobody paid. She hasn't answered me since.\"",
         "note": "Your call to her never finished. She found out from Bea what it would have cost, which is why Bea has stopped answering - and why Trish is not sure whether she was lucky or dropped."
       }
     }
@@ -261,7 +261,7 @@
       ],
       "dispositions": {
         "resistant": {
-          "prompt": "Trish scrolls past the chat to the call log. \"She called that night, to close it. Fee tonight, slot secured, refund on payday.\" She stops on a message. \"I said I'd ask Bea first. She really didn't like that.\"",
+          "prompt": "Trish scrolls past the chat to the call log. \"She called that night, to close it. Fee tonight, slot secured, refund on payday.\" She stops on a message. \"I said I'd ask Bea first - my batchmate, she got hired off the same ad. The recruiter really didn't like that.\"",
           "evidence_hint": "Nothing was paid. What matters is the one message it took to find out - and who she sent it to.",
           "accepts_evidence": [
             {

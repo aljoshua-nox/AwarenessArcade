@@ -120,7 +120,7 @@ func _build_stations() -> void:
 	_add_station({
 		"title": "The district map",
 		"prompt": "Study the map",
-		"body": "A street map pinned to the corkboard, the two streets the complaints came from traced over in marker: Sampaguita Street, with its shop row along the top and the houses on the grass below, and Terminal Road, down the second side street - a bus bay, a building site, a tower with a lobby. Somebody has written across the bottom in pencil: START WITH WHOEVER WILL OPEN THE DOOR.",
+		"body": "A street map pinned to the corkboard, the two streets the complaints came from traced over in marker: Sampaguita Street, with the shops along the top and the houses on the grass below, and Terminal Road, down the second side street - a bus bay, a building site, a tower with a lobby. Somebody has written across the bottom in pencil: START WITH WHOEVER WILL OPEN THE DOOR.",
 		"note": "Two streets, a dozen doors. The journal's People page keeps track of which ones have opened.",
 		"note_color": TextStyle.COLOR_HINT,
 		"marker": TextStyle.MARK_HINT,

@@ -81,6 +81,18 @@ for f in files:
         for g in node.get("grants_evidence", []):
             global_evidence.add(g["id"])
 
+session_flags = set()
+statement_budget = None
+if os.path.exists(session_state_path := os.path.join(base, "scripts", "autoload", "session_state.gd")):
+    with open(session_state_path, encoding="utf-8") as fh:
+        for line in fh:
+            m = re.match(r"var (\w+): bool", line.strip())
+            if m:
+                session_flags.add(m.group(1))
+            m = re.match(r"const STATEMENT_BUDGET := (\d+)", line.strip())
+            if m:
+                statement_budget = int(m.group(1))
+
 errors = []
 for f, data in parsed.items():
     name = os.path.basename(f)
@@ -185,7 +197,7 @@ for f, data in parsed.items():
             continue
         seen.add(n)
         node = nodes[n]
-        variants = [node] + list(node.get("dispositions", {}).values())
+        variants = [node] + list(node.get("dispositions", {}).values()) + list(node.get("flag_variants", {}).values())
         for variant in variants:
             for c in variant.get("choices", []):
                 stack.append(c.get("next"))
@@ -206,11 +218,16 @@ for f, data in parsed.items():
     # A node may carry `dispositions`: per-outcome overrides of the keys the
     # engine lets a variant replace. The opening node's prompt belongs to the
     # person block, so a node-level prompt there would be silently ignored.
+    # `flag_variants` are the same shape, keyed by a bool on SessionState.
     for nid, node in nodes.items():
-        for key, override in node.get("dispositions", {}).items():
-            where = f"{name}: {nid}.dispositions['{key}']"
-            if key not in NODE_VARIANT_KEYS:
+        for kind in ("dispositions", "flag_variants"):
+          for key, override in node.get(kind, {}).items():
+            where = f"{name}: {nid}.{kind}['{key}']"
+            if kind == "dispositions" and key not in NODE_VARIANT_KEYS:
                 errors.append(f"{where} is not one of {sorted(NODE_VARIANT_KEYS)}")
+                continue
+            if kind == "flag_variants" and key not in session_flags:
+                errors.append(f"{where} names flag '{key}', not a bool on SessionState")
                 continue
             if not isinstance(override, dict) or not override:
                 errors.append(f"{where} must be a non-empty object")
@@ -229,7 +246,7 @@ for f, data in parsed.items():
             if len(choices) > 4:
                 errors.append(f"{where} has >4 choices (UI has 4 buttons)")
             for i, c in enumerate(choices):
-                check(c.get("next"), f"{nid}.dispositions['{key}'].choices[{i}]")
+                check(c.get("next"), f"{nid}.{kind}['{key}'].choices[{i}]")
             for i, e in enumerate(override.get("accepts_evidence", [])):
                 check(e.get("next"), f"{nid}.dispositions['{key}'].accepts_evidence[{i}]")
                 check_accepts_row(e, f"{where}.accepts_evidence[{i}]")
@@ -454,17 +471,6 @@ CONDITION_KEYS = {"any", "statements_at_least", "credibility_at_least", "intervi
                   "flag", "evidence", "milestone", "case_stuck"}
 OBJECTIVE_FIELDS = {"id", "title", "detail", "unlock_when", "complete_when", "failed_when", "failed_detail"}
 person_ids = {data.get("person", {}).get("person_id", "") for data in parsed.values()}
-session_flags = set()
-statement_budget = None
-if os.path.exists(session_state_path := os.path.join(base, "scripts", "autoload", "session_state.gd")):
-    with open(session_state_path, encoding="utf-8") as fh:
-        for line in fh:
-            m = re.match(r"var (\w+): bool", line.strip())
-            if m:
-                session_flags.add(m.group(1))
-            m = re.match(r"const STATEMENT_BUDGET := (\d+)", line.strip())
-            if m:
-                statement_budget = int(m.group(1))
 milestone_titles = set()
 for data in parsed.values():
     for node in data.get("nodes", {}).values():
@@ -1197,7 +1203,7 @@ for f, data in parsed.items():
         # of whoever gave it. `responses` is keyed by that; `response` is the
         # line for anyone it does not name.
         for nid, node in data.get("nodes", {}).items():
-            variants = [node] + list(node.get("dispositions", {}).values())
+            variants = [node] + list(node.get("dispositions", {}).values()) + list(node.get("flag_variants", {}).values())
             for variant in variants:
                 for i, e in enumerate(variant.get("accepts_evidence", [])):
                     if "accepts_scripts" in e:

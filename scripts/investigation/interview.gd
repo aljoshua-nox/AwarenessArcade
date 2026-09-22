@@ -179,10 +179,25 @@ func _apply_disposition() -> void:
 
 # The node as this disposition sees it. A quiz keeps its options - only the
 # framing around them can change - because the options are the lesson.
+# A node may also read differently once the case has established something -
+# `flag_variants` keyed by a bool on SessionState (Dennis is told Marco broke,
+# or will break, depending on whether he has). The first set flag wins, and
+# it is applied on top of the disposition.
 func _resolve_node(raw: Dictionary) -> Dictionary:
+	var node := raw
 	var override: Dictionary = (raw.get("dispositions", {}) as Dictionary).get(disposition, {})
-	if override.is_empty():
-		return raw
+	if not override.is_empty():
+		node = _apply_override(node, override)
+	var flag_variants: Dictionary = raw.get("flag_variants", {})
+	for flag in flag_variants:
+		var value: Variant = SessionState.get(str(flag))
+		if value is bool and value:
+			node = _apply_override(node, flag_variants[flag])
+			break
+	return node
+
+
+func _apply_override(raw: Dictionary, override: Dictionary) -> Dictionary:
 	var node := raw.duplicate()
 	for key in NODE_OVERRIDE_KEYS:
 		if override.has(key):

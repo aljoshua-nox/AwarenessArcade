@@ -94,14 +94,28 @@
       ],
       "choices": [
         {
-          "text": "Marco broke. You know that.",
+          "text": "Marco will break. You know that.",
           "next": "pressed"
         },
         {
           "text": "I'll come back with more.",
           "next": "end_denied"
         }
-      ]
+      ],
+      "flag_variants": {
+        "suspect_flipped": {
+          "choices": [
+            {
+              "text": "Marco broke. You know that.",
+              "next": "pressed"
+            },
+            {
+              "text": "I'll come back with more.",
+              "next": "end_denied"
+            }
+          ]
+        }
+      }
     },
     "caught_callbacks": {
       "prompt": "\"Three touches,\" you say. \"By a man who only takes transfers.\" He looks at the dates again and, for the first time, at the door behind you instead of the elevator. \"A recontact is a transfer from the list,\" he says, and it is the first thing he has said that he does not believe himself.",
@@ -112,13 +126,28 @@
       },
       "choices": [
         {
-          "text": "Marco broke, you know. When the statements were put in front of him.",
+          "text": "Marco will break, you know. The moment a statement is put in front of him.",
           "next": "pressed"
         }
-      ]
+      ],
+      "flag_variants": {
+        "suspect_flipped": {
+          "choices": [
+            {
+              "text": "Marco broke, you know. When the statements were put in front of him.",
+              "next": "pressed"
+            }
+          ]
+        }
+      }
     },
     "pressed": {
-      "prompt": "\"Marco broke because Marco is twenty-nine and still thinks the names on the list are people.\" He checks the watch. \"I've heard every line you have. The frozen account, the officer at four, the grandson in a jail cell. I wrote half of them. Pressure doesn't work on the man who sells it.\" He looks at you properly for the first time. \"Evidence might. Show me two people with names, and I'll tell you where the names go.\"",
+      "prompt": "\"Marco will break because Marco is twenty-nine and still thinks the names on the list are people.\" He checks the watch. \"I've heard every line you have. The frozen account, the officer at four, the grandson in a jail cell. I wrote half of them. Pressure doesn't work on the man who sells it.\" He looks at you properly for the first time. \"Evidence might. Show me two people with names, and I'll tell you where the names go.\"",
+      "flag_variants": {
+        "suspect_flipped": {
+          "prompt": "\"Marco broke because Marco is twenty-nine and still thinks the names on the list are people.\" He checks the watch. \"I've heard every line you have. The frozen account, the officer at four, the grandson in a jail cell. I wrote half of them. Pressure doesn't work on the man who sells it.\" He looks at you properly for the first time. \"Evidence might. Show me two people with names, and I'll tell you where the names go.\""
+        }
+      },
       "evidence_prompt": true,
       "evidence_hint": "He has named his price: not pressure, a second person with a name. Any witness from either floor.",
       "accepts_evidence": [

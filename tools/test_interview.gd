@@ -1064,6 +1064,25 @@ func _test_closer() -> void:
 	_check(not SessionState.has_evidence("ev_owner_name"), "...and buys nothing")
 	await _close(dennis)
 
+	# He can be met before Marco has flipped, and the detective used to claim
+	# Marco had broken anyway. The line, and his answer, follow the flag.
+	SessionState.reset_session()
+	SessionState.detective_credibility = GATE_CLEAR
+	SessionState.pending_case_path = CASE_DENNIS
+	dennis = load(INTERVIEW_SCENE).instantiate()
+	add_child(dennis)
+	await get_tree().process_frame
+	dennis._load_node("deny_node")
+	_check(dennis.choice_buttons[0].text.begins_with("Marco will break"), "before Marco flips, the detective says he will (%s)" % dennis.choice_buttons[0].text)
+	dennis._load_node("pressed")
+	_check(dennis.prompt_value.text.contains("Marco will break because"), "...and the closer answers in the same tense")
+	SessionState.suspect_flipped = true
+	dennis._load_node("deny_node")
+	_check(dennis.choice_buttons[0].text.begins_with("Marco broke."), "after Marco flips, the detective says he did (%s)" % dennis.choice_buttons[0].text)
+	dennis._load_node("pressed")
+	_check(dennis.prompt_value.text.contains("Marco broke because"), "...and so does the closer")
+	await _close(dennis)
+
 
 # The investigation's pressure: a case has six statements in it. A witness
 # interview that reaches an ending spends one; a refusal at the door does not;

@@ -413,6 +413,10 @@ func _build_ui() -> void:
 	# the interrogation at seven rows; before scoping this was 120px against an
 	# inventory of twenty-one, which is what made it feel like a filing cabinet.
 	evidence_list.custom_minimum_size = Vector2(0, 208)
+	# ItemList shapes the first row before it has a width and bakes the
+	# ellipsis in, so "Prize Release Notice" showed as "Prize Release Noti..."
+	# on a list nine hundred pixels wide. No label comes near the width.
+	evidence_list.text_overrun_behavior = TextServer.OVERRUN_NO_TRIMMING
 	evidence_list.item_activated.connect(_on_evidence_chosen)
 	evidence_column.add_child(evidence_list)
 

@@ -15,7 +15,7 @@ extends Node2D
 @export var ambience_db: float = -12.0
 @export_file("*.tscn") var portal_target_scene: String = "res://scenes/exploration/urban_exterior.tscn"
 @export var player_spawn: Vector2 = Vector2(190, 320)
-@export var movement_bounds: Rect2 = Rect2(Vector2(96, 240), Vector2(1096, 424))
+@export var movement_bounds: Rect2 = Rect2(Vector2(96, 232), Vector2(1096, 432))
 
 @onready var decor: Node2D = %Decor
 @onready var player: ExplorationPlayer = %Player

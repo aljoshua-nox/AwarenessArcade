@@ -26,6 +26,7 @@ const NOTEBOOK_ACTION := "toggle_notebook"
 const MAIN_MENU_SCENE := "res://scenes/main_menu/main_menu.tscn"
 ## The menu is not part of the fiction, and the prologue is the scammer's half.
 const HIDDEN_IN_SCENES := [
+	"res://scenes/main_menu/disclaimer.tscn",
 	MAIN_MENU_SCENE,
 	"res://scenes/main_menu/credits.tscn",
 	"res://scenes/prologue/prologue_call.tscn",

@@ -16,7 +16,7 @@
     {
       "id": "find_operator",
       "title": "Find who made the calls",
-      "detail": "A voice, a script and a number. Somebody on the shop row works the floor those calls come from, and asking him costs no statement.",
+      "detail": "A voice, a script and a number. Somebody at the shops on Sampaguita Street works the floor those calls come from, and asking him costs no statement.",
       "complete_when": {"interviewed": "marco_navarro"}
     },
     {

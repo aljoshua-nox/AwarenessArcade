@@ -507,8 +507,8 @@ func _person_status(person: Dictionary, place: Dictionary) -> Array:
 			return ["Interview went wrong", TextStyle.COLOR_WRONG]
 		SessionState.OUTCOME_HESITANT:
 			if SessionState.detective_credibility >= gate:
-				return ["Turned you away once - your standing is enough now", TextStyle.COLOR_TACTIC]
-			return ["Turned you away - needs Standing %d" % gate, TextStyle.COLOR_TACTIC]
+				return ["Turned you away once - your credibility is enough now", TextStyle.COLOR_TACTIC]
+			return ["Turned you away - needs Credibility %d" % gate, TextStyle.COLOR_TACTIC]
 	if not outcome.is_empty():
 		return ["Spoken to", TextStyle.COLOR_NARRATION]
 	if place.has("door_flag") and not bool(SessionState.get(str(place["door_flag"]))):
@@ -516,7 +516,7 @@ func _person_status(person: Dictionary, place: Dictionary) -> Array:
 	if takes_statement and SessionState.statements_left() <= 0:
 		return ["No statements left to take", TextStyle.COLOR_WRONG]
 	if gate > SessionState.detective_credibility:
-		return ["Will not talk to a stranger - needs Standing %d" % gate, TextStyle.COLOR_NARRATION]
+		return ["Will not talk to a stranger - needs Credibility %d" % gate, TextStyle.COLOR_NARRATION]
 	if takes_statement:
 		return ["Will talk", TextStyle.COLOR_HINT]
 	return ["Costs no statement", TextStyle.COLOR_HINT]
@@ -564,7 +564,7 @@ func _fill_people(page: VBoxContainer) -> void:
 		line.fit_content = true
 		line.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		var gate: int = int(row.get("gate", 0))
-		var gate_text := "  [color=#%s](Standing %d)[/color]" % [TextStyle.COLOR_NARRATION, gate] if gate > 0 else ""
+		var gate_text := "  [color=#%s](Credibility %d)[/color]" % [TextStyle.COLOR_NARRATION, gate] if gate > 0 else ""
 		line.text = "[b]%s[/b]  [color=#%s]%s[/color]%s\n[color=#%s]%s[/color]" % [
 			str(row.get("name", "")), TextStyle.COLOR_NARRATION, str(row.get("role", "")), gate_text,
 			str(row.get("tone", TextStyle.COLOR_NARRATION)), str(row.get("status", ""))]

@@ -244,7 +244,7 @@ func _build_hud() -> void:
 	standing_label = Label.new()
 	standing_label.offset_left = 20.0
 	standing_label.offset_top = 74.0
-	standing_label.text = "Standing: %d" % SessionState.detective_credibility
+	standing_label.text = "Credibility: %d" % SessionState.detective_credibility
 	standing_label.add_theme_color_override("font_color", Color.html(TextStyle.COLOR_HINT))
 	hud.add_child(standing_label)
 

@@ -184,7 +184,7 @@ func _test_stations_exist() -> void:
 	for title in ["Script binders", "The call list", "Bonus board", "The shift schedule", "Floor director's office", "Stairwell"]:
 		_check(not _station(view, title).is_empty(), "station present: %s" % title)
 	# The floor keeps the street's two numbers on screen.
-	_check(view.standing_label.text == "Standing: %d" % SessionState.detective_credibility,
+	_check(view.standing_label.text == "Credibility: %d" % SessionState.detective_credibility,
 		"the floor shows standing (%s)" % view.standing_label.text)
 	_check(view.statements_label.text == "Statements: 0 of %d" % SessionState.STATEMENT_BUDGET,
 		"the floor shows the budget (%s)" % view.statements_label.text)

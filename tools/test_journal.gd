@@ -186,14 +186,14 @@ func _test_people_page() -> void:
 	_check(str(_row("Rowena Ocampo").get("place", "")).begins_with("Tech Support"), "Rowena is upstairs")
 
 	_check(_status("Evelyn Marsh") == "Will talk", "an ungated witness will talk (%s)" % _status("Evelyn Marsh"))
-	_check(_status("Maria Santos").contains("needs Standing 55"), "a gated witness names her gate (%s)" % _status("Maria Santos"))
+	_check(_status("Maria Santos").contains("needs Credibility 55"), "a gated witness names her gate (%s)" % _status("Maria Santos"))
 	_check(_status("Marco Navarro") == "Costs no statement", "a suspect costs nothing (%s)" % _status("Marco Navarro"))
 	_check(_status("Elena Cruz").contains("name her first"), "the director's door says what opens it (%s)" % _status("Elena Cruz"))
 
 	SessionState.record_interview_outcome("maria_santos", "partial", true)
 	_check(_status("Maria Santos").contains("Turned you away"), "a hesitant refusal reads as one (%s)" % _status("Maria Santos"))
 	SessionState.detective_credibility = 60
-	_check(_status("Maria Santos").contains("standing is enough now"), "and says when standing has caught up")
+	_check(_status("Maria Santos").contains("credibility is enough now"), "and says when standing has caught up")
 	SessionState.record_interview_outcome("maria_santos", "success")
 	_check(_status("Maria Santos") == "Statement on record", "a success is a statement on record")
 	SessionState.record_interview_outcome("evelyn_marsh", "failure")
@@ -243,7 +243,7 @@ func _test_hud_line() -> void:
 	var office: Node = load(OFFICE_SCENE).instantiate()
 	add_child(office)
 	await get_tree().process_frame
-	_check(office.objective_label.text.contains("standing"),
+	_check(office.objective_label.text.contains("credibility"),
 		"the floor tracks the current one (%s)" % office.objective_label.text)
 	remove_child(office)
 	office.queue_free()

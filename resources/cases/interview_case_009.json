@@ -41,7 +41,7 @@
       ]
     },
     "end_partial_hesitant": {
-      "prompt": "Bea is not going to risk the job for somebody she has no reason to trust. Standing with the other witnesses first might change that.",
+      "prompt": "Bea is not going to risk the job for somebody she has no reason to trust. Earn some credibility with the other witnesses first; it might change that.",
       "outcome": "partial",
       "choices": []
     },

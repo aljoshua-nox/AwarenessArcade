@@ -3,13 +3,13 @@
     {
       "id": "first_statement",
       "title": "Get a first statement on record",
-      "detail": "Someone on these streets will talk to a detective with no standing. Knock until a door opens, and take the statement that is offered.",
+      "detail": "Someone on these streets will talk to a detective nobody has heard of yet. Knock until a door opens, and take the statement that is offered.",
       "complete_when": {"statements_at_least": 1}
     },
     {
       "id": "build_standing",
-      "title": "Earn the standing for the doors that stayed shut",
-      "detail": "Most of the people on the list will not talk to a stranger. Every statement that helps a neighbor raises your standing, and every interview that goes wrong lowers it. Their gates are on the People page.",
+      "title": "Earn the credibility for the doors that stayed shut",
+      "detail": "Most of the people on the list will not talk to a stranger. Every statement that helps a neighbor raises your credibility, and every interview that goes wrong lowers it. Their gates are on the People page.",
       "unlock_when": {"statements_at_least": 1},
       "complete_when": {"credibility_at_least": 60}
     },

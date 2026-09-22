@@ -7,7 +7,9 @@
     "The barangay has forwarded eleven complaints this month, all describing the same kind of call. A fraud desk. A support line. A prize office. A recruiter. Someone with a reason you have to act now and a reason you cannot hang up and check. Some of the complainants paid. Most did not report it until a neighbor did.",
     "Nobody has a name. What they have is a voice, a script and a number, and the number goes to a floor of desks somewhere in this district.",
     "Your job is to find the people who answered those calls and get their statements on record. A statement is what turns a complaint into a case. Enough of them and someone on that floor will have to answer for what is printed on his script - and whoever hands him the script will have to answer for that.",
-    "A case holds {statements} statements. Spend them on the people who will talk. Standing is earned: a witness who has seen you help a neighbor opens a door a stranger does not. And listen for what the callers did, not only what they took. The tactics are the evidence."
+    "A case holds {statements} statements. Spend them on the people who will talk.",
+    "Most of the people on that list will not talk to a stranger. They will talk to someone who has already helped a neighbor. That is credibility, and it moves:\n\u2022 A statement that holds up raises it. A half statement raises it less.\n\u2022 An interview that goes wrong lowers it, and that witness will not open the door again.\n\u2022 Reading a caller's tactic right earns a little. Reading it wrong costs a little.\n\u2022 A door that stays shut costs nothing and earns nothing. The number each door needs is on the People page.",
+    "Listen for what the callers did, not only what they took. The tactics are the evidence."
   ],
   "prologue_note": "Some of the complaints came in overnight, from people who kept the number and called it in.",
   "closing": "Start on Sampaguita Street, with whoever will open the door. Terminal Road is down the second side street."

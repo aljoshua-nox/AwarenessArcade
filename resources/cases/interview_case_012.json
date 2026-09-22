@@ -56,7 +56,7 @@
       ]
     },
     "end_partial_hesitant": {
-      "prompt": "Carmen told this once and nothing came of it, and she has a canteen to run. Standing with the other witnesses first might make it worth her afternoon.",
+      "prompt": "Carmen told this once and nothing came of it, and she has a canteen to run. Earn some credibility with the other witnesses first; it might make it worth her afternoon.",
       "outcome": "partial",
       "choices": []
     },

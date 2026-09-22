@@ -16,7 +16,7 @@
     "dispositions": {
       "harmed": {
         "cooperation": 34,
-        "prompt": "Joel meets you at the site gate in a safety vest and does not take it off. \"Twenty minutes. Then I have a pour.\" He looks at the road and not at you. \"I know what it was. I knew about an hour after. You don't need to tell me what it was.\"",
+        "prompt": "Joel meets you at the site gate in a safety vest and does not take it off. \"Twenty minutes. Then we pour concrete, and that can't wait.\" He looks at the road and not at you. \"I know what it was. I knew about an hour after. You don't need to tell me what it was.\"",
         "note": "You took the money he sends home. He is angrier at himself than at the caller, and he has decided the way to carry it is to have no time for it."
       },
       "resistant": {
@@ -90,14 +90,14 @@
       "choices": []
     },
     "intro": {
-      "prompt": "Joel gives you exactly the twenty minutes he said, in the site office, with the door open so he can see the pour. \"Okay. Go.\" He has the reference number written on a cement bag on the desk, and he does not look at it.",
+      "prompt": "Joel gives you exactly the twenty minutes he said, in the site office, with the door open so he can see the work. \"Okay. Go.\" He has the reference number written on a cement bag on the desk, and he does not look at it.",
       "choices": [
         {
           "text": "Start with the call. Who did he say he was?",
           "next": "ask_call"
         },
         {
-          "text": "Whatever you've decided you should have done - there were thirty-two men and a pour. That's the whole reason it worked.",
+          "text": "Whatever you've decided you should have done - there were thirty-two men waiting and concrete that couldn't wait. That's the whole reason it worked.",
           "next": "reassure",
           "cooperation": 8
         },
@@ -115,7 +115,7 @@
               "next": "ask_call"
             },
             {
-              "text": "Whatever you've decided you should have done - there were thirty-two men and a pour. That's the whole reason it almost worked.",
+              "text": "Whatever you've decided you should have done - there were thirty-two men waiting and concrete that couldn't wait. That's the whole reason it almost worked.",
               "next": "reassure",
               "cooperation": 8
             },
@@ -133,7 +133,7 @@
               "next": "ask_call"
             },
             {
-              "text": "Whatever you've decided you should have done - there were thirty-two men and a pour. That's the whole reason it almost worked.",
+              "text": "Whatever you've decided you should have done - there were thirty-two men waiting and concrete that couldn't wait. That's the whole reason it almost worked.",
               "next": "reassure",
               "cooperation": 8
             },
@@ -147,7 +147,7 @@
       }
     },
     "reassure": {
-      "prompt": "\"Thirty-two.\" He says it to the pour. \"Thirty-two men, and a mixer you can't stop once it's started.\" A breath. \"Nobody else said that. Everybody else said the word gullible without saying it. Go on.\"",
+      "prompt": "\"Thirty-two.\" He says it to the site, not to you. \"Thirty-two men, and a mixer you can't stop once it's started.\" A breath. \"Nobody else said that. Everybody else said the word gullible without saying it. Go on.\"",
       "cooperation": 4,
       "choices": [
         {
@@ -427,19 +427,19 @@
       "choices": []
     },
     "end_shutdown": {
-      "prompt": "Joel looks at the site clock, and then at the pour. \"Time.\" He is on his feet and out the door before the word is finished. The slip stays in the vest pocket, and the vest stays on him, and you understand that the twenty minutes were the whole offer.",
+      "prompt": "Joel looks at the site clock, and then at the men waiting by the mixer. \"Time.\" He is on his feet and out the door before the word is finished. The slip stays in the vest pocket, and the vest stays on him, and you understand that the twenty minutes were the whole offer.",
       "outcome": "failure",
       "milestone": {
         "title": "Witness Lost",
-        "detail": "Joel Abad went back to the pour. Working-age victims report least of all - not from shame, but because the report costs a day they cannot lose, which is the same reason the scam worked."
+        "detail": "Joel Abad went back to work. Working-age victims report least of all - not from shame, but because the report costs a day they cannot lose, which is the same reason the scam worked."
       },
       "choices": [],
       "dispositions": {
         "resistant": {
-          "prompt": "Joel looks at the site clock, and then at the pour. \"Time.\" He is on his feet and out the door before the word is finished. The number on the back of his hand goes with him, and you understand that the twenty minutes were the whole offer."
+          "prompt": "Joel looks at the site clock, and then at the men waiting by the mixer. \"Time.\" He is on his feet and out the door before the word is finished. The number on the back of his hand goes with him, and you understand that the twenty minutes were the whole offer."
         },
         "unfinished": {
-          "prompt": "Joel looks at the site clock, and then at the pour. \"Time.\" He is on his feet and out the door before the word is finished. The number on the back of his hand goes with him, and you understand that the twenty minutes were the whole offer."
+          "prompt": "Joel looks at the site clock, and then at the men waiting by the mixer. \"Time.\" He is on his feet and out the door before the word is finished. The number on the back of his hand goes with him, and you understand that the twenty minutes were the whole offer."
         }
       }
     }

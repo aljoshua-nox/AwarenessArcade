@@ -32,16 +32,16 @@
 			"prompt": "The sheet says the phone is in the hallway and that he takes a while to reach it. Six rings. \"Villanueva residence, good afternoon.\" The voice of a man who has answered a telephone properly for sixty years, and is glad of the company.",
 			"choices": [
 				{
-					"text": "Mr. Villanueva, good afternoon po. This is Attorney Salcedo from the public attorney's office. I'm calling about your grandson Paolo - he's okay, but he's in some trouble, and he asked us to call you.",
-					"next": "name_lands",
-					"doubt": -5,
-					"tactic_id": "authority_impersonation"
-				},
-				{
 					"text": "Sir, your grandson was arrested this afternoon. Bail has to be posted today or he stays in the cell over the weekend.",
 					"next": "alarmed",
 					"doubt": 10,
 					"tactic_id": "manufactured_fear"
+				},
+				{
+					"text": "Mr. Villanueva, good afternoon po. This is Attorney Salcedo from the public attorney's office. I'm calling about your grandson Paolo - he's okay, but he's in some trouble, and he asked us to call you.",
+					"next": "name_lands",
+					"doubt": -5,
+					"tactic_id": "authority_impersonation"
 				},
 				{
 					"text": "Good afternoon, is this Mr. Teodoro? I'm calling from the precinct about a family matter.",
@@ -54,6 +54,11 @@
 			"prompt": "\"Paolo?\" The name lands the way the sheet said it would. \"What kind of trouble? Is he hurt?\" He has stopped asking who you are. A stranger who knows the name of your grandson is not a stranger.",
 			"choices": [
 				{
+					"text": "He was charged with something serious, sir. I already spoke to his mother - she asked me to call you for the money.",
+					"next": "mother_snag",
+					"doubt": 20
+				},
+				{
 					"text": "A traffic accident, sir - nobody was hurt, but the other driver is pressing charges and he was taken in. He's scared, and he asked for you instead of his mother.",
 					"next": "verify",
 					"doubt": -5,
@@ -64,11 +69,6 @@
 					"next": "hurried",
 					"doubt": 15,
 					"tactic_id": "manufactured_urgency"
-				},
-				{
-					"text": "He was charged with something serious, sir. I already spoke to his mother - she asked me to call you for the money.",
-					"next": "mother_snag",
-					"doubt": 20
 				}
 			]
 		},
@@ -76,15 +76,15 @@
 			"prompt": "\"Arrested -\" A hand finds the hall table; you hear it. \"Which grandson? I have three.\" The fear is there, but so is the question, and the question is the part you have to answer.",
 			"choices": [
 				{
-					"text": "Paolo, sir. He's okay. He's scared, and he asked for you.",
-					"next": "verify",
-					"doubt": -10
-				},
-				{
 					"text": "I'm not allowed to say more until the bail is arranged, sir. There are about two hours.",
 					"next": "hurried",
 					"doubt": 20,
 					"tactic_id": "manufactured_urgency"
+				},
+				{
+					"text": "Paolo, sir. He's okay. He's scared, and he asked for you.",
+					"next": "verify",
+					"doubt": -10
 				},
 				{
 					"text": "The one in the city, sir. I'd rather you hear the details from him afterwards than from me.",
@@ -162,12 +162,6 @@
 			"prompt": "\"Okay.\" A long breath, and the sound of a man lowering himself onto a hall chair. \"Tell me what I have to do.\" He has a pencil; you hear him find it. He is going to write down whatever you say next.",
 			"choices": [
 				{
-					"text": "The bail is set at twenty-two thousand, sir. It can be paid by bank transfer, or as a cash-in at any remittance counter, and I'll stay on the line with you the whole way so you're not doing it alone.",
-					"next": "pay_check",
-					"doubt": 0,
-					"tactic_id": "verification_denial"
-				},
-				{
 					"text": "Twenty-two thousand, sir, and the desk closes at five. Is there a remittance counter near you? I'll stay on while you walk there.",
 					"next": "pay_check",
 					"doubt": 10,
@@ -177,6 +171,12 @@
 					"text": "The court will accept a partial bond today to release him, and the rest on Monday. Whatever you have in the house will do for now.",
 					"next": "partial_check",
 					"doubt": 15
+				},
+				{
+					"text": "The bail is set at twenty-two thousand, sir. It can be paid by bank transfer, or as a cash-in at any remittance counter, and I'll stay on the line with you the whole way so you're not doing it alone.",
+					"next": "pay_check",
+					"doubt": 0,
+					"tactic_id": "verification_denial"
 				}
 			]
 		},

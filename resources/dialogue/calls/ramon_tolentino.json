@@ -32,10 +32,9 @@
 			"prompt": "He answers on the second ring with the name of the courier company, then, when you ask for him: \"Speaking. Make it quick, I have eleven vans out.\" A radio crackles under his voice. He has a pen; he has a screen; he has, at most, four minutes.",
 			"choices": [
 				{
-					"text": "Mr. Tolentino, this is the card fraud team of your bank. I'll be quick. There's a payment on your card from this morning that we put on hold - nine thousand eight hundred at an electronics store. Was that you?",
-					"next": "not_me",
-					"doubt": -5,
-					"tactic_id": "authority_impersonation"
+					"text": "Hi, Mr. Tolentino - security call from the bank, nothing serious, we just need to verify a couple of transactions.",
+					"next": "which_bank",
+					"doubt": 5
 				},
 				{
 					"text": "Mr. Tolentino, your card was cloned. Somebody is spending on it right now. I need you to stop what you're doing.",
@@ -44,9 +43,10 @@
 					"tactic_id": "manufactured_fear"
 				},
 				{
-					"text": "Hi, Mr. Tolentino - security call from the bank, nothing serious, we just need to verify a couple of transactions.",
-					"next": "which_bank",
-					"doubt": 5
+					"text": "Mr. Tolentino, this is the card fraud team of your bank. I'll be quick. There's a payment on your card from this morning that we put on hold - nine thousand eight hundred at an electronics store. Was that you?",
+					"next": "not_me",
+					"doubt": -5,
+					"tactic_id": "authority_impersonation"
 				}
 			]
 		},
@@ -54,16 +54,16 @@
 			"prompt": "\"Nine thousand -\" The radio gets muted. \"No. No, that's not me. I'm at work, I've been here since six.\" Something scrapes; he's sitting up. \"Where was it? What store?\"",
 			"choices": [
 				{
-					"text": "A branch in the city - online order, pick up in store. It hasn't been picked up yet, which is why we could hold it. I can cancel it and the card now, if you bear with me.",
-					"next": "cancel",
-					"doubt": -5,
-					"tactic_id": "authority_impersonation"
-				},
-				{
 					"text": "That doesn't matter now. What matters is there are two more pending behind it. I need to move fast.",
 					"next": "cancel",
 					"doubt": 15,
 					"tactic_id": "manufactured_urgency"
+				},
+				{
+					"text": "A branch in the city - online order, pick up in store. It hasn't been picked up yet, which is why we could hold it. I can cancel it and the card now, if you bear with me.",
+					"next": "cancel",
+					"doubt": -5,
+					"tactic_id": "authority_impersonation"
 				},
 				{
 					"text": "I can't give you the merchant details until we've verified you, I'm afraid. Date of birth and the long number on the card?",
@@ -76,16 +76,16 @@
 			"prompt": "\"Cloned -\" A van door somewhere. \"Wait. Wait. Who is this? Which bank?\" He is not panicking. He's dispatching: get the facts, in order. \"Give me a reference number.\"",
 			"choices": [
 				{
-					"text": "Card services, fraud team. Reference CS-4471 - write it down. There's a hold on a nine-thousand-eight-hundred payment from this morning and I need your go-ahead to cancel it.",
-					"next": "cancel",
-					"doubt": -5,
-					"tactic_id": "authority_impersonation"
-				},
-				{
 					"text": "There isn't time for a reference. Every minute we're talking, they're spending.",
 					"next": "cancel",
 					"doubt": 25,
 					"tactic_id": "manufactured_urgency"
+				},
+				{
+					"text": "Card services, fraud team. Reference CS-4471 - write it down. There's a hold on a nine-thousand-eight-hundred payment from this morning and I need your go-ahead to cancel it.",
+					"next": "cancel",
+					"doubt": -5,
+					"tactic_id": "authority_impersonation"
 				},
 				{
 					"text": "I'll get the reference and call you back.",

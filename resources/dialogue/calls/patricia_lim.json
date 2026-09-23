@@ -32,6 +32,11 @@
 			"prompt": "The sheet says she messaged the ad at 11:40 last night with a resume already attached, and that HR chatted with her for twenty minutes. She picks up on the first ring. \"Hello? Yes? This is Trish - Patricia Lim po.\" She has been holding the phone.",
 			"choices": [
 				{
+					"text": "Hi, is this Patricia? I'm calling about your application.",
+					"next": "which_application",
+					"doubt": 5
+				},
+				{
 					"text": "Patricia! This is Ms. Dela Cruz from HR - we chatted last night. I'm calling with good news: you've been shortlisted for the customer service batch.",
 					"next": "shortlisted",
 					"doubt": -5,
@@ -42,11 +47,6 @@
 					"next": "hurried",
 					"doubt": 10,
 					"tactic_id": "manufactured_urgency"
-				},
-				{
-					"text": "Hi, is this Patricia? I'm calling about your application.",
-					"next": "which_application",
-					"doubt": 5
 				}
 			]
 		},
@@ -97,15 +97,15 @@
 			"prompt": "\"The customer service one? From the ad?\" Careful, and hopeful, and trying not to be. \"Sorry po - I sent a lot of applications. Which company is this?\"",
 			"choices": [
 				{
+					"text": "Ours. The one that answered.",
+					"next": "verify",
+					"doubt": 10
+				},
+				{
 					"text": "The customer service batch, Patricia. Ms. Dela Cruz, HR. You messaged us last night - I have your resume right here. Nice photo, by the way.",
 					"next": "verify",
 					"doubt": 0,
 					"tactic_id": "authority_impersonation"
-				},
-				{
-					"text": "Ours. The one that answered.",
-					"next": "verify",
-					"doubt": 10
 				},
 				{
 					"text": "The one with five slots left. Four, now.",
@@ -119,15 +119,15 @@
 			"prompt": "\"My ID number? Over the phone?\" She does not say no. \"Can I bring it on Monday instead? My mother says never give that out on a call.\" A small, apologetic laugh. \"She says that about everything.\"",
 			"choices": [
 				{
-					"text": "Your mother is right, and I would never ask you to. Bring it Monday. Let's just get the slot secured tonight.",
-					"next": "verify",
-					"doubt": 5
-				},
-				{
 					"text": "It's standard, Patricia. Every BPO does it. If you'd rather not, I can move on to the next name on the list.",
 					"next": "verify",
 					"doubt": 15,
 					"tactic_id": "authority_impersonation"
+				},
+				{
+					"text": "Your mother is right, and I would never ask you to. Bring it Monday. Let's just get the slot secured tonight.",
+					"next": "verify",
+					"doubt": 5
 				},
 				{
 					"text": "Bring it Monday. I'll email you the rest.",
@@ -140,9 +140,9 @@
 			"prompt": "\"Okay.\" You hear her sit down on a bed. \"Tell me what I need to do. I'll do it tonight.\" A notebook opens. She is going to write down every word you say next, and she has already written SHORTLISTED at the top of the page.",
 			"choices": [
 				{
-					"text": "The training and uniform fee is two thousand five hundred. It's refunded in full on your first payday, so think of it as a deposit. Cash it in to the account I'll give you now, and I'll confirm your slot while you're still on the line.",
-					"next": "pay_check",
-					"doubt": 0,
+					"text": "There's a uniform fee tonight - one thousand - and the training fee on Monday when you come in. Just the uniform for now.",
+					"next": "partial_check",
+					"doubt": 15,
 					"tactic_id": "advance_fee"
 				},
 				{
@@ -152,9 +152,9 @@
 					"tactic_id": "manufactured_urgency"
 				},
 				{
-					"text": "There's a uniform fee tonight - one thousand - and the training fee on Monday when you come in. Just the uniform for now.",
-					"next": "partial_check",
-					"doubt": 15,
+					"text": "The training and uniform fee is two thousand five hundred. It's refunded in full on your first payday, so think of it as a deposit. Cash it in to the account I'll give you now, and I'll confirm your slot while you're still on the line.",
+					"next": "pay_check",
+					"doubt": 0,
 					"tactic_id": "advance_fee"
 				}
 			]

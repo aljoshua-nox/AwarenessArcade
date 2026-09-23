@@ -54,6 +54,11 @@
 			"prompt": "A pause, and the small sound of a phone being moved away from an ear and back. \"Yes, I got it. I didn't press anything on it. I never do.\" Her voice steadies a little. The text and the call agree with each other, and that is what a bank would do. \"What happened?\"",
 			"choices": [
 				{
+					"text": "I understand this is worrying. My colleague spoke to your son earlier - he asked us to call you directly.",
+					"next": "son_snag",
+					"doubt": 20
+				},
+				{
 					"text": "A login from a device we don't recognize, at two-ten this afternoon. Nothing has left the account yet. I'd like to keep it that way.",
 					"next": "verify",
 					"doubt": -5,
@@ -64,11 +69,6 @@
 					"next": "hurried",
 					"doubt": 15,
 					"tactic_id": "manufactured_urgency"
-				},
-				{
-					"text": "I understand this is worrying. My colleague spoke to your son earlier - he asked us to call you directly.",
-					"next": "son_snag",
-					"doubt": 20
 				}
 			]
 		},
@@ -76,16 +76,16 @@
 			"prompt": "\"Another device? What device? I only have the one phone -\" The words come fast and thin. Behind them, a chair scraping. \"Is it the money? Is it gone?\"",
 			"choices": [
 				{
-					"text": "Not yet, and it won't be, as long as we act now. I'm going to stay on the line with you the whole way. Do you have your phone in your hand?",
-					"next": "verify",
-					"doubt": -5,
-					"tactic_id": "verification_denial"
-				},
-				{
 					"text": "It will be if you don't do exactly as I say. We have about ten minutes before the transfer clears.",
 					"next": "hurried",
 					"doubt": 20,
 					"tactic_id": "manufactured_urgency"
+				},
+				{
+					"text": "Not yet, and it won't be, as long as we act now. I'm going to stay on the line with you the whole way. Do you have your phone in your hand?",
+					"next": "verify",
+					"doubt": -5,
+					"tactic_id": "verification_denial"
 				},
 				{
 					"text": "Mrs. Santos, please - I need you to stay calm. Sit down. Nobody can take anything while you're talking to me.",
@@ -99,6 +99,12 @@
 			"prompt": "\"Which account? I have the checking and the savings. And which bank is this - I get letters from two.\" Not suspicion, exactly. A retired clerk asking a clerk's question.",
 			"choices": [
 				{
+					"text": "It doesn't matter which. What matters is that somebody tried to get into it this afternoon.",
+					"next": "alarmed",
+					"doubt": 15,
+					"tactic_id": "manufactured_fear"
+				},
+				{
 					"text": "The savings, Mrs. Santos. Sorry - I should have said. This is the fraud team, and I'm calling because of a login we didn't recognize.",
 					"next": "verify",
 					"doubt": 5,
@@ -108,12 +114,6 @@
 					"text": "Both, actually. It's a check we run on all of a customer's accounts when we see unusual activity.",
 					"next": "verify",
 					"doubt": 10
-				},
-				{
-					"text": "It doesn't matter which. What matters is that somebody tried to get into it this afternoon.",
-					"next": "alarmed",
-					"doubt": 15,
-					"tactic_id": "manufactured_fear"
 				}
 			]
 		},
@@ -121,15 +121,15 @@
 			"prompt": "\"Slow down. Please.\" The fear is still there, but something else is sitting next to it now. \"You keep saying fast, fast. The bank sent me a letter last month and it said - it said they would never rush me.\" A breath. \"Why are you rushing me?\"",
 			"choices": [
 				{
-					"text": "You're right, and I'm sorry. Take a breath. I'd rather this take ten minutes and be done properly.",
-					"next": "verify",
-					"doubt": -10
-				},
-				{
 					"text": "Because the person in your account isn't going to wait for you to feel comfortable, Mrs. Santos.",
 					"next": "verify",
 					"doubt": 25,
 					"tactic_id": "manufactured_urgency"
+				},
+				{
+					"text": "You're right, and I'm sorry. Take a breath. I'd rather this take ten minutes and be done properly.",
+					"next": "verify",
+					"doubt": -10
 				},
 				{
 					"text": "Then let's leave it there. You'll get a letter.",
@@ -142,15 +142,15 @@
 			"prompt": "\"My son?\" A change in the room. \"Which son? He's at work. He would have called me himself, he calls me every -\" She stops. \"What did you say your name was?\"",
 			"choices": [
 				{
-					"text": "I may have that wrong - the note here just says a family member called in. Let's set that aside; the login is the thing.",
-					"next": "verify",
-					"doubt": 10
-				},
-				{
 					"text": "Daniel, from the fraud team. It will be on the letter we send you afterwards. Let's secure the account first.",
 					"next": "verify",
 					"doubt": 5,
 					"tactic_id": "authority_impersonation"
+				},
+				{
+					"text": "I may have that wrong - the note here just says a family member called in. Let's set that aside; the login is the thing.",
+					"next": "verify",
+					"doubt": 10
 				},
 				{
 					"text": "I think there's been a mix-up. I'll call back once I've checked the file.",

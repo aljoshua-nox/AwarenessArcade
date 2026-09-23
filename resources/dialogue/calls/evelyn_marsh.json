@@ -53,6 +53,11 @@
 			"prompt": "\"Have I.\" Not a question. \"Which raffle, and what was the entry? I like to have things in front of me.\" She is, you realize, writing.",
 			"choices": [
 				{
+					"text": "You have a very good memory, I'm sure, Mrs. Marsh - it will be one of the ones you filled out at the stores. It doesn't matter which.",
+					"next": "sum",
+					"doubt": 20
+				},
+				{
 					"text": "The regional promotional raffle - it pools entries from participating stores. Yours came through the hardware store on the main road, last March. The prize is four hundred twelve thousand.",
 					"next": "sum",
 					"doubt": 0,
@@ -63,11 +68,6 @@
 					"next": "sum",
 					"doubt": 15,
 					"tactic_id": "manufactured_urgency"
-				},
-				{
-					"text": "You have a very good memory, I'm sure, Mrs. Marsh - it will be one of the ones you filled out at the stores. It doesn't matter which.",
-					"next": "sum",
-					"doubt": 20
 				}
 			]
 		},
@@ -75,15 +75,15 @@
 			"prompt": "\"Young man.\" The two words do the work of a sentence. \"Slow down. I haven't said who I am, and you haven't said who you are.\" Paper. \"Start again, please, and start with your name.\"",
 			"choices": [
 				{
+					"text": "It doesn't really matter who I am, Mrs. Marsh. What matters is that you won.",
+					"next": "sum",
+					"doubt": 20
+				},
+				{
 					"text": "Of course - I'm sorry. Daniel, from the regional raffle office. The entry is in the name of Evelyn Marsh, on this street - I won't read the house number out over the phone.",
 					"next": "sum",
 					"doubt": -5,
 					"tactic_id": "authority_impersonation"
-				},
-				{
-					"text": "It doesn't really matter who I am, Mrs. Marsh. What matters is that you won.",
-					"next": "sum",
-					"doubt": 20
 				},
 				{
 					"text": "I think I have the wrong number. Sorry to disturb you.",
@@ -118,15 +118,15 @@
 			"prompt": "\"Four hundred twelve thousand.\" She says it flat, like a figure being entered in a ledger, and then, because she cannot help it, there is a small pause. \"And what is it you need from me?\" The pen is waiting.",
 			"choices": [
 				{
-					"text": "There's a release fee on winnings over a hundred thousand - it covers the transfer insurance. Twenty-four thousand five hundred, and once it's paid the prize is released the same day.",
-					"next": "fee_check",
-					"doubt": 10,
-					"tactic_id": "advance_fee"
-				},
-				{
 					"text": "Just the release fee - twenty-four thousand five hundred, it's a fixed charge - and I'll need it today, because the draw closes at five.",
 					"next": "fee_check",
 					"doubt": 20,
+					"tactic_id": "advance_fee"
+				},
+				{
+					"text": "There's a release fee on winnings over a hundred thousand - it covers the transfer insurance. Twenty-four thousand five hundred, and once it's paid the prize is released the same day.",
+					"next": "fee_check",
+					"doubt": 10,
 					"tactic_id": "advance_fee"
 				},
 				{
@@ -163,16 +163,16 @@
 			"prompt": "\"A fee.\" The pen starts again. \"A fee, to be paid by me, in order to receive money that is owed to me.\" Perfectly polite. \"Say the amount again, slowly. I want it written down exactly the way you said it.\"",
 			"choices": [
 				{
-					"text": "Mrs. Marsh, with respect, I have eleven other winners to reach before five. Twenty-four thousand five hundred, or the prize is forfeited.",
-					"next": "last_check",
-					"doubt": 30,
-					"tactic_id": "manufactured_urgency"
-				},
-				{
 					"text": "It's a standard release charge, Mrs. Marsh - the same as a notarial fee on a contract. It's insurance on the transfer, not a charge for the prize.",
 					"next": "last_check",
 					"doubt": 10,
 					"tactic_id": "authority_impersonation"
+				},
+				{
+					"text": "Mrs. Marsh, with respect, I have eleven other winners to reach before five. Twenty-four thousand five hundred, or the prize is forfeited.",
+					"next": "last_check",
+					"doubt": 30,
+					"tactic_id": "manufactured_urgency"
 				},
 				{
 					"text": "Then maybe this isn't for you. I'll withdraw the entry. Good afternoon.",

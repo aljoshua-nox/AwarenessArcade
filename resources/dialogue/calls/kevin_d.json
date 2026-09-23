@@ -38,16 +38,16 @@
 					"tactic_id": "authority_impersonation"
 				},
 				{
-					"text": "Kevin, don't touch the laptop. The scan on your screen is live - every minute it's on the network, it's spreading.",
-					"next": "spreading",
-					"doubt": 15,
-					"tactic_id": "manufactured_fear"
-				},
-				{
 					"text": "Okay, so what we're seeing on our end is a trojan that got into the system files. Are you the administrator of the device?",
 					"next": "ticket",
 					"doubt": 5,
 					"tactic_id": "impossible_scan"
+				},
+				{
+					"text": "Kevin, don't touch the laptop. The scan on your screen is live - every minute it's on the network, it's spreading.",
+					"next": "spreading",
+					"doubt": 15,
+					"tactic_id": "manufactured_fear"
 				}
 			]
 		},

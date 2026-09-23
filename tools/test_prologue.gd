@@ -123,6 +123,7 @@ func _run() -> void:
 	await _test_every_script_pays_or_hangs_up()
 	await _test_victim_rows_resolve_by_metadata()
 	await _test_continuing_keeps_the_call_log()
+	await _test_choice_positions()
 
 	print("\n%d checks, %d failed" % [checks, failures.size()])
 	for f in failures:
@@ -657,3 +658,55 @@ func _test_continuing_keeps_the_call_log() -> void:
 	SessionState.reset_session()
 	_check(SessionState.get_call_record("maria_santos").is_empty(), "a fresh game from the menu clears it")
 	_check(not SessionState.prologue_played, "...and the prologue no longer counts as played")
+
+
+# Every call was authored smooth -> pushy -> back off, so the line that kept the
+# victim on the phone was first in most nodes and a shift could be worked by
+# position. The order is authored, not shuffled, and the back-off line stays
+# last because it is the way out of the call - what is checked is the spread.
+func _test_choice_positions() -> void:
+	print("\n[no slot is the safe one]")
+	var view := await _open()
+	var best_at := {}
+	var nodes_seen := 0
+	var exits_out_of_place := 0
+	for victim in view.victims:
+		var file := FileAccess.open(str(victim.get("script_path", "")), FileAccess.READ)
+		if file == null:
+			continue
+		var parsed: Variant = JSON.parse_string(file.get_as_text())
+		if typeof(parsed) != TYPE_DICTIONARY:
+			continue
+		var data: Dictionary = parsed
+		var hang := str(data.get("hang_up_node", ""))
+		for node in data.get("nodes", {}).values():
+			var choices: Array = node.get("choices", [])
+			if choices.size() < 2:
+				continue
+			var low := 0
+			var differs := false
+			var last_exit := -1
+			for i in range(choices.size()):
+				var d: int = int(choices[i].get("doubt", 0))
+				if d != int(choices[0].get("doubt", 0)):
+					differs = true
+				if d < int(choices[low].get("doubt", 0)):
+					low = i
+				var goes := str(choices[i].get("next", ""))
+				if goes == "bail" or goes == hang:
+					last_exit = i
+			if last_exit >= 0 and last_exit != choices.size() - 1:
+				exits_out_of_place += 1
+			if not differs:
+				continue
+			nodes_seen += 1
+			best_at[low] = int(best_at.get(low, 0)) + 1
+	_check(nodes_seen >= 50, "there are call choices with a cost to compare (%d)" % nodes_seen)
+	_check(exits_out_of_place == 0, "the way out of a call is always the last line (%d out of place)" % exits_out_of_place)
+	_check(best_at.size() >= 3, "the smoothest line lands in at least three different slots (%s)" % str(best_at))
+	var share := 0
+	for count in best_at.values():
+		share = maxi(share, int(count))
+	_check(float(share) / float(maxi(nodes_seen, 1)) < 0.6,
+		"...and no single slot holds most of them (%d of %d)" % [share, nodes_seen])
+	await _close(view)

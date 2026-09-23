@@ -32,12 +32,6 @@
 			"prompt": "The sheet says he answers on site. Two rings, and a cement mixer in the background. \"Abad.\" One word, and the sound of a man who has thirty other things to do.",
 			"choices": [
 				{
-					"text": "Mr. Joel Abad? This is the enforcement desk at the revenue office. I'm calling about a case filed under your name - reference 2024-0417. Do you have a moment, sir?",
-					"next": "case_number",
-					"doubt": -5,
-					"tactic_id": "authority_impersonation"
-				},
-				{
 					"text": "Sir, there is an active warrant in your name for an unpaid assessment. An officer is being dispatched to your work site this afternoon.",
 					"next": "alarmed",
 					"doubt": 10,
@@ -47,6 +41,12 @@
 					"text": "Good afternoon, is this Mr. Joel Abad? I'm calling from a government office about a compliance matter.",
 					"next": "which_office",
 					"doubt": 5
+				},
+				{
+					"text": "Mr. Joel Abad? This is the enforcement desk at the revenue office. I'm calling about a case filed under your name - reference 2024-0417. Do you have a moment, sir?",
+					"next": "case_number",
+					"doubt": -5,
+					"tactic_id": "authority_impersonation"
 				}
 			]
 		},
@@ -60,15 +60,15 @@
 					"tactic_id": "manufactured_fear"
 				},
 				{
+					"text": "Your employer has already been notified, sir. Your site manager should have received the letter this morning.",
+					"next": "boss_snag",
+					"doubt": 20
+				},
+				{
 					"text": "I can't discuss the details on an unverified line, sir. What I can tell you is that the escalation is scheduled for four o'clock today.",
 					"next": "hurried",
 					"doubt": 15,
 					"tactic_id": "manufactured_urgency"
-				},
-				{
-					"text": "Your employer has already been notified, sir. Your site manager should have received the letter this morning.",
-					"next": "boss_snag",
-					"doubt": 20
 				}
 			]
 		},
@@ -98,6 +98,12 @@
 			"prompt": "\"Which office?\" Flat. \"I pay my taxes through the contractor. Every month. What compliance matter?\" He is not alarmed yet. He is a man who has been asked for paperwork before and has always had it.",
 			"choices": [
 				{
+					"text": "There's a warrant attached to it, sir. That's all I can say on this line.",
+					"next": "alarmed",
+					"doubt": 15,
+					"tactic_id": "manufactured_fear"
+				},
+				{
 					"text": "Revenue enforcement, sir. An assessment under your own number that the contractor's filing didn't cover. Reference 2024-0417.",
 					"next": "verify",
 					"doubt": 0,
@@ -107,12 +113,6 @@
 					"text": "I'm not able to say until I've confirmed I'm speaking to the right person, sir. Full name, date of birth and TIN, please.",
 					"next": "verify",
 					"doubt": 10
-				},
-				{
-					"text": "There's a warrant attached to it, sir. That's all I can say on this line.",
-					"next": "alarmed",
-					"doubt": 15,
-					"tactic_id": "manufactured_fear"
 				}
 			]
 		},
@@ -120,16 +120,16 @@
 			"prompt": "\"Four o'clock.\" A pause with the whole site in it. \"You people never call. You send letters. Nobody from the government has ever called me in my life.\" Quieter: \"Why now?\"",
 			"choices": [
 				{
-					"text": "Because a letter takes three weeks and a warrant takes an afternoon, sir. I'm trying to give you the afternoon.",
-					"next": "verify",
-					"doubt": -5,
-					"tactic_id": "verification_denial"
-				},
-				{
 					"text": "Because at four o'clock it's out of my hands and into a police vehicle, sir. Do you want to keep asking me questions, or do you want to fix it?",
 					"next": "verify",
 					"doubt": 25,
 					"tactic_id": "manufactured_urgency"
+				},
+				{
+					"text": "Because a letter takes three weeks and a warrant takes an afternoon, sir. I'm trying to give you the afternoon.",
+					"next": "verify",
+					"doubt": -5,
+					"tactic_id": "verification_denial"
 				},
 				{
 					"text": "Then wait for the letter, sir. Good afternoon.",
@@ -163,10 +163,9 @@
 			"prompt": "\"Okay.\" The mixer is gone; he has walked out to the road. \"What do I owe, and how do I make it go away. Today. I can't lose a day to this.\" A marker clicks. He is going to write the number on the back of his hand.",
 			"choices": [
 				{
-					"text": "Sixteen thousand settles it in full, sir. It can be paid by transfer to the desk's account, or as a cash-in at any remittance counter - I'll stay on the line and read you the reference so it's filed right.",
-					"next": "pay_check",
-					"doubt": 0,
-					"tactic_id": "verification_denial"
+					"text": "A partial settlement today freezes the warrant, sir. Whatever you can cash in before four - the rest can be arranged next week.",
+					"next": "partial_check",
+					"doubt": 15
 				},
 				{
 					"text": "Sixteen thousand, sir, and the desk closes at four. There's a remittance counter on every street in this city - which one is nearest to you?",
@@ -175,9 +174,10 @@
 					"tactic_id": "manufactured_urgency"
 				},
 				{
-					"text": "A partial settlement today freezes the warrant, sir. Whatever you can cash in before four - the rest can be arranged next week.",
-					"next": "partial_check",
-					"doubt": 15
+					"text": "Sixteen thousand settles it in full, sir. It can be paid by transfer to the desk's account, or as a cash-in at any remittance counter - I'll stay on the line and read you the reference so it's filed right.",
+					"next": "pay_check",
+					"doubt": 0,
+					"tactic_id": "verification_denial"
 				}
 			]
 		},
@@ -199,16 +199,16 @@
 			"prompt": "\"Sixteen thousand.\" He says it the way a man says the name of somebody he sends money to. \"That's the fifteenth. That's what goes home.\" The pen stops. \"Give me the reference and the office and I'll settle it at the office. Myself. Tomorrow morning.\"",
 			"choices": [
 				{
-					"text": "You can, sir - and the warrant will have been served by then. The desk can only hold it while we're on this call. That's not me being difficult; that's the system.",
-					"next": "last_check",
-					"doubt": 10,
-					"tactic_id": "verification_denial"
-				},
-				{
 					"text": "Mr. Abad, if this call ends without settlement the officer is dispatched. To the site. In front of your thirty-two men.",
 					"next": "last_check",
 					"doubt": 30,
 					"tactic_id": "manufactured_fear"
+				},
+				{
+					"text": "You can, sir - and the warrant will have been served by then. The desk can only hold it while we're on this call. That's not me being difficult; that's the system.",
+					"next": "last_check",
+					"doubt": 10,
+					"tactic_id": "verification_denial"
 				},
 				{
 					"text": "Then settle it at the office, sir. I'll note the file. Good afternoon.",

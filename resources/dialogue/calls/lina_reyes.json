@@ -32,12 +32,6 @@
 			"prompt": "The shop phone, picked up on the fourth ring over the sound of a machine. \"Reyes Print, hold on -\" The machine stops. \"- sorry. Go ahead.\" She has a pen in her hand already; she was writing a quote when it rang, and she doesn't put it down.",
 			"choices": [
 				{
-					"text": "Is this Lina Reyes? Ma'am Lina, I'm calling from the trade awards raffle - your shop was entered through your supplier account. I'm happy to say it was drawn.",
-					"next": "entered",
-					"doubt": -5,
-					"tactic_id": "authority_impersonation"
-				},
-				{
 					"text": "Lina! Congratulations - you won the regional business prize! Do you have a minute?",
 					"next": "no_minute",
 					"doubt": 10
@@ -47,6 +41,12 @@
 					"next": "entered",
 					"doubt": 5,
 					"tactic_id": "manufactured_urgency"
+				},
+				{
+					"text": "Is this Lina Reyes? Ma'am Lina, I'm calling from the trade awards raffle - your shop was entered through your supplier account. I'm happy to say it was drawn.",
+					"next": "entered",
+					"doubt": -5,
+					"tactic_id": "authority_impersonation"
 				}
 			]
 		},
@@ -97,9 +97,9 @@
 			"prompt": "The machine stops. \"For equipment.\" The pen has stopped too. \"...What kind of equipment?\" It is the first thing she has asked that she actually wants the answer to.",
 			"choices": [
 				{
-					"text": "Anything for the business - a machine, a renovation. It's paid directly to you, not the supplier; you spend it however you like. There's one form and a release fee, and it's yours.",
+					"text": "Don't get excited yet - there's a bit of paperwork first. The fee is the thing.",
 					"next": "fee",
-					"doubt": 0
+					"doubt": 10
 				},
 				{
 					"text": "Whatever you need - but I have to close the list by four, so I need a yes from you now.",
@@ -108,9 +108,9 @@
 					"tactic_id": "manufactured_urgency"
 				},
 				{
-					"text": "Don't get excited yet - there's a bit of paperwork first. The fee is the thing.",
+					"text": "Anything for the business - a machine, a renovation. It's paid directly to you, not the supplier; you spend it however you like. There's one form and a release fee, and it's yours.",
 					"next": "fee",
-					"doubt": 10
+					"doubt": 0
 				}
 			]
 		},
@@ -124,16 +124,16 @@
 					"tactic_id": "advance_fee"
 				},
 				{
-					"text": "Processing, basically. Ten thousand, today, and the hundred fifty goes out Monday. Or I move to the next name.",
-					"next": "fee_check",
-					"doubt": 15,
-					"tactic_id": "manufactured_urgency"
-				},
-				{
 					"text": "Half now would hold it - five thousand - and the rest when the prize lands.",
 					"next": "half_check",
 					"doubt": 0,
 					"tactic_id": "advance_fee"
+				},
+				{
+					"text": "Processing, basically. Ten thousand, today, and the hundred fifty goes out Monday. Or I move to the next name.",
+					"next": "fee_check",
+					"doubt": 15,
+					"tactic_id": "manufactured_urgency"
 				}
 			]
 		},

@@ -102,13 +102,13 @@
 		  "next": "ask_wellbeing"
 		},
 		{
-		  "text": "I just need to hear it from you. What happened on that call?",
-		  "next": "ask_call"
-		},
-		{
 		  "text": "Let's make this quick. I still have a lot of people to see today.",
 		  "next": "rush_her",
 		  "cooperation": -14
+		},
+		{
+		  "text": "I just need to hear it from you. What happened on that call?",
+		  "next": "ask_call"
 		}
 	  ]
 	},

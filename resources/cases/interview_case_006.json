@@ -117,51 +117,51 @@
       "prompt": "Lina reads your ID, then puts down what she is holding, which you get the feeling she does not do often. \"Okay. You actually came.\"",
       "choices": [
         {
-          "text": "I did. Start wherever it starts for you.",
-          "next": "ask_wellbeing"
+          "text": "I'll be straight with you - three transfers is a lot to send to a stranger.",
+          "next": "blame_her",
+          "cooperation": -14
         },
         {
           "text": "Take me through the payments, one at a time.",
           "next": "ask_call"
         },
         {
-          "text": "I'll be straight with you - three transfers is a lot to send to a stranger.",
-          "next": "blame_her",
-          "cooperation": -14
+          "text": "I did. Start wherever it starts for you.",
+          "next": "ask_wellbeing"
         }
       ],
       "dispositions": {
         "resistant": {
           "choices": [
             {
-              "text": "I did. Start wherever it starts for you.",
-              "next": "ask_wellbeing"
+              "text": "I'll be straight with you - somebody who prices jobs for a living should have hung up sooner.",
+              "next": "blame_her",
+              "cooperation": -14
             },
             {
               "text": "Take me through the call, start to finish.",
               "next": "ask_call"
             },
             {
-              "text": "I'll be straight with you - somebody who prices jobs for a living should have hung up sooner.",
-              "next": "blame_her",
-              "cooperation": -14
+              "text": "I did. Start wherever it starts for you.",
+              "next": "ask_wellbeing"
             }
           ]
         },
         "unfinished": {
           "choices": [
             {
-              "text": "I did. Start wherever it starts for you.",
-              "next": "ask_wellbeing"
+              "text": "I'll be straight with you - a call that cut off isn't much to go on.",
+              "next": "blame_her",
+              "cooperation": -14
             },
             {
               "text": "Take me through the call, as far as it got.",
               "next": "ask_call"
             },
             {
-              "text": "I'll be straight with you - a call that cut off isn't much to go on.",
-              "next": "blame_her",
-              "cooperation": -14
+              "text": "I did. Start wherever it starts for you.",
+              "next": "ask_wellbeing"
             }
           ]
         }
@@ -171,14 +171,14 @@
       "prompt": "Her face closes. \"It is. It's a lot.\" She picks the stack back up. \"The first one was small enough to be worth the risk. So was the second, once I had sent the first. That's how it's built. But you've decided already, so.\"",
       "choices": [
         {
-          "text": "You're right, and I asked that badly. Each one was small because the last one was.",
-          "next": "recover",
-          "cooperation": 8
-        },
-        {
           "text": "I haven't decided anything. The payments, please.",
           "next": "ask_call_cold",
           "cooperation": -8
+        },
+        {
+          "text": "You're right, and I asked that badly. Each one was small because the last one was.",
+          "next": "recover",
+          "cooperation": 8
         }
       ],
       "dispositions": {
@@ -186,14 +186,14 @@
           "prompt": "Her face closes. \"Should I.\" She picks the stack back up. \"I hung up when I had heard enough to write it down. That was the plan. But you've decided already, so.\"",
           "choices": [
             {
-              "text": "You're right, and I asked that badly. You hung up with his number in your hand - that's more than most people managed.",
-              "next": "recover",
-              "cooperation": 8
-            },
-            {
               "text": "I haven't decided anything. The call, please.",
               "next": "ask_call_cold",
               "cooperation": -8
+            },
+            {
+              "text": "You're right, and I asked that badly. You hung up with his number in your hand - that's more than most people managed.",
+              "next": "recover",
+              "cooperation": 8
             }
           ]
         },
@@ -201,14 +201,14 @@
           "prompt": "Her face closes. \"It isn't.\" She picks the stack back up. \"It's the third one this month, and you're the first person to ask. But you've decided already, so.\"",
           "choices": [
             {
-              "text": "You're right, and I asked that badly. Three in a month is exactly the point.",
-              "next": "recover",
-              "cooperation": 8
-            },
-            {
               "text": "I haven't decided anything. The call, please.",
               "next": "ask_call_cold",
               "cooperation": -8
+            },
+            {
+              "text": "You're right, and I asked that badly. Three in a month is exactly the point.",
+              "next": "recover",
+              "cooperation": 8
             }
           ]
         }

@@ -131,7 +131,7 @@ func _capture_evidence_list() -> void:
 
 	# Walk to the evidence step, then open the list and select a row with the
 	# list focused - the state where the whole panel used to wash out.
-	view._on_choice_pressed(1)
+	view._on_choice_pressed(_choice_to(view, "ask_call"))
 	view._on_choice_pressed(0)
 	view._on_choice_pressed(_quiz_answer(view, true))
 	view._on_present_evidence_pressed()
@@ -174,5 +174,15 @@ func _quiz_answer(view: Node, correct: bool) -> int:
 	var options: Array = view.current_quiz.get("options", [])
 	for i in range(options.size()):
 		if bool(options[i].get("correct", false)) == correct:
+			return i
+	return -1
+
+# Choices are authored in a deliberate order, and that order changes when the
+# writing does - the harsh line is no longer always last. A walk names the node
+# it wants to reach instead of a slot.
+func _choice_to(view: Node, node_id: String) -> int:
+	var choices: Array = view.current_node.get("choices", [])
+	for i in range(choices.size()):
+		if str(choices[i].get("next", "")) == node_id:
 			return i
 	return -1

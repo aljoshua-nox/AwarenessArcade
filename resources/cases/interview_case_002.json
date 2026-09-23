@@ -108,6 +108,11 @@
 	  "prompt": "Kevin rubs his eyes. \"I still don't know how I let that guy into my laptop. Kind of embarrassing, ha.\"",
 	  "choices": [
 		{
+		  "text": "You gave a stranger remote access to your own laptop. Walk me through how that happened.",
+		  "next": "shame_him",
+		  "cooperation": -14
+		},
+		{
 		  "text": "It happens to careful people too. Can you walk me through it?",
 		  "next": "ask_call"
 		},
@@ -115,17 +120,17 @@
 		  "text": "Before we start - you're not the one in trouble here. He is.",
 		  "next": "reassure",
 		  "cooperation": 8
-		},
-		{
-		  "text": "You gave a stranger remote access to your own laptop. Walk me through how that happened.",
-		  "next": "shame_him",
-		  "cooperation": -14
 		}
 	  ],
 	  "dispositions": {
 		"resistant": {
 		  "choices": [
 			{
+			  "text": "You called a number you found in a browser pop-up. Walk me through how that happened.",
+			  "next": "shame_him",
+			  "cooperation": -14
+			},
+			{
 			  "text": "It happens to careful people too. Can you walk me through it?",
 			  "next": "ask_call"
 			},
@@ -133,17 +138,17 @@
 			  "text": "Before we start - you're not the one in trouble here. He is.",
 			  "next": "reassure",
 			  "cooperation": 8
-			},
-			{
-			  "text": "You called a number you found in a browser pop-up. Walk me through how that happened.",
-			  "next": "shame_him",
-			  "cooperation": -14
 			}
 		  ]
 		},
 		"unfinished": {
 		  "choices": [
 			{
+			  "text": "You called a number you found in a browser pop-up. Walk me through how that happened.",
+			  "next": "shame_him",
+			  "cooperation": -14
+			},
+			{
 			  "text": "It happens to careful people too. Can you walk me through it?",
 			  "next": "ask_call"
 			},
@@ -151,11 +156,6 @@
 			  "text": "Before we start - you're not the one in trouble here. He is.",
 			  "next": "reassure",
 			  "cooperation": 8
-			},
-			{
-			  "text": "You called a number you found in a browser pop-up. Walk me through how that happened.",
-			  "next": "shame_him",
-			  "cooperation": -14
 			}
 		  ]
 		}
@@ -175,14 +175,14 @@
 	  "prompt": "His jaw sets. \"Right. Because you've never had a bad day, obviously.\" He picks his phone back up. \"It said my laptop was infected. I called. That's the whole story.\"",
 	  "choices": [
 		{
-		  "text": "That was out of line, sorry. These pop-ups are designed to work on anyone.",
-		  "next": "reassure",
-		  "cooperation": 8
-		},
-		{
 		  "text": "Fine. Then let's go through it faster.",
 		  "next": "ask_call_cold",
 		  "cooperation": -8
+		},
+		{
+		  "text": "That was out of line, sorry. These pop-ups are designed to work on anyone.",
+		  "next": "reassure",
+		  "cooperation": 8
 		}
 	  ]
 	},

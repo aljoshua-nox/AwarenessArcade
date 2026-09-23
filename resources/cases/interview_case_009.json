@@ -49,13 +49,13 @@
       "prompt": "Bea lets you into a room with a mattress, a rice cooker and a headset on the windowsill. \"You're the one asking about the calls. People at work were talking about you.\" She sits on the mattress with her hoodie sleeves pulled over her hands. \"I do customer service. That's all I'm going to say about it.\"",
       "choices": [
         {
-          "text": "Then tell me about customer service. How did you get the job?",
-          "next": "ask_job"
-        },
-        {
           "text": "You're not who I'm here for. I want the people who put the script in your hand.",
           "next": "reassure",
           "cooperation": 8
+        },
+        {
+          "text": "Then tell me about customer service. How did you get the job?",
+          "next": "ask_job"
         },
         {
           "text": "You read scripts to strangers until they hand over their bank details. Start there.",

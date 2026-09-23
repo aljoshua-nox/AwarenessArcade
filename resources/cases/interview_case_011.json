@@ -23,13 +23,13 @@
           "next": "deny_node"
         },
         {
-          "text": "None yet. I came to ask you what this floor does.",
-          "next": "soft_open"
-        },
-        {
           "text": "Bea Santiago's.",
           "next": "names_bea",
           "cooperation": -6
+        },
+        {
+          "text": "None yet. I came to ask you what this floor does.",
+          "next": "soft_open"
         }
       ]
     },

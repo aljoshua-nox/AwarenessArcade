@@ -19,17 +19,17 @@
       "prompt": "The lobby of the tower: marble, glass, a desk with nobody at it, and a man in a pressed light-blue polo waiting by the elevator with a lanyard in his hand. He looks at you the way a receptionist looks at a delivery. \"You're the one going door to door. From the barangay, they said.\" A glance at his watch. \"They want me upstairs in ten minutes. You can have nine.\"",
       "choices": [
         {
+          "text": "Forty desks on each floor, and you're the one with a card for the elevator. That makes you the one I charge.",
+          "next": "hostile",
+          "cooperation": -10
+        },
+        {
           "text": "Then let's use them. Tell me what a closer does.",
           "next": "explains"
         },
         {
           "text": "Let's talk about the calls you finish.",
           "next": "deny_node"
-        },
-        {
-          "text": "Forty desks on each floor, and you're the one with a card for the elevator. That makes you the one I charge.",
-          "next": "hostile",
-          "cooperation": -10
         }
       ]
     },

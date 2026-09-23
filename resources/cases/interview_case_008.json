@@ -89,14 +89,14 @@
           "next": "ask_ad"
         },
         {
-          "text": "It was made to look real by people who do this all day. None of that is on you.",
-          "next": "reassure",
-          "cooperation": 8
-        },
-        {
           "text": "You paid a stranger to give you a job. Walk me through the moment that made sense.",
           "next": "shame_her",
           "cooperation": -14
+        },
+        {
+          "text": "It was made to look real by people who do this all day. None of that is on you.",
+          "next": "reassure",
+          "cooperation": 8
         }
       ],
       "dispositions": {
@@ -107,14 +107,14 @@
               "next": "ask_ad"
             },
             {
-              "text": "It was made to look real by people who do this all day. None of that is on you.",
-              "next": "reassure",
-              "cooperation": 8
-            },
-            {
               "text": "You almost gave a stranger your mother's e-wallet PIN for a job. Walk me through the moment that made sense.",
               "next": "shame_her",
               "cooperation": -14
+            },
+            {
+              "text": "It was made to look real by people who do this all day. None of that is on you.",
+              "next": "reassure",
+              "cooperation": 8
             }
           ]
         },
@@ -125,14 +125,14 @@
               "next": "ask_ad"
             },
             {
-              "text": "It was made to look real by people who do this all day. None of that is on you.",
-              "next": "reassure",
-              "cooperation": 8
-            },
-            {
               "text": "A stranger said shortlisted and you went looking for your mother's e-wallet PIN. Walk me through the moment that made sense.",
               "next": "shame_her",
               "cooperation": -14
+            },
+            {
+              "text": "It was made to look real by people who do this all day. None of that is on you.",
+              "next": "reassure",
+              "cooperation": 8
             }
           ]
         }
@@ -152,14 +152,14 @@
       "prompt": "Her face closes, politely. \"I was three weeks out of college and I had sent forty applications and this one answered.\" She puts the phone face down. \"That was the moment. Anything else?\"",
       "choices": [
         {
-          "text": "That was unfair, and I'm sorry. Forty applications and one answer is exactly what they look for.",
-          "next": "reassure",
-          "cooperation": 8
-        },
-        {
           "text": "The ad. Let's see it.",
           "next": "ask_ad_cold",
           "cooperation": -8
+        },
+        {
+          "text": "That was unfair, and I'm sorry. Forty applications and one answer is exactly what they look for.",
+          "next": "reassure",
+          "cooperation": 8
         }
       ]
     },

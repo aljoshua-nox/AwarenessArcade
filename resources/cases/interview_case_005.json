@@ -80,10 +80,6 @@
       "prompt": "Evelyn Marsh meets you at the door like somebody who has been waiting to be taken seriously. \"You're here about the phone call. Finally.\"",
       "choices": [
         {
-          "text": "I am. And I'd like to hear all of it, in your own order.",
-          "next": "ask_wellbeing"
-        },
-        {
           "text": "Tell me what the caller actually said.",
           "next": "ask_call"
         },
@@ -91,15 +87,15 @@
           "text": "You didn't lose any money, so let's keep this short.",
           "next": "dismiss_her",
           "cooperation": -14
+        },
+        {
+          "text": "I am. And I'd like to hear all of it, in your own order.",
+          "next": "ask_wellbeing"
         }
       ],
       "dispositions": {
         "harmed": {
           "choices": [
-            {
-              "text": "I am. And I'd like to hear all of it, in your own order.",
-              "next": "ask_wellbeing"
-            },
             {
               "text": "Tell me what the caller actually said.",
               "next": "ask_call"
@@ -108,15 +104,15 @@
               "text": "I'll be honest - a bookkeeper paying a release fee is the part I don't get.",
               "next": "dismiss_her",
               "cooperation": -14
+            },
+            {
+              "text": "I am. And I'd like to hear all of it, in your own order.",
+              "next": "ask_wellbeing"
             }
           ]
         },
         "unfinished": {
           "choices": [
-            {
-              "text": "I am. And I'd like to hear all of it, in your own order.",
-              "next": "ask_wellbeing"
-            },
             {
               "text": "Tell me what the caller actually said.",
               "next": "ask_call"
@@ -125,6 +121,10 @@
               "text": "A wrong number and a dropped line. Let's keep this short.",
               "next": "dismiss_her",
               "cooperation": -14
+            },
+            {
+              "text": "I am. And I'd like to hear all of it, in your own order.",
+              "next": "ask_wellbeing"
             }
           ]
         }

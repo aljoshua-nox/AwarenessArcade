@@ -93,8 +93,9 @@
       "prompt": "Joel gives you twenty minutes, in the site office, with the door open so he can see the work. \"Okay. Go.\" The case number the caller gave him is written on a cement bag on the desk, and he does not look at it.",
       "choices": [
         {
-          "text": "Start with the call. Who did he say he was?",
-          "next": "ask_call"
+          "text": "You sent sixteen thousand to a stranger because he said the word warrant. Take me through that.",
+          "next": "shame_him",
+          "cooperation": -14
         },
         {
           "text": "Whatever you've decided you should have done - there were thirty-two men waiting and concrete that couldn't wait. That's the whole reason it worked.",
@@ -102,17 +103,17 @@
           "cooperation": 8
         },
         {
-          "text": "You sent sixteen thousand to a stranger because he said the word warrant. Take me through that.",
-          "next": "shame_him",
-          "cooperation": -14
+          "text": "Start with the call. Who did he say he was?",
+          "next": "ask_call"
         }
       ],
       "dispositions": {
         "resistant": {
           "choices": [
             {
-              "text": "Start with the call. Who did he say he was?",
-              "next": "ask_call"
+              "text": "You almost walked to a counter with sixteen thousand because a stranger said the word warrant. Take me through that.",
+              "next": "shame_him",
+              "cooperation": -14
             },
             {
               "text": "Whatever you've decided you should have done - there were thirty-two men waiting and concrete that couldn't wait. That's the whole reason it almost worked.",
@@ -120,17 +121,17 @@
               "cooperation": 8
             },
             {
-              "text": "You almost walked to a counter with sixteen thousand because a stranger said the word warrant. Take me through that.",
-              "next": "shame_him",
-              "cooperation": -14
+              "text": "Start with the call. Who did he say he was?",
+              "next": "ask_call"
             }
           ]
         },
         "unfinished": {
           "choices": [
             {
-              "text": "Start with the call. Who did he say he was?",
-              "next": "ask_call"
+              "text": "A stranger said the word warrant and you walked to the road with your wallet out. Take me through that.",
+              "next": "shame_him",
+              "cooperation": -14
             },
             {
               "text": "Whatever you've decided you should have done - there were thirty-two men waiting and concrete that couldn't wait. That's the whole reason it almost worked.",
@@ -138,9 +139,8 @@
               "cooperation": 8
             },
             {
-              "text": "A stranger said the word warrant and you walked to the road with your wallet out. Take me through that.",
-              "next": "shame_him",
-              "cooperation": -14
+              "text": "Start with the call. Who did he say he was?",
+              "next": "ask_call"
             }
           ]
         }
@@ -160,14 +160,14 @@
       "prompt": "\"Yeah.\" He does not take the bait, which is worse. \"That's what happened. I'm the foreman. I'm supposed to be the one who doesn't.\" He looks at the cement bag. \"Was there a question in that, or was that the whole visit?\"",
       "choices": [
         {
-          "text": "That was out of line, and I'm sorry. The word warrant is exactly what I want to understand.",
-          "next": "reassure",
-          "cooperation": 8
-        },
-        {
           "text": "The call. Who did he say he was?",
           "next": "ask_call_cold",
           "cooperation": -8
+        },
+        {
+          "text": "That was out of line, and I'm sorry. The word warrant is exactly what I want to understand.",
+          "next": "reassure",
+          "cooperation": 8
         }
       ]
     },

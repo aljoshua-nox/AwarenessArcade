@@ -93,13 +93,13 @@
       "prompt": "Teodoro shows you to the kitchen table and waits until you are seated before he sits. \"You are here about the phone call.\" He says it the way he might once have said you are here about your son's grades - kindly, and expecting the worst.",
       "choices": [
         {
-          "text": "Let's start with the call itself. Who did he say he was?",
-          "next": "ask_call"
-        },
-        {
           "text": "Before anything else - Paolo is fine, and none of this was your fault.",
           "next": "reassure",
           "cooperation": 8
+        },
+        {
+          "text": "Let's start with the call itself. Who did he say he was?",
+          "next": "ask_call"
         },
         {
           "text": "You sent money to a stranger for a grandson you never even spoke to. Take me through that.",
@@ -111,13 +111,13 @@
         "resistant": {
           "choices": [
             {
-              "text": "Let's start with the call itself. Who did he say he was?",
-              "next": "ask_call"
-            },
-            {
               "text": "Before anything else - Paolo is fine, and none of this was your fault.",
               "next": "reassure",
               "cooperation": 8
+            },
+            {
+              "text": "Let's start with the call itself. Who did he say he was?",
+              "next": "ask_call"
             },
             {
               "text": "You almost paid bail to a stranger for a grandson you never even spoke to. Take me through that.",
@@ -129,13 +129,13 @@
         "unfinished": {
           "choices": [
             {
-              "text": "Let's start with the call itself. Who did he say he was?",
-              "next": "ask_call"
-            },
-            {
               "text": "Before anything else - Paolo is fine, and none of this was your fault.",
               "next": "reassure",
               "cooperation": 8
+            },
+            {
+              "text": "Let's start with the call itself. Who did he say he was?",
+              "next": "ask_call"
             },
             {
               "text": "A stranger said your grandson's name and you went to get the passbook. Take me through that.",

@@ -20,6 +20,8 @@ const CASE_TRISH := "res://resources/cases/interview_case_008.json"
 const CASE_BEA := "res://resources/cases/interview_case_009.json"
 const CASE_ROWENA := "res://resources/cases/interview_case_011.json"
 const CASE_DENNIS := "res://resources/cases/interview_case_013.json"
+const CASE_JOEL := "res://resources/cases/interview_case_010.json"
+const CASE_CARMEN := "res://resources/cases/interview_case_012.json"
 
 var failures: Array[String] = []
 var checks := 0
@@ -100,6 +102,7 @@ func _run() -> void:
 	await _test_setting_backgrounds()
 	await _test_suspect_doors_are_checkpoints()
 	await _test_breadth_and_spent_testimony()
+	_test_choice_positions()
 
 	print("\n%d checks, %d failed" % [checks, failures.size()])
 	for f in failures:
@@ -308,7 +311,7 @@ func _test_typewriter() -> void:
 func _test_choice_costs() -> void:
 	print("\n[choice costs]")
 	var view := await _open(CASE_MARIA)
-	view._on_choice_pressed(2)  # "you're one of several people I have to see today"
+	view._on_choice_pressed(_choice_to(view, "rush_her"))  # "let's make this quick"
 	_check(view.cooperation == 36, "hostile opener costs 14 cooperation (got %d)" % view.cooperation)
 	_check(view.current_node_id == "rush_her", "hostile opener routes to rush_her")
 	view._on_choice_pressed(0)  # apologize
@@ -319,7 +322,7 @@ func _test_choice_costs() -> void:
 func _test_quiz() -> void:
 	print("\n[tactic quiz]")
 	var view := await _open(CASE_MARIA)
-	view._on_choice_pressed(1)  # straight to the account of the call
+	view._on_choice_pressed(_choice_to(view, "ask_call"))  # straight to the account of the call
 	view._on_choice_pressed(0)  # "say that back to me slowly" -> quiz
 	_check(view.quiz_active, "quiz activates on the quiz node")
 	var options := 0
@@ -351,7 +354,7 @@ func _test_quiz() -> void:
 
 	# ...and the correct answer scores.
 	view = await _open(CASE_MARIA)
-	view._on_choice_pressed(1)
+	view._on_choice_pressed(_choice_to(view, "ask_call"))
 	view._on_choice_pressed(0)
 	view._on_choice_pressed(_quiz_answer(view, true))  # correct
 	_check(SessionState.tactic_reads_correct == 1, "correct answer is scored")
@@ -362,7 +365,7 @@ func _test_quiz() -> void:
 func _test_evidence() -> void:
 	print("\n[evidence]")
 	var view := await _open(CASE_MARIA)
-	view._on_choice_pressed(1)
+	view._on_choice_pressed(_choice_to(view, "ask_call"))
 	view._on_choice_pressed(0)
 	view._on_choice_pressed(_quiz_answer(view, true))  # through the quiz to ask_evidence
 	_check(view.present_evidence_button.visible, "Present Evidence is offered")
@@ -391,7 +394,7 @@ func _test_failure_route() -> void:
 	print("\n[failure route]")
 	var view := await _open(CASE_MARIA)
 	view.cooperation = 6
-	view._on_choice_pressed(2)  # -14, drives cooperation to 0
+	view._on_choice_pressed(_choice_to(view, "rush_her"))  # -14, drives cooperation to 0
 	_check(view.interview_over, "cooperation hitting 0 ends the interview")
 	_check(view.current_node_id == "end_shutdown", "it routes to the case's own failure node")
 	_check(SessionState.investigation_outcome == "failure", "outcome is failure")
@@ -402,7 +405,7 @@ func _test_failure_route() -> void:
 func _test_antifarming() -> void:
 	print("\n[anti-farming + credibility gate]")
 	var view := await _open(CASE_MARIA)
-	view._on_choice_pressed(0)  # ask_wellbeing, +8 on first visit
+	view._on_choice_pressed(_choice_to(view, "ask_wellbeing"))  # +8 on first visit
 	var after_first: int = view.cooperation
 	view._on_choice_pressed(0)  # on to ask_call
 	view._on_choice_pressed(0)  # into the quiz
@@ -456,7 +459,7 @@ func _test_text_voices() -> void:
 	_check(not intro.contains("[font="), "plain dialogue carries no system font")
 
 	# Reach the evidence step, which renders a CASE NOTE hint.
-	view._on_choice_pressed(1)
+	view._on_choice_pressed(_choice_to(view, "ask_call"))
 	view._on_choice_pressed(0)
 	var quiz_text: String = view.prompt_value.text
 	_check(quiz_text.contains("IBMPlexMono"), "the quiz question uses the system font")
@@ -472,7 +475,7 @@ func _test_text_voices() -> void:
 	await _close(view)
 
 	view = await _open(CASE_MARIA)
-	view._on_choice_pressed(1)
+	view._on_choice_pressed(_choice_to(view, "ask_call"))
 	view._on_choice_pressed(0)
 	view._on_choice_pressed(_quiz_answer(view, true))  # correct answer
 	var right_text: String = view.prompt_value.text
@@ -518,7 +521,7 @@ func _test_evidence_scoping() -> void:
 	add_child(view)
 	await get_tree().process_frame
 
-	view._on_choice_pressed(1)
+	view._on_choice_pressed(_choice_to(view, "ask_call"))
 	view._on_choice_pressed(0)
 	view._on_choice_pressed(_quiz_answer(view, true))  # through the quiz to ask_evidence
 	view._on_present_evidence_pressed()
@@ -1294,3 +1297,60 @@ func _quiz_answer(view: Node, correct: bool) -> int:
 		if bool(options[i].get("correct", false)) == correct:
 			return i
 	return -1
+
+# Choices are authored in a deliberate order, and that order changes when the
+# writing does - the harsh line is no longer always last. A walk names the node
+# it wants to reach instead of a slot.
+func _choice_to(view: Node, node_id: String) -> int:
+	var choices: Array = view.current_node.get("choices", [])
+	for i in range(choices.size()):
+		if str(choices[i].get("next", "")) == node_id:
+			return i
+	return -1
+
+
+# Every node's choices used to run gentle -> probing -> cruel, so the line that
+# costs cooperation was last in all forty of them and the list could be played
+# by position without being read. The order is authored, not shuffled - a
+# conversation has a reading order and half these lists end in "I'll come back"
+# - so what is checked is that no one slot is the safe one.
+func _test_choice_positions() -> void:
+	print("\n[no slot is the safe one]")
+	var worst_at := {}
+	var nodes_seen := 0
+	for path in [CASE_MARIA, CASE_KEVIN, CASE_MARCO, CASE_ELENA, CASE_EVELYN, CASE_LINA,
+			CASE_TEDDY, CASE_TRISH, CASE_BEA, CASE_JOEL, CASE_ROWENA, CASE_CARMEN, CASE_DENNIS]:
+		var file := FileAccess.open(path, FileAccess.READ)
+		if file == null:
+			continue
+		var parsed: Variant = JSON.parse_string(file.get_as_text())
+		if typeof(parsed) != TYPE_DICTIONARY:
+			continue
+		for node in (parsed as Dictionary).get("nodes", {}).values():
+			var lists: Array = [node]
+			for group in ["dispositions", "flag_variants"]:
+				for override in node.get(group, {}).values():
+					lists.append(override)
+			for holder in lists:
+				var choices: Array = holder.get("choices", [])
+				if choices.size() < 2:
+					continue
+				var low := 0
+				var differs := false
+				for i in range(choices.size()):
+					var c: int = int(choices[i].get("cooperation", 0))
+					if c != int(choices[0].get("cooperation", 0)):
+						differs = true
+					if c < int(choices[low].get("cooperation", 0)):
+						low = i
+				if not differs:
+					continue
+				nodes_seen += 1
+				worst_at[low] = int(worst_at.get(low, 0)) + 1
+	_check(nodes_seen >= 30, "there are choice lists with a cost to compare (%d)" % nodes_seen)
+	_check(worst_at.size() >= 3, "the costly choice lands in at least three different slots (%s)" % str(worst_at))
+	var worst_share := 0
+	for count in worst_at.values():
+		worst_share = maxi(worst_share, int(count))
+	_check(float(worst_share) / float(maxi(nodes_seen, 1)) < 0.6,
+		"...and no single slot holds most of them (%d of %d)" % [worst_share, nodes_seen])

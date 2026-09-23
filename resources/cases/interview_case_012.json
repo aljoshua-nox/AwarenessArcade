@@ -64,13 +64,13 @@
       "prompt": "Two o'clock, between lunch and dinner, and the canteen is empty except for the rice cooker ticking. Carmen wipes the counter in front of you and puts a plate down whether you want it or not. \"You're the one going door to door. Sit, sit. Eat first.\" She does not sit. \"A text, then a call. Pay the reconnection fee in thirty minutes, they said, or the electricity gets cut. It was six in the evening. I have three kids doing homework at that table at six, and the rice was on.\"",
       "choices": [
         {
-          "text": "Start with the message. What did it say, exactly?",
-          "next": "ask_call"
-        },
-        {
           "text": "Thirty minutes and three kids at the table. That's not a mistake, that's the trap working.",
           "next": "reassure",
           "cooperation": 8
+        },
+        {
+          "text": "Start with the message. What did it say, exactly?",
+          "next": "ask_call"
         },
         {
           "text": "You paid a stranger to keep the lights on without looking at a bill you already paid. Take me through that.",

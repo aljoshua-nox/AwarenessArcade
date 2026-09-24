@@ -255,6 +255,10 @@ func _stamp_source(item: Dictionary) -> Dictionary:
 # this - a victim's own evidence pool never routes to a suspect by script.
 func _stamp_testimony(item: Dictionary) -> Dictionary:
 	var stamped := _stamp_source(item)
+	# Granted, not handed over: a victim's whole pool is seeded on entry, so
+	# this flag is what separates what the interview earned from what it was
+	# shown. The summary groups on it.
+	stamped["secured"] = true
 	if not stamped.has("script") and person.has("script"):
 		stamped["script"] = str(person.get("script", ""))
 	return stamped
@@ -580,7 +584,8 @@ func _load_node(node_id: String, lead_in: String = "") -> void:
 
 	var milestone: Dictionary = current_node.get("milestone", {})
 	if not milestone.is_empty():
-		SessionState.record_reflection_milestone(str(milestone.get("title", "")), str(milestone.get("detail", "")))
+		SessionState.record_reflection_milestone(str(milestone.get("title", "")),
+			str(milestone.get("detail", "")), SessionState.MILESTONE_CASE)
 
 	for granted_item in current_node.get("grants_evidence", []):
 		if granted_item is Dictionary:
@@ -803,7 +808,8 @@ func _answer_quiz(option_index: int) -> void:
 	if correct:
 		var milestone: Dictionary = current_quiz.get("milestone", {})
 		if not milestone.is_empty():
-			SessionState.record_reflection_milestone(str(milestone.get("title", "")), str(milestone.get("detail", "")))
+			SessionState.record_reflection_milestone(str(milestone.get("title", "")),
+				str(milestone.get("detail", "")), SessionState.MILESTONE_CASE)
 
 	var next_node := str(option.get("next", ""))
 	if next_node.is_empty():

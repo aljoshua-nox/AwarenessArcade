@@ -492,12 +492,20 @@ func has_reflection_milestone(title: String) -> bool:
 	return false
 
 
-func record_reflection_milestone(milestone: String, detail: String = "") -> void:
+## Where a milestone was recorded, so the summary can group them: an
+## interview turning something up reads differently from a poster on a wall.
+const MILESTONE_CASE := "case"
+const MILESTONE_FIELD := "field"
+
+
+func record_reflection_milestone(milestone: String, detail: String = "",
+		source: String = MILESTONE_FIELD) -> void:
 	if milestone.is_empty() or has_reflection_milestone(milestone):
 		return
 	reflection_milestones.append({
 		"title": milestone,
 		"detail": detail,
+		"source": source,
 	})
 	AudioManager.play_sfx("pen")
 

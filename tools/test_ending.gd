@@ -104,14 +104,33 @@ func _test_sections_start_collapsed() -> void:
 	_seed_reads(2, 4, ["Manufactured urgency"])
 	SessionState.add_evidence({"id": "a", "label": "Phishing text", "tactic": "Manufactured urgency"})
 	SessionState.add_evidence({"id": "b", "label": "Bank alert", "tactic": "Denying time to verify"})
+	# One the interview earned, against two the victim had on the table.
+	SessionState.add_evidence({"id": "t", "label": "Maria's Confirmed Testimony",
+		"tactic": "A confirmed victim testimony", "secured": true, "script": "bank_fraud"})
+	SessionState.statements_taken = 1
+	SessionState.record_reflection_milestone("Key Witness Secured", "She confirmed the text.",
+		SessionState.MILESTONE_CASE)
 	SessionState.record_reflection_milestone("First Report Filed", "A call crossed the report threshold.")
 
 	var view := await _open("full_takedown")
 	_check(not view.evidence_value.visible, "evidence starts collapsed")
 	_check(not view.milestones_value.visible, "milestones start collapsed")
-	_check(view.evidence_header.text.contains("(2)"), "the header counts the evidence (%s)" % view.evidence_header.text)
-	_check(view.milestones_header.text.contains("(1)"), "the header counts the milestones")
+	_check(not view.records_value.visible, "so do the records")
+	_check(not view.observations_value.visible, "and what was noticed along the way")
+	_check(view.evidence_header.text.contains("(1)"),
+		"statements count only what the interview earned (%s)" % view.evidence_header.text)
+	_check(view.records_header.text.contains("(2)"),
+		"records count what the victim had on the table (%s)" % view.records_header.text)
+	_check(view.milestones_header.text.contains("(1)"), "the interviews' milestones are counted apart")
+	_check(view.observations_header.text.contains("(1)"), "...from the ones read off a wall")
 	_check(view.evidence_header.text.begins_with(">"), "a collapsed section points right")
+
+	# The one line that says what the case holds, above every list.
+	_check(view.case_profile.text.contains("1 statement taken"),
+		"the profile counts the statements (%s)" % view.case_profile.text)
+	_check(view.case_profile.text.contains("1 scam proved"), "...and the scams they prove")
+	_check(view.case_profile.text.contains("owner not named"), "...and says the owner is missing")
+	_check(view.case_profile.text.contains("THE CASE FILE"), "...as the case file talking")
 
 	# The ending itself is never hidden behind a click.
 	_check(view.outcome_note.text.length() > 0, "the verdict is visible without expanding anything")
@@ -119,8 +138,13 @@ func _test_sections_start_collapsed() -> void:
 	view._toggle_section(view.evidence_header, view.evidence_value)
 	_check(view.evidence_value.visible, "clicking the header expands it")
 	_check(view.evidence_header.text.begins_with("v"), "an expanded section points down")
-	_check(view.evidence_value.text.contains("Phishing text"), "the expanded list names the evidence")
-	_check(view.evidence_value.text.contains("Manufactured urgency"), "and keeps the tactic it proves")
+	_check(view.evidence_value.text.contains("Maria's Confirmed Testimony"), "the expanded list names the statement")
+	_check(view.evidence_value.text.contains("A confirmed victim testimony"), "and keeps the tactic it proves")
+	view._toggle_section(view.records_header, view.records_value)
+	_check(view.records_value.text.contains("Phishing text") and view.records_value.text.contains("Bank alert"),
+		"the records list holds what was handed over")
+	_check(not view.evidence_value.text.contains("Phishing text"), "...and the two lists do not repeat each other")
+	view._toggle_section(view.records_header, view.records_value)
 	_check(view.evidence_value.fit_content, "the list grows rather than clipping as evidence accumulates")
 
 	view._toggle_section(view.evidence_header, view.evidence_value)

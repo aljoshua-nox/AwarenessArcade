@@ -603,21 +603,37 @@ func _fill_evidence(page: VBoxContainer) -> void:
 	if items.is_empty():
 		_add_note(box, "Nothing yet. What you hold comes from the people who talk to you.")
 		return
-	for item in items:
-		var line := RichTextLabel.new()
-		line.bbcode_enabled = true
-		line.fit_content = true
-		line.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-		var lines: Array[String] = []
-		var source := _person_name(str(item.get("person_id", "")))
-		lines.append("[b]%s[/b]%s" % [str(item.get("label", "")),
-			"  [color=#%s]from %s[/color]" % [TextStyle.COLOR_NARRATION, source] if not source.is_empty() else ""])
-		if not str(item.get("description", "")).is_empty():
-			lines.append(str(item.get("description", "")))
-		if not str(item.get("tactic", "")).is_empty():
-			lines.append("[color=#%s]TACTIC: %s[/color]" % [TextStyle.COLOR_TACTIC, str(item.get("tactic", ""))])
-		line.text = "\n".join(lines)
-		box.add_child(line)
+	# Statements first, because they are the only thing a suspect answers to. A
+	# victim's whole pool is seeded when their interview opens, so most of a full
+	# file is records they had on the table rather than anything the case earned.
+	for group in [{"title": "STATEMENTS SECURED", "secured": true},
+			{"title": "RECORDS ON FILE", "secured": false}]:
+		var rows: Array[Dictionary] = []
+		for item in items:
+			if bool(item.get("secured", false)) == bool(group["secured"]):
+				rows.append(item)
+		if rows.is_empty():
+			continue
+		var heading := Label.new()
+		heading.text = "%s  (%d)" % [str(group["title"]), rows.size()]
+		heading.add_theme_color_override("font_color", Color.html(TextStyle.COLOR_HINT))
+		heading.add_theme_font_override("font", load(TextStyle.FONT_SYSTEM))
+		box.add_child(heading)
+		for item in rows:
+			var line := RichTextLabel.new()
+			line.bbcode_enabled = true
+			line.fit_content = true
+			line.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+			var lines: Array[String] = []
+			var source := _person_name(str(item.get("person_id", "")))
+			lines.append("[b]%s[/b]%s" % [str(item.get("label", "")),
+				"  [color=#%s]from %s[/color]" % [TextStyle.COLOR_NARRATION, source] if not source.is_empty() else ""])
+			if not str(item.get("description", "")).is_empty():
+				lines.append(str(item.get("description", "")))
+			if not str(item.get("tactic", "")).is_empty():
+				lines.append("[color=#%s]TACTIC: %s[/color]" % [TextStyle.COLOR_TACTIC, str(item.get("tactic", ""))])
+			line.text = "\n".join(lines)
+			box.add_child(line)
 
 
 # --- Tactics ------------------------------------------------------------------

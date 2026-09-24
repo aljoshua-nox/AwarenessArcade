@@ -66,10 +66,17 @@ var outcome_note: RichTextLabel
 var scorecard_value: RichTextLabel
 var awareness_title: Label
 var awareness_bar: ProgressBar
+var case_profile: RichTextLabel
 var evidence_value: RichTextLabel
 var milestones_value: RichTextLabel
 var evidence_header: Button
 var milestones_header: Button
+# The other half of each list: what a victim handed over rather than what the
+# interview earned, and what was read off a wall rather than turned up in a room.
+var records_value: RichTextLabel
+var observations_value: RichTextLabel
+var records_header: Button
+var observations_header: Button
 var continue_button: Button
 var reopen_button: Button
 var button_row: HBoxContainer
@@ -189,16 +196,34 @@ func _build_ui() -> void:
 
 	body.add_child(_rule())
 
+	# What the case actually holds, in one line, before any of the lists: the
+	# player should not have to count rows to learn it.
+	case_profile = RichTextLabel.new()
+	case_profile.bbcode_enabled = true
+	case_profile.fit_content = true
+	body.add_child(case_profile)
+
 	# Evidence and milestones are reference, not reading. Collapsed by default
 	# so a full case file does not bury the ending under forty lines of list;
-	# nothing is removed, it is one click away.
-	var evidence_section := _add_collapsible(body, "Evidence on file")
+	# nothing is removed, it is one click away. Split in two because the halves
+	# are not the same thing: a victim's whole pool is seeded when the interview
+	# opens, so most of the old flat list was handed over rather than earned,
+	# and the same list also carried what the player read off a poster.
+	var evidence_section := _add_collapsible(body, "Statements secured")
 	evidence_header = evidence_section["header"]
 	evidence_value = evidence_section["body"]
 
-	var milestones_section := _add_collapsible(body, "Reflection milestones")
+	var records_section := _add_collapsible(body, "Records on file")
+	records_header = records_section["header"]
+	records_value = records_section["body"]
+
+	var milestones_section := _add_collapsible(body, "What the interviews turned up")
 	milestones_header = milestones_section["header"]
 	milestones_value = milestones_section["body"]
+
+	var observations_section := _add_collapsible(body, "What you noticed along the way")
+	observations_header = observations_section["header"]
+	observations_value = observations_section["body"]
 
 	# Reopening the case: the doors the run committed itself at, as buttons.
 	# Takes the button row's place while open, the way the pause menu's
@@ -355,13 +380,27 @@ func _refresh_view() -> void:
 		awareness_title.text = "Awareness"
 	_tint_awareness_bar()
 
-	evidence_value.text = _build_evidence_text()
-	evidence_header.set_meta("count", SessionState.investigation_inventory.size())
-	_refresh_section_header(evidence_header, evidence_value)
+	case_profile.text = _build_case_profile_text()
 
-	milestones_value.text = _build_milestones_text()
-	milestones_header.set_meta("count", SessionState.reflection_milestones.size())
-	_refresh_section_header(milestones_header, milestones_value)
+	var secured := _evidence_where(true)
+	var records := _evidence_where(false)
+	_fill_section(evidence_header, evidence_value, _build_evidence_text(secured),
+		secured.size())
+	_fill_section(records_header, records_value, _build_evidence_text(records),
+		records.size())
+
+	var from_case := _milestones_from(SessionState.MILESTONE_CASE)
+	var from_field := _milestones_from(SessionState.MILESTONE_FIELD)
+	_fill_section(milestones_header, milestones_value, _build_milestones_text(from_case),
+		from_case.size())
+	_fill_section(observations_header, observations_value, _build_milestones_text(from_field),
+		from_field.size())
+
+
+func _fill_section(header: Button, value: RichTextLabel, text: String, count: int) -> void:
+	value.text = text
+	header.set_meta("count", count)
+	_refresh_section_header(header, value)
 
 
 # Only the five true endings carry a verdict. The per-interview outcomes are
@@ -400,14 +439,53 @@ func _build_scorecard_text() -> String:
 	return "\n\n".join(lines)
 
 
-func _build_evidence_text() -> String:
-	if SessionState.investigation_inventory.is_empty():
-		return "[i]No evidence has been logged yet.[/i]"
+# The three facts the five endings are decided by, in one line: how many
+# statements are on record, how many different scams they prove, and whether
+# anybody named the company above the floors. Everything below this line is
+# reference; this line is the case.
+func _build_case_profile_text() -> String:
+	var scams := {}
+	for item in SessionState.investigation_inventory:
+		if not bool(item.get("secured", false)):
+			continue
+		var scam := str(item.get("script", ""))
+		if not scam.is_empty():
+			scams[scam] = true
+	var taken := SessionState.statements_taken
+	var parts: Array[String] = []
+	parts.append("%d statement%s taken" % [taken, "" if taken == 1 else "s"])
+	parts.append("%d scam%s proved" % [scams.size(), "" if scams.size() == 1 else "s"])
+	parts.append("owner named" if SessionState.owner_named() else "owner not named")
+	return TextStyle.system("THE CASE FILE", " - ".join(parts), TextStyle.COLOR_HINT)
+
+
+## Items the interview earned (`secured`) or ones the victim had on the table
+## when it opened. The pool is seeded on entry, so the second list is most of it.
+func _evidence_where(secured: bool) -> Array:
+	var out: Array = []
+	for item in SessionState.investigation_inventory:
+		if bool(item.get("secured", false)) == secured:
+			out.append(item)
+	return out
+
+
+func _milestones_from(source: String) -> Array:
+	var out: Array = []
+	for milestone in SessionState.reflection_milestones:
+		# Anything recorded before the source was stamped reads as field work.
+		if str(milestone.get("source", SessionState.MILESTONE_FIELD)) == source:
+			out.append(milestone)
+	return out
+
+
+func _build_evidence_text(items: Array) -> String:
+	if items.is_empty():
+		return "[i]Nothing here yet.[/i]"
 	# The description was already read in play, when the item was presented.
 	# What is worth carrying out of the case is the item and the tactic it
 	# proves, so each row is a name and a lesson rather than a paragraph.
 	var lines: Array[String] = []
-	for item in SessionState.investigation_inventory:
+	for item in items:
 		var label := str(item.get("label", "Evidence"))
 		var tactic := str(item.get("tactic", ""))
 		if tactic.is_empty():
@@ -417,11 +495,11 @@ func _build_evidence_text() -> String:
 	return "\n\n".join(lines)
 
 
-func _build_milestones_text() -> String:
-	if SessionState.reflection_milestones.is_empty():
-		return "[i]No reflection milestones were recorded this session.[/i]"
+func _build_milestones_text(items: Array) -> String:
+	if items.is_empty():
+		return "[i]Nothing here yet.[/i]"
 	var lines: Array[String] = []
-	for milestone in SessionState.reflection_milestones:
+	for milestone in items:
 		var title := str(milestone.get("title", ""))
 		var detail := str(milestone.get("detail", ""))
 		if detail.is_empty():

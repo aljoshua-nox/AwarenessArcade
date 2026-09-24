@@ -68,12 +68,16 @@ func _seed_worst_case() -> void:
 		for node in data.get("nodes", {}).values():
 			for granted in node.get("grants_evidence", []):
 				if granted is Dictionary:
-					SessionState.add_evidence(granted)
+					var earned: Dictionary = granted.duplicate()
+					earned["secured"] = true
+					earned["script"] = str(data.get("person", {}).get("script", ""))
+					SessionState.add_evidence(earned)
 			var quiz: Dictionary = node.get("tactic_quiz", {})
 			var milestone: Dictionary = quiz.get("milestone", node.get("milestone", {}))
 			if not milestone.is_empty():
 				SessionState.record_reflection_milestone(
-					str(milestone.get("title", "")), str(milestone.get("detail", "")))
+					str(milestone.get("title", "")), str(milestone.get("detail", "")),
+					SessionState.MILESTONE_CASE)
 
 
 func _run() -> void:
@@ -104,13 +108,19 @@ func _run() -> void:
 	await _settle()
 	_save("ending_collapsed")
 
-	view._toggle_section(view.evidence_header, view.evidence_value)
-	view._toggle_section(view.milestones_header, view.milestones_value)
+	for pair in [[view.evidence_header, view.evidence_value],
+			[view.records_header, view.records_value],
+			[view.milestones_header, view.milestones_value],
+			[view.observations_header, view.observations_value]]:
+		view._toggle_section(pair[0], pair[1])
 	await _settle()
 	_save("ending_expanded")
 
-	view._toggle_section(view.evidence_header, view.evidence_value)
-	view._toggle_section(view.milestones_header, view.milestones_value)
+	for pair in [[view.evidence_header, view.evidence_value],
+			[view.records_header, view.records_value],
+			[view.milestones_header, view.milestones_value],
+			[view.observations_header, view.observations_value]]:
+		view._toggle_section(pair[0], pair[1])
 	view._on_reopen_pressed()
 	await _settle()
 	_save("ending_reopen")

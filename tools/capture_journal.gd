@@ -45,7 +45,7 @@ func _run() -> void:
 	SessionState.record_interview_outcome("marco_navarro", "failure")
 	SessionState.case_locked = true
 	SessionState.add_evidence({"id": "test_evelyn_confirmed", "label": "Evelyn's Statement",
-		"description": "The raffle call, the fee, the refusal - on record.", "tactic": "Advance fee: a prize that costs money to collect", "person_id": "evelyn_marsh", "script": "lottery"})
+		"description": "The raffle call, the fee, the refusal - on record.", "tactic": "Advance fee: a prize that costs money to collect", "person_id": "evelyn_marsh", "script": "lottery", "secured": true})
 	SessionState.add_evidence({"id": "ev_raffle_stub", "label": "The Raffle Stub",
 		"description": "A ticket for a draw she never entered.", "tactic": "Unsolicited prize", "person_id": "evelyn_marsh"})
 	SessionState.add_evidence({"id": "ev_phishing_text", "label": "The Text Before The Call",

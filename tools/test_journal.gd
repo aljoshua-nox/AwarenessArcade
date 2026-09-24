@@ -232,6 +232,15 @@ func _test_evidence_page() -> void:
 	_check(text.contains("TACTIC: Manufactured urgency"), "with what it proves")
 	_check(text.contains("from Maria Santos"), "and who it came from")
 	_check(text.contains("1 item in the file"), "and the count")
+	# Statements are what a suspect answers to; a victim's pool is seeded on
+	# entry, so the page keeps the two apart rather than running them together.
+	_check(text.contains("RECORDS ON FILE"), "an item handed over files as a record")
+	SessionState.add_evidence({"id": "test_kevin_confirmed", "label": "Kevin's Statement",
+		"description": "He confirms the session.", "tactic": "The impossible scan",
+		"person_id": "kevin_dizon", "secured": true})
+	text = _page_text(CaseJournal.TAB_EVIDENCE)
+	_check(text.contains("STATEMENTS SECURED"), "...and one the interview earned files above them")
+	_check(text.find("STATEMENTS SECURED") < text.find("RECORDS ON FILE"), "statements are listed first")
 
 
 # The first active objective sits on the HUD of every walkable scene.

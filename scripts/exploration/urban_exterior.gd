@@ -171,7 +171,6 @@ const BLOCK_BUILDINGS := [
 	{"door_x": 1682.0, "kit": "building-c_sky"},
 ]
 
-const CAR_SPOTS := [300.0, 650.0, 1250.0, 1600.0, 1800.0]
 # Trees on the grass, clear of the houses, the doors and everyone standing
 # about. (The city set's own tree tile read as a green bottle and was removed
 # on 2026-09-19; these are the RPG Urban pack's.)
@@ -245,10 +244,6 @@ func block_buildings() -> Array:
 
 func side_street_x_positions() -> Array:
 	return SIDE_STREET_X_POSITIONS
-
-
-func car_spots() -> Array:
-	return CAR_SPOTS
 
 
 func tree_spots() -> Array:

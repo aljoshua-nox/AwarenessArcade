@@ -85,8 +85,6 @@ const TILE_COLS := 37
 const TILE_SIDEWALK := Vector2i(0, 19)
 const TILE_ROAD := Vector2i(15, 21)
 const TILE_GRASS := Vector2i(0, 24)
-const TILE_CAR_TOP := Vector2i(31, 17)
-const TILE_CAR_BOTTOM := Vector2i(31, 18)
 
 const WALLS_ROOF_TEXTURE: Texture2D = preload("res://assets/art/maps/urban/walls_grass_roof.png")
 const DOORS_TEXTURE: Texture2D = preload("res://assets/art/maps/urban/doors_windows.png")
@@ -168,12 +166,6 @@ const LAMP_SCALE := 1.6
 const SIDE_STREET_WIDTH := 96.0
 const SIDE_STREET_SIDEWALK := 16.0
 
-const CAR_TINTS := [
-	Color(1, 1, 1, 1),
-	Color(0.72, 0.75, 0.82, 1),
-	Color(0.95, 0.55, 0.32, 1),
-]
-
 
 # --- What a district is -------------------------------------------------------
 # Override these. Each returns the district's own table; the defaults describe
@@ -206,10 +198,6 @@ func block_buildings() -> Array:
 
 # x of each side street running down from the lower pavement to the map edge.
 func side_street_x_positions() -> Array:
-	return []
-
-
-func car_spots() -> Array:
 	return []
 
 
@@ -656,11 +644,6 @@ func _build_props() -> void:
 		var pose := str(spot["pose"])
 		_add_npc(Vector2(spot["x"], spot["y"]), load(PEOPLE_DIR % [spot["who"], pose]), PERSON_FRAMES[pose], PERSON_SCALE)
 
-	var curb_y := TOP_PAVEMENT_END + 24.0
-	var cars := car_spots()
-	for i in range(cars.size()):
-		_add_car(Vector2(cars[i], curb_y), CAR_TINTS[i % CAR_TINTS.size()])
-
 
 func _clear_decor() -> void:
 	for child in decor.get_children():
@@ -971,40 +954,6 @@ func _add_wall_segment(top_left: Vector2, size: Vector2) -> void:
 	shape.shape = rect
 	body.add_child(shape)
 	decor.add_child(body)
-
-
-func _add_car(spawn_position: Vector2, tint: Color) -> void:
-	var car := Node2D.new()
-	car.position = spawn_position
-	decor.add_child(car)
-
-	var top_half := Sprite2D.new()
-	top_half.texture = _tile_texture(TILE_CAR_TOP)
-	top_half.centered = true
-	top_half.scale = Vector2(2.0, 2.0)
-	top_half.modulate = tint
-	top_half.position = Vector2(0.0, -TILE_SIZE)
-	top_half.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
-	car.add_child(top_half)
-
-	var bottom_half := Sprite2D.new()
-	bottom_half.texture = _tile_texture(TILE_CAR_BOTTOM)
-	bottom_half.centered = true
-	bottom_half.scale = Vector2(2.0, 2.0)
-	bottom_half.modulate = tint
-	bottom_half.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
-	car.add_child(bottom_half)
-
-	var body := StaticBody2D.new()
-	body.collision_layer = 1
-	body.collision_mask = 1
-	body.position = Vector2(0.0, -8.0)
-	var shape := CollisionShape2D.new()
-	var rect := RectangleShape2D.new()
-	rect.size = Vector2(30.0, 30.0)
-	shape.shape = rect
-	body.add_child(shape)
-	car.add_child(body)
 
 
 # --- Street stops ------------------------------------------------------------

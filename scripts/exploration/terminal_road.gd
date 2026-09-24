@@ -94,7 +94,6 @@ const BLOCK_BUILDINGS := [
 	{"door_x": 1782.0, "kit": "building-c_cream"},
 ]
 
-const CAR_SPOTS := [200.0, 700.0, 1250.0, 1750.0]
 # Trees on the grass at the far end, and three in planters along the bottom of
 # the bus bay. The site has none: it is a job that has stalled.
 const TREE_SPOTS := [
@@ -256,10 +255,6 @@ func block_buildings() -> Array:
 
 func side_street_x_positions() -> Array:
 	return SIDE_STREET_X_POSITIONS
-
-
-func car_spots() -> Array:
-	return CAR_SPOTS
 
 
 func tree_spots() -> Array:

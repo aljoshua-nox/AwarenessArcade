@@ -49,7 +49,9 @@ func _seed_worst_case() -> void:
 	SessionState.detective_credibility = 82
 
 	for i in range(4):
-		SessionState.record_tactic_read(i < 3, "Tactic %d" % i)
+		# Real ids, so the worst-case shot shows the advice a miss is answered with.
+		SessionState.record_tactic_read(i < 3, "Tactic %d" % i,
+			["manufactured_urgency", "impossible_scan", "advance_fee", "authority_impersonation"][i % 4])
 
 	for path in ["res://resources/cases/interview_case_001.json",
 			"res://resources/cases/interview_case_002.json",

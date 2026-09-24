@@ -427,16 +427,44 @@ func _build_scorecard_text() -> String:
 		else:
 			lines.append("Some of the manipulation went unnamed. Reviewing the tactics on file is worth the time.")
 		# Naming the specific misses is the difference between a score and a
-		# thing the player can go and look up.
-		var missed := SessionState.get_missed_tactics()
-		if not missed.is_empty():
-			lines.append("[b]Went unnamed:[/b] %s" % ", ".join(missed))
+		# thing the player can go and look up - and the ending is the last
+		# screen of the run, so nobody goes and looks it up. Each miss is
+		# answered here with the catalogue's own defense, which is the one
+		# sentence worth leaving with.
+		lines.append_array(_build_missed_tactics_lines())
 
 	var misses := SessionState.investigation_evidence_misses
 	if misses > 0:
 		lines.append("[b]Evidence misread:[/b] %d time(s) in this interview. Presenting something that doesn't prove what you claim costs you the room." % misses)
 
 	return "\n\n".join(lines)
+
+
+# A player who misread everything would otherwise get a wall of advice on the
+# screen the lists were just trimmed off. Three is enough to teach and short
+# enough to read; the rest keep their entry in the Tactics tab.
+const MISSED_ANSWERED := 3
+
+
+func _build_missed_tactics_lines() -> Array[String]:
+	var lines: Array[String] = []
+	var missed := SessionState.get_missed_tactic_entries()
+	if missed.is_empty():
+		return lines
+	lines.append("[b]Went unnamed[/b]")
+	for i in range(mini(missed.size(), MISSED_ANSWERED)):
+		var entry: Dictionary = missed[i]
+		var name := str(entry.get("tactic", ""))
+		var advice := TacticNotebook.spot_it(str(entry.get("tactic_id", "")))
+		if advice.is_empty():
+			lines.append("[b]%s[/b]" % name)
+		else:
+			lines.append("[b]%s[/b]  [color=#%s]%s[/color]" % [name, TextStyle.COLOR_HINT, advice])
+	var rest := missed.size() - MISSED_ANSWERED
+	if rest > 0:
+		lines.append("[color=#%s]...and %d more, on the journal's Tactics tab.[/color]" % [
+			TextStyle.COLOR_NARRATION, rest])
+	return lines
 
 
 # The three facts the five endings are decided by, in one line: how many

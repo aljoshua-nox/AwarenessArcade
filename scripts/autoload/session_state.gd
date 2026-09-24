@@ -277,9 +277,13 @@ func is_witness_closed(person_id: String) -> bool:
 	return closed_witnesses.has(person_id)
 
 
-func record_tactic_read(correct: bool, tactic: String = "") -> void:
+## `tactic_id` is the catalogue entry behind the quiz's display name, kept so a
+## miss can be answered with the catalogue's own "how to spot it" line rather
+## than just named. The two differ on purpose - Elena's quiz reads "The pattern
+## behind every scam" and resolves to `verification_denial`.
+func record_tactic_read(correct: bool, tactic: String = "", tactic_id: String = "") -> void:
 	tactic_reads_total += 1
-	tactic_reads.append({"tactic": tactic, "correct": correct})
+	tactic_reads.append({"tactic": tactic, "tactic_id": tactic_id, "correct": correct})
 	if correct:
 		tactic_reads_correct += 1
 		detective_credibility = clampi(detective_credibility + 3, 0, 100)
@@ -291,6 +295,15 @@ func record_tactic_read(correct: bool, tactic: String = "") -> void:
 # so a retried interview does not list the same miss twice.
 func get_missed_tactics() -> Array[String]:
 	var missed: Array[String] = []
+	for entry in get_missed_tactic_entries():
+		missed.append(str(entry.get("tactic", "")))
+	return missed
+
+
+## The same misses with the catalogue id attached, for a screen that wants to
+## answer them rather than list them.
+func get_missed_tactic_entries() -> Array[Dictionary]:
+	var missed: Array[Dictionary] = []
 	var named := {}
 	for entry in tactic_reads:
 		var tactic := str(entry.get("tactic", ""))
@@ -299,7 +312,7 @@ func get_missed_tactics() -> Array[String]:
 		if named.has(tactic):
 			continue
 		named[tactic] = true
-		missed.append(tactic)
+		missed.append({"tactic": tactic, "tactic_id": str(entry.get("tactic_id", ""))})
 	return missed
 
 

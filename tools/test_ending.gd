@@ -63,12 +63,20 @@ func _seed_reads(correct: int, total: int, missed_names: Array) -> void:
 	for i in range(total):
 		var is_correct := i < correct
 		var tactic := ""
+		# A miss may be given as a name, or as [name, catalogue id] when the test
+		# cares about the advice the ending answers it with.
+		var tactic_id := ""
 		if not is_correct and miss_index < missed_names.size():
-			tactic = str(missed_names[miss_index])
+			var named: Variant = missed_names[miss_index]
+			if named is Array:
+				tactic = str(named[0])
+				tactic_id = str(named[1])
+			else:
+				tactic = str(named)
 			miss_index += 1
 		elif is_correct:
 			tactic = "Read tactic %d" % i
-		SessionState.record_tactic_read(is_correct, tactic)
+		SessionState.record_tactic_read(is_correct, tactic, tactic_id)
 
 
 func _run() -> void:
@@ -253,6 +261,35 @@ func _test_missed_tactics_are_named() -> void:
 	var view := await _open("partial_justice")
 	_check(view.scorecard_value.text.contains("Went unnamed"), "the scorecard lists what went unnamed")
 	_check(view.scorecard_value.text.contains("The impossible scan"), "it names the specific tactic")
+	await _close(view)
+
+	# The ending is the last screen of the run, so a miss is answered here with
+	# the catalogue's own defense rather than a pointer to a tab nobody reopens.
+	_seed_reads(0, 2, [["Manufactured urgency", "manufactured_urgency"],
+		["The impossible scan", "impossible_scan"]])
+	view = await _open("partial_justice")
+	var advice := TacticNotebook.spot_it("manufactured_urgency")
+	_check(not advice.is_empty(), "the catalogue has a defense for the tactic")
+	_check(view.scorecard_value.text.contains(advice), "a missed tactic is answered with how to spot it")
+	_check(view.scorecard_value.text.contains(TacticNotebook.spot_it("impossible_scan")),
+		"...for each one listed")
+	await _close(view)
+
+	# Missing everything must not put a wall of advice on the screen the lists
+	# were just trimmed off.
+	_seed_reads(0, 5, [["Manufactured urgency", "manufactured_urgency"],
+		["The impossible scan", "impossible_scan"],
+		["Paying to receive", "advance_fee"],
+		["The reused victim list", "reused_victim_list"],
+		["Impersonating a trusted authority", "authority_impersonation"]])
+	view = await _open("partial_justice")
+	_check(SessionState.get_missed_tactic_entries().size() == 5, "all five misses are on record")
+	_check(view.scorecard_value.text.contains(TacticNotebook.spot_it("advance_fee")),
+		"the third miss is still answered")
+	_check(not view.scorecard_value.text.contains(TacticNotebook.spot_it("reused_victim_list")),
+		"the fourth is not - the advice is capped")
+	_check(view.scorecard_value.text.contains("and 2 more"),
+		"...and the rest are pointed at (%s)" % view.scorecard_value.text.right(60))
 	await _close(view)
 
 

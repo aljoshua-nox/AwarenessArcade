@@ -785,7 +785,8 @@ func _answer_quiz(option_index: int) -> void:
 
 	answered_quizzes[current_node_id] = true
 	quiz_active = false
-	SessionState.record_tactic_read(correct, str(current_quiz.get("tactic", "")))
+	SessionState.record_tactic_read(correct, str(current_quiz.get("tactic", "")),
+		str(current_quiz.get("tactic_id", "")))
 	# The quiz explains the tactic on a wrong answer too, so the notebook
 	# entry is earned either way - the teaching is not conditional on
 	# playing well.

@@ -42,6 +42,16 @@ func has_tactic(tactic_id: String) -> bool:
 	return false
 
 
+## The catalogue's one-sentence defense for a tactic, or "" if the id resolves
+## to nothing. The Tactics tab prints it under an entry; the ending screen
+## prints it under a tactic the player did not name.
+func spot_it(tactic_id: String) -> String:
+	for entry in tactics:
+		if str(entry.get("id", "")) == tactic_id:
+			return str(entry.get("spot_it", ""))
+	return ""
+
+
 func learned_count() -> int:
 	var found := 0
 	for entry in tactics:

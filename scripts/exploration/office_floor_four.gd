@@ -49,6 +49,20 @@ func exit_prompt() -> String:
 	return "Take the stairs down to the call floor"
 
 
+# The floor above is painted and carpeted differently from the one below, so
+# the stairs visibly go somewhere, and its way out is a staircase, not a door.
+func wall_style() -> String:
+	return "greyblue"
+
+
+func floor_style() -> String:
+	return "tile_grey"
+
+
+func exit_is_stairs() -> bool:
+	return true
+
+
 # Down the stairs. The call floor puts a returning player in front of its
 # stairwell, not at the street door.
 func _take_exit() -> void:
@@ -80,8 +94,7 @@ func _build_stations() -> void:
 		"milestone_title": "The Script Upstairs",
 		"milestone_detail": "The fourth floor keeps one script, longer than the call floor's three, initialed by its director on every page - the remote-access call is written and owned, not improvised.",
 	}, Vector2(360.0, 612.0))
-	_add_prop(OFFICE_OBJECTS, OBJ_DESK_FRONT, Vector2(360.0, 604.0), 2.6, -10, true)
-	_add_prop(OFFICE_OBJECTS, OBJ_SHELF, Vector2(300.0, 596.0), 2.0, -11, true)
+	_add_part("bookcase_pair", Vector2(360.0, 604.0), -10, true)
 
 	_add_station({
 		"title": "The session log",
@@ -93,7 +106,9 @@ func _build_stations() -> void:
 		"milestone_title": "One Login, Two Floors",
 		"milestone_detail": "The fourth floor's session log carries floor-3 operator IDs after hours - the building's floors are one operation with two nameplates.",
 	}, Vector2(660.0, 612.0))
-	_add_prop(OFFICE_WALLS, WALL_BENCH, Vector2(660.0, 604.0), 1.9, -10, true)
+	_add_part("chair_front", Vector2(660.0, 572.0), -12, true)
+	_add_part("desk_bench", Vector2(660.0, 604.0), -10, true)
+	_add_part("monitor", Vector2(660.0, 580.0), -9)
 
 	_add_station({
 		"title": "The headset rack",
@@ -105,7 +120,7 @@ func _build_stations() -> void:
 		"milestone_title": "Her Name Is On The Rack",
 		"milestone_detail": "The fourth floor's headset rack carries the operator numbers of the people it recruited - one of them a witness who has agreed to talk.",
 	}, Vector2(1000.0, 612.0))
-	_add_prop(OFFICE_OBJECTS, OBJ_EASEL, Vector2(1000.0, 606.0), 2.4, -10, true)
+	_add_part("whiteboard", Vector2(1000.0, 606.0), -10, true)
 
 	_add_station({
 		"title": "The recruitment folder",

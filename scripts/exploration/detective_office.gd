@@ -18,8 +18,8 @@ const DESK_POSITION := Vector2(640.0, 470.0)
 const TABLE_POSITION := Vector2(1120.0, 340.0)
 const MAP_POSITION := Vector2(430.0, 268.0)
 
-# The object sheet has no locker (the tall white unit is a fridge), so the
-# notebook waits on a table by the window instead.
+# The notebook waits on a small table by the window; the locker beside it is
+# the room's, not a pickup.
 const TABLE_UNTAKEN_BODY := "A small table by the window with your things on it: a jacket over the chair, a bottle of water, and a notebook with half its pages used. The used pages are from the last case. The rest are for this one."
 const TABLE_UNTAKEN_NOTE := "The notebook records every tactic you can name. A caller's trick, written down, is a trick you will recognize the next time it is tried on you. Press N at any time to read it."
 const TABLE_TAKEN_BODY := "The table by the window, with the notebook gone from it. The jacket can stay."
@@ -61,42 +61,51 @@ func tools_collected() -> bool:
 	return SessionState.journal_collected and SessionState.notebook_collected
 
 
+# Mint walls and cream tiles: a government office, not the carpet of a
+# rented call floor.
+func wall_style() -> String:
+	return "mint"
+
+
+func floor_style() -> String:
+	return "tile_yellow"
+
+
 # --- The room -----------------------------------------------------------------
 
 func _build_back_wall_fittings() -> void:
 	# The way out, clear of the HUD's corner.
-	_add_prop(OFFICE_WALLS, WALL_DOORWAY, Vector2(exit_door_position.x, WALL_BASE + 4.0), 2.1, -30)
-	_add_wall_plate(Vector2(exit_door_position.x, 118.0), "STREET")
+	_add_exit()
+	_add_wall_plate(Vector2(exit_door_position.x, 138.0), "STREET")
 
 	for x in [620.0, 860.0]:
-		_add_prop(OFFICE_WALLS, WALL_WINDOW, Vector2(x, WALL_BASE - 6.0), 1.9, -32)
+		_add_part("window_curtained", Vector2(x, WALL_BASE - 20.0), -32)
 
-	# The corkboard the district map is pinned to, and a smaller board of
-	# notices nobody has taken down.
-	_add_prop(OFFICE_WALLS, WALL_PANEL, Vector2(MAP_POSITION.x, WALL_BASE - 34.0), 2.0, -32)
-	_add_prop(OFFICE_WALLS, WALL_PANEL, Vector2(1040.0, WALL_BASE - 34.0), 1.4, -32)
+	# The district map, and a board of notices nobody has taken down.
+	_add_part("map", Vector2(MAP_POSITION.x, WALL_BASE - 22.0), -32)
+	_add_part("cork_board", Vector2(1040.0, WALL_BASE - 26.0), -32)
 
 
-# Two desks, not forty. Yours, in the middle of the room, and the sergeant's
-# by the window, with nobody at it.
+# Two desks, not forty. Yours, in the middle of the room, with the case file
+# open on it, and the sergeant's by the window, with nobody at it.
 func _build_call_floor() -> void:
-	_add_prop(OFFICE_OBJECTS, OBJ_CHAIR, Vector2(DESK_POSITION.x, DESK_POSITION.y - 42.0), 2.1, -12, true)
-	_add_prop(OFFICE_OBJECTS, OBJ_DESK_FRONT, Vector2(DESK_POSITION.x, DESK_POSITION.y - 8.0), 2.6, -10, true)
-	_add_prop(OFFICE_OBJECTS, OBJ_MONITOR, Vector2(DESK_POSITION.x + 22.0, DESK_POSITION.y - 44.0), 1.6, -11)
+	_add_part("rug", Vector2(DESK_POSITION.x, DESK_POSITION.y + 70.0), -34)
+	_add_part("chair_front", Vector2(DESK_POSITION.x, DESK_POSITION.y - 40.0), -12, true)
+	_add_part("desk_ledger", Vector2(DESK_POSITION.x, DESK_POSITION.y - 8.0), -10, true)
 
-	_add_prop(OFFICE_OBJECTS, OBJ_CHAIR, Vector2(900.0, 296.0), 2.1, -12, true)
-	_add_prop(OFFICE_OBJECTS, OBJ_DESK_BACK, Vector2(900.0, 326.0), 2.4, -10, true)
-	_add_prop(OFFICE_OBJECTS, OBJ_MONITOR, Vector2(882.0, 296.0), 1.6, -11)
+	_add_part("chair_front", Vector2(868.0, 290.0), -12, true)
+	_add_part("desk_bench", Vector2(900.0, 326.0), -10, true)
+	_add_part("monitor", Vector2(868.0, 302.0), -9)
 
 
 func _build_props() -> void:
-	_add_prop(OFFICE_OBJECTS, OBJ_FILE_CABINET, Vector2(128.0, 340.0), 2.1, -8, true)
-	_add_prop(OFFICE_OBJECTS, OBJ_FILE_CABINET, Vector2(128.0, 440.0), 2.1, -8, true)
-	_add_prop(OFFICE_OBJECTS, OBJ_DESK_BACK, Vector2(TABLE_POSITION.x, TABLE_POSITION.y - 10.0), 2.4, -10, true)
-	_add_prop(OFFICE_OBJECTS, OBJ_COOLER, Vector2(1168.0, 440.0), 2.3, -8, true)
-	_add_prop(OFFICE_OBJECTS, OBJ_PLANT, Vector2(126.0, 640.0), 2.4, -8, true)
-	_add_prop(OFFICE_OBJECTS, OBJ_PLANT, Vector2(1170.0, 640.0), 2.4, -8, true)
-	_add_prop(OFFICE_OBJECTS, OBJ_SOFA, Vector2(230.0, 668.0), 2.2, -8, true)
+	_add_part("bookcase", Vector2(128.0, 340.0), -8, true)
+	_add_part("drawers", Vector2(128.0, 440.0), -8, true)
+	_add_part("drawers", Vector2(TABLE_POSITION.x, TABLE_POSITION.y - 10.0), -10, true)
+	_add_part("locker", Vector2(1168.0, 440.0), -8, true)
+	_add_part("plant_small", Vector2(126.0, 640.0), -8, true)
+	_add_part("plant_tree", Vector2(1170.0, 640.0), -8, true)
+	_add_part("sofa", Vector2(230.0, 668.0), -8, true)
 	_build_stations()
 
 

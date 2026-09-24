@@ -33,51 +33,32 @@ const CONFRONTATION_SCENE := "res://scenes/investigation/interview.tscn"
 const CASE_ELENA := "res://resources/cases/interview_case_004.json"
 const FLOOR_FOUR_SCENE := "res://scenes/exploration/office_floor_four.tscn"
 
-# wall_tiles.png and floor_tiles.png are ATLASES, not single images - the old
-# map stretched each whole sheet across the screen as one sprite, which is why
-# the top of the room read as unfinished. Everything below is cut from them by
-# region instead.
-const OFFICE_WALLS := preload("res://assets/art/maps/office/wall_tiles.png")
-const OFFICE_FLOOR := preload("res://assets/art/maps/office/floor_tiles.png")
+# The rooms are LimeZu's Modern Interiors (free), by part name - see
+# interior_parts.gd, which also says why the sheets are cut down. The water
+# cooler is the one Little Bits object left: the bonus board is "by the water
+# cooler", and the free pack has none.
+const Parts := preload("res://scripts/exploration/interior_parts.gd")
+const INTERIORS: Texture2D = preload("res://assets/art/maps/modern_interiors/interiors.png")
+const ROOM_BUILDER: Texture2D = preload("res://assets/art/maps/modern_interiors/room_builder.png")
 const OFFICE_OBJECTS := preload("res://assets/art/maps/Little_Bits_Office_tileset/Office tiles/Little_Bits_office_objects.png")
-
-const FLOOR_TILE := Rect2(48.0, 0.0, 32.0, 32.0)
-const FLOOR_CARPET := Rect2(80.0, 0.0, 32.0, 32.0)
-
-const WALL_WINDOW := Rect2(24.0, 8.0, 48.0, 64.0)
-const WALL_DOORWAY := Rect2(88.0, 8.0, 48.0, 58.0)
-const WALL_PANEL := Rect2(144.0, 80.0, 32.0, 32.0)
-const WALL_BENCH := Rect2(89.0, 80.0, 46.0, 24.0)
-const WALL_COUNTER := Rect2(0.0, 80.0, 70.0, 32.0)
-const WALL_POST := Rect2(144.0, 29.0, 6.0, 34.0)
-
-const OBJ_DESK_BACK := Rect2(66.0, 1.0, 30.0, 16.0)
-const OBJ_DESK_FRONT := Rect2(66.0, 17.0, 32.0, 15.0)
-const OBJ_CHAIR := Rect2(33.0, 32.0, 14.0, 16.0)
-const OBJ_MONITOR := Rect2(17.0, 6.0, 14.0, 15.0)
-const OBJ_CABINET := Rect2(96.0, 2.0, 16.0, 26.0)
-const OBJ_FILE_CABINET := Rect2(48.0, 64.0, 16.0, 32.0)
 const OBJ_COOLER := Rect2(16.0, 64.0, 16.0, 24.0)
-# The plant's pixels are x 56-71, y 49-63 on the sheet. The old rect started
-# eight pixels to the left, so it drew half a pot and a slice of empty sheet.
-const OBJ_PLANT := Rect2(56.0, 49.0, 16.0, 15.0)
-const OBJ_SOFA := Rect2(99.0, 70.0, 26.0, 19.0)
-const OBJ_EASEL := Rect2(70.0, 66.0, 20.0, 26.0)
-const OBJ_DOOR := Rect2(128.0, 50.0, 32.0, 34.0)
-const OBJ_SHELF := Rect2(96.0, 32.0, 16.0, 14.0)
 
+# Above the wall is the cut-away the pack draws its rooms with: dark, edged
+# where it meets the room.
 const CEILING_COLOR := Color(0.13, 0.13, 0.17, 1.0)
-const WALL_UPPER := Color(0.64, 0.64, 0.78, 1.0)
-const WALL_LOWER := Color(0.55, 0.55, 0.70, 1.0)
-const WALL_BASEBOARD := Color(0.38, 0.38, 0.52, 1.0)
+const ROOM_EDGE_COLOR := Color(0.93, 0.93, 0.95, 1.0)
 
-const WALL_TOP := 56.0
+# The wall is three tiles high at 2x - its trim, a plain course, its
+# baseboard - which puts a door at about a head above the player.
 const WALL_BASE := 216.0
+const WALL_FACE_TOP := WALL_BASE - 96.0
 const SIDE_WALL_WIDTH := 72.0
 const NEAR_WALL_HEIGHT := 44.0
 const DESK_ROW_BACK := 336.0
 const DESK_ROW_FRONT := 486.0
 const DESK_COLUMNS := [340.0, 500.0, 660.0, 820.0, 980.0]
+# The director's end of the floor, in parquet: right of here, down to here.
+const DIRECTOR_FLOOR := Rect2(960.0, WALL_BASE, 320.0, 160.0)
 
 const STATION_SIZE := Vector2(104.0, 92.0)
 const DIRECTOR_DOOR_POSITION := Vector2(1090.0, 268.0)
@@ -148,6 +129,23 @@ func stairs_target() -> String:
 # building, and the lobby and the second floor are somebody else's.
 func exit_prompt() -> String:
 	return "Down three flights, past the lobby, to the street"
+
+
+# The room's paint and floor: a Parts.WALL_ROWS key and a Parts.FLOORS key.
+# Every room has its own, so the stairs lead somewhere that looks like
+# somewhere else.
+func wall_style() -> String:
+	return "beige"
+
+
+func floor_style() -> String:
+	return "carpet"
+
+
+# Whether the way out is drawn as a staircase (a floor above's way down)
+# rather than a door.
+func exit_is_stairs() -> bool:
+	return false
 
 
 func _ready() -> void:
@@ -420,84 +418,96 @@ func _build_map() -> void:
 
 
 func _build_room_shell(viewport_size: Vector2) -> void:
-	_add_solid_rect(Vector2.ZERO, Vector2(viewport_size.x, WALL_TOP), CEILING_COLOR, -40)
-	_add_solid_rect(Vector2(0.0, WALL_TOP), Vector2(viewport_size.x, 96.0), WALL_UPPER, -40)
-	_add_solid_rect(Vector2(0.0, WALL_TOP + 96.0), Vector2(viewport_size.x, WALL_BASE - WALL_TOP - 96.0), WALL_LOWER, -40)
-	_add_solid_rect(Vector2(0.0, WALL_BASE - 8.0), Vector2(viewport_size.x, 8.0), WALL_BASEBOARD, -38)
+	_add_solid_rect(Vector2.ZERO, Vector2(viewport_size.x, WALL_FACE_TOP), CEILING_COLOR, -40)
+	_add_tiled_rect(_wall_texture(wall_style()), Vector2(0.0, WALL_FACE_TOP),
+		Vector2(viewport_size.x, WALL_BASE - WALL_FACE_TOP), Parts.SCALE, -40)
+	var floor_texture := _extract_texture(ROOM_BUILDER, Parts.FLOORS[floor_style()])
+	_add_tiled_rect(floor_texture, Vector2(0.0, WALL_BASE), Vector2(viewport_size.x, viewport_size.y - WALL_BASE), Parts.SCALE, -36)
 
-	# Proper tiled floor, cut from the atlas rather than one stretched sheet.
-	var floor_texture := _extract_texture(OFFICE_FLOOR, FLOOR_TILE)
-	_add_tiled_rect(floor_texture, Vector2(0.0, WALL_BASE), Vector2(viewport_size.x, viewport_size.y - WALL_BASE), 2.0, -36)
-
-	# A carpeted strip marks the director's end of the floor.
-	var carpet_texture := _extract_texture(OFFICE_FLOOR, FLOOR_CARPET)
-	_add_tiled_rect(carpet_texture, Vector2(960.0, WALL_BASE), Vector2(viewport_size.x - 960.0, 160.0), 2.0, -35)
-
-	# Side and near walls, so the room reads as a room instead of a floor that
-	# runs off every edge.
+	# Side and near walls, cut away like the ceiling, so the room reads as a
+	# room instead of a floor that runs off every edge.
 	var floor_height := viewport_size.y - WALL_BASE
-	_add_solid_rect(Vector2(0.0, WALL_BASE), Vector2(SIDE_WALL_WIDTH, floor_height), WALL_LOWER, -34)
-	_add_solid_rect(Vector2(SIDE_WALL_WIDTH - 8.0, WALL_BASE), Vector2(8.0, floor_height), WALL_BASEBOARD, -33)
-	_add_solid_rect(Vector2(viewport_size.x - SIDE_WALL_WIDTH, WALL_BASE), Vector2(SIDE_WALL_WIDTH, floor_height), WALL_LOWER, -34)
-	_add_solid_rect(Vector2(viewport_size.x - SIDE_WALL_WIDTH, WALL_BASE), Vector2(8.0, floor_height), WALL_BASEBOARD, -33)
-	_add_solid_rect(Vector2(0.0, viewport_size.y - NEAR_WALL_HEIGHT), Vector2(viewport_size.x, NEAR_WALL_HEIGHT), WALL_LOWER, -34)
-	_add_solid_rect(Vector2(0.0, viewport_size.y - NEAR_WALL_HEIGHT), Vector2(viewport_size.x, 8.0), WALL_BASEBOARD, -33)
+	_add_solid_rect(Vector2(0.0, WALL_BASE), Vector2(SIDE_WALL_WIDTH, floor_height), CEILING_COLOR, -34)
+	_add_solid_rect(Vector2(SIDE_WALL_WIDTH - 4.0, WALL_BASE), Vector2(4.0, floor_height - NEAR_WALL_HEIGHT + 4.0), ROOM_EDGE_COLOR, -33)
+	_add_solid_rect(Vector2(viewport_size.x - SIDE_WALL_WIDTH, WALL_BASE), Vector2(SIDE_WALL_WIDTH, floor_height), CEILING_COLOR, -34)
+	_add_solid_rect(Vector2(viewport_size.x - SIDE_WALL_WIDTH, WALL_BASE), Vector2(4.0, floor_height - NEAR_WALL_HEIGHT + 4.0), ROOM_EDGE_COLOR, -33)
+	_add_solid_rect(Vector2(0.0, viewport_size.y - NEAR_WALL_HEIGHT), Vector2(viewport_size.x, NEAR_WALL_HEIGHT), CEILING_COLOR, -34)
+	_add_solid_rect(Vector2(SIDE_WALL_WIDTH - 4.0, viewport_size.y - NEAR_WALL_HEIGHT), Vector2(viewport_size.x - SIDE_WALL_WIDTH * 2.0 + 8.0, 4.0), ROOM_EDGE_COLOR, -33)
+
+
+# One column of a wall style, trim to baseboard: the style's top tile, the
+# plain lower half of it twice over, then its bottom tile. Tiled across the
+# back wall.
+func _wall_texture(style: String) -> ImageTexture:
+	var sheet := ROOM_BUILDER.get_image()
+	var top := int(Parts.WALL_ROWS[style]) * 16
+	var x := int(Parts.WALL_COLUMN_X)
+	var column := Image.create(16, 48, false, sheet.get_format())
+	column.blit_rect(sheet, Rect2i(x, top, 16, 16), Vector2i(0, 0))
+	column.blit_rect(sheet, Rect2i(x, top + 8, 16, 8), Vector2i(0, 16))
+	column.blit_rect(sheet, Rect2i(x, top + 8, 16, 8), Vector2i(0, 24))
+	column.blit_rect(sheet, Rect2i(x, top + 16, 16, 16), Vector2i(0, 32))
+	return ImageTexture.create_from_image(column)
 
 
 func _build_back_wall_fittings() -> void:
 	# Way out, at the left of the back wall.
-	_add_prop(OFFICE_WALLS, WALL_DOORWAY, Vector2(exit_door_position.x, WALL_BASE + 4.0), 2.1, -30)
+	_add_exit()
 
 	for x in [430.0, 620.0]:
-		_add_prop(OFFICE_WALLS, WALL_WINDOW, Vector2(x, WALL_BASE - 6.0), 1.9, -32)
+		_add_part("blinds", Vector2(x, WALL_BASE - 20.0), -32)
 
-	# Noticeboards. The left one is the shift schedule the player can read.
-	_add_prop(OFFICE_WALLS, WALL_PANEL, Vector2(300.0, WALL_BASE - 34.0), 2.0, -32)
-	_add_prop(OFFICE_WALLS, WALL_PANEL, Vector2(800.0, WALL_BASE - 34.0), 1.7, -32)
+	# The shift schedule the player can read, and the floor's map.
+	_add_part("pin_board", Vector2(300.0, WALL_BASE - 18.0), -32)
+	_add_part("map", Vector2(760.0, WALL_BASE - 22.0), -32)
 
-	# The director's office: an actual door, not an unmarked patch of wall.
-	_add_prop(OFFICE_OBJECTS, OBJ_DOOR, Vector2(DIRECTOR_DOOR_POSITION.x, WALL_BASE + 8.0), 2.9, -30)
-	_add_wall_plate(Vector2(DIRECTOR_DOOR_POSITION.x, 118.0), director_nameplate())
+	# The director's office: a door with its blinds down, and a parquet floor
+	# outside it.
+	var parquet := _extract_texture(ROOM_BUILDER, Parts.FLOORS["parquet"])
+	_add_tiled_rect(parquet, DIRECTOR_FLOOR.position, DIRECTOR_FLOOR.size, Parts.SCALE, -35)
+	_add_part("office_door", Vector2(DIRECTOR_DOOR_POSITION.x, WALL_BASE), -30)
+	_add_wall_plate(Vector2(DIRECTOR_DOOR_POSITION.x, 138.0), director_nameplate())
 
 	# The stairwell up, where there is a floor above.
 	if not stairs_target().is_empty():
-		_add_prop(OFFICE_WALLS, WALL_DOORWAY, Vector2(STAIRS_POSITION.x, WALL_BASE + 4.0), 2.1, -30)
-		_add_wall_plate(Vector2(STAIRS_POSITION.x, 118.0), "STAIRS - 4F")
+		_add_part("stairs", Vector2(STAIRS_POSITION.x, WALL_BASE + 64.0), -30)
+		_add_wall_plate(Vector2(STAIRS_POSITION.x, 138.0), "STAIRS - 4F")
 
 
+func _add_exit() -> void:
+	if exit_is_stairs():
+		_add_part("stairs", Vector2(exit_door_position.x, WALL_BASE + 64.0), -30)
+	else:
+		_add_part("wall_door", Vector2(exit_door_position.x, WALL_BASE), -30)
+
+
+# Two rows of benches, three desks each with a monitor, back to back: the back
+# row's operators face the wall, the front row's face the room from behind
+# their desks - so the aisle between the rows is where the chairs are, and the
+# walkway past the exhibits along the bottom stays open. Benches and chairs are
+# solid; the monitors sit inside their bench's block.
 func _build_call_floor() -> void:
-	# Desks and chairs are solid; the monitors sit inside their desk's block.
 	for x in DESK_COLUMNS:
-		_add_prop(OFFICE_OBJECTS, OBJ_CHAIR, Vector2(x, DESK_ROW_BACK - 30.0), 2.1, -12, true)
-		_add_prop(OFFICE_OBJECTS, OBJ_DESK_BACK, Vector2(x, DESK_ROW_BACK), 2.4, -10, true)
-		_add_prop(OFFICE_OBJECTS, OBJ_MONITOR, Vector2(x - 18.0, DESK_ROW_BACK - 30.0), 1.6, -11)
-
-	for x in DESK_COLUMNS:
-		_add_prop(OFFICE_OBJECTS, OBJ_CHAIR, Vector2(x, DESK_ROW_FRONT - 34.0), 2.1, -12, true)
-		_add_prop(OFFICE_OBJECTS, OBJ_DESK_FRONT, Vector2(x, DESK_ROW_FRONT), 2.4, -10, true)
-		_add_prop(OFFICE_OBJECTS, OBJ_MONITOR, Vector2(x + 16.0, DESK_ROW_FRONT - 36.0), 1.6, -11)
-
-	# Thin divider posts between stations. (The pack's partition_1/2 sprites are
-	# cubicle corner pieces meant to be assembled - standalone they read as
-	# floating brown slabs, so the wall sheet's posts are used instead.) Not
-	# solid: STAIRS_ARRIVAL lands on the one at x 900, and a 12 px pole is the
-	# kind of thing a player walks into without seeing why.
-	for x in [420.0, 580.0, 740.0, 900.0]:
-		_add_prop(OFFICE_WALLS, WALL_POST, Vector2(x, DESK_ROW_BACK - 6.0), 2.0, -13)
+		for seat in [-32.0, 0.0, 32.0]:
+			_add_part("chair_front", Vector2(x + seat, DESK_ROW_FRONT - 30.0), -12, true)
+		_add_part("desk_bench", Vector2(x, DESK_ROW_BACK), -10, true)
+		_add_part("desk_bench", Vector2(x, DESK_ROW_FRONT), -10, true)
+		for seat in [-32.0, 0.0, 32.0]:
+			_add_part("monitor", Vector2(x + seat, DESK_ROW_BACK - 24.0), -9)
+			_add_part("chair_back", Vector2(x + seat, DESK_ROW_BACK + 26.0), -8, true)
+			_add_part("monitor", Vector2(x + seat, DESK_ROW_FRONT - 24.0), -9)
 
 
 func _build_props() -> void:
-	# Water cooler and cabinets belong against the walls, not mid-room. The
-	# shelf hangs on the back wall, so it stays walkable.
+	# Water cooler and cabinets belong against the walls, not mid-room.
 	_add_prop(OFFICE_OBJECTS, OBJ_COOLER, Vector2(1168.0, 330.0), 2.3, -8, true)
-	_add_prop(OFFICE_OBJECTS, OBJ_FILE_CABINET, Vector2(1168.0, 430.0), 2.1, -8, true)
-	_add_prop(OFFICE_OBJECTS, OBJ_CABINET, Vector2(128.0, 340.0), 2.1, -8, true)
-	_add_prop(OFFICE_OBJECTS, OBJ_FILE_CABINET, Vector2(128.0, 440.0), 2.1, -8, true)
-	_add_prop(OFFICE_OBJECTS, OBJ_SHELF, Vector2(720.0, 262.0), 2.2, -8)
+	_add_part("drawers", Vector2(1168.0, 430.0), -8, true)
+	_add_part("bookcase", Vector2(128.0, 340.0), -8, true)
+	_add_part("drawers", Vector2(128.0, 440.0), -8, true)
 
-	_add_prop(OFFICE_OBJECTS, OBJ_PLANT, Vector2(126.0, 640.0), 2.4, -8, true)
-	_add_prop(OFFICE_OBJECTS, OBJ_PLANT, Vector2(1170.0, 640.0), 2.4, -8, true)
-	_add_prop(OFFICE_OBJECTS, OBJ_SOFA, Vector2(230.0, 668.0), 2.2, -8, true)
+	_add_part("plant_tree", Vector2(126.0, 640.0), -8, true)
+	_add_part("palm", Vector2(1170.0, 640.0), -8, true)
+	_add_part("sofa", Vector2(230.0, 668.0), -8, true)
 
 	_build_stations()
 	_add_director_door()
@@ -515,8 +525,7 @@ func _build_stations() -> void:
 		"milestone_title": "The Scripts Are Written Down",
 		"milestone_detail": "The call floor keeps three interchangeable scripts, each engineered around denying the victim time to verify.",
 	}, Vector2(360.0, 612.0))
-	_add_prop(OFFICE_OBJECTS, OBJ_DESK_FRONT, Vector2(360.0, 604.0), 2.6, -10, true)
-	_add_prop(OFFICE_OBJECTS, OBJ_SHELF, Vector2(300.0, 596.0), 2.0, -11, true)
+	_add_part("bookcase_pair", Vector2(360.0, 604.0), -10, true)
 
 	_add_station({
 		"title": "The call list",
@@ -529,7 +538,8 @@ func _build_stations() -> void:
 		"milestone_title": "The List Has Your Handwriting On It",
 		"milestone_detail": "The operation's ledger holds the victims the player called during the prologue - proof that a scam list is a durable asset, not a one-time thing.",
 	}, Vector2(660.0, 612.0))
-	_add_prop(OFFICE_WALLS, WALL_BENCH, Vector2(660.0, 604.0), 1.9, -10, true)
+	_add_part("chair_front", Vector2(660.0, 572.0), -12, true)
+	_add_part("desk_ledger", Vector2(660.0, 604.0), -10, true)
 
 	_add_station({
 		"title": "Bonus board",
@@ -541,7 +551,7 @@ func _build_stations() -> void:
 		"milestone_title": "Distress Is A Performance Metric",
 		"milestone_detail": "The floor pays a doubled bonus rate for calls that escalate a victim into distress - harm is deliberately incentivized, not incidental.",
 	}, Vector2(1000.0, 612.0))
-	_add_prop(OFFICE_OBJECTS, OBJ_EASEL, Vector2(1000.0, 606.0), 2.4, -10, true)
+	_add_part("whiteboard", Vector2(1000.0, 606.0), -10, true)
 
 	_add_station({
 		"title": "The shift schedule",
@@ -727,6 +737,12 @@ func _add_prop(texture: Texture2D, region: Rect2, base_position: Vector2, prop_s
 	decor.add_child(sprite)
 	if solid:
 		_add_wall_segment(base_position - Vector2(size.x * 0.5, size.y), size)
+
+
+# A named part of the interiors sheet (interior_parts.gd), standing on
+# base_position at the rooms' scale.
+func _add_part(part: String, base_position: Vector2, z_index: int, solid: bool = false) -> void:
+	_add_prop(INTERIORS, Parts.PARTS[part], base_position, Parts.SCALE, z_index, solid)
 
 
 # The same body the street's buildings and props stand behind.

@@ -255,11 +255,9 @@ func _test_layout_collisions(district: Dictionary) -> void:
 		"every building in the tables was drawn (%d drawn)" % building_rects.size())
 
 	var obstacle_rects: Array[Rect2] = view.obstacle_rects()
-	var tree_extent := 16.0 * 2.2 * 0.5
-	var tree_rects: Array[Rect2] = []
-	for spot in view.tree_spots():
-		tree_rects.append(Rect2(spot - Vector2(tree_extent, tree_extent),
-			Vector2(tree_extent * 2.0, tree_extent * 2.0)))
+	var tree_rects: Array[Rect2] = view.built_trees
+	_check(tree_rects.size() == view.tree_spots().size(),
+		"every tree in the table was drawn (%d of %d)" % [tree_rects.size(), view.tree_spots().size()])
 
 	var on_street := 0
 	var on_tree := 0
@@ -302,6 +300,32 @@ func _test_layout_collisions(district: Dictionary) -> void:
 			if rect.has_point(point):
 				buried += 1
 	_check(buried == 0, "no pedestrian is standing inside a building (%d)" % buried)
+
+	# A tree is solid over its whole sprite, so one on a road, over a door or a
+	# stop, or on top of somebody is a wall the player walks into.
+	var doors: Array[Rect2] = []
+	for door in view.interview_portals:
+		doors.append(_area_rect(door, view.INTERVIEW_PORTAL_SIZE))
+	for door in view.exit_doors:
+		doors.append(_area_rect(door, view.INTERVIEW_PORTAL_SIZE))
+	if view.has_office():
+		doors.append(_area_rect(view.portal, view.INTERVIEW_PORTAL_SIZE))
+	for stop in view.street_stops:
+		doors.append(_area_rect(stop["area"], view.STOP_SIZE))
+	var misplaced_trees := 0
+	for tree in tree_rects:
+		if tree.position.x < 0.0 or tree.end.x > view.MAP_WIDTH or tree.end.y > view.MAP_HEIGHT:
+			misplaced_trees += 1
+		for street in obstacle_rects:
+			if tree.intersects(street):
+				misplaced_trees += 1
+		for spot in view.npc_spots():
+			if tree.has_point(Vector2(float(spot["x"]), float(spot["y"]))):
+				misplaced_trees += 1
+		for door in doors:
+			if tree.intersects(door):
+				misplaced_trees += 1
+	_check(misplaced_trees == 0, "no tree stands on a road, a person, a door or a stop, or off the map (%d)" % misplaced_trees)
 
 	# Every interviewee must have a building to be placed on.
 	var missing := 0

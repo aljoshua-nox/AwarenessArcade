@@ -38,11 +38,9 @@ const INTERVIEWEES := [
 # Kenney sheet coordinates for the ground and props this district adds.
 const TILE_DIRT := Vector2i(14, 26)
 const TILE_FENCE := Vector2i(21, 14)
-const TILE_GLASS := Vector2i(13, 6)
 const TILE_CONE := Vector2i(14, 18)
 const TILE_CRATE := Vector2i(13, 16)
 const TILE_HAZARD := Vector2i(15, 17)
-const TILE_AWNING := Vector2i(25, 12)
 
 # Regions of props.png and buses_cars.png.
 const BUS_STOP_SIGN_RECT := Rect2(2.0, 74.0, 20.0, 56.0)
@@ -63,25 +61,25 @@ const SIDE_STREET_X_POSITIONS := [560.0, 1300.0]
 const ARRIVAL_STREET_X := 1400.0
 
 # The frontage row. Slot 0 is the boarding house (Bea), slot 1 the canteen
-# (Carmen); 2 and 3 are the internet cafe and the remittance counter, whose
-# stops stand outside; 4 and 5 are past the arrival street, one of them spare.
-# The tower is not a row unit - see _build_buildings.
+# (Carmen, under its own green awning); 2 and 3 are the internet cafe and the
+# remittance counter (the yellow awning), whose stops stand outside; 4 and 5
+# are past the arrival street, one of them spare. The tower is not a row
+# unit - see _build_buildings.
 const BUILDING_ROW := [
-	{"x": 90.0, "color": ROOF_MAUVE_X},
-	{"x": 320.0, "color": ROOF_BRICK_X},
-	{"x": 550.0, "color": ROOF_TAN_X},
-	{"x": 780.0, "color": ROOF_OLIVE_X},
-	{"x": 1560.0, "color": ROOF_ROSE_X},
-	{"x": 1750.0, "color": ROOF_MAUVE_X},
+	{"door_x": 167.0, "kit": "building-d_cream"},
+	{"door_x": 397.0, "kit": "building-f_peach"},
+	{"door_x": 627.0, "kit": "building-h"},
+	{"door_x": 857.0, "kit": "building-g_cream"},
+	{"door_x": 1637.0, "kit": "building-c_lilac"},
+	{"door_x": 1827.0, "kit": "building-b_mint"},
 ]
 const CANTEEN_ROW_INDEX := 1
 
-# The tower: wider and taller than a row unit, its roof above the top of the
-# map - the one building on either district you cannot see the top of.
-const TOWER_TOP_LEFT := Vector2(1010.0, -80.0)
-const TOWER_SCALE := Vector2(4.6, 2.92)
-const TOWER_LABEL_Y := 120.0
-const TOWER_DOOR_LABEL_Y := 150.0
+# The tower: the kit's glass skyscraper, its roof far above the top of the
+# map - the one building on either district you cannot see the top of. Its
+# name is high on the glass, clear of the door's own board.
+const TOWER_DOOR_X := 1120.0
+const TOWER_SIGN_Y := 8.0
 
 # The site office: a squat unit on the plot - Joel's door, row "site" slot 0.
 const SITE_OFFICE_TOP_LEFT := Vector2(760.0, 560.0)
@@ -90,15 +88,25 @@ const SITE_FENCE_Y := 428.0
 const SITE_GATE := Vector2(940.0, 1004.0)
 const HOARDING_BASE := Vector2(1130.0, 505.0)
 
-# Trish's house (slot 0, when she is written) and a neighbour's.
+# Trish's house (slot 0) and a neighbour's.
 const BLOCK_BUILDINGS := [
-	{"x": 1470.0, "color": ROOF_ROSE_X},
-	{"x": 1720.0, "color": ROOF_TAN_X},
+	{"door_x": 1532.0, "kit": "building-c_mint"},
+	{"door_x": 1782.0, "kit": "building-c_cream"},
 ]
 
 const CAR_SPOTS := [200.0, 700.0, 1250.0, 1750.0]
-# No trees - see urban_exterior.gd. The table stays for the layout test.
-const TREE_SPOTS := []
+# Trees on the grass at the far end, and three in planters along the bottom of
+# the bus bay. The site has none: it is a job that has stalled.
+const TREE_SPOTS := [
+	{"at": Vector2(1623.0, 695.0), "kind": "small"},
+	{"at": Vector2(1888.0, 780.0), "kind": "tall"},
+	{"at": Vector2(1480.0, 900.0), "kind": "cluster"},
+	{"at": Vector2(1800.0, 980.0), "kind": "tall"},
+	{"at": Vector2(1620.0, 1050.0), "kind": "small"},
+	{"at": Vector2(40.0, 1040.0), "kind": "planter"},
+	{"at": Vector2(250.0, 1040.0), "kind": "planter"},
+	{"at": Vector2(470.0, 1040.0), "kind": "planter"},
+]
 # Alternating sides along the road (see district_exterior.gd), the top ones in
 # the gaps between buildings, the bottom ones clear of the side streets' mouths.
 const LAMP_TOP_X := [282.0, 972.0, 1732.0]
@@ -108,11 +116,11 @@ const LAMP_BOTTOM_X := [500.0, 1200.0]
 # gate, the neighbour on the grass. Their stops arrive with the characters
 # whose stories they set up; until then they are pedestrians.
 const NPC_SPOTS := [
-	{"x": 480.0, "y": 620.0, "kind": "b", "tint": Color(1, 1, 1, 1)},
-	{"x": 620.0, "y": 216.0, "kind": "b", "tint": Color(1, 1, 1, 1)},
-	{"x": 860.0, "y": 216.0, "kind": "a", "tint": Color(1, 1, 1, 1)},
-	{"x": 972.0, "y": 470.0, "kind": "a", "tint": Color(1.0, 0.92, 0.75, 1)},
-	{"x": 1660.0, "y": 780.0, "kind": "a", "tint": Color(0.85, 1.0, 0.85, 1)},
+	{"x": 480.0, "y": 620.0, "who": "Bob", "pose": "idle"},
+	{"x": 620.0, "y": 216.0, "who": "Alex", "pose": "idle"},
+	{"x": 860.0, "y": 216.0, "who": "Amelia", "pose": "idle"},
+	{"x": 972.0, "y": 470.0, "who": "Adam", "pose": "idle"},
+	{"x": 1660.0, "y": 780.0, "who": "Bob", "pose": "phone"},
 ]
 
 # The street's stops. Two need no character - the company's name on the tower
@@ -305,7 +313,7 @@ func obstacle_rects() -> Array[Rect2]:
 # The three bands are the terrace's. What is under them is not grass: a bus
 # bay on pavement, a dirt plot behind a fence, and grass only at the far end.
 func _build_ground() -> void:
-	_add_tiled_band(TILE_SIDEWALK, 0.0, TOP_PAVEMENT_END, MAP_WIDTH)
+	_add_top_pavement()
 	_add_tiled_band(TILE_ROAD, TOP_PAVEMENT_END, ROAD_HEIGHT, MAP_WIDTH)
 	_add_tiled_band(TILE_SIDEWALK, ROAD_END, SIDEWALK_HEIGHT, MAP_WIDTH)
 
@@ -315,7 +323,7 @@ func _build_ground() -> void:
 	_add_tiled_rect(TILE_GRASS, Vector2(GRASS_START, BOTTOM_PAVEMENT_END), Vector2(MAP_WIDTH - GRASS_START, lower_height))
 	for street_x in SIDE_STREET_X_POSITIONS:
 		_add_side_street(street_x, ROAD_END, MAP_HEIGHT, SIDEWALK_HEIGHT)
-	_add_side_street(ARRIVAL_STREET_X, 0.0, TOP_PAVEMENT_END, SIDEWALK_HEIGHT, true)
+	_add_side_street(ARRIVAL_STREET_X, -SKY_HEIGHT, TOP_PAVEMENT_END, SIDEWALK_HEIGHT, true)
 
 	# The bus bay: painted bays, two buses in them, the sign, somewhere to sit.
 	for bay_x in [110.0, 260.0, 410.0]:
@@ -341,21 +349,14 @@ func _build_ground() -> void:
 func _build_buildings() -> void:
 	super()
 
-	# The canteen's awning, over slot 1's door.
-	var canteen: Dictionary = BUILDING_ROW[CANTEEN_ROW_INDEX]
-	for x in range(int(canteen["x"]) + 4, int(canteen["x"]) + 150, 32):
-		_add_tile_sprite(TILE_AWNING, Vector2(float(x) + 16.0, 156.0))
-
 	# The tower, faced in glass, named. Its lobby is the stop at its door.
-	var tower := _add_building(TOWER_TOP_LEFT, ROOF_TAN_X, TOWER_SCALE)
-	for y in range(int(TOWER_TOP_LEFT.y), int(tower.end.y) - 24, 32):
-		for x in range(int(TOWER_TOP_LEFT.x) + 8, int(tower.end.x) - 24, 32):
-			_add_tile_sprite(TILE_GLASS, Vector2(float(x) + 16.0, float(y) + 16.0))
-	var tower_door := _add_shop_door(tower)
-	_add_building_label(tower, SessionState.COMPANY_NAME.split(" ")[0], TOWER_LABEL_Y)
-	_place_interviewee_door("tower", 0, tower, tower_door, TOWER_DOOR_LABEL_Y)
+	var tower_door := Vector2(TOWER_DOOR_X, BUILDING_ROW_BOTTOM)
+	_add_city_building("building-skyscraper-e", tower_door)
+	_add_sign(TOWER_DOOR_X, TOWER_SIGN_Y, SessionState.COMPANY_NAME.split(" ")[0])
+	_place_interviewee_door("tower", 0, tower_door)
 
-	# The site office, inside the fence. Its door is a row of its own.
+	# The site office, inside the fence: a squat site trailer, the one building
+	# still drawn from the old walls sheet. Its door is a row of its own.
 	var site_office := _add_building(SITE_OFFICE_TOP_LEFT, ROOF_OLIVE_X, SITE_OFFICE_SCALE)
 	var site_door := _add_shop_door(site_office)
-	_place_interviewee_door("site", 0, site_office, site_door)
+	_place_interviewee_door("site", 0, site_door, site_office.position.y + 18.0)

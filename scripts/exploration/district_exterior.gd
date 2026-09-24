@@ -66,6 +66,7 @@ var objective_label: Label
 # rectangles that are on screen rather than recompute them from the tables.
 var built_buildings: Array[Rect2] = []
 var built_labels: Array[Rect2] = []
+var built_trees: Array[Rect2] = []
 
 var street_stops: Array[Dictionary] = []
 var active_stop: Dictionary = {}
@@ -86,13 +87,11 @@ const TILE_ROAD := Vector2i(15, 21)
 const TILE_GRASS := Vector2i(0, 24)
 const TILE_CAR_TOP := Vector2i(31, 17)
 const TILE_CAR_BOTTOM := Vector2i(31, 18)
-const TILE_TREE := Vector2i(6, 18)
 
 const WALLS_ROOF_TEXTURE: Texture2D = preload("res://assets/art/maps/urban/walls_grass_roof.png")
 const DOORS_TEXTURE: Texture2D = preload("res://assets/art/maps/urban/doors_windows.png")
 const PROPS_TEXTURE: Texture2D = preload("res://assets/art/maps/urban/props.png")
-const NPC_A_TEXTURE: Texture2D = preload("res://assets/art/characters/24by24ModernRPGGuy.png")
-const NPC_B_TEXTURE: Texture2D = preload("res://assets/art/maps/Little_Bits_Office_tileset/businessman1/businessman1_idle_down.png")
+const TREES_TEXTURE: Texture2D = preload("res://assets/art/maps/kenney_rpg-urban-pack/Tilemap/tilemap_packed.png")
 
 const ROOF_SOURCE_SIZE := Vector2(48.0, 96.0)
 const ROOF_OLIVE_X := 0.0
@@ -102,8 +101,51 @@ const ROOF_ROSE_X := 192.0
 const ROOF_BRICK_X := 256.0
 const DOOR_SOURCE_RECT := Rect2(144.0, 48.0, 32.0, 40.0)
 const LAMP_SOURCE_RECT := Rect2(303.0, 40.0, 32.0, 88.0)
-const NPC_A_SOURCE_RECT := Rect2(0.0, 0.0, 24.0, 24.0)
-const NPC_B_SOURCE_RECT := Rect2(0.0, 0.0, 16.0, 32.0)
+
+# The street buildings are Kenney's City Kit (Commercial), a 3D kit rendered
+# once into front-on sprites by tools/render_city_kit.tscn and drawn at 2x.
+# A table names one as "<model>_<paint>", the file under CITY_KIT_DIR.
+const CITY_KIT_DIR := "res://assets/art/maps/city_kit/%s.png"
+const CITY_KIT_SCALE := 2.0
+# Where each model's own door is drawn, in source pixels from its left edge.
+# A building stands with that door on its door_x; a model with no door on its
+# front (the walk-up, building-b) is centred on door_x instead.
+const CITY_KIT_DOORS := {
+	"building-a": 20.0,
+	"building-c": 57.0,
+	"building-d": 20.0,
+	"building-e": 57.0,
+	"building-f": 56.0,
+	"building-g": 55.0,
+	"building-h": 55.0,
+	"building-l": 56.0,
+	"building-skyscraper-e": 56.0,
+}
+# A building's name board sits this far above its door: clear of the prompt
+# bubble (DOOR_LIFT above the portal), so standing at a door does not hide
+# whose it is.
+const SIGN_LIFT := 136.0
+
+# Trees from the Kenney RPG Urban sheet; a "planter" is the small crown in the
+# sheet's stone box, for pavement.
+const TREE_SOURCE_RECTS := {
+	"tall": Rect2(256.0, 128.0, 16.0, 32.0),
+	"small": Rect2(272.0, 128.0, 16.0, 32.0),
+	"cluster": Rect2(288.0, 128.0, 48.0, 48.0),
+}
+const TREE_SCALES := {"tall": 4.0, "small": 4.0, "cluster": 3.2}
+const PLANTER_CROWN_RECT := Rect2(256.0, 128.0, 16.0, 16.0)
+const PLANTER_BOX_RECT := Rect2(256.0, 160.0, 16.0, 16.0)
+const PLANTER_SCALE := 3.0
+
+# Pedestrians: LimeZu's Modern Interiors characters, one frame each - facing
+# the camera, or looking down at a phone. 1.5x puts them at the detective's size.
+const PEOPLE_DIR := "res://assets/art/characters/modern_interiors/%s_%s_16x16.png"
+const PERSON_FRAMES := {
+	"idle": Rect2(48.0, 0.0, 16.0, 32.0),
+	"phone": Rect2(80.0, 0.0, 16.0, 32.0),
+}
+const PERSON_SCALE := 1.5
 
 # The three bands every district shares: a pavement under the frontage row, the
 # road, a pavement, and whatever the district puts below that. The edges are
@@ -114,9 +156,12 @@ const BUILDING_ROW_BOTTOM := 200.0
 const TOP_PAVEMENT_END := BUILDING_ROW_BOTTOM + SIDEWALK_HEIGHT
 const ROAD_END := TOP_PAVEMENT_END + ROAD_HEIGHT
 const BOTTOM_PAVEMENT_END := ROAD_END + SIDEWALK_HEIGHT
-const BLOCK_ROW_TOP := 520.0
-const ROW_BUILDING_SCALE := Vector2(3.2, 2.0)
-const BLOCK_BUILDING_SCALE := Vector2(2.6, 1.9)
+# The houses below the road stand on this line; it is where their doors are.
+const BLOCK_ROW_BOTTOM := 702.0
+# The frontage row is several storeys and stands on BUILDING_ROW_BOTTOM, so
+# its upper floors are above y 0. The camera may look this far up, and the top
+# pavement runs up under them.
+const SKY_HEIGHT := 440.0
 const DOOR_SCALE := 1.6
 const LAMP_SCALE := 1.6
 
@@ -141,8 +186,8 @@ func interviewees() -> Array:
 	return []
 
 
-# The frontage row along the top pavement: {"x", "color"} per unit, at
-# ROW_BUILDING_SCALE.
+# The frontage row along the top pavement: {"door_x", "kit"} per building, its
+# door on BUILDING_ROW_BOTTOM (see CITY_KIT_DIR for "kit").
 func building_row() -> Array:
 	return []
 
@@ -153,8 +198,8 @@ func office_row_index() -> int:
 	return -1
 
 
-# The houses on the ground below the road: {"x", "color"} at BLOCK_ROW_TOP,
-# BLOCK_BUILDING_SCALE.
+# The houses on the ground below the road: {"door_x", "kit"}, doors on
+# BLOCK_ROW_BOTTOM.
 func block_buildings() -> Array:
 	return []
 
@@ -168,6 +213,8 @@ func car_spots() -> Array:
 	return []
 
 
+# {"at": where the trunk meets the ground, "kind": a TREE_SOURCE_RECTS key or
+# "planter"}. A tree is solid over its whole sprite, like a pedestrian.
 func tree_spots() -> Array:
 	return []
 
@@ -184,7 +231,8 @@ func lamp_bottom_x() -> Array:
 	return []
 
 
-# {"x", "y", "kind" ("a"/"b"), "tint"} per pedestrian. A stop stands on one of
+# {"x", "y", "who" (Adam/Alex/Amelia/Bob), "pose" (a PERSON_FRAMES key)} per
+# pedestrian. A stop stands on one of
 # these unless it is the noticeboard or marked `is_fixture` - a stop on a thing
 # the district draws itself (a sign, a door) rather than on a person.
 func npc_spots() -> Array:
@@ -422,9 +470,9 @@ func _build_interview_portals() -> void:
 
 
 # Drops the portal for whoever lives in this row/slot, if anyone does, and
-# labels the building so the player can tell the doors apart.
-func _place_interviewee_door(row: String, slot: int, building_rect: Rect2, door_base: Vector2,
-		label_y: float = 18.0) -> void:
+# names the building over its door so the player can tell the doors apart.
+# `sign_y` is the name board's top; by default it sits SIGN_LIFT above the door.
+func _place_interviewee_door(row: String, slot: int, door_base: Vector2, sign_y: float = NAN) -> void:
 	var table := interviewees()
 	for i in range(table.size()):
 		var entry: Dictionary = table[i]
@@ -433,7 +481,7 @@ func _place_interviewee_door(row: String, slot: int, building_rect: Rect2, door_
 		if i < interview_portals.size():
 			interview_portals[i].global_position = door_base + Vector2(0.0, 14.0)
 			_add_door_marker(interview_portals[i], door_base, _case_person(str(entry["case"])))
-		_add_building_label(building_rect, str(entry["label"]), label_y)
+		_add_sign(door_base.x, door_base.y - SIGN_LIFT if is_nan(sign_y) else sign_y, str(entry["label"]))
 		return
 
 
@@ -479,7 +527,7 @@ func _setup_camera_limits() -> void:
 	if camera == null:
 		return
 	camera.limit_left = 0
-	camera.limit_top = 0
+	camera.limit_top = -int(SKY_HEIGHT)
 	camera.limit_right = int(MAP_WIDTH)
 	camera.limit_bottom = int(MAP_HEIGHT)
 
@@ -549,6 +597,7 @@ func _build_map() -> void:
 	_clear_decor()
 	built_buildings.clear()
 	built_labels.clear()
+	built_trees.clear()
 	_build_ground()
 	_build_buildings()
 	_build_props()
@@ -560,7 +609,7 @@ func _build_map() -> void:
 
 
 func _build_ground() -> void:
-	_add_tiled_band(TILE_SIDEWALK, 0.0, TOP_PAVEMENT_END, MAP_WIDTH)
+	_add_top_pavement()
 	_add_tiled_band(TILE_ROAD, TOP_PAVEMENT_END, ROAD_HEIGHT, MAP_WIDTH)
 	_add_tiled_band(TILE_SIDEWALK, ROAD_END, SIDEWALK_HEIGHT, MAP_WIDTH)
 	_add_tiled_band(TILE_GRASS, BOTTOM_PAVEMENT_END, MAP_HEIGHT - BOTTOM_PAVEMENT_END, MAP_WIDTH)
@@ -569,31 +618,34 @@ func _build_ground() -> void:
 		_add_side_street(street_x, ROAD_END, MAP_HEIGHT, SIDEWALK_HEIGHT)
 
 
+# The pavement under the frontage row, from as high as the camera can look.
+func _add_top_pavement() -> void:
+	_add_tiled_rect(TILE_SIDEWALK, Vector2(0.0, -SKY_HEIGHT), Vector2(MAP_WIDTH, TOP_PAVEMENT_END + SKY_HEIGHT))
+
+
 func _build_buildings() -> void:
-	var building_height := ROOF_SOURCE_SIZE.y * ROW_BUILDING_SCALE.y
-	var row_top := BUILDING_ROW_BOTTOM - building_height
 	var row := building_row()
 	for i in range(row.size()):
 		var entry: Dictionary = row[i]
-		var rect := _add_building(Vector2(entry["x"], row_top), entry["color"], ROW_BUILDING_SCALE)
-		var door_base := _add_shop_door(rect)
+		var door_base := Vector2(float(entry["door_x"]), BUILDING_ROW_BOTTOM)
+		_add_city_building(str(entry["kit"]), door_base)
 		if i == office_row_index():
 			portal.global_position = door_base + Vector2(0.0, 14.0)
-			_add_building_label(rect, "OFFICES")
+			_add_sign(door_base.x, door_base.y - SIGN_LIFT, "OFFICES")
 		else:
-			_place_interviewee_door("street", i, rect, door_base)
+			_place_interviewee_door("street", i, door_base)
 
 	var houses := block_buildings()
 	for i in range(houses.size()):
 		var entry: Dictionary = houses[i]
-		var rect := _add_building(Vector2(entry["x"], BLOCK_ROW_TOP), entry["color"], BLOCK_BUILDING_SCALE)
-		var door_base := _add_shop_door(rect)
-		_place_interviewee_door("block", i, rect, door_base)
+		var door_base := Vector2(float(entry["door_x"]), BLOCK_ROW_BOTTOM)
+		_add_city_building(str(entry["kit"]), door_base)
+		_place_interviewee_door("block", i, door_base)
 
 
 func _build_props() -> void:
 	for spot in tree_spots():
-		_add_tree(spot)
+		_add_tree(spot["at"], str(spot["kind"]))
 
 	for x in lamp_top_x():
 		_add_lamppost(Vector2(x, TOP_PAVEMENT_END - 8.0))
@@ -601,10 +653,8 @@ func _build_props() -> void:
 		_add_lamppost(Vector2(x, ROAD_END + 8.0))
 
 	for spot in npc_spots():
-		if spot["kind"] == "a":
-			_add_npc(Vector2(spot["x"], spot["y"]), NPC_A_TEXTURE, NPC_A_SOURCE_RECT, 2.0, spot["tint"])
-		else:
-			_add_npc(Vector2(spot["x"], spot["y"]), NPC_B_TEXTURE, NPC_B_SOURCE_RECT, 2.2, spot["tint"])
+		var pose := str(spot["pose"])
+		_add_npc(Vector2(spot["x"], spot["y"]), load(PEOPLE_DIR % [spot["who"], pose]), PERSON_FRAMES[pose], PERSON_SCALE)
 
 	var curb_y := TOP_PAVEMENT_END + 24.0
 	var cars := car_spots()
@@ -680,15 +730,33 @@ func _add_shop_door(building_rect: Rect2) -> Vector2:
 	return Vector2(center_x, bottom_y)
 
 
-# `label_y` is the label's offset from the building's top. A building whose
-# roof leaves the frame needs it lower than the default or the label does too.
-func _add_building_label(building_rect: Rect2, text: String, label_y: float = 18.0) -> void:
+# A City Kit building (see CITY_KIT_DIR) standing on door_base.y, placed so
+# its own drawn door is at door_base.x. Solid over its whole sprite.
+func _add_city_building(kit: String, door_base: Vector2) -> Rect2:
+	var texture: Texture2D = load(CITY_KIT_DIR % kit)
+	var model := kit.get_slice("_", 0)
+	var door_source_x: float = CITY_KIT_DOORS.get(model, texture.get_width() * 0.5)
+	var size := texture.get_size() * CITY_KIT_SCALE
+	var top_left := Vector2(door_base.x - door_source_x * CITY_KIT_SCALE, door_base.y - size.y)
+
+	var sprite := Sprite2D.new()
+	sprite.texture = texture
+	sprite.centered = false
+	sprite.scale = Vector2(CITY_KIT_SCALE, CITY_KIT_SCALE)
+	sprite.position = top_left
+	sprite.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
+	decor.add_child(sprite)
+
+	_add_wall_segment(top_left, size)
+	built_buildings.append(Rect2(top_left, size))
+	return Rect2(top_left, size)
+
+
+# A name board centred on center_x with its top at top_y.
+func _add_sign(center_x: float, top_y: float, text: String) -> void:
 	# Wide enough for the name: "VALDERRAMA" does not fit the box "OFFICES" does.
 	var label_size := Vector2(maxf(96.0, 12.0 * text.length() + 16.0), 22.0)
-	var top_left := Vector2(
-		building_rect.position.x + building_rect.size.x * 0.5 - label_size.x * 0.5,
-		building_rect.position.y + label_y
-	)
+	var top_left := Vector2(center_x - label_size.x * 0.5, top_y)
 	built_labels.append(Rect2(top_left, label_size))
 
 	var background := ColorRect.new()
@@ -725,14 +793,23 @@ func _add_side_street(x_start: float, y_start: float, y_end: float, mouth: float
 	_add_tiled_rect(TILE_SIDEWALK, Vector2(road_left + road_width, kerb_top), Vector2(SIDE_STREET_SIDEWALK, kerb_height))
 
 
-func _add_tree(tree_position: Vector2) -> void:
-	var sprite := Sprite2D.new()
-	sprite.texture = _tile_texture(TILE_TREE)
-	sprite.centered = true
-	sprite.scale = Vector2(2.2, 2.2)
-	sprite.position = tree_position
-	sprite.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
-	decor.add_child(sprite)
+# A tree standing on `base` (see tree_spots()). Solid over its whole sprite,
+# like a pedestrian, so the player never walks behind the crown.
+func _add_tree(base: Vector2, kind: String) -> void:
+	var size: Vector2
+	if kind == "planter":
+		var box := PLANTER_BOX_RECT.size * PLANTER_SCALE
+		_add_prop(TREES_TEXTURE, PLANTER_BOX_RECT, base, PLANTER_SCALE)
+		_add_prop(TREES_TEXTURE, PLANTER_CROWN_RECT, base - Vector2(0.0, box.y - 8.0), PLANTER_SCALE)
+		size = Vector2(box.x, box.y * 2.0 - 8.0)
+	else:
+		var region: Rect2 = TREE_SOURCE_RECTS[kind]
+		var tree_scale: float = TREE_SCALES[kind]
+		_add_prop(TREES_TEXTURE, region, base, tree_scale)
+		size = region.size * tree_scale
+	var rect := Rect2(base - Vector2(size.x * 0.5, size.y), size)
+	_add_wall_segment(rect.position, rect.size)
+	built_trees.append(rect)
 
 
 func _add_lamppost(base_position: Vector2) -> void:
@@ -750,14 +827,13 @@ func _add_lamppost(base_position: Vector2) -> void:
 # A pedestrian is solid over their whole sprite, like a car: a stop's zone
 # (STOP_SIZE) is wider than any of them, so the prompt still comes up from
 # beside the person rather than from inside them.
-func _add_npc(npc_position: Vector2, texture: Texture2D, source_rect: Rect2, npc_scale: float, tint: Color) -> void:
+func _add_npc(npc_position: Vector2, texture: Texture2D, source_rect: Rect2, npc_scale: float) -> void:
 	var sprite := Sprite2D.new()
 	sprite.texture = texture
 	sprite.region_enabled = true
 	sprite.region_rect = source_rect
 	sprite.centered = true
 	sprite.scale = Vector2(npc_scale, npc_scale)
-	sprite.modulate = tint
 	sprite.position = npc_position
 	sprite.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
 	decor.add_child(sprite)
@@ -765,8 +841,8 @@ func _add_npc(npc_position: Vector2, texture: Texture2D, source_rect: Rect2, npc
 	_add_wall_segment(npc_position - size * 0.5, size)
 
 
-# One tile from the Kenney sheet as a free-standing sprite: a cone, a crate,
-# a pane of glass. Centred on `at`.
+# One tile from the Kenney sheet as a free-standing sprite: a cone, a crate.
+# Centred on `at`.
 func _add_tile_sprite(atlas_coord: Vector2i, at: Vector2, tile_scale: float = 2.0) -> void:
 	var sprite := Sprite2D.new()
 	sprite.texture = _tile_texture(atlas_coord)

@@ -14,10 +14,12 @@ const CASE_LINA := "res://resources/cases/interview_case_006.json"
 const CASE_TEDDY := "res://resources/cases/interview_case_007.json"
 
 # The detective's desk: the building the case starts in, on the grass at the
-# bottom-left with its door over the map's default spawn - so walking out of
-# it for the first time and being dropped on the street by a test are the same
-# place. Clear of the tree at (300, 950) and the first side street at 520.
-const DESK_TOP_LEFT := Vector2(88.0, 748.0)
+# bottom-left with its door over the map's default spawn (set in _init) - so
+# walking out of it for the first time and being dropped on the street by a
+# test are the same place. Its door moved down 60 px when the street was
+# redrawn (2026-09-24): the white two-storey building is taller than the old
+# unit, and at the old height its roof closed off Evelyn's door above it.
+const DESK_DOOR := Vector2(150.0, 990.0)
 
 # The cast, and which building each one lives in. Portals used to be three
 # hand-placed nodes in the scene file, which capped the cast at three and made
@@ -141,47 +143,63 @@ const PATTERN_DETAIL := "The number on the community notice is the number two re
 
 const SIDE_STREET_X_POSITIONS := [520.0, 1400.0]
 
+# The shop row. The office is the tallest thing on the street - six storeys
+# with a water tank, the call floors on its third and fourth - because the
+# player climbs it; everything else is two or three.
 const BUILDING_ROW := [
-	{"x": 242.0, "color": ROOF_TAN_X},
-	{"x": 456.0, "color": ROOF_OLIVE_X},
-	{"x": 669.0, "color": ROOF_MAUVE_X},
-	{"x": 883.0, "color": ROOF_BRICK_X},
-	{"x": 1097.0, "color": ROOF_ROSE_X},
-	{"x": 1310.0, "color": ROOF_TAN_X},
-	{"x": 1524.0, "color": ROOF_OLIVE_X},
+	{"door_x": 319.0, "kit": "building-b_mint"},
+	{"door_x": 533.0, "kit": "building-g_sky"},
+	{"door_x": 746.0, "kit": "building-c_cream"},
+	{"door_x": 960.0, "kit": "building-l_greige"},
+	{"door_x": 1174.0, "kit": "building-d_lemon"},
+	{"door_x": 1387.0, "kit": "building-a_peach"},
+	{"door_x": 1601.0, "kit": "building-b_lilac"},
 ]
 const OFFICE_ROW_INDEX := 3
 
-# Positions are constrained, not decorative. A block building is 124.8 wide, so
-# each entry occupies [x, x + 124.8] at y 520-702.4, and that band already
-# contains the two side streets ([520,616] and [1400,1496]), formerly trees at y 600
-# (x 400, 1000, 1550) and a pedestrian at x 700. An earlier five-across layout
-# put one house in the middle of a side street and another through a tree. The
-# fourth house sits in the right-hand pocket past the second side street, clear
-# of the tree at 1550 (which ends at 1567.6) and the resident at (1750, 950).
+# Positions are constrained, not decorative. The houses stand on
+# BLOCK_ROW_BOTTOM in a band that already holds the two side streets
+# ([520,616] and [1400,1496]), the trees and two residents; they are the
+# kit's two-storey models, because a three-storey one reaches the pavement
+# above and Carlo stands on that. An earlier five-across layout put one house
+# in the middle of a side street and another through a tree. test_urban checks
+# the drawn rectangles against all of it.
 const BLOCK_BUILDINGS := [
-	{"x": 140.0, "color": ROOF_ROSE_X},
-	{"x": 780.0, "color": ROOF_TAN_X},
-	{"x": 1150.0, "color": ROOF_MAUVE_X},
-	{"x": 1620.0, "color": ROOF_BRICK_X},
+	{"door_x": 202.0, "kit": "building-c_lilac"},
+	{"door_x": 842.0, "kit": "building-c_peach"},
+	{"door_x": 1212.0, "kit": "building-e_mint"},
+	{"door_x": 1682.0, "kit": "building-c_sky"},
 ]
 
 const CAR_SPOTS := [300.0, 650.0, 1250.0, 1600.0, 1800.0]
-# No trees: the only tree tile in the city set is a thin green stalk that read
-# as a bottle standing on the grass (removed 2026-09-19). The table and the
-# layout test's tree check stay, so a proper tree can be put back as rows here.
-const TREE_SPOTS := []
+# Trees on the grass, clear of the houses, the doors and everyone standing
+# about. (The city set's own tree tile read as a green bottle and was removed
+# on 2026-09-19; these are the RPG Urban pack's.)
+const TREE_SPOTS := [
+	{"at": Vector2(430.0, 700.0), "kind": "small"},
+	{"at": Vector2(1010.0, 620.0), "kind": "cluster"},
+	{"at": Vector2(1330.0, 880.0), "kind": "tall"},
+	{"at": Vector2(1840.0, 700.0), "kind": "tall"},
+	{"at": Vector2(430.0, 1010.0), "kind": "cluster"},
+	{"at": Vector2(690.0, 1010.0), "kind": "tall"},
+	{"at": Vector2(880.0, 1062.0), "kind": "small"},
+	{"at": Vector2(1240.0, 1000.0), "kind": "small"},
+	{"at": Vector2(1580.0, 1050.0), "kind": "cluster"},
+	{"at": Vector2(1880.0, 1040.0), "kind": "tall"},
+]
 # Alternating sides along the road (see district_exterior.gd), the top ones in
 # the gaps between buildings, the bottom ones clear of the side streets' mouths.
 const LAMP_TOP_X := [426.0, 1067.0, 1707.0]
 const LAMP_BOTTOM_X := [760.0, 1350.0]
 
+# Jomar, Carlo (on his phone at the curb), Aling Nena, Aling Rosa (whose phone
+# keeps ringing), the store owner.
 const NPC_SPOTS := [
-	{"x": 330.0, "y": 216.0, "kind": "a", "tint": Color(1, 1, 1, 1)},
-	{"x": 1200.0, "y": 408.0, "kind": "b", "tint": Color(1, 1, 1, 1)},
-	{"x": 700.0, "y": 600.0, "kind": "a", "tint": Color(0.85, 1.0, 0.85, 1)},
-	{"x": 1750.0, "y": 950.0, "kind": "a", "tint": Color(1.0, 0.85, 0.85, 1)},
-	{"x": 740.0, "y": 216.0, "kind": "b", "tint": Color(1, 1, 1, 1)},
+	{"x": 330.0, "y": 216.0, "who": "Bob", "pose": "idle"},
+	{"x": 1200.0, "y": 408.0, "who": "Adam", "pose": "phone"},
+	{"x": 700.0, "y": 600.0, "who": "Amelia", "pose": "idle"},
+	{"x": 1750.0, "y": 950.0, "who": "Amelia", "pose": "phone"},
+	{"x": 740.0, "y": 216.0, "who": "Alex", "pose": "idle"},
 ]
 
 
@@ -199,14 +217,14 @@ const TRANSIT := {
 func _init() -> void:
 	map_title = "Sampaguita Street"
 	map_hint = "WASD or arrows to walk  \u00b7  Enter at a door or a person  \u00b7  J journal  \u00b7  Esc menu"
+	player_spawn = DESK_DOOR + Vector2(0.0, 20.0)
 
 
 func _build_buildings() -> void:
 	super()
-	var desk := _add_building(DESK_TOP_LEFT, ROOF_OLIVE_X, BLOCK_BUILDING_SCALE)
-	var desk_door := _add_shop_door(desk)
-	_add_building_label(desk, "ANTI-FRAUD")
-	_place_exit_door(desk_door, "Go in to your desk", SessionState.DESK_SCENE)
+	_add_city_building("building-e", DESK_DOOR)
+	_add_sign(DESK_DOOR.x, DESK_DOOR.y - SIGN_LIFT, "ANTI-FRAUD")
+	_place_exit_door(DESK_DOOR, "Go in to your desk", SessionState.DESK_SCENE)
 
 
 func interviewees() -> Array:

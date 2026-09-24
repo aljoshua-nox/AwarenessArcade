@@ -3,3 +3,7 @@ tmp_render/
 *.tmp
 *.log
 build/
+
+# The free Modern Interiors pack is non-commercial; only the frames the streets
+# use are committed (assets/art/characters/modern_interiors/). See CREDITS.md.
+assets/Modern_Interiors_Free_v2.2/

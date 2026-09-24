@@ -34,28 +34,34 @@ license file bundled, or license terms require per-file checking).
 > 319 files, ~12 MB. The GameKit itself was identified on 2026-09-20 — it is
 > mimakuma's *Modern City Game Kit*, free with credit — and the files the game
 > kept from it (the `urban/` sheets and the player sprite) are credited below.
+>
+> **Removed 2026-09-24, all unreferenced by the game:** the PixelOffice pack (CC0)
+> and arlantr's *Free Office Pixel Art* ("free to use any way you want"), which the
+> credits screen named as the call floor's art although no scene or script had
+> used either, and `assets/art/maps/office/`. That folder was never unidentified:
+> its ten files are byte-identical copies - `floor_tiles` and `wall_tiles` of
+> Little Bits' office floors and walls (the call floor's floor and wall until the
+> rooms became Modern Interiors that day), the other eight of arlantr's pack.
+> 20 + 10 + 57 files, ~360 KB, all packed into every export until then.
 
 
 ## Art
 
 | Asset(s) | Location | Source / Author | License | Status |
 |---|---|---|---|---|
-| Background elements (clouds, castle, fence) | `assets/art/backgrounds/kenney_background-elements/` | Kenney Vleugels (kenney.nl) | CC0 | ✅ |
-| UI Pack 2.0 | `assets/art/ui/kenney_ui-pack/` | Kenney (kenney.nl) | CC0 | ✅ |
-| UI Pack: RPG Expansion | `assets/art/ui/kenney_ui-pack-rpg-expansion/` | Kenney (kenney.nl) | CC0 | ✅ |
-| Kenney Fonts pack | `assets/art/ui/kenney_kenney-fonts/` | Kenney (kenney.nl) | CC0 | ✅ |
-| Input Prompts 1.5 | `assets/art/ui/kenney_input-prompts_1.5/` | Kenney (kenney.nl) | CC0 | ✅ |
+| Background elements (clouds, castle, fence) | `assets/art/backgrounds/kenney_background-elements/` | Kenney Vleugels (kenney.nl) | CC0 | ✅ — **not referenced by the game** (checked 2026-09-24: no scene, script or theme uses a file from it, or a copy of one); still ships; off the credits screen |
+| UI Pack 2.0 — the theme's buttons, panel and meter (`assets/art/ui/button_*.png`, `panel_flat.png`, `meter_*.png` are byte-identical copies of its files) | `assets/art/ui/kenney_ui-pack/` | Kenney (kenney.nl) | CC0 | ✅ |
+| UI Pack: RPG Expansion | `assets/art/ui/kenney_ui-pack-rpg-expansion/` | Kenney (kenney.nl) | CC0 | ✅ — **not referenced by the game** (checked 2026-09-24: no scene, script or theme uses a file from it, or a copy of one); still ships; off the credits screen |
+| Kenney Fonts pack | `assets/art/ui/kenney_kenney-fonts/` | Kenney (kenney.nl) | CC0 | ✅ — **not referenced by the game** (checked 2026-09-24: no scene, script or theme uses a file from it, or a copy of one); still ships; off the credits screen |
+| Input Prompts 1.5 | `assets/art/ui/kenney_input-prompts_1.5/` | Kenney (kenney.nl) | CC0 | ✅ — **not referenced by the game** (checked 2026-09-24: no scene, script or theme uses a file from it, or a copy of one); still ships; off the credits screen |
 | Roguelike Modern City 2.0 | `assets/art/maps/kenney_roguelike-modern-city/` | Kenney (kenney.nl) | CC0 | ✅ |
 | RPG Urban Pack 1.0 — its trees stand on both streets (`TREES_TEXTURE` in `district_exterior.gd`, since 2026-09-24) | `assets/art/maps/kenney_rpg-urban-pack/` | Kenney (kenney.nl) | CC0 | ✅ |
 | City Kit (Commercial) 2.1 — a **3D** kit (FBX/GLB/OBJ). The street buildings and the Valderrama tower are rendered from its GLB models by `tools/render_city_kit.tscn` into `assets/art/maps/city_kit/`; only those PNGs ship. The pack folder carries a `.gdignore`, so Godot never imports or exports the models | `assets/kenney_city-kit-commercial_2.1/` (the pack), `assets/art/maps/city_kit/` (the renders) | Kenney (kenney.nl) | CC0 | ✅ |
 | Modern Interiors — free version: the four characters (Adam, Alex, Amelia, Bob), one idle and one phone sheet each — the pedestrians on both streets since 2026-09-24 - and the walls, floors and furniture of both office floors and the desk (same day) | `assets/art/characters/modern_interiors/` (the eight character sheets used), `assets/art/maps/modern_interiors/` (the 16x16 interiors and room-builder sheets **cut down to the parts the rooms use** by `tools/cut_modern_interiors.tscn`, from the table in `scripts/exploration/interior_parts.gd`), each with the pack's `LICENSE.txt` | LimeZu — [itch.io](https://limezu.itch.io/moderninteriors) | **Free version: non-commercial use only** (bundled `LICENSE.txt`: *"You can use the asset in non commercial projects"*; commercial use, and editing for commercial use or resale, are not allowed). No attribution clause; credited on the credits screen anyway. **If the game is ever sold, these sprites must be replaced or the paid version bought.** Only the frames and parts the game uses are committed: the full free pack stays out of the public repository (`.gitignore`) | ✅ |
-| PixelOffice pack (characters + office props) | `assets/art/maps/PixelOffice/` | itch.io asset pack ("PixelOffice") | CC0 | ✅ |
-| Free Office Pixel Art | `assets/art/maps/free-office-pixel-art/` | arlantr — [itch.io](https://arlantr.itch.io/) / [OpenGameArt](https://opengameart.org/users/arlantr) | Free to use, credit appreciated | ✅ |
 | Little Bits: Office (tileset + businessman1 character). Since 2026-09-24 only its water cooler is used - the office walls, floors and furniture are Modern Interiors, and the businessman is no longer a street pedestrian | `assets/art/maps/Little_Bits_Office_tileset/` | AdricCustoms — [itch.io](https://adriccustoms.itch.io/little-bits-office) | Name-your-own-price; creator states use is unrestricted ("Use it for whatever you like"). No formal license text published | ✅ identified, terms informal |
 | Modern City Game Kit — urban tile sheets: **four of these are on the streets** (`walls_grass_roof` = Terminal Road's site office, `doors_windows` = its door, `props` = lampposts, the bench, the bus-stop sign, the vending machine and the skip, `buses_cars` = Terminal Road's buses; `road_pavements` is unused. Until 2026-09-24 the first two were every building and door on both streets, now City Kit renders) | `assets/art/maps/urban/` | mimakuma — [itch.io](https://mimakuma.itch.io/modern-city-game-kit) (identified 2026-09-20: the removed `Modern_City_GameKit/` folder was this pack whole — Aseprite sources, SVGs, the detective, two NPCs, traffic lights, GUI — and these sheets are its `PNG/` folder byte for byte. **Not Kenney**, despite the folder's stray Kenney copy in the next row) | **Free; credit required.** Author's terms: *"You may use this pack for commercial and noncommercial projects. You can edit the assets for your own needs. Please credit me (mimakuma) as the original creator of the assets if you decide to use them in your project."* On the credits screen | ✅ |
 | Kenney RPG Urban Pack tilemap (stray copy) | `assets/art/maps/urban/urban_map.png` | Kenney (kenney.nl) — byte-identical to `kenney_rpg-urban-pack/Tilemap/tilemap.png` | CC0 | ✅ (unused; a duplicate of a file already in the repo) |
 | Street terrain — pavements, road, grass, cars (`TILES_DIR` in `district_exterior.gd`; its tree tile was dropped on 2026-09-19) | `assets/art/maps/kenney_roguelike-modern-city/Tiles/` | Kenney (kenney.nl) | CC0 | ✅ |
-| Office tile sheets — `floor_tiles`, `wall_tiles`; the call floor's floor and wall until 2026-09-24, **no longer referenced** (the rooms are Modern Interiors now), still shipped | `assets/art/maps/office/` | ⚠️ unidentified; did not match the removed GameKit pack, so a separate source | ⚠️ unknown | ⚠️ needs source lookup |
 | Street passer-by A — the 4x4 walk sheet `district_exterior.gd` loaded as `NPC_A_TEXTURE` | `assets/art/characters/24by24ModernRPGGuy.png` | OVFudj — *Modern RPG Guy*, [OpenGameArt](https://opengameart.org/content/modern-rpg-guy) (2018; identified 2026-09-20 by its filename, which is the submission's attachment name; 1.4 KB, 96x96, matches) | **CC0** | ✅ — **no longer referenced** since 2026-09-24 (the pedestrians are LimeZu's now); still ships, off the credits screen |
 | Player detective sprite (idle/walk, 4 directions) | `assets/art/characters/player/` | mimakuma — Modern City Game Kit, the same pack as the urban sheets (identified 2026-09-20: all eight files hash-match the pack's `Characters/PNG/Detective/` sheets) | Free; credit required — covered by the mimakuma line on the credits screen | ✅ |
 | Portrait Pack (`fella 1`, `fella 2`, `lady 1`, `lady 2`) | `assets/art/portraits/` | Calciumtrice — [OpenGameArt](https://opengameart.org/content/portrait-pack) (identified 2026-09-12; the "C" monogram bottom-right is the artist's) | **CC-BY 3.0** — attribution required. Author's notice: *"Portrait Pack by Calciumtrice, usable under Creative Commons Attribution 3.0 license."* | ✅ |
@@ -80,7 +86,7 @@ license file bundled, or license terms require per-file checking).
 |---|---|---|---|---|
 | IBM Plex Sans | `assets/fonts/IBM_Plex_Sans/` | IBM | SIL Open Font License 1.1 | ✅ |
 | IBM Plex Mono | `assets/fonts/IBM_Plex_Mono/` | IBM Corp. | SIL Open Font License 1.1 — confirmed, `OFL.txt` bundled | ✅ |
-| Kenney Fonts | `assets/art/ui/kenney_kenney-fonts/Fonts/` | Kenney (kenney.nl) | CC0 | ✅ |
+| Kenney Fonts | `assets/art/ui/kenney_kenney-fonts/Fonts/` | Kenney (kenney.nl) | CC0 | ✅ — not referenced; the game's type is IBM Plex |
 
 ## Audio
 
@@ -135,8 +141,10 @@ The album's other two tracks (*Tybarne*, *Dio e popolo*) were moved to `download
    characters ruled Kenney out. The four sheets the game uses and the player sprite are
    its files. The credit line went on the credits screen the same day; `test_credits`
    pins it with the others.
-2. Identify the remaining ⚠️ art: the `office/` floor and wall tiles — the last ⚠️ row
-   in this file. ~~The numbered `pack/` character sheets~~ were referenced by nothing and
+2. ~~Identify the remaining ⚠️ art: the `office/` floor and wall tiles — the last ⚠️ row
+   in this file.~~ Closed 2026-09-24: byte-identical copies of Little Bits and arlantr's
+   pack, unreferenced once the rooms were redone, and deleted (see the top). No ⚠️ row
+   is left. ~~The numbered `pack/` character sheets~~ were referenced by nothing and
    were deleted 2026-09-20 (34 files, 168 KB, previously packed into every export by the
    `all_resources` filter). ~~`24by24ModernRPGGuy.png`, the first street NPC, had no row at all~~ —
    identified 2026-09-20 within the hour: OVFudj's *Modern RPG Guy* on OpenGameArt, CC0;
@@ -150,7 +158,7 @@ The album's other two tracks (*Tybarne*, *Dio e popolo*) were moved to `download
    credits screen must carry "Image by rawpixel.com on Magnific".~~ On the screen since
    2026-09-20. ~~The carinderia backdrop (`settings/canteen.jpg`) has no license at all.~~
    Replaced the same day with a Pexels photo (Denniz Futalan). With item 1 closed, nothing
-   the build ships is unlicensed; the item 2 files are unidentified, not known-unlicensed.
+   the build ships is unlicensed; with item 2 closed, nothing it ships is unidentified either.
 5. ~~Font Awesome Free icons are CC BY 4.0 — the credits screen must include an attribution
    line ... "Portrait Pack by Calciumtrice, usable under Creative Commons Attribution 3.0
    license."~~ Both on the screen since 2026-09-20, with the music and Freesound lines;

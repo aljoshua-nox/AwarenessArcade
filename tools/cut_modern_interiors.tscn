@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://tools/cut_modern_interiors.gd" id="1_cutinteriors"]
+
+[node name="CutModernInteriors" type="Node"]
+script = ExtResource("1_cutinteriors")

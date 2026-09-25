@@ -67,7 +67,7 @@ const STREET_STOPS := [
 		"is_noticeboard": true,
 		"title": "Community bulletin board",
 		"prompt": "Read the bulletin board",
-		"body": "A cork board on a post at the end of the street, behind cracked plastic. Between a bus schedule and a card for guitar lessons, a barangay notice, laminated against the rain.\n\nBARANGAY ADVISORY - TELEPHONE SCAMS. Callers pretend to be your bank's fraud department, a tech support line, or a raffle office. Reported number: %s. They will tell you to stay on the line. Hang up. Call your bank using the number on the back of your card. No bank, government office or prize office will ever ask for your OTP.",
+		"body": "BARANGAY ADVISORY - TELEPHONE SCAMS. Callers pretend to be your bank's fraud department, a tech support line, or a raffle office. Reported number: %s. They will tell you to stay on the line. Hang up. Call your bank using the number on the back of your card. No bank, government office or prize office will ever ask for your OTP.",
 		"note": "The last line is the one to remember. A one-time code sent to your phone is the bank checking it is really you. Reading it out to a caller hands them the key.",
 		"note_color": TextStyle.COLOR_HINT,
 		"marker": TextStyle.MARK_HINT,

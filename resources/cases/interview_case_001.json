@@ -218,7 +218,7 @@
 	  }
 	},
 	"ask_evidence": {
-	  "prompt": "\"So it was the rushing.\" She frowns at her hands. \"He kept saying there was no time.\"",
+	  "prompt": "\"So it was the rushing.\" She frowns at her hands. \"He kept saying there was no time. I had the code from the text right there in my hand.\" A pause. \"I came that close to reading it out to him.\"",
 	  "evidence_prompt": true,
 	  "evidence_hint": "Something on paper or on her phone should back this up. Anything that arrived around the time of the call is worth showing her.",
 	  "accepts_evidence": [
@@ -266,6 +266,7 @@
 	  ],
 	  "dispositions": {
 		"harmed": {
+		  "prompt": "\"So it was the rushing.\" She frowns at her hands. \"He kept saying there was no time.\" Her hands go still. \"And I gave him the code.\"",
 		  "choices": [
 			{
 			  "text": "What did they ask you for, in the end?",

@@ -227,7 +227,7 @@
       }
     },
     "ask_evidence": {
-      "prompt": "\"A list.\" Teodoro says the word as if he is putting it on a shelf. \"So he did not know Paolo at all. He knew a line on a page.\"",
+      "prompt": "\"A list.\" Teodoro says the word as if he is putting it on a shelf. \"So he did not know Paolo at all. He knew a line on a page.\" He is quiet for a moment. \"And I had already sent the twenty-two thousand by then.\"",
       "evidence_prompt": true,
       "evidence_hint": "He remembers everything the man said. What you need is what the man got.",
       "accepts_evidence": [
@@ -294,7 +294,8 @@
               "text": "That's enough to start with. Thank you.",
               "next": "end_partial"
             }
-          ]
+          ],
+          "prompt": "\"A list.\" Teodoro says the word as if he is putting it on a shelf. \"So he did not know Paolo at all. He knew a line on a page.\" He almost smiles. \"And I sent nothing, because Paolo was in his math class.\""
         },
         "unfinished": {
           "evidence_hint": "The call never finished, so there is nothing to trace. What matters is the four minutes it took him to find out the truth - and who he asked.",
@@ -328,7 +329,8 @@
               "text": "That's enough to start with. Thank you.",
               "next": "end_partial"
             }
-          ]
+          ],
+          "prompt": "\"A list.\" Teodoro says the word as if he is putting it on a shelf. \"So he did not know Paolo at all. He knew a line on a page.\" He turns the cup again. \"And he never called back to finish asking.\""
         }
       }
     },

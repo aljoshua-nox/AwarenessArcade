@@ -227,7 +227,7 @@
       }
     },
     "ask_evidence": {
-      "prompt": "\"Four o'clock.\" Joel looks at the site clock, out of habit. \"He didn't say it once. He said it every third sentence. Like a countdown.\"",
+      "prompt": "\"Four o'clock.\" Joel looks at the site clock, out of habit. \"He didn't say it once. He said it every third sentence. Like a countdown.\" He stops looking at it. \"And I cashed in the sixteen thousand at half past three.\"",
       "evidence_prompt": true,
       "evidence_hint": "He remembers the reference number to the last digit. What you need is where the money went, and when.",
       "accepts_evidence": [
@@ -294,7 +294,8 @@
               "text": "That's enough to start with. Thank you.",
               "next": "end_partial"
             }
-          ]
+          ],
+          "prompt": "\"Four o'clock.\" Joel looks at the site clock, out of habit. \"He didn't say it once. He said it every third sentence. Like a countdown.\" He shrugs. \"I sent nothing. I picked up the other phone instead.\""
         },
         "unfinished": {
           "evidence_hint": "The call never finished, so there is nothing to trace. What matters is the four minutes it took the real office to laugh - and that he made the call.",
@@ -328,7 +329,8 @@
               "text": "That's enough to start with. Thank you.",
               "next": "end_partial"
             }
-          ]
+          ],
+          "prompt": "\"Four o'clock.\" Joel looks at the site clock, out of habit. \"He didn't say it once. He said it every third sentence. Like a countdown.\" He shrugs. \"And then it cut, and no officer ever came to the gate.\""
         }
       }
     },

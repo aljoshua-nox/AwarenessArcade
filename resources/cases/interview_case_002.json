@@ -258,7 +258,7 @@
 	  }
 	},
 	"ask_evidence": {
-	  "prompt": "Kevin stares at the screenshot. \"...It never scanned anything. It just said it did.\"",
+	  "prompt": "Kevin stares at the screenshot. \"...It never scanned anything. It just said it did.\" He sits back. \"And I still paid him.\"",
 	  "evidence_prompt": true,
 	  "evidence_hint": "Him believing it is one thing. You need something that proves a stranger actually got into that laptop.",
 	  "accepts_evidence": [
@@ -310,6 +310,7 @@
 			  "next": "end_partial"
 			}
 		  ],
+		  "prompt": "Kevin stares at the screenshot. \"...It never scanned anything. It just said it did.\" He sits back. \"And I hung up before he got anything out of me.\"",
 		  "evidence_hint": "He hung up before anyone got in, so there is no session and no receipt. What matters is that the callback reached him - and where it came from.",
 		  "accepts_evidence": [
 			{
@@ -344,6 +345,7 @@
 			  "next": "end_partial"
 			}
 		  ],
+		  "prompt": "Kevin stares at the screenshot. \"...It never scanned anything. It just said it did.\" He sits back. \"And then the line dropped before he got to whatever he wanted.\"",
 		  "evidence_hint": "The call never finished, so there is nothing to trace on the laptop. What matters is that the callback reached him - and where it came from.",
 		  "accepts_evidence": [
 			{

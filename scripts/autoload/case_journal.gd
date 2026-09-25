@@ -157,6 +157,7 @@ func _build_ui() -> void:
 		var button := Button.new()
 		button.text = str(tab.get("label", tab_id))
 		button.toggle_mode = true
+		button.theme_type_variation = &"JournalTab"
 		button.button_group = group
 		button.custom_minimum_size = Vector2(150, 34)
 		button.pressed.connect(_on_tab_pressed.bind(tab_id))
@@ -172,8 +173,9 @@ func _build_ui() -> void:
 		tab_pages[tab_id] = page
 
 	var close_button := Button.new()
-	close_button.text = "Close"
+	close_button.text = "Close  (Esc)"
 	close_button.custom_minimum_size = Vector2(160, 40)
+	close_button.size_flags_horizontal = Control.SIZE_SHRINK_END
 	close_button.pressed.connect(close)
 	column.add_child(close_button)
 
@@ -185,10 +187,14 @@ func _add_scrolling_box(page: VBoxContainer) -> VBoxContainer:
 	scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
 	page.add_child(scroll)
+	var gutter := MarginContainer.new()
+	gutter.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	gutter.add_theme_constant_override("margin_right", 14)
+	scroll.add_child(gutter)
 	var box := VBoxContainer.new()
 	box.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	box.add_theme_constant_override("separation", 14)
-	scroll.add_child(box)
+	box.add_theme_constant_override("separation", 10)
+	gutter.add_child(box)
 	return box
 
 
@@ -198,6 +204,26 @@ func _add_note(page: VBoxContainer, text: String) -> Label:
 	note.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	page.add_child(note)
 	return note
+
+
+## One row of a list page: a flat card whose left edge carries the row's state
+## color, holding a text body with no box of its own. Returns the body.
+func _add_card(box: VBoxContainer, accent: String = "") -> RichTextLabel:
+	var card := PanelContainer.new()
+	card.theme_type_variation = &"Card"
+	box.add_child(card)
+	if not accent.is_empty():
+		var style: StyleBoxFlat = card.get_theme_stylebox("panel").duplicate()
+		style.border_color = Color.html(accent)
+		card.add_theme_stylebox_override("panel", style)
+	var body := RichTextLabel.new()
+	# Text with no box of its own - the panel around it is the box.
+	body.add_theme_stylebox_override("normal", StyleBoxEmpty.new())
+	body.bbcode_enabled = true
+	body.fit_content = true
+	body.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	card.add_child(body)
+	return body
 
 
 func _clear_page(page: VBoxContainer) -> void:
@@ -274,6 +300,8 @@ func briefing_text() -> String:
 func _fill_brief(page: VBoxContainer) -> void:
 	var box := _add_scrolling_box(page)
 	var brief := RichTextLabel.new()
+	# Text with no box of its own - the panel around it is the box.
+	brief.add_theme_stylebox_override("normal", StyleBoxEmpty.new())
 	brief.bbcode_enabled = true
 	brief.fit_content = true
 	brief.size_flags_horizontal = Control.SIZE_EXPAND_FILL
@@ -376,18 +404,17 @@ func tracked_objective() -> Dictionary:
 	return active[0] if not active.is_empty() else {}
 
 
-func _objective_row(box: VBoxContainer, objective: Dictionary, state: String) -> void:
-	var row := PanelContainer.new()
-	box.add_child(row)
-	var row_margin := MarginContainer.new()
-	for side in ["margin_left", "margin_top", "margin_right", "margin_bottom"]:
-		row_margin.add_theme_constant_override(side, 12)
-	row.add_child(row_margin)
-	var body := RichTextLabel.new()
-	body.bbcode_enabled = true
-	body.fit_content = true
-	body.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	row_margin.add_child(body)
+func _objective_row(box: VBoxContainer, objective: Dictionary, state: String, tracked: bool = false) -> void:
+	var accent := ""
+	match state:
+		OBJECTIVE_DONE:
+			accent = TextStyle.COLOR_CORRECT
+		OBJECTIVE_FAILED:
+			accent = TextStyle.COLOR_WRONG
+		_:
+			if tracked:
+				accent = TextStyle.COLOR_TACTIC
+	var body := _add_card(box, accent)
 
 	var title := str(objective.get("title", ""))
 	var detail := str(objective.get("detail", ""))
@@ -399,7 +426,11 @@ func _objective_row(box: VBoxContainer, objective: Dictionary, state: String) ->
 				TextStyle.COLOR_WRONG, title, TextStyle.COLOR_NARRATION,
 				str(objective.get("failed_detail", detail))]
 		_:
-			body.text = "[b]%s[/b]\n%s" % [title, detail]
+			if tracked:
+				# The same line the HUD prints, so the two read as one thing.
+				body.text = "[color=#%s][b]> %s[/b][/color]\n%s" % [TextStyle.COLOR_TACTIC, title, detail]
+			else:
+				body.text = "[b]%s[/b]\n%s" % [title, detail]
 
 
 func _fill_objectives(page: VBoxContainer) -> void:
@@ -411,7 +442,7 @@ func _fill_objectives(page: VBoxContainer) -> void:
 	if active.is_empty() and failed.is_empty() and done.is_empty():
 		_add_note(box, "Nothing on file yet.")
 	for objective in active:
-		_objective_row(box, objective, OBJECTIVE_ACTIVE)
+		_objective_row(box, objective, OBJECTIVE_ACTIVE, objective == active[0])
 	for objective in failed:
 		_objective_row(box, objective, OBJECTIVE_FAILED)
 	for objective in done:
@@ -570,16 +601,12 @@ func _fill_people(page: VBoxContainer) -> void:
 			heading.add_theme_font_override("font", load(TextStyle.FONT_SYSTEM))
 			heading.add_theme_color_override("font_color", Color.html(TextStyle.COLOR_HINT))
 			box.add_child(heading)
-		var line := RichTextLabel.new()
-		line.bbcode_enabled = true
-		line.fit_content = true
-		line.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		var line := _add_card(box, str(row.get("tone", "")))
 		var gate: int = int(row.get("gate", 0))
 		var gate_text := "  [color=#%s](Credibility %d)[/color]" % [TextStyle.COLOR_NARRATION, gate] if gate > 0 else ""
 		line.text = "[b]%s[/b]  [color=#%s]%s[/color]%s\n[color=#%s]%s[/color]" % [
 			str(row.get("name", "")), TextStyle.COLOR_NARRATION, str(row.get("role", "")), gate_text,
 			str(row.get("tone", TextStyle.COLOR_NARRATION)), str(row.get("status", ""))]
-		box.add_child(line)
 
 
 # --- Evidence -----------------------------------------------------------------
@@ -620,10 +647,7 @@ func _fill_evidence(page: VBoxContainer) -> void:
 		heading.add_theme_font_override("font", load(TextStyle.FONT_SYSTEM))
 		box.add_child(heading)
 		for item in rows:
-			var line := RichTextLabel.new()
-			line.bbcode_enabled = true
-			line.fit_content = true
-			line.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+			var line := _add_card(box, TextStyle.COLOR_CORRECT if bool(group["secured"]) else "")
 			var lines: Array[String] = []
 			var source := _person_name(str(item.get("person_id", "")))
 			lines.append("[b]%s[/b]%s" % [str(item.get("label", "")),
@@ -633,7 +657,6 @@ func _fill_evidence(page: VBoxContainer) -> void:
 			if not str(item.get("tactic", "")).is_empty():
 				lines.append("[color=#%s]TACTIC: %s[/color]" % [TextStyle.COLOR_TACTIC, str(item.get("tactic", ""))])
 			line.text = "\n".join(lines)
-			box.add_child(line)
 
 
 # --- Tactics ------------------------------------------------------------------
@@ -647,25 +670,21 @@ func _fill_tactics(page: VBoxContainer) -> void:
 	var found: int = TacticNotebook.learned_count()
 	progress_label.text = "%d of %d tactics recorded" % [found, TacticNotebook.tactics.size()]
 
+	# Recorded entries first, so what the player has is not below a run of
+	# locked rows.
+	var ordered: Array = []
 	for entry in TacticNotebook.tactics:
+		if SessionState.has_learned_tactic(str(entry.get("id", ""))):
+			ordered.append(entry)
+	for entry in TacticNotebook.tactics:
+		if not SessionState.has_learned_tactic(str(entry.get("id", ""))):
+			ordered.append(entry)
+	for entry in ordered:
 		var tactic_id := str(entry.get("id", ""))
 		var known := SessionState.has_learned_tactic(tactic_id)
-
-		var row := PanelContainer.new()
-		entries_box.add_child(row)
-
-		var row_margin := MarginContainer.new()
-		for side in ["margin_left", "margin_top", "margin_right", "margin_bottom"]:
-			row_margin.add_theme_constant_override(side, 12)
-		row.add_child(row_margin)
-
-		var body := RichTextLabel.new()
-		body.bbcode_enabled = true
 		# fit_content plus the ScrollContainer above: a fixed height would
 		# silently clip the longer entries.
-		body.fit_content = true
-		body.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-		row_margin.add_child(body)
+		var body := _add_card(entries_box, TextStyle.COLOR_HINT if known else "")
 
 		if known:
 			var context := str(SessionState.get_learned_tactic(tactic_id).get("context", ""))
@@ -679,9 +698,9 @@ func _fill_tactics(page: VBoxContainer) -> void:
 		else:
 			# Locked entries exist so the player can see the set is incomplete -
 			# the shape of what they have not met yet is itself information.
-			body.text = "[color=#%s][b]Not yet recorded[/b]\n%s[/color]" % [
+			body.text = "[color=#%s][b]Not yet recorded[/b]  -  %s[/color]" % [
 				TextStyle.COLOR_NARRATION,
-				"You have not met this one yet, or it went past unnamed."]
+				"you have not met this one yet, or it went past unnamed."]
 
 
 # --- Open / close -------------------------------------------------------------

@@ -1,4 +1,4 @@
-[gd_resource type="Theme" load_steps=19 format=3 uid="uid://dhow0dt4winn0"]
+[gd_resource type="Theme" load_steps=22 format=3 uid="uid://dhow0dt4winn0"]
 
 [ext_resource type="Texture2D" uid="uid://b14sgvfa7qwum" path="res://assets/art/ui/panel_flat.png" id="1"]
 [ext_resource type="Texture2D" uid="uid://c2fc5kvtoj0hi" path="res://assets/art/ui/button_normal.png" id="2"]
@@ -127,6 +127,31 @@ texture_margin_right = 8.0
 texture_margin_bottom = 8.0
 modulate_color = Color(0.45, 0.18, 0.18, 0.95)
 
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_card"]
+content_margin_left = 16.0
+content_margin_top = 10.0
+content_margin_right = 16.0
+content_margin_bottom = 12.0
+bg_color = Color(1, 1, 1, 0.045)
+border_width_left = 3
+border_color = Color(1, 1, 1, 0.14)
+corner_radius_top_left = 3
+corner_radius_top_right = 3
+corner_radius_bottom_right = 3
+corner_radius_bottom_left = 3
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_tab_selected"]
+content_margin_left = 16.0
+content_margin_top = 10.0
+content_margin_right = 16.0
+content_margin_bottom = 10.0
+texture = ExtResource("3")
+texture_margin_left = 12.0
+texture_margin_top = 12.0
+texture_margin_right = 12.0
+texture_margin_bottom = 12.0
+modulate_color = Color(0.36, 0.34, 0.3, 1)
+
 [resource]
 Button/colors/font_color = Color(0.98, 0.99, 1, 1)
 Button/colors/font_disabled_color = Color(0.75, 0.77, 0.78, 0.55)
@@ -139,6 +164,8 @@ Button/styles/focus = SubResource("StyleBoxTexture_button_hover")
 Button/styles/hover = SubResource("StyleBoxTexture_button_hover")
 Button/styles/normal = SubResource("StyleBoxTexture_button_normal")
 Button/styles/pressed = SubResource("StyleBoxTexture_button_pressed")
+Card/base_type = &"PanelContainer"
+Card/styles/panel = SubResource("StyleBoxFlat_card")
 ItemList/colors/font_color = Color(0.95, 0.96, 0.97, 1)
 ItemList/colors/font_hovered_color = Color(1, 1, 1, 1)
 ItemList/colors/font_outline_color = Color(0, 0, 0, 0.9)
@@ -153,6 +180,11 @@ ItemList/styles/hovered_selected_focus = SubResource("StyleBoxFlat_item_selected
 ItemList/styles/panel = SubResource("StyleBoxTexture_panel")
 ItemList/styles/selected = SubResource("StyleBoxFlat_item_selected")
 ItemList/styles/selected_focus = SubResource("StyleBoxFlat_item_selected")
+JournalTab/base_type = &"Button"
+JournalTab/colors/font_hover_pressed_color = Color(0.91, 0.71, 0.33, 1)
+JournalTab/colors/font_pressed_color = Color(0.91, 0.71, 0.33, 1)
+JournalTab/styles/hover_pressed = SubResource("StyleBoxTexture_tab_selected")
+JournalTab/styles/pressed = SubResource("StyleBoxTexture_tab_selected")
 Label/colors/font_color = Color(0.97, 0.98, 0.99, 1)
 Label/colors/font_outline_color = Color(0, 0, 0, 0.9)
 Label/constants/outline_size = 2

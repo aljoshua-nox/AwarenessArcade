@@ -56,10 +56,8 @@ func _index_of(view: Node, evidence_id: String) -> int:
 func _entry_texts() -> Array[String]:
 	var found: Array[String] = []
 	for row in CaseJournal.entries_box.get_children():
-		for child in row.get_children():
-			for leaf in child.get_children():
-				if leaf is RichTextLabel:
-					found.append(leaf.text)
+		for label in row.find_children("*", "RichTextLabel", true, false):
+			found.append((label as RichTextLabel).text)
 	return found
 
 

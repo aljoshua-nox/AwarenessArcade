@@ -22,6 +22,9 @@ func _ready() -> void:
 
 func _run() -> void:
 	SessionState.reset_session()
+	# What the desk hands over before the street, so every tab is on the row.
+	SessionState.journal_collected = true
+	SessionState.notebook_collected = true
 	SessionState.record_tactic_learned("manufactured_urgency", "Named while interviewing Maria Santos")
 	var view: Node = load(URBAN_SCENE).instantiate()
 	add_child(view)
@@ -58,6 +61,10 @@ func _run() -> void:
 		CaseJournal.close()
 	SessionState.reset_investigation()
 	SessionState.record_tactic_learned("manufactured_urgency", "Named while interviewing Maria Santos")
+	# reset_investigation() takes the notebook back, and without it the Tactics
+	# tab is hidden - the shot showed its page under no selected tab.
+	SessionState.journal_collected = true
+	SessionState.notebook_collected = true
 
 	CaseJournal.open(CaseJournal.TAB_TACTICS)
 	await _settle()

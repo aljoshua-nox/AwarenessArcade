@@ -13,6 +13,7 @@ extends Node2D
 ## own and returns them, so tests can still read them off the instance.
 
 const TextStyle := preload("res://scripts/systems/text_style.gd")
+const InspectPanel := preload("res://scripts/systems/inspect_panel.gd")
 const PromptBubble := preload("res://scripts/exploration/prompt_bubble.gd")
 
 @export var map_title: String = "District"
@@ -70,7 +71,7 @@ var built_trees: Array[Rect2] = []
 
 var street_stops: Array[Dictionary] = []
 var active_stop: Dictionary = {}
-var inspect_panel: PanelContainer
+var inspect_panel: InspectPanel
 var inspect_title: Label
 var inspect_body: RichTextLabel
 var inspection_open: bool = false
@@ -985,50 +986,10 @@ func _build_stop_ui() -> void:
 	hud.add_child(objective_label)
 	_refresh_objective_label()
 
-	inspect_panel = PanelContainer.new()
-	inspect_panel.set_anchors_preset(Control.PRESET_CENTER)
-	inspect_panel.anchor_left = 0.5
-	inspect_panel.anchor_right = 0.5
-	inspect_panel.anchor_top = 0.5
-	inspect_panel.anchor_bottom = 0.5
-	inspect_panel.offset_left = -380.0
-	inspect_panel.offset_right = 380.0
-	inspect_panel.offset_top = -230.0
-	inspect_panel.offset_bottom = 230.0
-	inspect_panel.visible = false
+	inspect_panel = InspectPanel.new("Enter or Esc to step away")
 	hud.add_child(inspect_panel)
-
-	var margin := MarginContainer.new()
-	for side in ["margin_left", "margin_top", "margin_right", "margin_bottom"]:
-		margin.add_theme_constant_override(side, 22)
-	inspect_panel.add_child(margin)
-
-	var column := VBoxContainer.new()
-	column.add_theme_constant_override("separation", 12)
-	margin.add_child(column)
-
-	inspect_title = Label.new()
-	inspect_title.add_theme_font_size_override("font_size", 22)
-	column.add_child(inspect_title)
-
-	# The bodies are variable length and one of them is a whole poster, so the
-	# text grows and the container scrolls - a fixed-height label would swallow
-	# everything past the fold, which this project has been bitten by before.
-	var scroll := ScrollContainer.new()
-	scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
-	column.add_child(scroll)
-
-	inspect_body = RichTextLabel.new()
-	inspect_body.bbcode_enabled = true
-	inspect_body.fit_content = true
-	inspect_body.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	scroll.add_child(inspect_body)
-
-	var footer := Label.new()
-	footer.text = "Enter or Esc to step away"
-	footer.add_theme_font_size_override("font_size", 13)
-	column.add_child(footer)
+	inspect_title = inspect_panel.title_label
+	inspect_body = inspect_panel.body
 
 
 func _build_street_stops() -> void:
@@ -1125,9 +1086,7 @@ func _stop_body(stop: Dictionary) -> String:
 
 func _open_stop(stop: Dictionary) -> void:
 	inspection_open = true
-	inspect_title.text = str(stop.get("title", ""))
-	inspect_body.text = _stop_body(stop)
-	inspect_panel.visible = true
+	inspect_panel.open(str(stop.get("title", "")), _stop_body(stop))
 	prompt_bubble.hide_bubble()
 	player.velocity = Vector2.ZERO
 	player.set_physics_process(false)

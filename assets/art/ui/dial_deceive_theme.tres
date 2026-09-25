@@ -1,4 +1,4 @@
-[gd_resource type="Theme" load_steps=22 format=3 uid="uid://dhow0dt4winn0"]
+[gd_resource type="Theme" load_steps=23 format=3 uid="uid://dhow0dt4winn0"]
 
 [ext_resource type="Texture2D" uid="uid://b14sgvfa7qwum" path="res://assets/art/ui/panel_flat.png" id="1"]
 [ext_resource type="Texture2D" uid="uid://c2fc5kvtoj0hi" path="res://assets/art/ui/button_normal.png" id="2"]
@@ -152,6 +152,19 @@ texture_margin_right = 12.0
 texture_margin_bottom = 12.0
 modulate_color = Color(0.36, 0.34, 0.3, 1)
 
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_hud_line"]
+content_margin_left = 8.0
+content_margin_top = 2.0
+content_margin_right = 10.0
+content_margin_bottom = 3.0
+bg_color = Color(0.09, 0.1, 0.12, 0.85)
+border_width_left = 3
+border_color = Color(0.91, 0.71, 0.33, 1)
+corner_radius_top_left = 3
+corner_radius_top_right = 3
+corner_radius_bottom_right = 3
+corner_radius_bottom_left = 3
+
 [resource]
 Button/colors/font_color = Color(0.98, 0.99, 1, 1)
 Button/colors/font_disabled_color = Color(0.75, 0.77, 0.78, 0.55)
@@ -166,6 +179,8 @@ Button/styles/normal = SubResource("StyleBoxTexture_button_normal")
 Button/styles/pressed = SubResource("StyleBoxTexture_button_pressed")
 Card/base_type = &"PanelContainer"
 Card/styles/panel = SubResource("StyleBoxFlat_card")
+HudLine/base_type = &"Label"
+HudLine/styles/normal = SubResource("StyleBoxFlat_hud_line")
 ItemList/colors/font_color = Color(0.95, 0.96, 0.97, 1)
 ItemList/colors/font_hovered_color = Color(1, 1, 1, 1)
 ItemList/colors/font_outline_color = Color(0, 0, 0, 0.9)

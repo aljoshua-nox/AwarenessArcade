@@ -979,9 +979,12 @@ func _build_stop_ui() -> void:
 	hud.add_child(statements_label)
 
 	# The journal's first open objective, so the case has a direction on screen.
+	# On the same plate the floors need, where it falls on the back wall's trim.
+	# Offset so the text still lines up with the lines above it.
 	objective_label = Label.new()
-	objective_label.offset_left = 20.0
-	objective_label.offset_top = 130.0
+	objective_label.theme_type_variation = &"HudLine"
+	objective_label.offset_left = 9.0
+	objective_label.offset_top = 127.0
 	objective_label.add_theme_color_override("font_color", Color.html(TextStyle.COLOR_TACTIC))
 	hud.add_child(objective_label)
 	_refresh_objective_label()

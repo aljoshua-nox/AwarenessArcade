@@ -259,9 +259,12 @@ func _build_hud() -> void:
 		Color.html(TextStyle.COLOR_WRONG) if SessionState.statements_left() <= 1 else Color.html(TextStyle.COLOR_HINT))
 	hud.add_child(statements_label)
 
+	# On a plate, because indoors this line falls on the back wall's trim.
+	# Offset so the text still lines up with the lines above it.
 	objective_label = Label.new()
-	objective_label.offset_left = 20.0
-	objective_label.offset_top = 130.0
+	objective_label.theme_type_variation = &"HudLine"
+	objective_label.offset_left = 9.0
+	objective_label.offset_top = 127.0
 	objective_label.add_theme_color_override("font_color", Color.html(TextStyle.COLOR_TACTIC))
 	hud.add_child(objective_label)
 	_refresh_objective_label()

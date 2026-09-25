@@ -163,14 +163,21 @@ func _build_ui() -> void:
 	body_scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
 	column.add_child(body_scroll)
 
+	var gutter := MarginContainer.new()
+	gutter.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	gutter.add_theme_constant_override("margin_right", 14)
+	body_scroll.add_child(gutter)
+
 	var body := VBoxContainer.new()
 	body.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	body.add_theme_constant_override("separation", 10)
-	body_scroll.add_child(body)
+	gutter.add_child(body)
 
 	# The verdict is the ending. It gets the room, and the reference material
 	# below it does not compete with it for attention.
 	outcome_note = RichTextLabel.new()
+	# Text with no box of its own - the panel around it is the box.
+	outcome_note.add_theme_stylebox_override("normal", StyleBoxEmpty.new())
 	outcome_note.bbcode_enabled = true
 	outcome_note.fit_content = true
 	outcome_note.custom_minimum_size = Vector2(0, 60)
@@ -190,6 +197,8 @@ func _build_ui() -> void:
 	body.add_child(awareness_bar)
 
 	scorecard_value = RichTextLabel.new()
+	# Text with no box of its own - the panel around it is the box.
+	scorecard_value.add_theme_stylebox_override("normal", StyleBoxEmpty.new())
 	scorecard_value.bbcode_enabled = true
 	scorecard_value.fit_content = true
 	body.add_child(scorecard_value)
@@ -199,6 +208,8 @@ func _build_ui() -> void:
 	# What the case actually holds, in one line, before any of the lists: the
 	# player should not have to count rows to learn it.
 	case_profile = RichTextLabel.new()
+	# Text with no box of its own - the panel around it is the box.
+	case_profile.add_theme_stylebox_override("normal", StyleBoxEmpty.new())
 	case_profile.bbcode_enabled = true
 	case_profile.fit_content = true
 	body.add_child(case_profile)
@@ -308,14 +319,21 @@ func _add_collapsible(parent: VBoxContainer, title: String) -> Dictionary:
 	header.set_meta("title", title)
 	parent.add_child(header)
 
+	var card := PanelContainer.new()
+	card.theme_type_variation = &"Card"
+	card.visible = false
+	parent.add_child(card)
+
 	var body := RichTextLabel.new()
+	# Text with no box of its own - the panel around it is the box.
+	body.add_theme_stylebox_override("normal", StyleBoxEmpty.new())
 	body.bbcode_enabled = true
 	# fit_content inside the screen's ScrollContainer: a fixed height would
 	# silently clip the list as it grows, which is a bug this project has hit
 	# three times already.
 	body.fit_content = true
 	body.visible = false
-	parent.add_child(body)
+	card.add_child(body)
 
 	header.pressed.connect(_toggle_section.bind(header, body))
 	return {"header": header, "body": body}
@@ -323,6 +341,7 @@ func _add_collapsible(parent: VBoxContainer, title: String) -> Dictionary:
 
 func _toggle_section(header: Button, body: RichTextLabel) -> void:
 	body.visible = not body.visible
+	(body.get_parent() as Control).visible = body.visible
 	_refresh_section_header(header, body)
 
 

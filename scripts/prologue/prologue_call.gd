@@ -695,7 +695,7 @@ func _consequence_beats(victim: Dictionary, quote: String) -> Array[String]:
 		TextStyle.system(TextStyle.MARK_AFTERMATH,
 			"%s, %d" % [str(victim.get("name", "Unknown")), int(victim.get("age", 0))],
 			TextStyle.COLOR_NARRATION),
-		TextStyle.dialogue("\"%s\"" % quote),
+		TextStyle.aftermath("\"%s\"" % quote),
 	]
 
 

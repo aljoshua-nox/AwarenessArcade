@@ -19,6 +19,12 @@ const COLOR_TACTIC := "e8b454"
 const COLOR_CORRECT := "78d08b"
 const COLOR_WRONG := "ff8368"
 const COLOR_HINT := "79c6e8"
+## The victim speaking after the call is over, to somebody who is not the
+## player. Warm like speech, because it is speech, but clearly not the cream of
+## a live line in the transcript.
+const COLOR_AFTERMATH := "e8a894"
+
+const FONT_SPEECH_ITALIC := "res://assets/fonts/IBM_Plex_Sans/IBMPlexSans-Italic-VariableFont_wdth,wght.ttf"
 
 const MARK_TACTIC := "TACTIC IDENTIFIED"
 const MARK_CORRECT := "TACTIC READ"
@@ -37,6 +43,10 @@ const MARK_DIALING := "DIALING"
 const MARK_TACTIC_USED := "TACTIC USED"
 const MARK_CALL_ENDED := "CALL ENDED"
 const MARK_REPORTED := "REPORTED"
+## What the call cost the person on the other end, in their own words. Kept as
+## flat a timestamp as the four markers around it - the floor's own log format
+## carrying a sentence the floor would never write is the point, and the styling
+## below (aftermath()) is what tells the reader this is not the call.
 const MARK_AFTERMATH := "AFTER THE CALL"
 
 static var _speech_regex: RegEx
@@ -70,6 +80,15 @@ static func dialogue(raw: String) -> String:
 		return raw
 	var speech := _regex().sub(raw, "[color=#%s]$0[/color]" % COLOR_SPEECH, true)
 	return "[color=#%s]%s[/color]" % [COLOR_NARRATION, speech]
+
+
+## A victim speaking after the call has ended - the one line in the prologue
+## transcript that is not the call. Italic and its own warm tone, so it reads as
+## something said later and elsewhere rather than another line on the phone.
+static func aftermath(raw: String) -> String:
+	if raw.is_empty():
+		return raw
+	return "[font=%s][color=#%s]%s[/color][/font]" % [FONT_SPEECH_ITALIC, COLOR_AFTERMATH, raw]
 
 
 ## The case file speaking: monospaced and color-coded, never mistakable for a

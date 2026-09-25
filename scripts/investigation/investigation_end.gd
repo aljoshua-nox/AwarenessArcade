@@ -8,7 +8,7 @@ const OUTCOME_LABELS := {
 	"success": "Case Lead Confirmed",
 	"partial": "Investigation Incomplete",
 	"whistleblower": "Whistleblower Secured",
-	"turned": "Witness Turned",
+	"turned": "Witness Came Forward",
 	"owner_named": "Owner Named",
 	"failure": "Lead Lost",
 }

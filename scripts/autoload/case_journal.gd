@@ -472,7 +472,7 @@ const PLACES := [
 	{"name": "{call_floor} - 3F", "cases": ["res://resources/cases/interview_case_004.json"],
 		"door_flag": "suspect_flipped", "door_locked": "The operator has to name her first"},
 	{"name": "{tech_floor} - 4F", "cases": ["res://resources/cases/interview_case_011.json"],
-		"door_flag": "witness_flipped", "door_locked": "Someone on her floor has to turn first"},
+		"door_flag": "witness_flipped", "door_locked": "Someone on her floor has to name her first"},
 ]
 
 var _person_cache: Dictionary = {}
@@ -570,9 +570,9 @@ func _person_status(person: Dictionary, place: Dictionary) -> Array:
 		"success":
 			return ["Statement on record", TextStyle.COLOR_CORRECT]
 		"whistleblower":
-			return ["Flipped - he named his director", TextStyle.COLOR_CORRECT]
+			return ["Confessed - he named his director", TextStyle.COLOR_CORRECT]
 		"turned":
-			return ["Turned - she will say what her floor does", TextStyle.COLOR_CORRECT]
+			return ["Came forward - she will say what her floor does", TextStyle.COLOR_CORRECT]
 		"owner_named":
 			return ["Named the owner", TextStyle.COLOR_CORRECT]
 		"partial":

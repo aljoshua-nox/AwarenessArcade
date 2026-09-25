@@ -95,7 +95,7 @@ func _build_ui() -> void:
 	column.add_child(call_log_value)
 
 	var milestones_title := Label.new()
-	milestones_title.text = "Reflection Milestones"
+	milestones_title.text = "What You Noticed"
 	column.add_child(milestones_title)
 
 	milestones_value = RichTextLabel.new()
@@ -203,7 +203,7 @@ func _tactic_name(tactic_id: String) -> String:
 
 func _build_milestones_text() -> String:
 	if SessionState.reflection_milestones.is_empty():
-		return "[i]No reflection milestones were recorded this session.[/i]"
+		return "[i]Nothing noted this session.[/i]"
 
 	var lines: Array[String] = []
 	for milestone in SessionState.reflection_milestones:

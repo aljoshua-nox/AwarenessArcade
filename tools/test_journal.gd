@@ -208,7 +208,7 @@ func _test_people_page() -> void:
 	SessionState.record_statement("evelyn_marsh", "Victim", "failure", false)
 	_check(_status("Evelyn Marsh") == "Won't talk to you again", "a failed witness is closed (%s)" % _status("Evelyn Marsh"))
 	SessionState.record_interview_outcome("marco_navarro", "whistleblower")
-	_check(_status("Marco Navarro").begins_with("Flipped"), "a flipped suspect says so")
+	_check(_status("Marco Navarro").begins_with("Confessed"), "a suspect who gave up his director says so")
 	SessionState.suspect_flipped = true
 	_check(_status("Elena Cruz") == "Costs no statement", "which opens the director's door on the page")
 	SessionState.statements_taken = SessionState.STATEMENT_BUDGET

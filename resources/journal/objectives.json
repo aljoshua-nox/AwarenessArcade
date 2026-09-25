@@ -51,7 +51,7 @@
     },
     {
       "id": "turn_recruit",
-      "title": "Turn someone who works on the fourth floor",
+      "title": "Get someone on the fourth floor to talk",
       "detail": "The floor above the call floor hires by the batch. One of its recruits boards on Terminal Road, at a gate of 65 - and what will move her is not a badge but someone who answered the same advertisement she did.",
       "unlock_when": {"any": [
         {"interviewed": "patricia_lim"},

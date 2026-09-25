@@ -9,7 +9,7 @@
 	"role": "Suspect",
 	"setting": "interrogation",
 	"portrait": "res://assets/art/portraits/fella 2.png",
-	"traits": "Defensive and deflects blame upward. Cracks when confronted with specific victim details."
+	"traits": "Defensive, and blames the people above him. Cracks when confronted with specific victim details."
   },
   "evidence": [],
   "start_node": "intro",
@@ -259,7 +259,7 @@
 	  ]
 	},
 	"deny_partial": {
-	  "prompt": "Marco stonewalls you. Without a second, separate testimony tying him to specific victims, he has nothing to fear from this conversation yet.",
+	  "prompt": "Marco gives you nothing. Without a second, separate testimony tying him to specific victims, he has nothing to fear from this conversation yet.",
 	  "outcome": "partial",
 	  "choices": []
 	},

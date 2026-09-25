@@ -219,6 +219,24 @@ func _test_people_page() -> void:
 	_check(text.contains("SAMPAGUITA STREET") and text.contains("TERMINAL ROAD"), "the page is grouped by place")
 	_check(text.contains("Statement on record"), "and shows the statuses")
 
+	# What the page knows about a person grows with the case.
+	for row in CaseJournal.people_rows():
+		if str(row.get("role", "")) == "Victim":
+			_check(not str(row.get("scam", "")).is_empty(),
+				"every victim's scam has a name on the page (%s)" % row.get("name"))
+	SessionState.reset_session()
+	_check(CaseJournal._person_details(_row("Kevin Dizon")).is_empty(), "someone not met yet shows no details")
+	SessionState.record_interview_outcome("kevin_d", "partial", true)
+	var met := CaseJournal._person_details(_row("Kevin Dizon"))
+	_check(met.contains("Age 24") and met.contains("Office worker"), "turned away at the door: age and work (%s)" % met)
+	_check(not met.contains("Scam"), "but not the scam - he has not told you about the call")
+	SessionState.record_interview_outcome("kevin_d", "failure")
+	var told := CaseJournal._person_details(_row("Kevin Dizon"))
+	_check(told.contains("Scam") and told.contains("Tech support callback"),
+		"an interview, even one that went wrong, adds the scam (%s)" % told)
+	SessionState.record_interview_outcome("marco_navarro", "failure")
+	_check(not CaseJournal._person_details(_row("Marco Navarro")).contains("Scam"), "a suspect has no scam line")
+
 
 func _test_evidence_page() -> void:
 	print("\n[evidence]")

@@ -207,8 +207,9 @@ func _add_note(page: VBoxContainer, text: String) -> Label:
 
 
 ## One row of a list page: a flat card whose left edge carries the row's state
-## color, holding a text body with no box of its own. Returns the body.
-func _add_card(box: VBoxContainer, accent: String = "") -> RichTextLabel:
+## color, holding a text body with no box of its own - and, on the People page,
+## a face to its left. Returns the body.
+func _add_card(box: VBoxContainer, accent: String = "", face: Control = null) -> RichTextLabel:
 	var card := PanelContainer.new()
 	card.theme_type_variation = &"Card"
 	box.add_child(card)
@@ -216,13 +217,22 @@ func _add_card(box: VBoxContainer, accent: String = "") -> RichTextLabel:
 		var style: StyleBoxFlat = card.get_theme_stylebox("panel").duplicate()
 		style.border_color = Color.html(accent)
 		card.add_theme_stylebox_override("panel", style)
+	var holder: Control = card
+	if face != null:
+		var row := HBoxContainer.new()
+		row.add_theme_constant_override("separation", 14)
+		card.add_child(row)
+		face.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+		row.add_child(face)
+		holder = row
 	var body := RichTextLabel.new()
 	# Text with no box of its own - the panel around it is the box.
 	body.add_theme_stylebox_override("normal", StyleBoxEmpty.new())
 	body.bbcode_enabled = true
 	body.fit_content = true
 	body.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	card.add_child(body)
+	body.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	holder.add_child(body)
 	return body
 
 
@@ -467,6 +477,20 @@ const PLACES := [
 
 var _person_cache: Dictionary = {}
 
+## A case's `person.script` as the People page names it - the call cards' own
+## names where a call script exists.
+const SCAM_NAMES := {
+	"bank_fraud": "Bank fraud desk",
+	"tech_support": "Tech support callback",
+	"lottery": "Prize draw desk",
+	"family_emergency": "Family emergency line",
+	"job_offer": "Recruitment line",
+	"government": "Warrant desk",
+	"utility": "Power disconnection notice",
+}
+const UNMET_FACE := "res://assets/art/icons/user-solid-full.svg"
+const FACE_SIZE := 64.0
+
 
 func _case_person(case_path: String) -> Dictionary:
 	if _person_cache.has(case_path):
@@ -510,11 +534,21 @@ func people_rows() -> Array[Dictionary]:
 			var person := _case_person(str(case_path))
 			if person.is_empty():
 				continue
+			var person_id := str(person.get("person_id", ""))
+			var outcome := str(SessionState.interview_outcomes.get(person_id, ""))
 			var row := {
 				"name": str(person.get("name", "")),
 				"role": str(person.get("role", "")),
 				"place": place_name(place),
 				"gate": int(person.get("min_credibility", 0)),
+				"age": int(person.get("age", 0)),
+				"occupation": str(person.get("occupation", "")),
+				"scam": str(SCAM_NAMES.get(str(person.get("script", "")), "")),
+				"portrait": str(person.get("portrait", "")),
+				# Met: you have been to their door, even if they turned you away.
+				# Interviewed: they told you about the call.
+				"met": not outcome.is_empty(),
+				"interviewed": not outcome.is_empty() and outcome != SessionState.OUTCOME_HESITANT,
 			}
 			var status := _person_status(person, place)
 			row["status"] = status[0]
@@ -601,12 +635,58 @@ func _fill_people(page: VBoxContainer) -> void:
 			heading.add_theme_font_override("font", load(TextStyle.FONT_SYSTEM))
 			heading.add_theme_color_override("font_color", Color.html(TextStyle.COLOR_HINT))
 			box.add_child(heading)
-		var line := _add_card(box, str(row.get("tone", "")))
+		var line := _add_card(box, str(row.get("tone", "")), _person_face(row))
 		var gate: int = int(row.get("gate", 0))
 		var gate_text := "  [color=#%s](Credibility %d)[/color]" % [TextStyle.COLOR_NARRATION, gate] if gate > 0 else ""
 		line.text = "[b]%s[/b]  [color=#%s]%s[/color]%s\n[color=#%s]%s[/color]" % [
 			str(row.get("name", "")), TextStyle.COLOR_NARRATION, str(row.get("role", "")), gate_text,
 			str(row.get("tone", TextStyle.COLOR_NARRATION)), str(row.get("status", ""))]
+		var details := _person_details(row)
+		if not details.is_empty():
+			line.text += "\n[font_size=14][color=#%s]%s[/color][/font_size]" % [TextStyle.COLOR_NARRATION, details]
+
+
+## What the file knows about a person grows with the case: nothing but the
+## name until you have been to the door, their age and work once you have, and
+## the scam once they have told you about the call. The scam waits for the
+## interview because the endings count different scams - a list of them up
+## front would be the plan handed over.
+func _person_details(row: Dictionary) -> String:
+	if not bool(row.get("met", false)):
+		return ""
+	var parts: Array[String] = []
+	if int(row.get("age", 0)) > 0:
+		parts.append("Age %d" % int(row.get("age", 0)))
+	if not str(row.get("occupation", "")).is_empty():
+		parts.append(str(row.get("occupation", "")))
+	if bool(row.get("interviewed", false)) and not str(row.get("scam", "")).is_empty():
+		parts.append("Scam: [color=#%s]%s[/color]" % [TextStyle.COLOR_SPEECH, str(row.get("scam", ""))])
+	return "  \u00b7  ".join(parts)
+
+
+## Their portrait once met; a blank silhouette before.
+func _person_face(row: Dictionary) -> Control:
+	var path := str(row.get("portrait", ""))
+	if bool(row.get("met", false)) and ResourceLoader.exists(path):
+		var face := TextureRect.new()
+		face.texture = load(path)
+		face.custom_minimum_size = Vector2(FACE_SIZE, FACE_SIZE)
+		face.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+		face.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_COVERED
+		return face
+	var frame := PanelContainer.new()
+	var style := StyleBoxFlat.new()
+	style.bg_color = Color(0.3, 0.32, 0.36, 1)
+	style.set_content_margin_all(12.0)
+	frame.add_theme_stylebox_override("panel", style)
+	frame.custom_minimum_size = Vector2(FACE_SIZE, FACE_SIZE)
+	var icon := TextureRect.new()
+	icon.texture = load(UNMET_FACE)
+	icon.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	icon.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	icon.modulate = Color(1, 1, 1, 0.45)
+	frame.add_child(icon)
+	return frame
 
 
 # --- Evidence -----------------------------------------------------------------

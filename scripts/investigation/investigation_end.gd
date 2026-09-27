@@ -294,7 +294,7 @@ func _build_ui() -> void:
 	after_check_button = Button.new()
 	after_check_button.text = "Take the After Check"
 	after_check_button.custom_minimum_size = Vector2(220, 44)
-	after_check_button.tooltip_text = "The second half of the Scam Check you took before playing."
+	after_check_button.tooltip_text = "The second half of Spot the Scam, which you took before playing."
 	after_check_button.pressed.connect(_on_after_check_pressed)
 	button_row.add_child(after_check_button)
 

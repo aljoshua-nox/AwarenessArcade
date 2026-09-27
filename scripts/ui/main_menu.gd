@@ -106,7 +106,7 @@ func _build_ui() -> void:
 	# Opt-in: the before-and-after quiz a playtest measures the game with. The
 	# normal Start and Skip never pass through it.
 	var scam_check_button := Button.new()
-	scam_check_button.text = "Scam Check"
+	scam_check_button.text = "Spot the Scam"
 	scam_check_button.custom_minimum_size = Vector2(220, 44)
 	scam_check_button.tooltip_text = "A short check of how well you spot scams: 8 messages before you play, 8 different ones after."
 	scam_check_button.pressed.connect(_open_scam_check)

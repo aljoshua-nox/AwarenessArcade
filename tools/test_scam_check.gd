@@ -1,6 +1,6 @@
 extends Node
 
-## Headless check of the Scam Check, the opt-in before/after quiz.
+## Headless check of Spot the Scam (scam_check in the code), the opt-in before/after quiz.
 ##
 ##   godot --headless --path . res://tools/test_scam_check.tscn
 ##
@@ -208,7 +208,7 @@ func _test_scoring() -> void:
 
 
 func _test_empty_home() -> void:
-	print("\n[the Scam Check page, nothing on record]")
+	print("\n[the Spot the Scam page, nothing on record]")
 	_check(not CaseJournal.shows_button_in(SCENE), "the journal stays hidden here")
 	SessionState.scam_check_entry = ""
 	var view := await _open(SCENE)
@@ -297,10 +297,10 @@ func _test_before_check() -> void:
 func _test_menu() -> void:
 	print("\n[the main menu]")
 	var view := await _open(MENU_SCENE)
-	var button := _button(view, "Scam Check")
-	_check(button != null, "the main menu has a Scam Check button")
+	var button := _button(view, "Spot the Scam")
+	_check(button != null, "the main menu has a Spot the Scam button")
 	if button != null:
-		_check(button.pressed.is_connected(view._open_scam_check), "and it opens the Scam Check")
+		_check(button.pressed.is_connected(view._open_scam_check), "and it opens Spot the Scam")
 	for name in ["Start", "Skip to Investigation", "Credits", "Quit"]:
 		_check(_button(view, name) != null, "the menu still has %s" % name)
 	await _close(view)
@@ -405,7 +405,7 @@ func _test_export() -> void:
 
 
 func _test_home_with_checks() -> void:
-	print("\n[the Scam Check page, three checks on record]")
+	print("\n[the Spot the Scam page, three checks on record]")
 	SessionState.scam_check_entry = ""
 	var view := await _open(SCENE)
 	var text := _screen_text(view)
@@ -427,7 +427,7 @@ func _test_home_with_checks() -> void:
 		await get_tree().process_frame
 		_check(view.page == view.PAGE_RESULTS and _button(view, "Back") != null, "a past check's results open, with a way back")
 		await _press(view, "Back")
-		_check(view.page == view.PAGE_HOME, "back to the Scam Check page")
+		_check(view.page == view.PAGE_HOME, "back to the Spot the Scam page")
 	await _close(view)
 
 

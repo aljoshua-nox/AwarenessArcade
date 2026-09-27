@@ -1,7 +1,8 @@
 extends Control
 
-## The Scam Check: an opt-in quiz on the main menu that measures whether the
-## game improves scam recognition. One set of eight messages before the game,
+## Spot the Scam (the Scam Check, scam_check, in the code and older notes): an
+## opt-in quiz on the main menu that measures whether the game improves scam
+## recognition. One set of eight messages before the game,
 ## the other set after an ending, and nothing about the answers is shown until
 ## both are in - then the two tries sit side by side, pair by pair.
 ##
@@ -269,7 +270,7 @@ func _situation_text(entry: Dictionary) -> String:
 # --- Home ------------------------------------------------------------------------
 
 func show_home() -> void:
-	_start_page(PAGE_HOME, "Scam Check", "A short before-and-after check of how well you spot scams")
+	_start_page(PAGE_HOME, "Spot the Scam", "A short before-and-after check of how well you spot scams")
 	body.add_child(_text("Before you play, you judge 8 messages: texts, chats and phone calls. "
 		+ "After you finish the game, you judge 8 different ones. You won't see any answers until "
 		+ "the end, when your two tries are shown side by side."))
@@ -379,7 +380,7 @@ func show_intro(which: String) -> void:
 	mode = which
 	if mode == MODE_BEFORE:
 		_start_page(PAGE_INTRO, "Before You Play", "8 messages")
-		body.add_child(_text("You'll see 8 messages: texts, chats and phone calls. For each one, decide "
+		body.add_child(_text("You'll see 8 messages: texts, chats and phone calls. Some are scams and some are real. For each one, decide "
 			+ "if it's a scam or legit. If you say it's a scam, pick what gave it away."))
 		body.add_child(_text("Take your time. There's no timer. Once you move on to the next message, "
 			+ "you can't go back to the one before."))
@@ -389,7 +390,7 @@ func show_intro(which: String) -> void:
 			body.add_child(_text(_color("The check that's waiting will be kept as unfinished.", TextStyle.COLOR_TACTIC)))
 	else:
 		_start_page(PAGE_INTRO, "After the Game", "8 new messages")
-		body.add_child(_text("These 8 messages are different from the ones before the game. Same as "
+		body.add_child(_text("These 8 messages are different from the ones before the game. Some are scams and some are real. Same as "
 			+ "before: decide if each one is a scam or legit, and if it's a scam, pick what gave it away."))
 		body.add_child(_text("Your results come right after, side by side with your answers from before."))
 	body.add_child(_text(_color("These messages are made up for this check. Don't call, text or open "
@@ -516,7 +517,7 @@ func show_saved() -> void:
 		+ "to your answers from after the game."))
 	body.add_child(_text("Now play the game from the main menu: Start, or Skip to Investigation. When you "
 		+ "reach an ending, the ending screen offers the after check. You can also take it any time "
-		+ "from Scam Check on the main menu."))
+		+ "from Spot the Scam on the main menu."))
 	_button("Main Menu", SessionState.go_to_menu, 200)
 
 
@@ -525,7 +526,7 @@ func show_saved() -> void:
 func show_results(number: int) -> void:
 	shown_check = data.check_number(number)
 	var first := str(shown_check.get("first_set", ScamCheckData.SETS[0]))
-	_start_page(PAGE_RESULTS, "Your Scam Check", "Check %d  -  set %s before the game, set %s after" % [
+	_start_page(PAGE_RESULTS, "Spot the Scam: Your Results", "Check %d  -  set %s before the game, set %s after" % [
 		number, first, ScamCheckData.other_set(first)])
 	var before := data.score(shown_check.get("before", []))
 	var after := data.score(shown_check.get("after", []))

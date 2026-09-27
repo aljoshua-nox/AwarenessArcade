@@ -1420,17 +1420,7 @@ else:
         if shared:
             errors.append(f"scam_check.json: {iid} shares '{sorted(shared)[0]}' with a case or call script - write it fresh")
 
-    report = scam_check.get("report", {})
-    if report.get("lines"):
-        if not re.fullmatch(r"\d{4}-\d{2}-\d{2}", str(report.get("checked", ""))):
-            errors.append("scam_check.json: report.checked must be the date the channels were last verified (YYYY-MM-DD)")
-        if not str(report.get("source", "")).strip():
-            errors.append("scam_check.json: report.source must name where the channels were verified")
-        for text in strings_in(report):
-            if "[" in text or "]" in text:
-                errors.append("scam_check.json: report carries markup - the Scam Check applies all styling")
-    print(f"scam_check.json: {len(items)} items, {len(pairs)} pairs, "
-          f"{sum(counts.values())} scams, reporting channels checked {report.get('checked', 'never')}")
+    print(f"scam_check.json: {len(items)} items, {len(pairs)} pairs, {sum(counts.values())} scams")
 
 # --- Register lint: the game is set in the Philippines and reads like it -----
 # The first four cases and the terrace's stops were written in British English

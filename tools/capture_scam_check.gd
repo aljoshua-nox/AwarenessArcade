@@ -11,7 +11,7 @@ extends Node
 ## scam_check_call.png, scam_check_chat.png, scam_check_saved.png,
 ## ending_after_check.png (a closing screen offering the after check),
 ## scam_check_results.png, scam_check_results_rows.png,
-## scam_check_results_report.png and scam_check_home_checks.png. Uses a
+## scam_check_results_end.png and scam_check_home_checks.png. Uses a
 ## scratch record and deletes it.
 
 const ScamCheckData := preload("res://scripts/scam_check/scam_check_data.gd")
@@ -138,7 +138,7 @@ func _run() -> void:
 	_save("scam_check_results_rows")
 	view.body_scroll.scroll_vertical = int(view.body_scroll.get_v_scroll_bar().max_value)
 	await _settle()
-	_save("scam_check_results_report")
+	_save("scam_check_results_end")
 	await _close(view)
 
 	data.save_before("B", before)

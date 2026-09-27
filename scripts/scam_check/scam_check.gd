@@ -544,16 +544,6 @@ func show_results(number: int) -> void:
 		_add_review_card(pair, "BEFORE", row["before"], row["before_answer"])
 		_add_review_card(pair, "AFTER", row["after"], row["after_answer"])
 
-	var report := data.report()
-	if not (report.get("lines", []) as Array).is_empty():
-		var box := _card(body, TextStyle.COLOR_HINT)
-		var lines: Array[String] = ["[b]%s[/b]" % str(report.get("title", "Where to report a scam"))]
-		for line in report.get("lines", []):
-			lines.append(str(line))
-		lines.append(_color("Checked %s against %s." % [str(report.get("checked", "")), str(report.get("source", ""))],
-			TextStyle.COLOR_NARRATION))
-		box.add_child(_text("\n\n".join(lines), 17))
-
 	var copy := _button("Copy Results", _copy_results, 200)
 	copy.tooltip_text = "One row per check, ready to paste into a spreadsheet."
 	if came_from_ending:

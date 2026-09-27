@@ -315,15 +315,5 @@
       ],
       "why": "You were at the dinner, you know what the money is for, and the amount is your share. She even says there's no rush. A request you can check against what you already know isn't a scam."
     }
-  ],
-  "report": {
-    "title": "Where to report a scam",
-    "checked": "2026-09-27",
-    "source": "Bangko Sentral ng Pilipinas, How to File a Complaint against a BSP-Supervised Institution (September 2025)",
-    "lines": [
-      "Money already moved? Call your bank or e-wallet first, using the number on your card or in its official app.",
-      "Report the scam by calling 1326, the government's anti-scam hotline.",
-      "To file a crime report, email the PNP Anti-Cybercrime Group at acg@pnp.gov.ph or the NBI Cybercrime Division at ccd@nbi.gov.ph."
-    ]
-  }
+  ]
 }

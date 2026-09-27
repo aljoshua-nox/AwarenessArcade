@@ -224,7 +224,15 @@ func _test_verdict_reaches_the_ending() -> void:
 	var view := await _open("full_takedown")
 	_check(view.outcome_note.text.contains("name every lever"),
 		"a sharp reading is stated in the ending itself, not just the scorecard")
+	_check(view.outcome_note.text.contains(str(view.HOTLINE_LINE)) and str(view.HOTLINE_LINE).contains("1326"),
+		"a closing screen says where to report a scam")
 	await _close(view)
+
+	# A mid-case summary is not the end of a run.
+	var midcase := await _open("success")
+	_check(not midcase.outcome_note.text.contains(str(midcase.HOTLINE_LINE)),
+		"a mid-case summary does not carry the hotline")
+	await _close(midcase)
 
 
 func _test_verdict_changes_with_awareness() -> void:

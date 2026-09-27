@@ -167,7 +167,6 @@ func _test_content() -> void:
 	for tactic in data.tactics_tested("A"):
 		_check(TacticNotebook.has_tactic(tactic) and not TacticNotebook.spot_it(tactic).is_empty(),
 			"%s is in the catalogue, with a defense to show a player who missed it" % tactic)
-	_check(not (data.report().get("lines", []) as Array).is_empty(), "the results carry where to report a scam")
 
 
 func _test_scoring() -> void:
@@ -365,8 +364,6 @@ func _test_after_check() -> void:
 	_check(rows == 8, "one row per matched pair, before beside after")
 	for entry in data.items_in("A"):
 		_check(text.contains(str(entry.get("why", ""))), "the explanation for %s is shown now" % entry.id)
-	for line in data.report().get("lines", []):
-		_check(text.contains(str(line)), "report line on screen: %s" % str(line).left(40))
 	_check(_button(view, "Back to the Ending") != null, "it goes back to the ending it came from")
 	_check(_button(view, "Copy Results") != null, "and can copy the results")
 	await _close(view)

@@ -69,10 +69,6 @@ func twin(entry: Dictionary) -> Dictionary:
 	return {}
 
 
-func report() -> Dictionary:
-	return content.get("report", {})
-
-
 static func other_set(set_id: String) -> String:
 	return SETS[1] if set_id == SETS[0] else SETS[0]
 

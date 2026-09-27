@@ -5,6 +5,13 @@ const ScamCheckData := preload("res://scripts/scam_check/scam_check_data.gd")
 
 const SCAM_CHECK_SCENE := "res://scenes/scam_check/scam_check.tscn"
 
+# The one line on a closing screen about the player's own phone rather than the
+# case, so it is on the five true endings only - the end of a run. 1326 is the
+# government's anti-scam hotline (the CICC's Inter-Agency Response Center),
+# checked 2026-09-27 against the BSP's September 2025 complaint guide. Check it
+# again against an official source before changing it.
+const HOTLINE_LINE := "Got a scam call or text? Report it to 1326, the government's anti-scam hotline."
+
 # The five closing outcomes are `SessionState.ENDINGS`; a final ending's title
 # is "Case Closed: " over the record's title. These are the mid-case summaries.
 const OUTCOME_LABELS := {
@@ -399,6 +406,8 @@ func _refresh_view() -> void:
 		numbers += "\nEndings on record: %d of %d" % [
 			SessionState.endings_reached().size(), SessionState.ENDINGS.size()]
 	note_lines.append("[color=#%s]%s[/color]" % [TextStyle.COLOR_NARRATION, numbers])
+	if is_final:
+		note_lines.append("[color=#%s]%s[/color]" % [TextStyle.COLOR_HINT, HOTLINE_LINE])
 	outcome_note.text = "\n\n".join(note_lines)
 
 	scorecard_value.text = _build_scorecard_text()

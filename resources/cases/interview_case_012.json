@@ -127,15 +127,15 @@
       "tactic_quiz": {
         "setup": "Put together, this is the call: a text - [i]FINAL NOTICE - 30 MINUTES[/i] - then a polite, apologetic man from \"the electric company\" saying her power would be cut in thirty minutes unless she paid a reconnection fee while he was on the line. It was six in the evening, three kids at the table, the rice on. And her bill was already paid.",
         "tactic_id": "manufactured_fear",
-        "tactic": "The picture you supply yourself",
+        "tactic": "The threat you imagine",
         "question": "What was the caller actually threatening her with?",
         "milestone": {
-          "title": "Tactic Identified: The Picture You Supply Yourself",
-          "detail": "Recognized that the caller threatened nothing he could do - the fear was six o'clock in the dark with children at the table, and the victim supplied that picture herself, which is why it was aimed at a mother at dinnertime."
+          "title": "Tactic Identified: The Threat You Imagine",
+          "detail": "Recognized that the caller threatened nothing he could actually do - he only said the word, and the victim imagined the rest: her house dark at six, with the children at the table. That is why the call was aimed at a mother at dinnertime."
         },
         "options": [
           {
-            "text": "Nothing he could do. The threat was the picture of six o'clock in the dark, and she supplied that picture herself.",
+            "text": "Nothing he could do. He only said her power would be cut - she imagined the rest herself.",
             "correct": true,
             "cooperation": 12,
             "feedback": "That is the mechanism. He could not touch her electricity; the account was paid. What he had was a time - thirty minutes - and a word - disconnected - and she did the rest, because she knows what that evening looks like better than he ever could. Scams built on fear aim at what a person cannot afford to lose, and they let the person fill in the details. A caller who makes you picture the worst is a caller who has nothing else."
@@ -153,7 +153,7 @@
           {
             "text": "Reporting her to the barangay for non-payment.",
             "cooperation": -6,
-            "feedback": "Nothing in the message or the call mentioned anybody but the 'system.' The threat was not a person coming; it was the lights going out. The fear that works is the one the victim can see, and she could see six o'clock."
+            "feedback": "Nothing in the message or the call mentioned anybody but the 'system.' The threat was not a person coming; it was the lights going out. The fear that works is the one the victim can already imagine, and she could imagine six o'clock with the lights off."
           }
         ],
         "next": "ask_evidence"

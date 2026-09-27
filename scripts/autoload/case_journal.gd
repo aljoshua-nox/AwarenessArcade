@@ -31,6 +31,7 @@ const HIDDEN_IN_SCENES := [
 	"res://scenes/main_menu/credits.tscn",
 	"res://scenes/prologue/prologue_call.tscn",
 	"res://scenes/prologue/prologue_end.tscn",
+	"res://scenes/scam_check/scam_check.tscn",
 ]
 
 const BRIEFING_PATH := "res://resources/journal/briefing.json"

@@ -52,6 +52,15 @@ func spot_it(tactic_id: String) -> String:
 	return ""
 
 
+## The catalogue's display name for a tactic, or the id itself if it resolves
+## to nothing. The Scam Check's results list its tactics by this name.
+func tactic_name(tactic_id: String) -> String:
+	for entry in tactics:
+		if str(entry.get("id", "")) == tactic_id:
+			return str(entry.get("name", tactic_id))
+	return tactic_id
+
+
 func learned_count() -> int:
 	var found := 0
 	for entry in tactics:

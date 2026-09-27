@@ -1262,6 +1262,176 @@ for v in victims:
 one_copy_walk(briefing, "briefing.json")
 one_copy_walk(objectives, "objectives.json")
 
+# --- The Scam Check: a fair before/after measure ------------------------------
+# The opt-in quiz on the main menu measures whether the game improves scam
+# recognition, so its items are held to what makes that measure fair: two
+# parallel sets built from matched pairs (same format, same tells, a different
+# story), legit messages as well as scams so "scam" to everything does not
+# score, a red-flag question whose right answers are exactly the item's tagged
+# tactics, and nothing lifted from the game's own cases - it tests whether the
+# player recognizes a scam they have not seen.
+SCAM_CHECK_SETS = ["A", "B"]
+SCAM_CHECK_PER_SET = 8
+SCAM_CHECK_KINDS = {"text", "chat", "call"}
+SCAM_CHECK_FROM = {"them", "you", "note"}
+SCAM_CHECK_TOKENS = {"{link}"}
+SCAM_CHECK_SHINGLE = 6
+scam_check_path = os.path.join(base, "resources", "scam_check", "scam_check.json")
+scam_check = {}
+
+
+def shingles(text, size=SCAM_CHECK_SHINGLE):
+    words = re.findall(r"[a-z0-9']+", text.lower())
+    return {" ".join(words[i:i + size]) for i in range(len(words) - size + 1)}
+
+
+def strings_in(obj):
+    if isinstance(obj, dict):
+        for v in obj.values():
+            yield from strings_in(v)
+    elif isinstance(obj, list):
+        for v in obj:
+            yield from strings_in(v)
+    elif isinstance(obj, str):
+        yield obj
+
+
+if not os.path.exists(scam_check_path):
+    errors.append("scam_check.json is missing - the main menu's Scam Check has nothing to ask")
+else:
+    with open(scam_check_path, encoding="utf-8") as fh:
+        scam_check = json.load(fh)
+    items = scam_check.get("items", [])
+    seen_ids = set()
+    by_set = {s: [] for s in SCAM_CHECK_SETS}
+    for i, item in enumerate(items):
+        iid = item.get("id", f"#{i}")
+        where = f"scam_check.json: {iid}"
+        if iid in seen_ids:
+            errors.append(f"{where} is a duplicate id")
+        seen_ids.add(iid)
+        if item.get("set") not in SCAM_CHECK_SETS:
+            errors.append(f"{where} set must be one of {SCAM_CHECK_SETS}")
+        else:
+            by_set[item["set"]].append(item)
+        if item.get("kind") not in SCAM_CHECK_KINDS:
+            errors.append(f"{where} kind must be one of {sorted(SCAM_CHECK_KINDS)}")
+        for field in ("pair", "situation", "source", "why"):
+            if not str(item.get(field, "")).strip():
+                errors.append(f"{where} is missing {field}")
+        lines = item.get("lines", [])
+        if not lines:
+            errors.append(f"{where} has no lines - there is no message to judge")
+        for n, line in enumerate(lines):
+            if line.get("from") not in SCAM_CHECK_FROM:
+                errors.append(f"{where}.lines[{n}] from must be one of {sorted(SCAM_CHECK_FROM)}")
+            if ("text" in line) == ("attachment" in line):
+                errors.append(f"{where}.lines[{n}] carries exactly one of text / attachment")
+        if not isinstance(item.get("scam"), bool):
+            errors.append(f"{where} scam must be true or false")
+        tagged = item.get("tactic_ids", [])
+        for tid in tagged:
+            if tid not in catalogue_ids:
+                errors.append(f"{where} tactic_id '{tid}' is not in the tactic catalogue")
+        flags = item.get("flags", [])
+        if not 2 <= len(flags) <= 4:
+            errors.append(f"{where} needs 2-4 'what gave it away' options (the screen has room for 4)")
+        named = {f.get("tactic_id") for f in flags if f.get("tactic_id")}
+        for n, flag in enumerate(flags):
+            if not str(flag.get("text", "")).strip():
+                errors.append(f"{where}.flags[{n}] has no text")
+        if item.get("scam") is True:
+            if not tagged:
+                errors.append(f"{where} is a scam with no tactic_ids - results could not say what it tested")
+            if named != set(tagged):
+                errors.append(f"{where}: the right answers {sorted(named)} must be exactly its tactic_ids "
+                              f"{sorted(tagged)} - a real tell offered as a wrong answer punishes spotting it")
+        elif item.get("scam") is False:
+            if tagged or named:
+                errors.append(f"{where} is legit, so neither it nor its options may carry a tactic_id")
+        # Numbers are masked (+63 9.. ... 4417): a full number in the game could
+        # be somebody's real one.
+        for text in strings_in(item):
+            if re.search(r"(\d[\s-]?){10,}", text):
+                errors.append(f"{where}: '{text[:40]}...' carries a full phone number - mask it")
+            for token in re.findall(r"\{[^}]*\}", text):
+                if token not in SCAM_CHECK_TOKENS:
+                    errors.append(f"{where} carries {token}, which the Scam Check does not expand")
+            if "[" in text or "]" in text:
+                errors.append(f"{where} carries markup - the Scam Check applies all styling")
+
+    for s in SCAM_CHECK_SETS:
+        if len(by_set[s]) != SCAM_CHECK_PER_SET:
+            errors.append(f"scam_check.json: set {s} has {len(by_set[s])} items, not {SCAM_CHECK_PER_SET}")
+    counts = {s: sum(1 for it in by_set[s] if it.get("scam") is True) for s in SCAM_CHECK_SETS}
+    if len(set(counts.values())) > 1:
+        errors.append(f"scam_check.json: the sets hold different numbers of scams {counts} - they are not parallel")
+    for s in SCAM_CHECK_SETS:
+        if counts[s] * 2 != len(by_set[s]):
+            errors.append(f"scam_check.json: set {s} is not half scams, half legit - "
+                          f"answering 'scam' to everything should score half")
+
+    # Matched pairs: each pair once per set, alike in everything but the story.
+    pairs = {}
+    for s in SCAM_CHECK_SETS:
+        for it in by_set[s]:
+            pairs.setdefault(it.get("pair"), {}).setdefault(s, []).append(it)
+    for pid, per_set in pairs.items():
+        if any(len(per_set.get(s, [])) != 1 for s in SCAM_CHECK_SETS):
+            errors.append(f"scam_check.json: pair '{pid}' must appear exactly once in each set")
+            continue
+        a, b = (per_set[s][0] for s in SCAM_CHECK_SETS)
+        for field in ("kind", "scam"):
+            if a.get(field) != b.get(field):
+                errors.append(f"scam_check.json: pair '{pid}' differs in {field} between the sets")
+        if set(a.get("tactic_ids", [])) != set(b.get("tactic_ids", [])):
+            errors.append(f"scam_check.json: pair '{pid}' tests different tactics in each set")
+
+    # Not from the game: no one from the cast, not the operation's number or
+    # the company's name, and no run of words shared with a case or a call.
+    # Only the story is checked - the situation, the message and the options.
+    # `why` is the lesson, and the lesson is meant to be the game's advice.
+    game_strings = []
+    for data in parsed.values():
+        game_strings.extend(strings_in(data))
+    for res_path in roster:
+        call_path = os.path.join(base, res_path.replace("res://", "").replace("/", os.sep))
+        if os.path.exists(call_path):
+            with open(call_path, encoding="utf-8") as fh:
+                game_strings.extend(strings_in(json.load(fh)))
+    game_shingles = set()
+    for text in game_strings:
+        game_shingles |= shingles(text)
+    cast = set()
+    for data in list(parsed.values()) + victims:
+        person = data.get("person", data)
+        for word in re.findall(r"[A-Za-z]{4,}", str(person.get("name", ""))):
+            cast.add(word)
+    story_fields = ("situation", "source", "lines", "flags")
+    item_text = [(it.get("id", "?"), t) for it in items for f in story_fields for t in strings_in(it.get(f, ""))]
+    for iid, text in item_text:
+        for word in cast:
+            if re.search(rf"\b{re.escape(word)}\b", text):
+                errors.append(f"scam_check.json: {iid} names '{word}' from the game's cast - the check tests new scams")
+        for literal in one_copy.values():
+            if literal.lower() in text.lower():
+                errors.append(f"scam_check.json: {iid} spells out '{literal}' from the game")
+        shared = shingles(text) & game_shingles
+        if shared:
+            errors.append(f"scam_check.json: {iid} shares '{sorted(shared)[0]}' with a case or call script - write it fresh")
+
+    report = scam_check.get("report", {})
+    if report.get("lines"):
+        if not re.fullmatch(r"\d{4}-\d{2}-\d{2}", str(report.get("checked", ""))):
+            errors.append("scam_check.json: report.checked must be the date the channels were last verified (YYYY-MM-DD)")
+        if not str(report.get("source", "")).strip():
+            errors.append("scam_check.json: report.source must name where the channels were verified")
+        for text in strings_in(report):
+            if "[" in text or "]" in text:
+                errors.append("scam_check.json: report carries markup - the Scam Check applies all styling")
+    print(f"scam_check.json: {len(items)} items, {len(pairs)} pairs, "
+          f"{sum(counts.values())} scams, reporting channels checked {report.get('checked', 'never')}")
+
 # --- Register lint: the game is set in the Philippines and reads like it -----
 # The first four cases and the terrace's stops were written in British English
 # (realise, kerb, noticeboard, perspex) while the setting names barangays,
@@ -1332,6 +1502,7 @@ REGISTER_SCRIPTS = [
     "scripts/autoload/tactic_notebook.gd",
     "scripts/autoload/session_state.gd",
     "scripts/ui/main_menu.gd",
+    "scripts/scam_check/scam_check.gd",
 ]
 
 
@@ -1370,6 +1541,7 @@ if os.path.exists(catalogue_path):
         register_walk(json.load(fh), "tactic_catalogue.json", [])
 register_walk(briefing, "briefing.json", [])
 register_walk(objectives, "objectives.json", [])
+register_walk(scam_check, "scam_check.json", [])
 
 # String literals only: a British comment is nobody's business but the
 # author's, a British line on screen is the game's.

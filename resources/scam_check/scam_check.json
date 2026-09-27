@@ -1,0 +1,329 @@
+{
+  "items": [
+    {
+      "id": "a_parcel_fee",
+      "set": "A",
+      "pair": "pay_first",
+      "kind": "text",
+      "situation": "You ordered a few things online this week.",
+      "source": "from +63 9•• ••• 4417",
+      "lines": [
+        {"from": "them", "text": "Your parcel is on hold at our hub because the address is incomplete. Pay the P38 redelivery fee within 12 hours or it goes back to the seller: {link}"}
+      ],
+      "scam": true,
+      "tactic_ids": ["advance_fee", "manufactured_urgency"],
+      "flags": [
+        {"text": "It wants you to pay through a link before you get your parcel.", "tactic_id": "advance_fee"},
+        {"text": "It gives you only 12 hours.", "tactic_id": "manufactured_urgency"},
+        {"text": "It says the address is incomplete."},
+        {"text": "It doesn't say what's in the parcel."}
+      ],
+      "why": "The fee is small so you won't think twice, and the 12 hours keeps you from checking. If a parcel is really on hold, the app you ordered from will say so."
+    },
+    {
+      "id": "a_missed_delivery",
+      "set": "A",
+      "pair": "legit_delivery",
+      "kind": "text",
+      "situation": "You ordered shoes on a shopping app for delivery today, then went out all afternoon.",
+      "source": "from the courier's usual sender name",
+      "lines": [
+        {"from": "them", "text": "We tried to deliver your parcel today, but no one was home. We'll try again tomorrow. You can change the delivery date in the app where you placed your order."}
+      ],
+      "scam": false,
+      "flags": [
+        {"text": "It says the delivery didn't go through."},
+        {"text": "It doesn't give a tracking number."},
+        {"text": "It tells you to change the date."}
+      ],
+      "why": "It asks for no money and no details, and it sends you to the app you already use instead of a link."
+    },
+    {
+      "id": "a_sim_code",
+      "set": "A",
+      "pair": "code_on_call",
+      "kind": "call",
+      "situation": "An unknown number calls you in the afternoon.",
+      "source": "from an unknown number",
+      "lines": [
+        {"from": "them", "text": "Hello po, this is your network's SIM registration team. Your registration is incomplete, so your number will be cut off tonight."},
+        {"from": "them", "text": "I'm sending you a code now. Just read it to me so I can finish your registration while we're on the line."},
+        {"from": "them", "text": "Please don't hang up, or we'll have to start over."}
+      ],
+      "scam": true,
+      "tactic_ids": ["verification_denial", "manufactured_urgency"],
+      "flags": [
+        {"text": "They want you to read them a code and stay on the line.", "tactic_id": "verification_denial"},
+        {"text": "Your number will be cut off tonight unless you act now.", "tactic_id": "manufactured_urgency"},
+        {"text": "The call came from an unknown number."},
+        {"text": "They say your registration is incomplete."}
+      ],
+      "why": "A code sent to your phone is for you to type in, never to read out to someone. A caller who won't let you hang up to check is the problem. End the call and check in your network's own app."
+    },
+    {
+      "id": "a_login_code",
+      "set": "A",
+      "pair": "code_you_asked_for",
+      "kind": "text",
+      "situation": "You just tapped Log in on your bank's app.",
+      "source": "from your bank's usual sender name",
+      "lines": [
+        {"from": "them", "text": "Your one-time PIN is 482913. It expires in 5 minutes. Never share this PIN with anyone, including bank staff."}
+      ],
+      "scam": false,
+      "flags": [
+        {"text": "It has a code in it."},
+        {"text": "It says the code expires in 5 minutes."},
+        {"text": "It came from the bank's sender name."}
+      ],
+      "why": "You started this, and it asks nothing of you. The 5 minutes is a limit on the code, not pressure on you. The same kind of code becomes a warning sign when someone calls and asks you to read it out."
+    },
+    {
+      "id": "a_cousin_loan",
+      "set": "A",
+      "pair": "legit_request",
+      "kind": "chat",
+      "situation": "Your cousin Lorna messages you from her usual account.",
+      "source": "from Lorna, your cousin",
+      "lines": [
+        {"from": "them", "text": "Hi! Can I borrow P1,000 until payday on the 15th? Sorry, it's for my son's school project."},
+        {"from": "you", "text": "Let me call you."},
+        {"from": "note", "text": "You call Lorna's usual number. She picks up and tells you the same thing."}
+      ],
+      "scam": false,
+      "flags": [
+        {"text": "She's asking for money."},
+        {"text": "She messaged instead of calling."},
+        {"text": "She says sorry."}
+      ],
+      "why": "You checked on a number you already had, and she told you herself. That call is the step that matters. Asking for money isn't a scam by itself."
+    },
+    {
+      "id": "a_phone_sale",
+      "set": "A",
+      "pair": "fake_proof",
+      "kind": "chat",
+      "situation": "You're selling your old phone online for P6,000. A buyer messages you.",
+      "source": "from a buyer on a selling site",
+      "lines": [
+        {"from": "them", "text": "Hi! I already paid the P6,000. Here's the screenshot of my transfer."},
+        {"from": "them", "attachment": "a transfer screenshot that says Transfer successful, P6,000"},
+        {"from": "them", "text": "My rider is on the way to pick up the phone. Just check your e-wallet later, it sometimes takes a few hours to show."}
+      ],
+      "scam": true,
+      "tactic_ids": ["verification_denial"],
+      "flags": [
+        {"text": "They want the phone before you've seen the money in your own e-wallet.", "tactic_id": "verification_denial"},
+        {"text": "They paid the full price without bargaining."},
+        {"text": "They're sending a rider instead of meeting you."}
+      ],
+      "why": "A screenshot is a picture, not money. Open your e-wallet yourself, and hand over the phone only when the P6,000 is there."
+    },
+    {
+      "id": "a_card_hotline",
+      "set": "A",
+      "pair": "legit_call",
+      "kind": "call",
+      "situation": "Your debit card isn't working, so you call the hotline number printed on the back of it.",
+      "source": "to your bank's hotline, which you called",
+      "lines": [
+        {"from": "them", "text": "Thank you for calling. For security, may I have your full name and birthday?"},
+        {"from": "them", "text": "Please don't give me your PIN or any one-time code. We will never ask for those."}
+      ],
+      "scam": false,
+      "flags": [
+        {"text": "They ask for your birthday."},
+        {"text": "They ask for your full name."},
+        {"text": "They mention one-time codes."}
+      ],
+      "why": "You called them, on the number from your own card. Confirming your name and birthday is normal there. A PIN or a code is the one thing they should never ask for, and they didn't."
+    },
+    {
+      "id": "a_wallet_fee",
+      "set": "A",
+      "pair": "fee_to_fix",
+      "kind": "text",
+      "situation": "A text arrives from your e-wallet's usual sender name.",
+      "source": "from your e-wallet's usual sender name",
+      "lines": [
+        {"from": "them", "text": "Your account has been restricted because of unusual activity. To keep your balance, pay the P200 re-verification fee today at {link}"}
+      ],
+      "scam": true,
+      "tactic_ids": ["invented_fee", "manufactured_urgency"],
+      "flags": [
+        {"text": "It asks you to pay to fix a problem it told you about.", "tactic_id": "invented_fee"},
+        {"text": "You have to pay today or lose your balance.", "tactic_id": "manufactured_urgency"},
+        {"text": "It came from your e-wallet's usual sender name."},
+        {"text": "It says there was unusual activity."}
+      ],
+      "why": "Whoever reports the problem shouldn't be the one charging to fix it, and a sender name can be faked. Open your e-wallet's app yourself. If something is wrong, it will show there."
+    },
+    {
+      "id": "b_rider_cod",
+      "set": "B",
+      "pair": "legit_delivery",
+      "kind": "text",
+      "situation": "You ordered an electric fan online for P1,299 and chose cash on delivery. It's due today.",
+      "source": "from +63 9•• ••• 2208",
+      "lines": [
+        {"from": "them", "text": "Good morning po! Rider here with your order. I'm at your gate now. P1,299 cash on delivery. Thank you!"}
+      ],
+      "scam": false,
+      "flags": [
+        {"text": "The rider wants cash."},
+        {"text": "It came from a number you don't know."},
+        {"text": "He says he's already at your gate."}
+      ],
+      "why": "You ordered it, the amount matches, and you pay when the fan is in your hands. Paying for something as you receive it is normal. Paying before you can get something is the warning sign."
+    },
+    {
+      "id": "b_loan_fee",
+      "set": "B",
+      "pair": "pay_first",
+      "kind": "text",
+      "situation": "You applied for a small loan online last month and haven't heard back.",
+      "source": "from +63 9•• ••• 0582",
+      "lines": [
+        {"from": "them", "text": "Good news! Your P20,000 loan is approved. To release the money today, send the P500 insurance fee to this e-wallet number first. Valid until 5 PM only."}
+      ],
+      "scam": true,
+      "tactic_ids": ["advance_fee", "manufactured_urgency"],
+      "flags": [
+        {"text": "You have to send money before you get the loan.", "tactic_id": "advance_fee"},
+        {"text": "The offer ends at 5 PM today.", "tactic_id": "manufactured_urgency"},
+        {"text": "You really did apply for a loan."},
+        {"text": "It starts with Good news."}
+      ],
+      "why": "Getting money should never start with you sending money, whatever the story is: a prize, a parcel, a loan or a job. The 5 PM deadline is there so you don't stop to check."
+    },
+    {
+      "id": "b_checkout_code",
+      "set": "B",
+      "pair": "code_you_asked_for",
+      "kind": "text",
+      "situation": "You're paying for groceries on a shopping site, and the checkout asks for a code.",
+      "source": "from your e-wallet's usual sender name",
+      "lines": [
+        {"from": "them", "text": "Your code is 731604. Enter it only on the checkout page you opened. We will never call you to ask for this code."}
+      ],
+      "scam": false,
+      "flags": [
+        {"text": "It has a code in it."},
+        {"text": "It tells you where to enter the code."},
+        {"text": "It came from the e-wallet's sender name."}
+      ],
+      "why": "You started the payment, and the code goes into the page you opened. It asks nothing else. A code only becomes a warning sign when someone else asks you for it."
+    },
+    {
+      "id": "b_wrong_send",
+      "set": "B",
+      "pair": "fake_proof",
+      "kind": "chat",
+      "situation": "A text says someone sent P3,000 to your e-wallet. You don't know the sender's name. A minute later, a message arrives.",
+      "source": "from a stranger",
+      "lines": [
+        {"from": "them", "text": "Hi po, so sorry! I sent P3,000 to your number by mistake. It was for my son's tuition."},
+        {"from": "them", "text": "Please send it back to my other number, 09•• ••• 5520. Thank you, God bless!"}
+      ],
+      "scam": true,
+      "tactic_ids": ["verification_denial"],
+      "flags": [
+        {"text": "They want you to send money back before you've checked your own balance.", "tactic_id": "verification_denial"},
+        {"text": "They say it's for their son's tuition."},
+        {"text": "They thank you before you've done anything."}
+      ],
+      "why": "The first text can be fake too. Open your e-wallet yourself. If money really came in by mistake, let your e-wallet's help center handle the return. Never send it to a new number."
+    },
+    {
+      "id": "b_customs_call",
+      "set": "B",
+      "pair": "code_on_call",
+      "kind": "call",
+      "situation": "An unknown number calls you in the morning.",
+      "source": "from an unknown number",
+      "lines": [
+        {"from": "them", "text": "Good morning po. This is a courier's customs desk. A parcel under your name has illegal items inside."},
+        {"from": "them", "text": "I'm connecting you to a police officer now. Please don't end the call, and don't tell anyone yet. This is confidential."},
+        {"from": "them", "text": "The case gets filed in one hour unless we settle it today."}
+      ],
+      "scam": true,
+      "tactic_ids": ["verification_denial", "manufactured_urgency"],
+      "flags": [
+        {"text": "They want you to stay on the line and tell no one.", "tactic_id": "verification_denial"},
+        {"text": "The case gets filed in one hour.", "tactic_id": "manufactured_urgency"},
+        {"text": "The call came from an unknown number."},
+        {"text": "They say a parcel is under your name."}
+      ],
+      "why": "Anyone who says you can't hang up or tell your family is cutting you off from the people who could check. End the call and call the police station yourself."
+    },
+    {
+      "id": "b_internet_hotline",
+      "set": "B",
+      "pair": "legit_call",
+      "kind": "call",
+      "situation": "Your internet is down, so you call the hotline number printed on your bill.",
+      "source": "to your internet provider's hotline, which you called",
+      "lines": [
+        {"from": "them", "text": "Thank you for calling. To find your account, may I have the account name and the address on your bill?"},
+        {"from": "them", "text": "Just so you know, we will never ask for your password or a one-time code."}
+      ],
+      "scam": false,
+      "flags": [
+        {"text": "They ask for your address."},
+        {"text": "They ask for the account name."},
+        {"text": "They mention one-time codes."}
+      ],
+      "why": "You called them, using the number on your own bill. Giving your account name and address there is normal. A password or a code is the one thing they should never ask for, and they didn't."
+    },
+    {
+      "id": "b_card_upgrade",
+      "set": "B",
+      "pair": "fee_to_fix",
+      "kind": "text",
+      "situation": "A text arrives from your bank's usual sender name.",
+      "source": "from your bank's usual sender name",
+      "lines": [
+        {"from": "them", "text": "Your ATM card will be blocked tomorrow because it is due for a chip upgrade. Pay the P250 replacement fee at {link} to keep using it."}
+      ],
+      "scam": true,
+      "tactic_ids": ["invented_fee", "manufactured_urgency"],
+      "flags": [
+        {"text": "It charges you to fix a problem it says your card has.", "tactic_id": "invented_fee"},
+        {"text": "Your card gets blocked tomorrow unless you pay.", "tactic_id": "manufactured_urgency"},
+        {"text": "It came from your bank's usual sender name."},
+        {"text": "It mentions a chip upgrade."}
+      ],
+      "why": "Whoever tells you about the problem shouldn't be the one charging to fix it, and a sender name can be faked. Call the number on the back of your card and ask."
+    },
+    {
+      "id": "b_dinner_share",
+      "set": "B",
+      "pair": "legit_request",
+      "kind": "chat",
+      "situation": "You had dinner with friends last night, and Joy paid the whole bill. She messages you from her usual account.",
+      "source": "from Joy, your friend",
+      "lines": [
+        {"from": "them", "text": "Hi! Your share from last night is P420. Here's my e-wallet QR code."},
+        {"from": "them", "attachment": "the QR code for her e-wallet"},
+        {"from": "them", "text": "No rush, pay whenever you can."}
+      ],
+      "scam": false,
+      "flags": [
+        {"text": "She's asking for money."},
+        {"text": "She sent a QR code."},
+        {"text": "She messaged instead of asking in person."}
+      ],
+      "why": "You were at the dinner, you know what the money is for, and the amount is your share. She even says there's no rush. A request you can check against what you already know isn't a scam."
+    }
+  ],
+  "report": {
+    "title": "Where to report a scam",
+    "checked": "2026-09-27",
+    "source": "Bangko Sentral ng Pilipinas, How to File a Complaint against a BSP-Supervised Institution (September 2025)",
+    "lines": [
+      "Money already moved? Call your bank or e-wallet first, using the number on your card or in its official app.",
+      "Report the scam by calling 1326, the government's anti-scam hotline.",
+      "To file a crime report, email the PNP Anti-Cybercrime Group at acg@pnp.gov.ph or the NBI Cybercrime Division at ccd@nbi.gov.ph."
+    ]
+  }
+}

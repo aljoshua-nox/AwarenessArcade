@@ -22,6 +22,7 @@ const PROLOGUE_AND_META_STATE := [
 	"prologue_tactics_used", "prologue_end_reason", "prologue_end_note",
 	"prologue_call_log", "prologue_played",
 	"checkpoints", "ending_record_path",
+	"scam_check_path", "scam_check_entry",
 ]
 
 var failures: Array[String] = []
@@ -82,6 +83,9 @@ func _seed_reads(correct: int, total: int, missed_names: Array) -> void:
 func _run() -> void:
 	print("\n--- investigation ending smoke test ---")
 	SessionState.ending_record_path = SCRATCH_RECORD
+	# A closing screen notes its ending on a waiting Scam Check; keep that off
+	# the player's record too.
+	SessionState.scam_check_path = "user://test_endings_scam_check.cfg"
 	SessionState.clear_ending_record()
 	await _test_tiers()
 	await _test_verdict_reaches_the_ending()

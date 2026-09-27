@@ -84,6 +84,9 @@ func _seed_worst_case() -> void:
 
 func _run() -> void:
 	SessionState.ending_record_path = SCRATCH_RECORD
+	# A closing screen notes its ending on a waiting Scam Check; keep that off
+	# the player's record too.
+	SessionState.scam_check_path = "user://capture_endings_scam_check.cfg"
 	SessionState.clear_ending_record()
 	_seed_worst_case()
 	print("seeded %d evidence, %d milestones" % [

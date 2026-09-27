@@ -1,6 +1,9 @@
 extends Control
 
 const TextStyle := preload("res://scripts/systems/text_style.gd")
+const ScamCheckData := preload("res://scripts/scam_check/scam_check_data.gd")
+
+const SCAM_CHECK_SCENE := "res://scenes/scam_check/scam_check.tscn"
 
 # The five closing outcomes are `SessionState.ENDINGS`; a final ending's title
 # is "Case Closed: " over the record's title. These are the mid-case summaries.
@@ -79,6 +82,8 @@ var records_header: Button
 var observations_header: Button
 var continue_button: Button
 var reopen_button: Button
+# Offered on a closing screen while a Scam Check is waiting for its after half.
+var after_check_button: Button
 var button_row: HBoxContainer
 # The checkpoint chooser: shown in place of the button row while the player
 # picks a door to go back to.
@@ -93,6 +98,7 @@ func _ready() -> void:
 		AudioManager.stop_ambience()
 		AudioManager.play_music("ending", -12.0)
 		SessionState.record_ending(SessionState.investigation_outcome)
+		ScamCheckData.new().note_ending(SessionState.investigation_outcome)
 	_build_ui()
 	_refresh_view()
 
@@ -278,6 +284,13 @@ func _build_ui() -> void:
 	reopen_button.pressed.connect(_on_reopen_pressed)
 	button_row.add_child(reopen_button)
 
+	after_check_button = Button.new()
+	after_check_button.text = "Take the After Check"
+	after_check_button.custom_minimum_size = Vector2(220, 44)
+	after_check_button.tooltip_text = "The second half of the Scam Check you took before playing."
+	after_check_button.pressed.connect(_on_after_check_pressed)
+	button_row.add_child(after_check_button)
+
 	var main_menu_button := Button.new()
 	main_menu_button.text = "Main Menu"
 	main_menu_button.custom_minimum_size = Vector2(160, 44)
@@ -367,6 +380,7 @@ func _refresh_view() -> void:
 	# A closing screen can send the player back to a suspect's door; a mid-case
 	# summary has the street for that.
 	reopen_button.visible = is_final and not SessionState.checkpoints.is_empty()
+	after_check_button.visible = is_final and ScamCheckData.new().has_open_check()
 	_show_button_row()
 	var note_lines: Array[String] = []
 	note_lines.append(OUTCOME_MESSAGES.get(outcome, ""))
@@ -564,6 +578,13 @@ func _on_continue_pressed() -> void:
 
 func _on_main_menu_pressed() -> void:
 	SessionState.go_to_menu()
+
+
+# The Scam Check comes back here when it is done, with the case as it was, so
+# Reopen the Case is still on offer afterwards.
+func _on_after_check_pressed() -> void:
+	SessionState.scam_check_entry = SessionState.SCAM_CHECK_FROM_ENDING
+	SessionState.go_to_scene(SCAM_CHECK_SCENE)
 
 
 # One button per door, oldest first, each saying what the case held when the

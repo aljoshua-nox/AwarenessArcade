@@ -189,6 +189,17 @@ const ENDING_RECORD_SECTION := "endings"
 # real record.
 var ending_record_path: String = ENDING_RECORD_PATH
 
+# The Scam Check's answers: the opt-in before/after quiz on the main menu, kept
+# in user://scam_check.cfg beside the ending record. Numbered checks and their
+# answers, no names. Read and written by scripts/scam_check/scam_check_data.gd;
+# test runners point this at a scratch file, like the ending record.
+const SCAM_CHECK_PATH := "user://scam_check.cfg"
+var scam_check_path: String = SCAM_CHECK_PATH
+# How the Scam Check scene was opened: "" from the main menu (its own page),
+# SCAM_CHECK_FROM_ENDING from a closing screen's after-check button.
+const SCAM_CHECK_FROM_ENDING := "ending"
+var scam_check_entry: String = ""
+
 # --- Reopening the case --------------------------------------------------------
 # A snapshot of the investigation per suspect's door, taken as that interview
 # loads. The suspects are where a run commits to its ending - Marco's lockout,

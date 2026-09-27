@@ -64,7 +64,7 @@
       "tactic_id": "reused_victim_list",
       "label": "Callback Log",
       "description": "Lina's phone log showing four further calls from different numbers in the two weeks after she paid.",
-      "tactic": "Paying marks a number as one that pays. The list is worth more once somebody on it has proved they will pay.",
+      "tactic": "Paying marks a number as one that will pay again. The list is worth more once somebody on it has proved they will pay.",
       "dispositions": {
         "resistant": {
           "description": "Lina's phone log showing four further calls from different numbers in the two weeks after she hung up."

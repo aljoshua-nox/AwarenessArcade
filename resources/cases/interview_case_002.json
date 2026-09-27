@@ -17,7 +17,7 @@
 	  "harmed": {
 		"cooperation": 34,
 		"prompt": "Kevin has the laptop with him, closed, and keeps one hand flat on the lid the whole time. \"I've read about this happening to other people. I always thought, how, how do you fall for that.\" He shrugs, tries a laugh, and it doesn't land. \"Anyway. It's a lot of money to be stupid about.\"",
-		"note": "He paid you. The self-blame in this room is doing the caller's work for them - he will play down what happened unless you make it safe for him not to."
+		"note": "He paid you. He is blaming himself, which does the caller's job for them - he will play down what happened unless you make it safe for him not to."
 	  },
 	  "resistant": {
 		"cooperation": 62,

@@ -185,7 +185,7 @@
     },
     "tactic_quiz_closer": {
       "tactic_quiz": {
-        "setup": "\"The desk gets them frightened. My job is to keep them from doing the one thing that ends it.\" He lets that sit. [i]\"There is exactly one thing a closer must never let a mark do.\"[/i]",
+        "setup": "\"The desk gets them frightened. My job is to keep them from doing the one thing that ends it.\" He lets that sit. [i]\"There is exactly one thing a closer must never let the person on the line do.\"[/i]",
         "tactic_id": "verification_denial",
         "tactic": "The closer's one rule",
         "question": "What is the one thing the closer must never let the person on the line do?",
@@ -213,7 +213,7 @@
           {
             "text": "Talk to a family member first.",
             "cooperation": -8,
-            "feedback": "\"Half the time I've already told them I spoke to the family.\" A closer can claim to be the family's messenger, and does. The check that survives is not a conversation with somebody in the room - it is a call, on a number the mark already had, to the institution the caller is pretending to be."
+            "feedback": "\"Half the time I've already told them I spoke to the family.\" A closer can claim to be the family's messenger, and does. The check that survives is not a conversation with somebody in the room - it is a call, on a number they already had, to the institution the caller is pretending to be."
           }
         ],
         "next": "final_check"

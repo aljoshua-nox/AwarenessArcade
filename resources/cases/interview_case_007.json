@@ -17,7 +17,7 @@
       "harmed": {
         "cooperation": 34,
         "prompt": "Teodoro has laid the passbook on the kitchen table between you, open at the last line, and does not look at it. \"I have not told my daughter the amount.\" He folds his hands. \"She thinks it was a few thousand. Let her think that.\"",
-        "note": "You took the money he had set aside for his own funeral. He is not ashamed of being fooled - he is ashamed of what the money was for, and he will protect his daughter from the number before he protects himself."
+        "note": "You took the money he had set aside for his own funeral. He is not ashamed of being fooled - he is ashamed of what the money was for, and he will protect his daughter from knowing the amount before he protects himself."
       },
       "resistant": {
         "cooperation": 62,
@@ -394,7 +394,7 @@
           "id": "test_teddy_confirmed",
           "label": "Teodoro's Confirmed Testimony",
           "description": "Teodoro Villanueva confirmed the family-emergency scam - a fake attorney, a grandson's name off a list, a bail deadline - and the transfer it produced.",
-          "tactic": "A victim who paid leaves a trail. His is the scam that uses love as the lever."
+          "tactic": "A victim who paid leaves a trail. His is the scam that works on love rather than fear or greed."
         }
       ],
       "choices": [],

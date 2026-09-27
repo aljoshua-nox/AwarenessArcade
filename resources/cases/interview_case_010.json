@@ -17,7 +17,7 @@
       "harmed": {
         "cooperation": 34,
         "prompt": "Joel meets you at the site gate in a safety vest and does not take it off. \"Twenty minutes. Then we pour concrete, and that can't wait.\" He looks at the road and not at you. \"I know what it was. I knew about an hour after. You don't need to tell me what it was.\"",
-        "note": "You took the money he sends home. He is angrier at himself than at the caller, and he has decided the way to carry it is to have no time for it."
+        "note": "You took the money he sends home. He is angrier at himself than at the caller, and he deals with it by refusing to dwell on it."
       },
       "resistant": {
         "cooperation": 62,
@@ -37,7 +37,7 @@
       "tactic_id": "authority_impersonation",
       "label": "The Reference Number",
       "description": "Copied off the back of his hand onto a cement bag in the site office: 2024-0417, and under it the name of the desk the caller gave and the account it was to be paid to.",
-      "tactic": "Impersonating an authority: a reference number sounds like a file, and a file sounds like an office - it cost the caller nothing to invent."
+      "tactic": "Impersonating an authority: a reference number makes the call sound like it came from a real office, and it cost the caller nothing to invent."
     },
     {
       "id": "ev_joel_cashin_slip",
@@ -394,7 +394,7 @@
           "id": "test_joel_confirmed",
           "label": "Joel's Confirmed Testimony",
           "description": "Joel Abad confirmed the government-warrant scam - an enforcement desk, a reference number, an officer at four - and the cash-in it produced.",
-          "tactic": "A victim who paid leaves a trail. His is the scam that uses a badge instead of a prize."
+          "tactic": "A victim who paid leaves a trail. His is the scam that uses fear of the law rather than the promise of money."
         }
       ],
       "choices": [],

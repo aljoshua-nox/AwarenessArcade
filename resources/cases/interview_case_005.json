@@ -474,7 +474,7 @@
           "id": "test_evelyn_confirmed",
           "label": "Evelyn's Confirmed Testimony",
           "description": "Evelyn Marsh confirmed the advance-fee script word for word and traced how the operation obtained her details.",
-          "tactic": "A witness who refused still proves the operation exists - refusal is testimony, not a missing crime."
+          "tactic": "A witness who refused still proves the operation exists - saying no is still evidence, even though nothing was stolen."
         }
       ],
       "choices": [],

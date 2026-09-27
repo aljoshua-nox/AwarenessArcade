@@ -801,8 +801,11 @@ func open(tab_id: String = "") -> void:
 	AudioManager.play_sfx("page")
 	(tab_buttons[TAB_TACTICS] as Button).visible = SessionState.notebook_collected
 	var target := tab_id if tab_pages.has(tab_id) else str(TABS[0].get("id", ""))
-	_select_tab(target)
+	# Shown before the page is built, as a tab switch does. A page rebuilt
+	# while the journal was hidden kept the height it measured there and
+	# spilled out of the frame (N, close, N again did it to Tactics).
 	panel_root.visible = true
+	_select_tab(target)
 	open_button.visible = false
 	# Pausing means reading the journal never lets the player walk the map
 	# while it is up.

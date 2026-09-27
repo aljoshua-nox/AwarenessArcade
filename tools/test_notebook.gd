@@ -153,6 +153,19 @@ func _test_overlay() -> void:
 	_check(not CaseJournal.is_open, "it closes")
 	_check(not get_tree().paused, "closing unpauses")
 
+	# Reopening the page that was open last rebuilds it. Rebuilt while the
+	# journal was still hidden, it kept a height measured there and spilled out
+	# of the frame with no scrollbar (N, close, N).
+	CaseJournal.open(CaseJournal.TAB_TACTICS)
+	for i in range(6):
+		await get_tree().process_frame
+	var page: Control = CaseJournal.tab_pages[CaseJournal.TAB_TACTICS]
+	var frame: Control = page.get_parent()
+	_check(page.size.y <= frame.size.y + 1.0,
+		"reopened, the Tactics page still fits its frame (%d of %d)" % [page.size.y, frame.size.y])
+	CaseJournal.close()
+	await get_tree().process_frame
+
 	# Every tab in the table has a page and a button, and opening with no tab
 	# lands on the first one.
 	for tab in CaseJournal.TABS:

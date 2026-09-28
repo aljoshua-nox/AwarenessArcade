@@ -117,6 +117,7 @@ func _run() -> void:
 	print("\n--- scam check smoke test ---")
 	SessionState.scam_check_path = SCRATCH
 	SessionState.ending_record_path = SCRATCH_ENDINGS
+	SessionState.scam_check_session_number = 0
 	ScamCheckData.new().clear()
 	SessionState.clear_ending_record()
 
@@ -131,9 +132,11 @@ func _run() -> void:
 	_test_record_rules()
 	_test_export()
 	await _test_home_with_checks()
+	await _test_new_launch()
 	await _test_clear()
 
 	ScamCheckData.new().clear()
+	SessionState.scam_check_session_number = 0
 	SessionState.clear_ending_record()
 	SessionState.scam_check_path = SessionState.SCAM_CHECK_PATH
 	SessionState.ending_record_path = SessionState.ENDING_RECORD_PATH
@@ -290,7 +293,7 @@ func _test_before_check() -> void:
 		_check(first.call == ScamCheckData.CALL_SCAM and first.flag == _right_answer(items[0]).flag,
 			"the flag is recorded by its place in the file, not the shuffled slot")
 		_check(before[1].call == ScamCheckData.CALL_SCAM, "and a false alarm is recorded as one")
-	_check(ScamCheckData.status(open) == ScamCheckData.STATUS_WAITING, "it waits for its after check")
+	_check(data.status(open) == ScamCheckData.STATUS_WAITING, "it waits for its after check")
 	await _close(view)
 
 
@@ -349,7 +352,7 @@ func _test_after_check() -> void:
 			await _press(view, "It's legit")
 	_check(view.page == view.PAGE_RESULTS, "the results follow straight away")
 	var check := data.check_number(1)
-	_check(ScamCheckData.status(check) == ScamCheckData.STATUS_COMPLETE, "check 1 is complete")
+	_check(data.status(check) == ScamCheckData.STATUS_COMPLETE, "check 1 is complete")
 
 	var text := _screen_text(view)
 	_check(text.contains("Before") and text.contains("After"), "before and after sit side by side")
@@ -378,7 +381,7 @@ func _test_record_rules() -> void:
 	_check(number == 2 and data.open_check().first_set == "B", "check 2 starts with set B")
 	_check(data.next_first_set() == "A", "and the one after that goes back to A")
 	data.save_before(data.next_first_set(), _answers(data, "A", "scam"))
-	_check(ScamCheckData.status(data.check_number(2)) == ScamCheckData.STATUS_UNFINISHED,
+	_check(data.status(data.check_number(2)) == ScamCheckData.STATUS_UNFINISHED,
 		"starting a new check keeps the waiting one as unfinished")
 	_check(int(data.open_check().get("number", 0)) == 3, "and check 3 is the one waiting now")
 
@@ -428,6 +431,48 @@ func _test_home_with_checks() -> void:
 		_check(view.page == view.PAGE_RESULTS and _button(view, "Back") != null, "a past check's results open, with a way back")
 		await _press(view, "Back")
 		_check(view.page == view.PAGE_HOME, "back to the Spot the Scam page")
+	await _close(view)
+
+
+# A check belongs to the launch it was started in. The way from the before
+# check to the game passes the main menu, which resets the session - that must
+# not drop it. Closing the game must, so on a shared laptop the next player's
+# ending cannot complete the last player's check.
+func _test_new_launch() -> void:
+	print("\n[a new launch]")
+	var data := ScamCheckData.new()
+	var waiting := data.open_check()
+	var number := int(waiting.get("number", 0))
+	_check(number > 0, "a check is waiting in this launch")
+	SessionState.reset_session()
+	_check(data.has_open_check(), "going back to the main menu keeps it waiting")
+
+	# What a restart leaves behind.
+	SessionState.scam_check_session_number = 0
+	_check(not data.has_open_check(), "after a restart, nothing is offered")
+	_check(data.status(waiting) == ScamCheckData.STATUS_UNFINISHED, "the waiting check now reads unfinished")
+	_check((data.check_number(number).get("before", []) as Array).size() == 8, "its before answers are still on disk")
+	data.note_ending("bribed")
+	_check(not (data.check_number(number).get("endings", []) as Array).has("bribed"),
+		"another player's ending is not noted on it")
+
+	SessionState.investigation_outcome = "full_takedown"
+	var ending := await _open(END_SCENE)
+	_check(not ending.after_check_button.visible, "the ending screen does not offer it")
+	await _close(ending)
+
+	SessionState.scam_check_entry = ""
+	var view := await _open(SCENE)
+	_check(_button(view, "Take the Before Check") != null and _button(view, "Take the After Check") == null,
+		"the Spot the Scam page offers a new before check instead")
+	var listed := false
+	for button in _buttons(view):
+		if button.text.begins_with("Check %d " % number) and button.disabled \
+				and button.text.ends_with(ScamCheckData.STATUS_UNFINISHED):
+			listed = true
+	_check(listed, "and lists the old one as unfinished")
+	_check(data.csv_text().contains("\n%d,%s," % [number, ScamCheckData.STATUS_UNFINISHED]),
+		"Copy Results still includes it, as unfinished")
 	await _close(view)
 
 

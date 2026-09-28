@@ -112,16 +112,22 @@ static func is_complete(check: Dictionary) -> bool:
 	return not (check.get("after", []) as Array).is_empty()
 
 
-static func status(check: Dictionary) -> String:
+# A check can only be finished in the launch it was started in: the before
+# answers are on disk either way, but after a restart the check reads as
+# unfinished. On a shared playtest laptop, that stops the next player's
+# ending from completing the last player's check.
+func status(check: Dictionary) -> String:
 	if is_complete(check):
 		return STATUS_COMPLETE
 	if bool(check.get("abandoned", false)):
+		return STATUS_UNFINISHED
+	if int(check.get("number", 0)) != SessionState.scam_check_session_number:
 		return STATUS_UNFINISHED
 	return STATUS_WAITING
 
 
 # The one check waiting for its after half: only ever the latest, since
-# starting a new check closes the one before it.
+# starting a new check closes the one before it, and only this launch's.
 func open_check() -> Dictionary:
 	var all := checks()
 	if all.is_empty():
@@ -156,6 +162,7 @@ func save_before(first_set: String, answers: Array) -> int:
 	config.set_value(section, "route", "")
 	config.set_value(section, "endings", [])
 	_save_config(config)
+	SessionState.scam_check_session_number = number
 	return number
 
 

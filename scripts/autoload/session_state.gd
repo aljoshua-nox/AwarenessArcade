@@ -199,6 +199,11 @@ var scam_check_path: String = SCAM_CHECK_PATH
 # SCAM_CHECK_FROM_ENDING from a closing screen's after-check button.
 const SCAM_CHECK_FROM_ENDING := "ending"
 var scam_check_entry: String = ""
+# The check whose before half was taken in this launch, 0 for none. Only that
+# one can be finished; after a restart a waiting check reads as unfinished.
+# In memory only, and deliberately not cleared by reset_session() - the path
+# from the before check to the game goes through the main menu, which resets.
+var scam_check_session_number: int = 0
 
 # --- Reopening the case --------------------------------------------------------
 # A snapshot of the investigation per suspect's door, taken as that interview

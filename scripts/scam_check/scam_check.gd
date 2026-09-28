@@ -309,7 +309,7 @@ func show_home() -> void:
 					int(before.right), int(before.answered), int(after.right), int(after.answered)]
 				button.pressed.connect(show_results.bind(int(check.get("number", 0))))
 			else:
-				button.text = line + ScamCheckData.status(check)
+				button.text = line + data.status(check)
 				button.disabled = true
 			body.add_child(button)
 		body.add_child(_text(_color("Saved at %s" % ProjectSettings.globalize_path(data.record_path),
@@ -516,8 +516,10 @@ func show_saved() -> void:
 	body.add_child(_text("Your answers are saved on this computer. You'll see them at the end, next "
 		+ "to your answers from after the game."))
 	body.add_child(_text("Now play the game from the main menu: Start, or Skip to Investigation. When you "
-		+ "reach an ending, the ending screen offers the after check. You can also take it any time "
-		+ "from Spot the Scam on the main menu."))
+		+ "reach an ending, the ending screen offers the after check. You can also take it from Spot "
+		+ "the Scam on the main menu."))
+	body.add_child(_text(_color("Keep the game open until then. If it's closed, this check can't be "
+		+ "finished.", TextStyle.COLOR_TACTIC)))
 	_button("Main Menu", SessionState.go_to_menu, 200)
 
 

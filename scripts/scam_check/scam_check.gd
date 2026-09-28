@@ -1,15 +1,16 @@
 extends Control
 
 ## Spot the Scam (the Scam Check, scam_check, in the code and older notes): an
-## opt-in quiz on the main menu that measures whether the game improves scam
-## recognition. One set of eight messages before the game,
-## the other set after an ending, and nothing about the answers is shown until
-## both are in - then the two tries sit side by side, pair by pair.
+## optional quiz that measures whether the game improves scam recognition. One
+## set of eight messages before the game, the other set after an ending, and
+## nothing about the answers is shown until both are in - then the two tries
+## sit side by side, pair by pair.
 ##
-## Pages, one at a time in the same panel: home (the check's status, past
-## checks, copy and clear), intro, message, saved (the before check is done)
-## and results. A closing screen opens it straight at the after intro
-## (SessionState.scam_check_entry).
+## Pages, one at a time in the same panel: offer (Start and Skip to
+## Investigation open it here, with the game one click away), home (Case Files'
+## "Spot the Scam Results": the check's status, past checks, copy and clear),
+## intro, message, saved and results. A closing screen opens it straight at the
+## after intro. SessionState.scam_check_entry says which.
 
 const TextStyle := preload("res://scripts/systems/text_style.gd")
 const ScamCheckData := preload("res://scripts/scam_check/scam_check_data.gd")
@@ -21,6 +22,7 @@ const BACKGROUND := "res://assets/art/backgrounds/copernico-p_kICQCOM4s-unsplash
 const MODE_BEFORE := "before"
 const MODE_AFTER := "after"
 
+const PAGE_OFFER := "offer"
 const PAGE_HOME := "home"
 const PAGE_INTRO := "intro"
 const PAGE_MESSAGE := "message"
@@ -34,9 +36,13 @@ const QUESTION_SIZE := 22
 
 var data: ScamCheckData
 var came_from_ending := false
+# Set when Start or Skip to Investigation opened this page: which game the
+# player is on the way into (ROUTE_PROLOGUE / ROUTE_SKIP), "" otherwise.
+var start_route := ""
 var page := ""
 
 var title_label: Label
+var stop_button: Button
 var subtitle_label: Label
 var body_scroll: ScrollContainer
 var body: VBoxContainer
@@ -58,8 +64,13 @@ var shown_check: Dictionary = {}
 
 func _ready() -> void:
 	data = ScamCheckData.new()
-	came_from_ending = SessionState.scam_check_entry == SessionState.SCAM_CHECK_FROM_ENDING
+	var entry := SessionState.scam_check_entry
 	SessionState.scam_check_entry = ""
+	came_from_ending = entry == SessionState.SCAM_CHECK_FROM_ENDING
+	if entry == SessionState.SCAM_CHECK_FROM_START_PROLOGUE:
+		start_route = ScamCheckData.ROUTE_PROLOGUE
+	elif entry == SessionState.SCAM_CHECK_FROM_START_SKIP:
+		start_route = ScamCheckData.ROUTE_SKIP
 	AudioManager.stop_ambience()
 	# From the menu the menu's music carries on; from an ending, the ending's.
 	if not came_from_ending:
@@ -67,6 +78,8 @@ func _ready() -> void:
 	_build_ui()
 	if came_from_ending and data.has_open_check():
 		show_intro(MODE_AFTER)
+	elif not start_route.is_empty():
+		show_offer()
 	else:
 		show_home()
 
@@ -74,11 +87,14 @@ func _ready() -> void:
 func _unhandled_input(event: InputEvent) -> void:
 	if not event.is_action_pressed("ui_cancel"):
 		return
-	# No Esc out of a message: a stray key would throw away the answers so far.
-	if page == PAGE_MESSAGE:
+	# No Esc out of a message (a stray key would throw away the answers so
+	# far - Stop asks first), and none out of the saved page on the way in.
+	if page == PAGE_MESSAGE or page == PAGE_SAVED:
 		return
 	get_viewport().set_input_as_handled()
-	if page == PAGE_HOME:
+	if page == PAGE_OFFER:
+		SessionState.go_to_menu()
+	elif page == PAGE_HOME:
 		_leave()
 	elif page == PAGE_INTRO:
 		_back_from_intro()
@@ -128,9 +144,24 @@ func _build_ui() -> void:
 	column.add_theme_constant_override("separation", 10)
 	margin.add_child(column)
 
+	var header := HBoxContainer.new()
+	column.add_child(header)
+
 	title_label = Label.new()
 	title_label.add_theme_font_size_override("font_size", 26)
-	column.add_child(title_label)
+	title_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	header.add_child(title_label)
+
+	# Top right, away from the answer buttons, and it asks first: stopping a
+	# check is never one slip of the mouse.
+	stop_button = Button.new()
+	stop_button.text = "Stop"
+	stop_button.custom_minimum_size = Vector2(110, 36)
+	stop_button.focus_mode = Control.FOCUS_NONE
+	stop_button.tooltip_text = "Leave this check. Your answers so far won't be saved."
+	stop_button.pressed.connect(_ask_to_stop)
+	stop_button.visible = false
+	header.add_child(stop_button)
 
 	subtitle_label = Label.new()
 	subtitle_label.add_theme_color_override("font_color", Color.html(TextStyle.COLOR_NARRATION))
@@ -169,6 +200,8 @@ func _build_ui() -> void:
 func _start_page(name: String, title: String, subtitle: String = "") -> void:
 	page = name
 	title_label.text = title
+	stop_button.visible = name == PAGE_MESSAGE
+	stop_button.disabled = false
 	subtitle_label.text = subtitle
 	subtitle_label.visible = not subtitle.is_empty()
 	notice.visible = false
@@ -267,6 +300,31 @@ func _situation_text(entry: Dictionary) -> String:
 	return _color("[i]%s[/i]" % str(entry.get("situation", "")), TextStyle.COLOR_NARRATION)
 
 
+# --- Offer -----------------------------------------------------------------------
+
+# What Start and Skip to Investigation open: the check or the game, one click
+# each. Optional on purpose - a player made to take it would click through it,
+# and a measure is only as good as the answers in it.
+func show_offer() -> void:
+	_start_page(PAGE_OFFER, "Can You Spot a Scam?")
+	body.add_child(_text("Before the story, judge 8 short messages: scam or legit? After you finish the "
+		+ "case, you'll get 8 different ones and see how much you improved. About 3 minutes."))
+	body.add_child(_text(_color("Your answers stay on this computer, with no names.",
+		TextStyle.COLOR_NARRATION), 17))
+	_button("Take Spot the Scam", show_intro.bind(MODE_BEFORE), 240)
+	_button("Start the Game", start_the_game, 200)
+
+
+# Into the game by the door the player chose on the main menu. A check saved
+# on the way in is waiting now, so the route is noted on it.
+func start_the_game() -> void:
+	data.note_route(start_route)
+	if start_route == ScamCheckData.ROUTE_SKIP:
+		SessionState.start_investigation_direct()
+	else:
+		SessionState.start_prologue()
+
+
 # --- Home ------------------------------------------------------------------------
 
 func show_home() -> void:
@@ -280,7 +338,7 @@ func show_home() -> void:
 	var open := data.open_check()
 	var status_box := _card(body, TextStyle.COLOR_TACTIC if not open.is_empty() else "")
 	if open.is_empty():
-		status_box.add_child(_text("No check is waiting."))
+		status_box.add_child(_text("No check is waiting. Players are offered one when they press Start."))
 		_button("Take the Before Check", show_intro.bind(MODE_BEFORE), 260, _row(status_box))
 	else:
 		var played := _played_line(open)
@@ -367,10 +425,12 @@ func _clear_record() -> void:
 	show_home()
 
 
+# This page lives in Case Files, so Back goes back there.
 func _leave() -> void:
 	if came_from_ending:
 		SessionState.go_to_scene(ENDING_SCENE)
 	else:
+		SessionState.menu_opens_case_files = true
 		SessionState.go_to_menu()
 
 
@@ -402,6 +462,8 @@ func show_intro(which: String) -> void:
 func _back_from_intro() -> void:
 	if came_from_ending and mode == MODE_AFTER:
 		SessionState.go_to_scene(ENDING_SCENE)
+	elif not start_route.is_empty():
+		show_offer()
 	else:
 		show_home()
 
@@ -509,18 +571,53 @@ func _record_answer(call: String, flag: int) -> void:
 		show_results(int(check.get("number", 0)))
 
 
+# Stop asks first, in the footer, with the message's own buttons shut while it
+# does. Nothing half-answered is ever saved, so stopping cannot skew a check.
+func _ask_to_stop() -> void:
+	# Greyed, not hidden, so the page does not jump under the question.
+	stop_button.disabled = true
+	for button in body.find_children("*", "Button", true, false):
+		(button as Button).disabled = true
+	for child in footer.get_children():
+		footer.remove_child(child)
+		child.queue_free()
+	var into_game := mode == MODE_BEFORE and not start_route.is_empty()
+	notice.text = ("Stop the check and start the game? " if into_game else "Stop the check? ") \
+		+ "Your answers so far won't be saved."
+	notice.add_theme_color_override("font_color", Color.html(TextStyle.COLOR_TACTIC))
+	notice.visible = true
+	_button("Stop and Start the Game" if into_game else "Stop", _stop, 260 if into_game else 160)
+	_button("Keep Going", show_message, 160)
+
+
+func _stop() -> void:
+	answers.clear()
+	if mode == MODE_BEFORE and not start_route.is_empty():
+		start_the_game()
+	elif mode == MODE_AFTER and came_from_ending:
+		SessionState.go_to_scene(ENDING_SCENE)
+	else:
+		show_home()
+
+
 # --- Saved -----------------------------------------------------------------------
 
 func show_saved() -> void:
 	_start_page(PAGE_SAVED, "Saved", "The before check is done")
 	body.add_child(_text("Your answers are saved on this computer. You'll see them at the end, next "
 		+ "to your answers from after the game."))
-	body.add_child(_text("Now play the game from the main menu: Start, or Skip to Investigation. When you "
-		+ "reach an ending, the ending screen offers the after check. You can also take it from Spot "
-		+ "the Scam on the main menu."))
+	if start_route.is_empty():
+		body.add_child(_text("Now play the game from the main menu: Start, or Skip to Investigation. When "
+			+ "you reach an ending, the ending screen offers the after check. You can also take it from "
+			+ "Case Files on the main menu."))
+	else:
+		body.add_child(_text("When you reach an ending, the ending screen gives you the second half."))
 	body.add_child(_text(_color("Keep the game open until then. If it's closed, this check can't be "
 		+ "finished.", TextStyle.COLOR_TACTIC)))
-	_button("Main Menu", SessionState.go_to_menu, 200)
+	if start_route.is_empty():
+		_button("Main Menu", SessionState.go_to_menu, 200)
+	else:
+		_button("Start the Game", start_the_game, 200)
 
 
 # --- Results ---------------------------------------------------------------------

@@ -67,8 +67,16 @@ func _button(view: Node, text: String) -> Button:
 	return null
 
 
+func _visible_button(view: Node, text: String) -> Button:
+	for button in _buttons(view):
+		# What a player could click: on screen and not greyed out.
+		if button.text == text and button.is_visible_in_tree() and not button.disabled:
+			return button
+	return null
+
+
 func _press(view: Node, text: String) -> void:
-	var button := _button(view, text)
+	var button := _visible_button(view, text)
 	_check(button != null, "there is a '%s' button to press" % text)
 	if button != null:
 		button.pressed.emit()
@@ -124,6 +132,7 @@ func _run() -> void:
 	_test_content()
 	_test_scoring()
 	await _test_empty_home()
+	await _test_start_offer()
 	await _test_backing_out_saves_nothing()
 	await _test_before_check()
 	await _test_menu()
@@ -223,15 +232,71 @@ func _test_empty_home() -> void:
 	await _close(view)
 
 
+# Starting from the menu's Start: the offer, with the game one click away.
+func _test_start_offer() -> void:
+	print("\n[offered at Start]")
+	var menu := await _open(MENU_SCENE)
+	_check(menu.offers_spot_the_scam(), "with nothing waiting, Start offers Spot the Scam")
+	await _close(menu)
+
+	SessionState.scam_check_entry = SessionState.SCAM_CHECK_FROM_START_SKIP
+	var view := await _open(SCENE)
+	_check(view.page == view.PAGE_OFFER and view.start_route == ScamCheckData.ROUTE_SKIP,
+		"Skip to Investigation opens the offer, remembering where it was going")
+	await _close(view)
+
+	SessionState.scam_check_entry = SessionState.SCAM_CHECK_FROM_START_PROLOGUE
+	view = await _open(SCENE)
+	_check(view.page == view.PAGE_OFFER and view.start_route == ScamCheckData.ROUTE_PROLOGUE, "Start opens the offer")
+	var text := _screen_text(view)
+	_check(text.contains("Before the story") and text.contains("no names"),
+		"the offer says what it is, and that nothing personal is kept")
+	var play := _visible_button(view, "Start the Game")
+	_check(play != null and play.pressed.is_connected(view.start_the_game), "the game is one click away")
+	await _press(view, "Take Spot the Scam")
+	_check(view.page == view.PAGE_INTRO, "taking it goes to the intro")
+	await _press(view, "Back")
+	_check(view.page == view.PAGE_OFFER, "and Back returns to the offer")
+	await _press(view, "Take Spot the Scam")
+	await _press(view, "Begin")
+	view.stop_button.pressed.emit()
+	await get_tree().process_frame
+	_check(view.notice.text.contains("start the game"), "on the way in, Stop offers to start the game")
+	var go := _visible_button(view, "Stop and Start the Game")
+	_check(go != null and go.pressed.is_connected(view._stop), "with its own button")
+	# On the way in, the saved page hands over to the game, not the menu.
+	view.show_saved()
+	await get_tree().process_frame
+	var saved := _visible_button(view, "Start the Game")
+	_check(saved != null and saved.pressed.is_connected(view.start_the_game)
+		and _visible_button(view, "Main Menu") == null,
+		"a check taken at Start ends by starting the game")
+	_check(ScamCheckData.new().checks().is_empty(), "none of that saved anything")
+	await _close(view)
+
+
 func _test_backing_out_saves_nothing() -> void:
-	print("\n[backing out halfway]")
+	print("\n[stopping halfway]")
 	var view := await _open(SCENE)
 	await _press(view, "Take the Before Check")
 	await _press(view, "Begin")
+	_check(view.stop_button.visible, "a message page has a Stop button")
 	await _press(view, "It's legit")
 	await _press(view, "It's legit")
-	view.show_home()
-	_check(ScamCheckData.new().checks().is_empty(), "a before check left halfway writes nothing")
+	view.stop_button.pressed.emit()
+	await get_tree().process_frame
+	_check(view.notice.visible and view.notice.text.contains("won't be saved"),
+		"Stop asks first, and says the answers won't be saved")
+	_check(_visible_button(view, "It's a scam") == null and _visible_button(view, "It's legit") == null,
+		"the answer buttons are gone while it asks")
+	await _press(view, "Keep Going")
+	_check(view.page == view.PAGE_MESSAGE and view.subtitle_label.text == "Message 3 of 8",
+		"Keep Going returns to the same message")
+	view.stop_button.pressed.emit()
+	await get_tree().process_frame
+	await _press(view, "Stop")
+	_check(view.page == view.PAGE_HOME, "stopping from Case Files goes back to its page")
+	_check(ScamCheckData.new().checks().is_empty(), "a check stopped halfway writes nothing")
 	await _close(view)
 
 
@@ -298,14 +363,25 @@ func _test_before_check() -> void:
 
 
 func _test_menu() -> void:
-	print("\n[the main menu]")
+	print("\n[the main menu and Case Files]")
 	var view := await _open(MENU_SCENE)
-	var button := _button(view, "Spot the Scam")
-	_check(button != null, "the main menu has a Spot the Scam button")
-	if button != null:
-		_check(button.pressed.is_connected(view._open_scam_check), "and it opens Spot the Scam")
+	_check(_button(view, "Spot the Scam") == null, "Spot the Scam is not a main menu button")
 	for name in ["Start", "Skip to Investigation", "Credits", "Quit"]:
 		_check(_button(view, name) != null, "the menu still has %s" % name)
+	_check(view.menu_column.get_children().filter(func(n: Node) -> bool: return n is Button).size() == 6,
+		"six buttons under the logo, as before")
+	view._open_case_files()
+	var results := _visible_button(view, "Spot the Scam Results")
+	_check(results != null, "Case Files has Spot the Scam Results")
+	if results != null:
+		_check(results.pressed.is_connected(view._open_scam_check), "and it opens the Spot the Scam page")
+	_check(not view.offers_spot_the_scam(), "with a check waiting in this sitting, Start does not offer another")
+	await _close(view)
+
+	SessionState.menu_opens_case_files = true
+	view = await _open(MENU_SCENE)
+	_check(view.case_files.visible and not SessionState.menu_opens_case_files,
+		"Back from the Spot the Scam page lands in Case Files")
 	await _close(view)
 
 	# How the game was played between the halves: noted by the menu's buttons.
@@ -450,6 +526,9 @@ func _test_new_launch() -> void:
 	# What a restart leaves behind.
 	SessionState.scam_check_session_number = 0
 	_check(not data.has_open_check(), "after a restart, nothing is offered")
+	var menu := await _open(MENU_SCENE)
+	_check(menu.offers_spot_the_scam(), "and Start offers a new check again")
+	await _close(menu)
 	_check(data.status(waiting) == ScamCheckData.STATUS_UNFINISHED, "the waiting check now reads unfinished")
 	_check((data.check_number(number).get("before", []) as Array).size() == 8, "its before answers are still on disk")
 	data.note_ending("bribed")

@@ -6,7 +6,10 @@ extends Node
 ##
 ##   godot --path . res://tools/capture_scam_check.tscn
 ##
-## Writes to user://: menu_scam_check.png (the main menu), scam_check_home.png,
+## Writes to user://: menu_scam_check.png (the main menu),
+## menu_case_files_scam.png (Case Files with Spot the Scam Results),
+## scam_check_offer.png (what Start opens), scam_check_stop.png (Stop asking
+## first, on the way into the game), scam_check_home.png,
 ## scam_check_intro.png, scam_check_text.png, scam_check_flag.png,
 ## scam_check_call.png, scam_check_chat.png, scam_check_saved.png,
 ## ending_after_check.png (a closing screen offering the after check),
@@ -63,6 +66,20 @@ func _run() -> void:
 
 	var view := await _open(MENU_SCENE)
 	_save("menu_scam_check")
+	view._open_case_files()
+	await _settle()
+	_save("menu_case_files_scam")
+	await _close(view)
+
+	SessionState.scam_check_entry = SessionState.SCAM_CHECK_FROM_START_PROLOGUE
+	view = await _open(SCENE)
+	_save("scam_check_offer")
+	view.show_intro(view.MODE_BEFORE)
+	view._begin()
+	await _settle()
+	view._ask_to_stop()
+	await _settle()
+	_save("scam_check_stop")
 	await _close(view)
 
 	view = await _open(SCENE)

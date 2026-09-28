@@ -22,7 +22,7 @@ const PROLOGUE_AND_META_STATE := [
 	"prologue_tactics_used", "prologue_end_reason", "prologue_end_note",
 	"prologue_call_log", "prologue_played",
 	"checkpoints", "ending_record_path",
-	"scam_check_path", "scam_check_entry", "scam_check_session_number",
+	"scam_check_path", "scam_check_entry", "scam_check_session_number", "menu_opens_case_files",
 ]
 
 var failures: Array[String] = []

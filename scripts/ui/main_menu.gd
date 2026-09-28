@@ -22,6 +22,10 @@ func _ready() -> void:
 	AudioManager.play_music("menu", -12.0)
 	_build_ui()
 	SessionState.reset_session()
+	# Back from the Spot the Scam page, which lives in Case Files.
+	if SessionState.menu_opens_case_files:
+		SessionState.menu_opens_case_files = false
+		_open_case_files()
 
 
 func _unhandled_input(event: InputEvent) -> void:
@@ -65,8 +69,8 @@ func _build_ui() -> void:
 
 	menu_column = VBoxContainer.new()
 	menu_column.alignment = BoxContainer.ALIGNMENT_CENTER
-	# Six rows of buttons under the logo: at 14 the panel touched both edges of
-	# a 720-high window. A seventh button shares a row (Credits and Sound).
+	# Six buttons under the logo: at 14 the panel touched both edges of a
+	# 720-high window.
 	menu_column.add_theme_constant_override("separation", 10)
 	margin.add_child(menu_column)
 
@@ -103,40 +107,26 @@ func _build_ui() -> void:
 	skip_button.pressed.connect(_start_investigation_only)
 	menu_column.add_child(skip_button)
 
-	# Opt-in: the before-and-after quiz a playtest measures the game with. The
-	# normal Start and Skip never pass through it.
-	var scam_check_button := Button.new()
-	scam_check_button.text = "Spot the Scam"
-	scam_check_button.custom_minimum_size = Vector2(220, 44)
-	scam_check_button.tooltip_text = "A short check of how well you spot scams: 8 messages before you play, 8 different ones after."
-	scam_check_button.pressed.connect(_open_scam_check)
-	menu_column.add_child(scam_check_button)
-
 	case_files_button = Button.new()
 	case_files_button.custom_minimum_size = Vector2(220, 44)
-	case_files_button.tooltip_text = "The endings this copy of the game has reached, and a word on the ones it has not."
+	case_files_button.tooltip_text = "The endings this copy of the game has reached, a word on the ones it has not, and your Spot the Scam results."
 	case_files_button.pressed.connect(_open_case_files)
 	menu_column.add_child(case_files_button)
 
-	var utility_row := HBoxContainer.new()
-	utility_row.alignment = BoxContainer.ALIGNMENT_CENTER
-	utility_row.add_theme_constant_override("separation", 10)
-	menu_column.add_child(utility_row)
-
 	var credits_button := Button.new()
 	credits_button.text = "Credits"
-	credits_button.custom_minimum_size = Vector2(105, 44)
+	credits_button.custom_minimum_size = Vector2(220, 44)
 	credits_button.pressed.connect(SessionState.go_to_scene.bind(CREDITS_SCENE))
-	utility_row.add_child(credits_button)
+	menu_column.add_child(credits_button)
 
 	# The one volume control, mirrored on the pause menu: On -> Quiet -> Off.
 	var sound_button := Button.new()
 	sound_button.text = AudioManager.volume_label()
-	sound_button.custom_minimum_size = Vector2(105, 44)
+	sound_button.custom_minimum_size = Vector2(220, 44)
 	sound_button.pressed.connect(func() -> void:
 		AudioManager.cycle_volume()
 		sound_button.text = AudioManager.volume_label())
-	utility_row.add_child(sound_button)
+	menu_column.add_child(sound_button)
 
 	var quit_button := Button.new()
 	quit_button.text = "Quit"
@@ -174,15 +164,23 @@ func _build_case_files(parent: Control) -> void:
 	files_buttons.add_theme_constant_override("separation", 12)
 	case_files.add_child(files_buttons)
 
+	# Spot the Scam's own page: past results, Copy Results for a playtest, and
+	# an after check for a player who ran out of time before an ending.
+	var scam_check_button := Button.new()
+	scam_check_button.text = "Spot the Scam Results"
+	scam_check_button.custom_minimum_size = Vector2(230, 44)
+	scam_check_button.pressed.connect(_open_scam_check)
+	files_buttons.add_child(scam_check_button)
+
 	var clear_button := Button.new()
 	clear_button.text = "Clear Record"
-	clear_button.custom_minimum_size = Vector2(200, 44)
+	clear_button.custom_minimum_size = Vector2(180, 44)
 	clear_button.pressed.connect(_ask_to_clear)
 	files_buttons.add_child(clear_button)
 
 	var back_button := Button.new()
 	back_button.text = "Back"
-	back_button.custom_minimum_size = Vector2(160, 44)
+	back_button.custom_minimum_size = Vector2(140, 44)
 	back_button.pressed.connect(_show_menu)
 	files_buttons.add_child(back_button)
 
@@ -277,14 +275,31 @@ func _open_scam_check() -> void:
 	SessionState.go_to_scene(SCAM_CHECK_SCENE)
 
 
-# A Scam Check waiting for its after half notes how the game was played in
-# between. Only here, on the player's path - never in SessionState.start_*(),
-# which the test runners call directly.
 func _start_game() -> void:
-	ScamCheckData.new().note_route(ScamCheckData.ROUTE_PROLOGUE)
-	SessionState.start_prologue()
+	_begin(ScamCheckData.ROUTE_PROLOGUE)
 
 
 func _start_investigation_only() -> void:
-	ScamCheckData.new().note_route(ScamCheckData.ROUTE_SKIP)
-	SessionState.start_investigation_direct()
+	_begin(ScamCheckData.ROUTE_SKIP)
+
+
+# Spot the Scam is offered on the way in - except while a check is already
+# waiting in this sitting: its second half is at the next ending, and a new
+# check would close it. Then the waiting check notes how the game was played.
+# Only here, on the player's path - never in SessionState.start_*(), which the
+# test runners call directly.
+func _begin(route: String) -> void:
+	if offers_spot_the_scam():
+		SessionState.scam_check_entry = SessionState.SCAM_CHECK_FROM_START_SKIP \
+			if route == ScamCheckData.ROUTE_SKIP else SessionState.SCAM_CHECK_FROM_START_PROLOGUE
+		SessionState.go_to_scene(SCAM_CHECK_SCENE)
+		return
+	ScamCheckData.new().note_route(route)
+	if route == ScamCheckData.ROUTE_SKIP:
+		SessionState.start_investigation_direct()
+	else:
+		SessionState.start_prologue()
+
+
+func offers_spot_the_scam() -> bool:
+	return not ScamCheckData.new().has_open_check()

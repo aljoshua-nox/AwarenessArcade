@@ -195,10 +195,16 @@ var ending_record_path: String = ENDING_RECORD_PATH
 # test runners point this at a scratch file, like the ending record.
 const SCAM_CHECK_PATH := "user://scam_check.cfg"
 var scam_check_path: String = SCAM_CHECK_PATH
-# How the Scam Check scene was opened: "" from the main menu (its own page),
-# SCAM_CHECK_FROM_ENDING from a closing screen's after-check button.
+# How the Scam Check scene was opened: "" from Case Files (its own page),
+# the START ones from the main menu's Start / Skip to Investigation (the offer,
+# then on into that game), SCAM_CHECK_FROM_ENDING from a closing screen.
 const SCAM_CHECK_FROM_ENDING := "ending"
+const SCAM_CHECK_FROM_START_PROLOGUE := "start_prologue"
+const SCAM_CHECK_FROM_START_SKIP := "start_skip"
 var scam_check_entry: String = ""
+# The main menu opens on Case Files instead of its buttons - set by the Spot the
+# Scam page's Back, since that page lives in Case Files. Consumed on arrival.
+var menu_opens_case_files: bool = false
 # The check whose before half was taken in this launch, 0 for none. Only that
 # one can be finished; after a restart a waiting check reads as unfinished.
 # In memory only, and deliberately not cleared by reset_session() - the path

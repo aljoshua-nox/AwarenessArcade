@@ -6,13 +6,19 @@ extends Node
 ##   godot --path . --resolution 1280x720 res://tools/capture_office.tscn
 ##
 ## Writes user://office_preview.png (the whole floor) and
-## user://ledger_preview.png (the call list open, reading back a seeded shift).
+## user://ledger_preview.png (the call list open, reading back a seeded shift),
+## then the fourth floor, the desk, and the shift floor the prologue opens on
+## (shift_start_preview.png, shift_desk_preview.png, shift_board_preview.png).
 
 const OFFICE_SCENE := "res://scenes/exploration/office_interior.tscn"
 const FLOOR_FOUR_SCENE := "res://scenes/exploration/office_floor_four.tscn"
 const FLOOR_FOUR_OUTPUT := "user://office_four_preview.png"
 const DESK_SCENE := "res://scenes/exploration/detective_office.tscn"
 const DESK_OUTPUT := "user://desk_preview.png"
+const SHIFT_SCENE := "res://scenes/prologue/shift_start.tscn"
+const SHIFT_OUTPUT := "user://shift_start_preview.png"
+const SHIFT_DESK_OUTPUT := "user://shift_desk_preview.png"
+const SHIFT_BOARD_OUTPUT := "user://shift_board_preview.png"
 const OUTPUT := "user://office_preview.png"
 const LEDGER_OUTPUT := "user://ledger_preview.png"
 
@@ -113,6 +119,47 @@ func _run() -> void:
 		await get_tree().process_frame
 	await RenderingServer.frame_post_draw
 	_save(DESK_OUTPUT)
+	remove_child(desk)
+	desk.queue_free()
+	await get_tree().process_frame
+
+	# The shift floor, as the prologue opens on it: the operator just inside
+	# the door, then at their desk with its prompt up, then the shift board.
+	SessionState.reset_session()
+	SessionState.reset_prologue()
+	var shift: Node = load(SHIFT_SCENE).instantiate()
+	add_child(shift)
+	await get_tree().process_frame
+	var shift_camera := shift.player.get_node_or_null("Camera2D") as Camera2D
+	if shift_camera != null:
+		shift_camera.enabled = false
+	var camera_shift := Camera2D.new()
+	shift.add_child(camera_shift)
+	camera_shift.position = Vector2(640.0, 360.0)
+	camera_shift.zoom = Vector2.ONE
+	camera_shift.make_current()
+	for i in range(4):
+		await get_tree().physics_frame
+	await RenderingServer.frame_post_draw
+	_save(SHIFT_OUTPUT)
+
+	shift._on_portal_exited(shift.portal)
+	shift.player.global_position = shift.YOUR_DESK_POSITION
+	for station in shift.stations:
+		if bool(station.get("is_your_desk", false)):
+			shift._on_station_entered(shift.player, station)
+	for i in range(4):
+		await get_tree().process_frame
+	await RenderingServer.frame_post_draw
+	_save(SHIFT_DESK_OUTPUT)
+
+	for station in shift.stations:
+		if str(station.get("title", "")) == "The shift board":
+			shift._open_inspection(station)
+	for i in range(4):
+		await get_tree().process_frame
+	await RenderingServer.frame_post_draw
+	_save(SHIFT_BOARD_OUTPUT)
 
 	get_tree().quit()
 

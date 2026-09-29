@@ -80,6 +80,8 @@ var suppress_scene_change: bool = false
 func _ready() -> void:
 	rng.randomize()
 	_build_ui()
+	# The shift floor's bed stops at the desk: the call screen has its own sound.
+	AudioManager.stop_ambience()
 	AudioManager.play_music("prologue", -18.0)
 	AudioManager.play_stream(DIAL_TONE_SFX, -14.0)
 	_load_content()

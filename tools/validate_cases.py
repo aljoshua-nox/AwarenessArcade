@@ -1489,6 +1489,7 @@ REGISTER_SCRIPTS = [
     "scripts/investigation/interview.gd",
     "scripts/prologue/prologue_call.gd",
     "scripts/prologue/prologue_end.gd",
+    "scripts/prologue/shift_start.gd",
     "scripts/autoload/tactic_notebook.gd",
     "scripts/autoload/session_state.gd",
     "scripts/ui/main_menu.gd",

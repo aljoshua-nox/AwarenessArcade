@@ -29,6 +29,7 @@ const HIDDEN_IN_SCENES := [
 	"res://scenes/main_menu/disclaimer.tscn",
 	MAIN_MENU_SCENE,
 	"res://scenes/main_menu/credits.tscn",
+	"res://scenes/prologue/shift_start.tscn",
 	"res://scenes/prologue/prologue_call.tscn",
 	"res://scenes/prologue/prologue_end.tscn",
 	"res://scenes/scam_check/scam_check.tscn",
@@ -79,6 +80,8 @@ var sound_button: Button
 var journal_button: Button
 var notebook_button: Button
 var confirm_box: VBoxContainer
+var leave_warning: Label
+var leave_button: Button
 
 
 func _ready() -> void:
@@ -873,18 +876,16 @@ func _build_pause_menu() -> void:
 	confirm_box.visible = false
 	column.add_child(confirm_box)
 
-	var warning := Label.new()
-	warning.text = "This abandons the case. Nothing is kept."
-	warning.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	warning.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	warning.add_theme_color_override("font_color", Color.html(TextStyle.COLOR_WRONG))
-	confirm_box.add_child(warning)
+	leave_warning = Label.new()
+	leave_warning.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	leave_warning.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	leave_warning.add_theme_color_override("font_color", Color.html(TextStyle.COLOR_WRONG))
+	confirm_box.add_child(leave_warning)
 
-	var leave := Button.new()
-	leave.text = "Abandon the case"
-	leave.custom_minimum_size = Vector2(0, 40)
-	leave.pressed.connect(_abandon_run)
-	confirm_box.add_child(leave)
+	leave_button = Button.new()
+	leave_button.custom_minimum_size = Vector2(0, 40)
+	leave_button.pressed.connect(_abandon_run)
+	confirm_box.add_child(leave_button)
 
 	var stay := Button.new()
 	stay.text = "Keep going"
@@ -902,10 +903,22 @@ func _add_pause_button(text: String, on_pressed: Callable) -> Button:
 	return button
 
 
+## What leaving says: a case in the detective's half, a shift in the
+## scammer's (the shift floor is the one prologue scene with this menu).
+func leave_wording(scene_path: String) -> Dictionary:
+	if scene_path.begins_with("res://scenes/prologue/"):
+		return {"warning": "This leaves the shift. Nothing is kept.", "button": "Leave the shift"}
+	return {"warning": "This abandons the case. Nothing is kept.", "button": "Abandon the case"}
+
+
 func open_pause() -> void:
 	if is_pause_open or is_open:
 		return
 	is_pause_open = true
+	var current := get_tree().current_scene
+	var wording := leave_wording(current.scene_file_path if current != null else "")
+	leave_warning.text = str(wording["warning"])
+	leave_button.text = str(wording["button"])
 	journal_button.visible = SessionState.journal_collected
 	notebook_button.visible = SessionState.notebook_collected
 	# The main menu has the same control; pick up whatever it was set to there.

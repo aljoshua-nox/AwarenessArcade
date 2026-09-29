@@ -56,6 +56,8 @@ const TECH_FLOOR_NAME := "Summit Technical Services"
 # were session-wide numbers that a per-call conversation could not honestly
 # move, which is why the text and the bars disagreed.
 const REPORTS_TO_PULL_LINE := 3
+# How long the shift is. The shift board on the floor prints it.
+const SHIFT_SECONDS := 240.0
 
 # Prologue (scam-call sim) state
 var calls_made: int = 0
@@ -64,7 +66,7 @@ var reports_filed: int = 0
 # Money taken across the shift. Never shown as a running score during play -
 # the summary reports it as the victims' losses.
 var profit: int = 0
-var time_left: float = 240.0
+var time_left: float = SHIFT_SECONDS
 # Catalogue tactic ids the player used on the calls, in first-use order.
 # Recorded for the summary; deliberately does NOT unlock the notebook - the
 # investigation is where a tactic is named, the prologue is where it is used.
@@ -400,7 +402,7 @@ func reset_prologue() -> void:
 	victims_affected = 0
 	reports_filed = 0
 	profit = 0
-	time_left = 240.0
+	time_left = SHIFT_SECONDS
 	prologue_tactics_used.clear()
 	reflection_milestones.clear()
 	prologue_end_reason = ""
@@ -409,10 +411,16 @@ func reset_prologue() -> void:
 	prologue_played = false
 
 
+# The prologue opens on the call floor rather than on the call screen: the
+# scammer walks in, finds their desk, and the shift starts when they sit down.
+const SHIFT_START_SCENE := "res://scenes/prologue/shift_start.tscn"
+const PROLOGUE_CALL_SCENE := "res://scenes/prologue/prologue_call.tscn"
+
+
 func start_prologue() -> void:
 	reset_prologue()
 	prologue_played = true
-	go_to_scene("res://scenes/prologue/prologue_call.tscn")
+	go_to_scene(SHIFT_START_SCENE)
 
 
 # The skip-the-prologue branch: drop straight into the detective half with no

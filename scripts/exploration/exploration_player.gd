@@ -79,6 +79,39 @@ func _show_idle_pose(direction_name: String) -> void:
 	sprite.frame = 0
 
 
+## Someone other than the detective: a Modern Interiors character, from an idle
+## sheet (one frame per direction) and a run sheet (six per direction), 16x32
+## frames in the pack's order - right, up, left, down. The scammer on the call
+## floor wears one.
+const PACK_DIRECTIONS := ["right", "up", "left", "down"]
+const PACK_FRAME_SIZE := Vector2(16.0, 32.0)
+const PACK_RUN_FRAMES := 6
+
+
+func use_pack_character(idle_sheet: Texture2D, run_sheet: Texture2D, character_scale: float) -> void:
+	var frames := SpriteFrames.new()
+	for d in range(PACK_DIRECTIONS.size()):
+		var idle_name := "idle_%s" % PACK_DIRECTIONS[d]
+		frames.add_animation(idle_name)
+		frames.set_animation_loop(idle_name, false)
+		frames.add_frame(idle_name, _pack_frame(idle_sheet, d))
+		var walk_name := "walk_%s" % PACK_DIRECTIONS[d]
+		frames.add_animation(walk_name)
+		frames.set_animation_loop(walk_name, true)
+		frames.set_animation_speed(walk_name, 10.0)
+		for index in range(PACK_RUN_FRAMES):
+			frames.add_frame(walk_name, _pack_frame(run_sheet, d * PACK_RUN_FRAMES + index))
+	_apply_frames(frames, character_scale)
+	_show_idle_pose(facing)
+
+
+func _pack_frame(sheet: Texture2D, index: int) -> AtlasTexture:
+	var region := AtlasTexture.new()
+	region.atlas = sheet
+	region.region = Rect2(Vector2(index * PACK_FRAME_SIZE.x, 0.0), PACK_FRAME_SIZE)
+	return region
+
+
 func _build_animations() -> void:
 	var frames := SpriteFrames.new()
 	for animation_name in FRAME_TEXTURES.keys():
@@ -102,8 +135,12 @@ func _build_animations() -> void:
 			region.region = Rect2(index * frame_width, 0, frame_width, sheet.get_height())
 			frames.add_frame(animation_name, region)
 
+	_apply_frames(frames, 1.35)
+
+
+func _apply_frames(frames: SpriteFrames, sprite_scale: float) -> void:
 	sprite.sprite_frames = frames
-	sprite.scale = Vector2(1.35, 1.35)
+	sprite.scale = Vector2(sprite_scale, sprite_scale)
 	sprite.centered = true
 	sprite.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
 	sprite.play("idle_down")

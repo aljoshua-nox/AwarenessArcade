@@ -182,6 +182,7 @@ func _test_overlay() -> void:
 	# nowhere in the prologue - the scammer carries nothing onto the call
 	# floor, and the notebook that used to show there had every entry locked.
 	for scene in ["res://scenes/main_menu/main_menu.tscn",
+			"res://scenes/prologue/shift_start.tscn",
 			"res://scenes/prologue/prologue_call.tscn",
 			"res://scenes/prologue/prologue_end.tscn"]:
 		_check(not CaseJournal.shows_button_in(scene), "the journal stays off %s" % scene.get_file())

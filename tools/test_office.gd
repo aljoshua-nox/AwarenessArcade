@@ -9,6 +9,9 @@ extends Node
 const OFFICE_SCENE := "res://scenes/exploration/office_interior.tscn"
 const DESK_SCENE := "res://scenes/exploration/detective_office.tscn"
 const FLOOR_FOUR_SCENE := "res://scenes/exploration/office_floor_four.tscn"
+const SHIFT_SCENE := "res://scenes/prologue/shift_start.tscn"
+
+const TextStyle := preload("res://scripts/systems/text_style.gd")
 
 var failures: Array[String] = []
 var checks := 0
@@ -56,6 +59,7 @@ func _run() -> void:
 	await _test_director_door_gate()
 	await _test_fourth_floor()
 	await _test_detective_desk()
+	await _test_shift_start()
 	await _test_floor_prompts()
 	await _test_camera_fenced()
 	_test_ambience()
@@ -502,13 +506,109 @@ func _test_detective_desk() -> void:
 	await get_tree().process_frame
 
 
+# The prologue opens on the call floor: the scammer walks in, and the shift
+# starts at their desk. The same room as floor 3, seen by somebody who works
+# there - so none of the detective's things are in it.
+func _test_shift_start() -> void:
+	print("
+[the shift starts at a desk on the call floor]")
+	SessionState.reset_session()
+	SessionState.reset_prologue()
+	_check(SessionState.SHIFT_START_SCENE == SHIFT_SCENE and ResourceLoader.exists(SHIFT_SCENE),
+		"starting the prologue has a floor to land on")
+	_check(ResourceLoader.exists(SessionState.PROLOGUE_CALL_SCENE), "and the desk has a call screen to go to")
+	var floor_three: Node = load(OFFICE_SCENE).instantiate()
+	add_child(floor_three)
+	await get_tree().process_frame
+	var floor_title: String = floor_three.title_label.text
+	var floor_exit: Vector2 = floor_three.portal.global_position
+	await _close_node(floor_three)
+
+	var shift: Node = load(SHIFT_SCENE).instantiate()
+	add_child(shift)
+	await get_tree().process_frame
+	_check(shift.title_label.text == floor_title and floor_title.contains(SessionState.CALL_FLOOR_NAME),
+		"it is the third floor, ClearLine's, by its own title (%s)" % shift.title_label.text)
+	_check(shift.portal.global_position == floor_exit, "with the way in where the detective will find it")
+	_check(str(shift.ambience_path).ends_with("call_floor.ogg"), "and the call floor's bed under it")
+	_check(not shift.map_hint.contains("journal"), "the hint offers no journal (%s)" % shift.map_hint)
+
+	# Somebody who works here: not the detective, and none of the detective's numbers.
+	var frames: SpriteFrames = shift.player.sprite.sprite_frames
+	var walk_frame: AtlasTexture = null
+	if frames.has_animation("walk_down"):
+		walk_frame = frames.get_frame_texture("walk_down", 0) as AtlasTexture
+	_check(walk_frame != null and walk_frame.atlas.resource_path.get_file().begins_with("Operator"),
+		"the player walks in as an operator, not the detective")
+	_check(frames.get_frame_count("walk_down") == 6 and frames.get_frame_count("idle_left") == 1,
+		"with a walk in every direction")
+	_check(shift.standing_label == null and shift.statements_label == null, "no credibility, no statements")
+	_check(shift.objective_label.visible and shift.objective_label.text.contains("your desk"),
+		"the HUD says where to go (%s)" % shift.objective_label.text)
+	_check(not CaseJournal.shows_button_in(SHIFT_SCENE), "the journal is not offered here")
+	_check(CaseJournal.leave_wording(SHIFT_SCENE)["button"] == "Leave the shift",
+		"and the pause menu leaves a shift, not a case")
+	_check(CaseJournal.leave_wording(OFFICE_SCENE)["button"] == "Abandon the case",
+		"while the detective's floors still abandon the case")
+
+	var titles: Array[String] = []
+	for station in shift.stations:
+		titles.append(str(station.get("title", "")))
+	_check(titles.size() == 4, "a desk and three things to read, nothing else (got %s)" % ", ".join(titles))
+	for title in ["Your desk", "The shift board", "Bonus board", "The director's door"]:
+		_check(titles.has(title), "station present: %s" % title)
+	_check(not titles.has("The call list") and not titles.has("Stairwell"),
+		"no call list to read and no stairs to climb")
+
+	# The door is shut until the shift ends, and says so.
+	shift.player.global_position = shift.portal.global_position
+	shift._on_portal_entered(shift.portal)
+	_check(not shift._can_enter_portal(), "the door does not open")
+	_check(shift.prompt_bubble.visible and shift.prompt_bubble.text.to_lower().contains("clocked in"),
+		"and says why (%s)" % shift.prompt_bubble.text)
+	shift._on_portal_exited(shift.portal)
+
+	# The reads are the floor's own paperwork: no case notes, no milestones.
+	var board := _station(shift, "The shift board")
+	var milestones_before := SessionState.reflection_milestones.size()
+	shift._open_inspection(board)
+	var board_text: String = shift.inspect_body.text
+	_check(shift.inspection_open, "the shift board opens")
+	_check(board_text.contains("%d MINUTES" % int(SessionState.SHIFT_SECONDS / 60.0)),
+		"it gives the shift's length from the clock's own number")
+	_check(board_text.contains("%d REPORTS" % SessionState.REPORTS_TO_PULL_LINE),
+		"and how many reports pull the line")
+	_check(not board_text.contains(TextStyle.MARK_HINT) and not board_text.contains(TextStyle.MARK_SCENE),
+		"with no case note under it")
+	shift._close_inspection()
+	shift._open_inspection(_station(shift, "Bonus board"))
+	_check(shift.inspect_body.text.contains(SessionState.CALL_FLOOR_NAME.to_upper()) and shift.inspect_body.text.contains("ESCALATED"),
+		"the bonus board is the one the detective will read")
+	shift._close_inspection()
+	shift._open_inspection(_station(shift, "The director's door"))
+	_check(shift.inspect_body.text.contains(shift.director_nameplate()), "the director's door carries her nameplate")
+	shift._close_inspection()
+	_check(SessionState.reflection_milestones.size() == milestones_before, "reading records nothing")
+
+	# Sitting down starts the shift, once.
+	shift.suppress_scene_change = true
+	var desk := _station(shift, "Your desk")
+	_check(str(desk.get("prompt", "")).contains("start your shift"), "the desk offers the shift (%s)" % str(desk.get("prompt", "")))
+	shift._open_inspection(desk)
+	_check(shift.shift_started, "sitting down starts it")
+	_check(not shift.inspection_open, "without a panel in the way")
+	_check(not shift.player.is_physics_processing(), "and the operator stays seated")
+	await _close_node(shift)
+
+
 # Station and exit prompts float over the thing, the way the street's do.
 # A camera with no limits centres on a player by the left wall and shows a
 # half-screen of void beside the room. Every floor fences it to the room.
 func _test_camera_fenced() -> void:
 	print("
 [the camera stays in the room]")
-	for scene_path in [OFFICE_SCENE, "res://scenes/exploration/office_floor_four.tscn", SessionState.DESK_SCENE]:
+	for scene_path in [OFFICE_SCENE, "res://scenes/exploration/office_floor_four.tscn", SessionState.DESK_SCENE,
+			SHIFT_SCENE]:
 		SessionState.reset_session()
 		var view: Node = load(scene_path).instantiate()
 		add_child(view)

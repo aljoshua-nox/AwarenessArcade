@@ -768,10 +768,11 @@ func _on_portal_exited(portal_node: ScenePortal) -> void:
 		prompt_bubble.hide_bubble()
 
 
-func _transition_to_scene(scene_path: String) -> void:
+func _transition_to_scene(scene_path: String, sound: String = "door") -> void:
 	if scene_path.is_empty():
 		return
-	AudioManager.play_sfx("door")
+	if not sound.is_empty():
+		AudioManager.play_sfx(sound)
 	fade_overlay.visible = true
 	fade_overlay.modulate.a = 0.0
 	var tween := create_tween()

@@ -37,7 +37,11 @@ const AWARENESS_UNTESTED := "untested"  # never reached a tactic quiz
 # (a community notice and two residents citing it) and the call floor's own
 # ledger. The player is meant to notice the repetition unprompted, which only
 # works if there is one copy of it.
-const OPERATION_NUMBER := "0917-555-0142"
+# The middle digits are masked, the way Spot the Scam masks the numbers on
+# its messages: 0917 is a real Globe prefix and a whole number printed here
+# could reach somebody. Masked, it still reads as one number wherever it
+# appears, which is all the pattern needs. Do not "complete" it.
+const OPERATION_NUMBER := "0917-•••-0142"
 
 # The second district's version of the same trick. The company that owns the
 # floors is named on the tower the player cannot get past the lobby of and on

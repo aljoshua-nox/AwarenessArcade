@@ -173,7 +173,7 @@ var briefing_pending: bool = false
 const ENDINGS := [
 	{"id": "full_takedown", "title": "Operation Dismantled",
 		"steer": "Bring the whole operation down - the floors, and the company above them."},
-	{"id": "building_stands", "title": "The Building Stands",
+	{"id": "building_stands", "title": "The Owner Walks",
 		"steer": "Close both floors without anyone inside ever naming who owns them."},
 	{"id": "partial_justice", "title": "Partial Justice",
 		"steer": "Reach the director's door with statements that all prove the same scam."},
@@ -385,7 +385,7 @@ func has_evidence(item_id: String) -> bool:
 	return false
 
 
-## The one item that separates the full takedown from The Building Stands:
+## The one item that separates the full takedown from The Owner Walks:
 ## the owner's name, granted by Dennis or Rowena. Elena's check asks for it,
 ## and every door on the way to her nudges while it is missing.
 const OWNER_NAME_EVIDENCE := "ev_owner_name"

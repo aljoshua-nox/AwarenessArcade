@@ -190,7 +190,7 @@ func _test_lockout_ending() -> void:
 	_seed_reads(4, 4, [])
 	view = await _open("building_stands")
 	_check(not view.continue_button.visible, "the building standing is a true ending too")
-	_check(view.outcome_label.text.contains("Building Stands"), "...with its own title (%s)" % view.outcome_label.text)
+	_check(view.outcome_label.text.contains("The Owner Walks"), "...with its own title (%s)" % view.outcome_label.text)
 	_check(view.outcome_note.text.contains("never got was a name"), "...and a sharp verdict of its own")
 	for tier in ["sharp", "mixed", "blind"]:
 		_check(view.AWARENESS_VERDICTS["building_stands"].has(tier), "...and a verdict for the %s reader" % tier)
@@ -346,7 +346,7 @@ func _test_ending_record() -> void:
 		_check(SessionState.is_final_outcome(str(id)), "every verdict belongs to an ending on the table (%s)" % id)
 	_check(SessionState.is_final_outcome("bribed"), "a closing outcome is final")
 	_check(not SessionState.is_final_outcome("success"), "a mid-case outcome is not")
-	_check(SessionState.ending_title("building_stands") == "The Building Stands", "the title reads off the table")
+	_check(SessionState.ending_title("building_stands") == "The Owner Walks", "the title reads off the table")
 	_check(SessionState.endings_reached().is_empty(), "a mid-case summary is not recorded")
 	await _close(view)
 

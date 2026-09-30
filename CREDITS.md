@@ -51,8 +51,8 @@ license file bundled, or license terms require per-file checking).
 |---|---|---|---|---|
 | Background elements (clouds, castle, fence) | `assets/art/backgrounds/kenney_background-elements/` | Kenney Vleugels (kenney.nl) | CC0 | ✅ — **not referenced by the game** (checked 2026-09-24: no scene, script or theme uses a file from it, or a copy of one); still ships; off the credits screen |
 | UI Pack 2.0 — the theme's buttons, panel and meter (`assets/art/ui/button_*.png`, `panel_flat.png`, `meter_*.png` are byte-identical copies of its files) | `assets/art/ui/kenney_ui-pack/` | Kenney (kenney.nl) | CC0 | ✅ |
-| UI Pack: RPG Expansion | `assets/art/ui/kenney_ui-pack-rpg-expansion/` | Kenney (kenney.nl) | CC0 | ✅ — **not referenced by the game** (checked 2026-09-24: no scene, script or theme uses a file from it, or a copy of one); still ships; off the credits screen |
-| Kenney Fonts pack | `assets/art/ui/kenney_kenney-fonts/` | Kenney (kenney.nl) | CC0 | ✅ — **not referenced by the game** (checked 2026-09-24: no scene, script or theme uses a file from it, or a copy of one); still ships; off the credits screen |
+| UI Pack: RPG Expansion — the menus' pointer (`PNG/arrowSilver_right.png`, since 2026-09-30); the rest of the pack is unused | `assets/art/ui/kenney_ui-pack-rpg-expansion/` | Kenney (kenney.nl) | CC0 | ✅ — on the credits screen's Kenney line |
+| Kenney Fonts pack — Kenney Pixel Square (menu titles) and Kenney Mini Square (menu buttons), since 2026-09-30; the other fonts are unused | `assets/art/ui/kenney_kenney-fonts/` | Kenney (kenney.nl) | CC0 | ✅ — on the credits screen's Kenney line |
 | Input Prompts 1.5 | `assets/art/ui/kenney_input-prompts_1.5/` | Kenney (kenney.nl) | CC0 | ✅ — **not referenced by the game** (checked 2026-09-24: no scene, script or theme uses a file from it, or a copy of one); still ships; off the credits screen |
 | Roguelike Modern City 2.0 | `assets/art/maps/kenney_roguelike-modern-city/` | Kenney (kenney.nl) | CC0 | ✅ |
 | RPG Urban Pack 1.0 — its trees stand on both streets (`TREES_TEXTURE` in `district_exterior.gd`, since 2026-09-24) | `assets/art/maps/kenney_rpg-urban-pack/` | Kenney (kenney.nl) | CC0 | ✅ |
@@ -86,7 +86,7 @@ license file bundled, or license terms require per-file checking).
 |---|---|---|---|---|
 | IBM Plex Sans | `assets/fonts/IBM_Plex_Sans/` | IBM | SIL Open Font License 1.1 | ✅ |
 | IBM Plex Mono | `assets/fonts/IBM_Plex_Mono/` | IBM Corp. | SIL Open Font License 1.1 — confirmed, `OFL.txt` bundled | ✅ |
-| Kenney Fonts | `assets/art/ui/kenney_kenney-fonts/Fonts/` | Kenney (kenney.nl) | CC0 | ✅ — not referenced; the game's type is IBM Plex |
+| Kenney Fonts | `assets/art/ui/kenney_kenney-fonts/Fonts/` | Kenney (kenney.nl) | CC0 | ✅ — Pixel Square and Mini Square are the menus' titles and buttons (imported without antialiasing); everything else is IBM Plex |
 
 ## Audio
 

@@ -8,7 +8,8 @@ extends Node
 ## Writes user://office_preview.png (the whole floor) and
 ## user://ledger_preview.png (the call list open, reading back a seeded shift),
 ## then the fourth floor, the desk, and the shift floor the prologue opens on
-## (shift_start_preview.png, shift_desk_preview.png, shift_board_preview.png).
+## (shift_start_preview.png - at work, two overheard lines up - shift_desk_preview.png,
+## shift_board_preview.png).
 
 const OFFICE_SCENE := "res://scenes/exploration/office_interior.tscn"
 const FLOOR_FOUR_SCENE := "res://scenes/exploration/office_floor_four.tscn"
@@ -138,8 +139,12 @@ func _run() -> void:
 	camera_shift.position = Vector2(640.0, 360.0)
 	camera_shift.zoom = Vector2.ONE
 	camera_shift.make_current()
+	# Two lines in the air, the most the floor has at once, fully faded in.
+	shift._say_something()
+	shift._say_something()
 	for i in range(4):
 		await get_tree().physics_frame
+	await get_tree().create_timer(0.3).timeout
 	await RenderingServer.frame_post_draw
 	_save(SHIFT_OUTPUT)
 

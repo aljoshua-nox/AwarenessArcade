@@ -522,6 +522,7 @@ func _test_shift_start() -> void:
 	await get_tree().process_frame
 	var floor_title: String = floor_three.title_label.text
 	var floor_exit: Vector2 = floor_three.portal.global_position
+	_check(floor_three.get("operators") == null, "the detective walks the same room empty")
 	await _close_node(floor_three)
 
 	var shift: Node = load(SHIFT_SCENE).instantiate()
@@ -560,6 +561,61 @@ func _test_shift_start() -> void:
 	_check(not titles.has("The call list") and not titles.has("Stairwell"),
 		"no call list to read and no stairs to climb")
 
+	# The floor at work: an operator in nearly every seat, the player's own
+	# chair empty, and half-calls overheard across the room.
+	_check(shift.operators.size() >= 20, "the floor is at work (%d operators)" % shift.operators.size())
+	var yours_taken := false
+	var off_seat := 0
+	for operator in shift.operators:
+		var sprite: Sprite2D = operator["sprite"]
+		if str(operator["row"]) == "back" and absf(sprite.position.x - 660.0) < 1.0:
+			yours_taken = true
+		var at_desk := false
+		for x in shift.DESK_COLUMNS:
+			for offset in shift.SEAT_OFFSETS:
+				if absf(sprite.position.x - (float(x) + float(offset))) < 0.5:
+					at_desk = true
+		if not at_desk:
+			off_seat += 1
+	_check(not yours_taken, "the middle seat of the back row, yours, is empty")
+	_check(off_seat == 0, "every operator sits at a desk (%d do not)" % off_seat)
+
+	shift.player.global_position = shift.player_spawn
+	var line: Label = shift._say_something()
+	_check(line != null and shift.CHATTER.has(line.text.trim_prefix("\"").trim_suffix("\"")),
+		"someone is mid-call, in a line from the floor's own scripts (%s)" % ("-" if line == null else line.text))
+	var second: Label = shift._say_something()
+	_check(second != null and not shift._bubble_rect(line).intersects(shift._bubble_rect(second)),
+		"a second line goes up clear of the first")
+	_check(shift._say_something() == null, "never more than two in the air")
+	shift._clear_chatter()
+
+	shift.player.global_position = shift.YOUR_DESK_POSITION
+	shift.prompt_bubble.show_above(shift.YOUR_DESK_POSITION, "Sit down and start your shift", shift.STATION_LIFT)
+	var prompt_rect := Rect2(shift.prompt_bubble.global_position, shift.prompt_bubble.size)
+	var over_prompt := 0
+	for i in range(30):
+		var placed: Label = shift._say_something()
+		if placed != null and shift._bubble_rect(placed).intersects(prompt_rect):
+			over_prompt += 1
+		shift._clear_chatter()
+	_check(over_prompt == 0, "no line is placed over the prompt the player is reading (%d were)" % over_prompt)
+	shift.prompt_bubble.hide_bubble()
+
+	shift.player.global_position = shift.player_spawn
+	var early: Label = shift._say_something()
+	shift.prompt_bubble.show_above(early.global_position + early.size * 0.5, "Sit down and start your shift", 0.0)
+	shift._process(0.0)
+	shift._forget_finished_lines()
+	_check(shift.chatter.is_empty(), "a prompt coming up over a line clears the line")
+	shift.prompt_bubble.hide_bubble()
+	var passing: Label = shift._say_something()
+	shift.player.global_position = passing.global_position + passing.size * 0.5 + Vector2(0.0, 30.0)
+	shift._process(0.0)
+	shift._forget_finished_lines()
+	_check(shift.chatter.is_empty(), "so does the player walking under one")
+	shift.player.global_position = shift.player_spawn
+
 	# The door is shut until the shift ends, and says so.
 	shift.player.global_position = shift.portal.global_position
 	shift._on_portal_entered(shift.portal)
@@ -580,6 +636,7 @@ func _test_shift_start() -> void:
 		"and how many reports pull the line")
 	_check(not board_text.contains(TextStyle.MARK_HINT) and not board_text.contains(TextStyle.MARK_SCENE),
 		"with no case note under it")
+	_check(shift._say_something() == null, "nobody talks over a board while it is being read")
 	shift._close_inspection()
 	shift._open_inspection(_station(shift, "Bonus board"))
 	_check(shift.inspect_body.text.contains(SessionState.CALL_FLOOR_NAME.to_upper()) and shift.inspect_body.text.contains("ESCALATED"),
@@ -598,6 +655,8 @@ func _test_shift_start() -> void:
 	_check(shift.shift_started, "sitting down starts it")
 	_check(not shift.inspection_open, "without a panel in the way")
 	_check(not shift.player.is_physics_processing(), "and the operator stays seated")
+	_check(shift._say_something() == null and shift.chatter.is_empty() and shift.chatter_timer.is_stopped(),
+		"sitting down quiets the floor: the call screen is next")
 	await _close_node(shift)
 
 

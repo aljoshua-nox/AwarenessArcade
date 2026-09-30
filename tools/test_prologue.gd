@@ -16,6 +16,7 @@ extends Node
 ## recorded. Exits 0 if every check passes, 1 otherwise.
 
 const TextStyle := preload("res://scripts/systems/text_style.gd")
+const ScreenFx := preload("res://scripts/systems/screen_fx.gd")
 
 const PROLOGUE_SCENE := "res://scenes/prologue/prologue_call.tscn"
 const DRAIN_TIMEOUT_MS := 12000
@@ -113,6 +114,7 @@ func _run() -> void:
 	await _test_doubt_checks_branch_the_script()
 	await _test_doubt_ceiling_hangs_up()
 	await _test_endings_record_what_they_declare()
+	await _test_a_closed_call_is_stamped()
 	await _test_reports_pull_the_line()
 	await _test_clocks_wait_for_the_reveal()
 	await _test_patience_running_out_hangs_up()
@@ -416,6 +418,59 @@ func _test_endings_record_what_they_declare() -> void:
 	_check(SessionState.get_victim_disposition("kevin_d") == SessionState.DISPOSITION_UNFINISHED,
 		"...and the investigation reads him as unfinished")
 	await _close(view)
+
+
+# What a room watching the call sees without reading it: every line's effect
+# rising off the Doubt bar, and the card stamped with what the call came to -
+# but only once the line that says so is read, never ahead of the victim's
+# last words.
+func _test_a_closed_call_is_stamped() -> void:
+	print("\n[the card is stamped]")
+	var view := await _open()
+	view._start_call(_victim_index(view, "kevin_d"))
+	await _drain(view, "opening")
+	var choices: Array = view.current_node.get("choices", [])
+	var pressed := -1
+	for i in range(choices.size()):
+		if int(choices[i].get("doubt", 0)) > 0:
+			pressed = i
+			break
+	var delta := int(choices[pressed].get("doubt", 0))
+	view._on_choice_pressed(pressed)
+	_check(_deltas(view).has("%+d" % delta), "the line's doubt rises off the bar as %+d (got %s)" % [delta, _deltas(view)])
+	view._finish_reveal()
+
+	view._end_current_call(SessionState.CALL_REFUSED, {"reports": true})
+	_check(view.call_stamp == null, "the stamp waits for the line that says it")
+	await _drain(view, "reported ending")
+	_check(view.call_stamp != null and view.call_stamp.text == "REPORTED",
+		"a refusal that was reported is stamped REPORTED - the report is what the floor counts")
+	_check(view.call_stamp != null and view.call_stamp.get_parent() == view.victim_portrait, "...on the victim's card")
+	_check(view.call_stamp != null and view.call_stamp.get_theme_color("font_color") == Color.html(TextStyle.COLOR_WRONG),
+		"...in the reported red")
+
+	view._preview_victim(_victim_index(view, "lina_reyes"))
+	_check(ScreenFx.stamps_on(view.victim_portrait).is_empty(), "a new card is clean")
+
+	var maria := _victim_index(view, "maria_santos")
+	var paid: Dictionary = _node(view, "maria_santos", "paid")
+	view._start_call(maria)
+	view._finish_reveal()
+	view._load_node("paid")
+	view._finish_reveal()
+	var expected := "PAID %s" % TextStyle.currency(int(paid.get("payout", 0)))
+	_check(view.call_stamp != null and view.call_stamp.text == expected,
+		"a payout is stamped with the amount, even when the ending is skipped to (%s)" % expected)
+	_check(ScreenFx.stamps_on(view.victim_portrait).size() == 1, "one stamp per card")
+	await _close(view)
+
+
+func _deltas(view: Node) -> Array[String]:
+	var found: Array[String] = []
+	for child in view.get_children():
+		if child is Label and str(child.get_meta(ScreenFx.FX_META, "")) == "delta":
+			found.append((child as Label).text)
+	return found
 
 
 func _test_reports_pull_the_line() -> void:

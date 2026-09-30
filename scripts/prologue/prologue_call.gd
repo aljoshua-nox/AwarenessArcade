@@ -13,6 +13,7 @@ extends Control
 ## the line.
 
 const TextStyle := preload("res://scripts/systems/text_style.gd")
+const ScreenFx := preload("res://scripts/systems/screen_fx.gd")
 
 const CONTENT_PATH := "res://resources/dialogue/call_content.json"
 const RING_SFX := "res://assets/audio/sfx/629201__audacitier__phone-ringing-5.mp3"
@@ -71,6 +72,14 @@ var beat_tween: Tween
 # A shift that ends while the closing beats of a call are still typing waits
 # for them: {reason, note} is handed to the summary once the queue drains.
 var pending_shift_end: Dictionary = {}
+# Things that happen when a given beat is read rather than when it is queued:
+# beat text -> [Callable]. A call's ending is decided the moment its last node
+# loads, but the click of the line going dead, the report landing and the stamp
+# on the card belong after the victim's last words, not ahead of them.
+var beat_cues: Dictionary = {}
+# What the last call left on the card: PAID, REFUSED, REPORTED... Cleared when
+# the card changes.
+var call_stamp: Label
 var rng: RandomNumberGenerator = RandomNumberGenerator.new()
 var prologue_end_transition_started: bool = false
 # Tests drive the shift to its end without leaving the scene.
@@ -320,6 +329,7 @@ func _refresh_ui() -> void:
 # The meter's own title already names the stat, so the value is just the number.
 func _refresh_doubt_display() -> void:
 	if not call_active:
+		ScreenFx.stop_bar(doubt_bar)
 		doubt_value.text = "-"
 		doubt_bar.value = 0.0
 		doubt_bar.modulate = Color(1, 1, 1)
@@ -460,6 +470,8 @@ func _preview_victim(index: int) -> void:
 
 
 func _show_card(victim: Dictionary) -> void:
+	ScreenFx.clear_stamps(victim_portrait)
+	call_stamp = null
 	var portrait_path := str(victim.get("portrait", ""))
 	if not portrait_path.is_empty():
 		victim_portrait.texture = load(portrait_path)
@@ -561,6 +573,7 @@ func _on_choice_pressed(choice_index: int) -> void:
 		beats.append(TextStyle.system(TextStyle.MARK_TACTIC_USED, _tactic_name(tactic_id), TextStyle.COLOR_TACTIC))
 	_queue_beats(beats)
 
+	var doubt_before := doubt
 	doubt = clampi(doubt + int(choice.get("doubt", 0)), 0, DOUBT_CEILING)
 	_refresh_doubt_display()
 	current_node = {}
@@ -570,6 +583,23 @@ func _on_choice_pressed(choice_index: int) -> void:
 	else:
 		_load_node(str(choice.get("next", "")))
 	_refresh_ui()
+	_show_doubt_change(doubt_before, doubt)
+
+
+# The line's effect, where the room can see it: the number rising off the bar,
+# the bar sliding there, and the card flinching at a line that alarmed them.
+# Doubt falling is shown in the narration's gray, never green - the screen does
+# not cheer a guard coming down.
+func _show_doubt_change(before: int, after: int) -> void:
+	var change := after - before
+	if change == 0:
+		return
+	ScreenFx.float_delta(self, doubt_bar, change,
+		Color.html(TextStyle.COLOR_WRONG), Color.html(TextStyle.COLOR_NARRATION))
+	if call_active:
+		ScreenFx.move_bar(doubt_bar, float(before), float(after))
+	if change >= 10:
+		ScreenFx.flinch(victim_portrait, false)
 
 
 # Close the call and write it down. `ending` is the authored node when the call
@@ -603,22 +633,28 @@ func _end_current_call(outcome: String, ending: Dictionary = {}, closing_line: S
 		SessionState.profit += payout
 	if not victim.is_empty():
 		SessionState.victims_affected += 1
-	if outcome == SessionState.CALL_REFUSED or outcome == SessionState.CALL_HUNG_UP:
-		AudioManager.play_sfx("hang_up")
 	if reported:
 		SessionState.reports_filed += 1
-		AudioManager.play_stream(REPORT_SFX, -8.0)
 		SessionState.record_reflection_milestone("First Report Filed",
 			"Someone you called kept the number and passed it on.")
 
 	var beats: Array[String] = []
 	if not closing_line.is_empty():
 		beats.append(TextStyle.dialogue(closing_line))
-	beats.append(_call_ended_line(outcome, payout))
+	var ended_line := _call_ended_line(outcome, payout)
+	beats.append(ended_line)
+	var stamp_line := ended_line
+	if outcome == SessionState.CALL_REFUSED or outcome == SessionState.CALL_HUNG_UP:
+		_cue(ended_line, func() -> void: AudioManager.play_sfx("hang_up"))
 	if reported:
-		beats.append(TextStyle.system(TextStyle.MARK_REPORTED,
+		var reported_line := TextStyle.system(TextStyle.MARK_REPORTED,
 			"Reports on this line: %d of %d." % [SessionState.reports_filed, SessionState.REPORTS_TO_PULL_LINE],
-			TextStyle.COLOR_WRONG))
+			TextStyle.COLOR_WRONG)
+		beats.append(reported_line)
+		stamp_line = reported_line
+		_cue(reported_line, func() -> void: AudioManager.play_stream(REPORT_SFX, -8.0))
+	var stamp := _stamp_for(outcome, payout, reported)
+	_cue(stamp_line, func() -> void: _land_stamp(stamp))
 	beats.append_array(_consequence_beats(victim, consequence))
 	_queue_beats(beats)
 
@@ -662,6 +698,32 @@ func _call_ended_line(outcome: String, payout: int) -> String:
 		_:
 			body = "The line was pulled."
 	return TextStyle.system(TextStyle.MARK_CALL_ENDED, body, tone)
+
+
+# The card's stamp: what the call came to, in the tone its CALL ENDED line
+# uses. A report outranks the refusal it came with - it is what the floor
+# counts. PAID, not TAKEN: it is the floor's stamp, and the floor stamps a
+# person the way it would an invoice.
+func _stamp_for(outcome: String, payout: int, reported: bool) -> Dictionary:
+	if payout > 0:
+		return {"text": "PAID %s" % _format_currency(payout), "tone": TextStyle.COLOR_WRONG}
+	if reported:
+		return {"text": "REPORTED", "tone": TextStyle.COLOR_WRONG}
+	match outcome:
+		SessionState.CALL_REFUSED:
+			return {"text": "REFUSED", "tone": TextStyle.COLOR_TACTIC}
+		SessionState.CALL_HUNG_UP:
+			return {"text": "HUNG UP", "tone": TextStyle.COLOR_TACTIC}
+		SessionState.CALL_TIMEOUT:
+			return {"text": "CUT OFF", "tone": TextStyle.COLOR_HINT}
+	return {"text": "DROPPED", "tone": TextStyle.COLOR_HINT}
+
+
+func _land_stamp(stamp: Dictionary) -> void:
+	ScreenFx.clear_stamps(victim_portrait)
+	call_stamp = ScreenFx.stamp(victim_portrait, str(stamp.get("text", "")),
+		Color.html(str(stamp.get("tone", TextStyle.COLOR_HINT))))
+	ScreenFx.shake(self, 5.0, 0.22)
 
 
 # What this call cost the person on the other end, in their own words. The
@@ -748,6 +810,24 @@ func _is_revealing() -> bool:
 	return _is_typing() or not pending_beats.is_empty()
 
 
+func _cue(beat: String, action: Callable) -> void:
+	var key := beat.strip_edges()
+	if not beat_cues.has(key):
+		beat_cues[key] = []
+	(beat_cues[key] as Array).append(action)
+
+
+# A beat leaving the queue for the box. Anything cued on it happens now.
+func _take_beat() -> void:
+	var beat: String = pending_beats.pop_front()
+	transcript_lines.append(beat)
+	if beat_cues.has(beat):
+		var actions: Array = beat_cues[beat]
+		beat_cues.erase(beat)
+		for action in actions:
+			(action as Callable).call()
+
+
 func _queue_beats(beats: Array) -> void:
 	for beat in beats:
 		var trimmed := str(beat).strip_edges()
@@ -768,7 +848,7 @@ func _update_dialogue_display() -> void:
 func _advance_beats() -> void:
 	if not pending_beats.is_empty():
 		_rebase_read_mark()
-		transcript_lines.append(pending_beats.pop_front())
+		_take_beat()
 	_render_and_reveal()
 
 
@@ -822,7 +902,7 @@ func _finish_reveal() -> void:
 		beat_tween.kill()
 		beat_tween = null
 	while not pending_beats.is_empty():
-		transcript_lines.append(pending_beats.pop_front())
+		_take_beat()
 	dialogue_value.text = _build_dialogue_text()
 	revealed_chars = dialogue_value.get_total_character_count()
 	dialogue_value.visible_characters = revealed_chars
@@ -847,6 +927,7 @@ func _reset_transcript() -> void:
 		beat_tween.kill()
 		beat_tween = null
 	pending_beats.clear()
+	beat_cues.clear()
 	transcript_lines.clear()
 	dialogue_value.text = _build_dialogue_text()
 	revealed_chars = dialogue_value.get_total_character_count()

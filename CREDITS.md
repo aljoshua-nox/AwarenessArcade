@@ -123,7 +123,7 @@ The album's other two tracks (*Tybarne*, *Dio e popolo*) were moved to `download
 
 | Asset | Location | Author / source | License | Status |
 |---|---|---|---|---|
-| Button click, journal tab, door, statement landed, objective done, statement missed | `assets/audio/sfx/ui/click.ogg`, `tab.ogg`, `door.ogg`, `confirm.ogg`, `objective.ogg`, `error.ogg` | Kenney - *Interface Sounds* (kenney.nl): `click_001`, `click_003`, `open_001`, `confirmation_001`, `confirmation_002`, `error_004`, copied under short names. The full pack, and the unused *UI Audio* pack, are in `downloads/audio-originals/` | CC0 | ✅ |
+| Button click, journal tab, door, statement landed, objective done, statement missed, stamp | `assets/audio/sfx/ui/click.ogg`, `tab.ogg`, `door.ogg`, `confirm.ogg`, `objective.ogg`, `error.ogg`, `stamp.ogg` | Kenney - *Interface Sounds* (kenney.nl): `click_001`, `click_003`, `open_001`, `confirmation_001`, `confirmation_002`, `error_004`, `drop_002`, copied under short names. The full pack, and the unused *UI Audio* pack, are in `downloads/audio-originals/` | CC0 | ✅ |
 | Journal opens | `assets/audio/sfx/page_turn.ogg` | jephwallace - *turning pages book slow quickly* - [freesound.org/s/318615](https://freesound.org/s/318615/); one turn cut from the recording | CC0 | ✅ |
 | Something new written in the journal (tactic, milestone) | `assets/audio/sfx/pen_scratch.ogg` | MoKoLoKo - *Writing with a felt tip pen* - [freesound.org/s/325133](https://freesound.org/s/325133/); 1.2 s cut | **CC-BY 4.0** - attribution required | ✅ |
 | Footsteps | `assets/audio/sfx/477357__nuff3__steps-tile_3a.ogg` | nuFF3 - *Steps-Tile_3a* - [freesound.org/s/477357](https://freesound.org/s/477357/) | **CC-BY 4.0** - attribution required | ✅ |

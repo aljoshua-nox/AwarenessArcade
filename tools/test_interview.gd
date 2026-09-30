@@ -23,6 +23,9 @@ const CASE_DENNIS := "res://resources/cases/interview_case_013.json"
 const CASE_JOEL := "res://resources/cases/interview_case_010.json"
 const CASE_CARMEN := "res://resources/cases/interview_case_012.json"
 
+const TextStyle := preload("res://scripts/systems/text_style.gd")
+const ScreenFx := preload("res://scripts/systems/screen_fx.gd")
+
 var failures: Array[String] = []
 var checks := 0
 
@@ -92,6 +95,7 @@ func _run() -> void:
 	await _test_text_voices()
 	await _test_prologue_coupling()
 	await _test_contradiction()
+	await _test_stamps_and_meter()
 	await _test_evidence_scoping()
 	await _test_disposition_variants()
 	await _test_testimony_routing()
@@ -254,6 +258,85 @@ func _test_contradiction() -> void:
 	# _index_of() records a failure when an item is missing, which is the point here.
 	_check(not SessionState.has_evidence("ev_remote_access_log"), "but nothing in hand disproves it")
 	await _close(bare)
+
+
+# What a room watching the screen sees without reading: the marker the line is
+# about to print, stamped on the portrait in its color; CONTRADICTION across
+# the whole screen; and every cooperation change rising off the bar.
+func _test_stamps_and_meter() -> void:
+	print("\n[stamps and the cooperation meter]")
+	var view := await _open(CASE_MARIA)
+	var before: int = view.cooperation
+	view._on_choice_pressed(_choice_to(view, "rush_her"))
+	var change: int = view.cooperation - before
+	_check(_deltas(view).has("%+d" % change), "a cooperation cost rises off the bar as %+d (got %s)" % [change, _deltas(view)])
+	await _close(view)
+
+	view = await _open(CASE_MARIA)
+	view._on_choice_pressed(_choice_to(view, "ask_call"))
+	view._on_choice_pressed(0)
+	view._on_choice_pressed(_quiz_answer(view, false))
+	_check(_stamp_text(view.portrait_rect) == TextStyle.MARK_WRONG, "a wrong quiz answer stamps MISREAD on the portrait")
+	_check(_stamp_color(view.portrait_rect) == Color.html(TextStyle.COLOR_WRONG), "...in the misread red")
+	await _close(view)
+
+	view = await _open(CASE_MARIA)
+	view._on_choice_pressed(_choice_to(view, "ask_call"))
+	view._on_choice_pressed(0)
+	view._on_choice_pressed(_quiz_answer(view, true))
+	_check(_stamp_text(view.portrait_rect) == TextStyle.MARK_CORRECT, "a right answer stamps TACTIC READ")
+	_check(_stamp_color(view.portrait_rect) == Color.html(TextStyle.COLOR_CORRECT), "...in the correct green")
+	view._present_evidence_index(_index_of(view, "ev_internet_note"))
+	_check(_stamp_text(view.portrait_rect) == TextStyle.MARK_WRONG, "the decoy stamps MISREAD")
+	_check(ScreenFx.stamps_on(view.portrait_rect).size() == 1, "a new stamp replaces the last rather than piling on")
+	view._present_evidence_index(_index_of(view, "ev_phishing_text"))
+	_check(_stamp_text(view.portrait_rect) == TextStyle.MARK_TACTIC, "the key evidence stamps TACTIC IDENTIFIED")
+	_check(_stamp_color(view.portrait_rect) == Color.html(TextStyle.COLOR_TACTIC), "...in the tactic amber")
+	await get_tree().create_timer(view.STAMP_HOLD + 1.0).timeout
+	_check(ScreenFx.stamps_on(view.portrait_rect).is_empty(), "an interview stamp fades, so the line under it can be read")
+	await _close(view)
+
+	SessionState.reset_session()
+	SessionState.detective_credibility = GATE_CLEAR
+	SessionState.add_evidence({
+		"id": "ev_remote_access_log",
+		"tactic_id": "remote_access",
+		"label": "Remote Access Log",
+		"description": "A session opened on the victim's machine.",
+		"tactic": "Posing as technical support to gain direct access to a victim's device.",
+	})
+	SessionState.pending_case_path = CASE_MARCO
+	view = load(INTERVIEW_SCENE).instantiate()
+	add_child(view)
+	await get_tree().process_frame
+	view._load_node("deny_node")
+	var marco_before: int = view.cooperation
+	view._present_evidence_index(_index_of(view, "ev_remote_access_log"))
+	_check(_stamp_text(view) == TextStyle.MARK_CONTRADICTION, "breaking a claim stamps CONTRADICTION across the screen")
+	# The log's own payout and the node it opens both move him, in one frame.
+	# Drawn as two numbers on one spot they read as a third.
+	var total := "%+d" % (view.cooperation - marco_before)
+	_check(_deltas(view) == [total], "two changes from one move rise as one number, %s (got %s)" % [total, _deltas(view)])
+	_check(ScreenFx.stamps_on(view.portrait_rect).is_empty(), "...instead of the portrait's small stamp")
+	await _close(view)
+
+
+func _deltas(view: Node) -> Array[String]:
+	var found: Array[String] = []
+	for child in view.get_children():
+		if child is Label and str(child.get_meta(ScreenFx.FX_META, "")) == "delta":
+			found.append((child as Label).text)
+	return found
+
+
+func _stamp_text(target: Node) -> String:
+	var stamps := ScreenFx.stamps_on(target)
+	return "" if stamps.is_empty() else stamps[stamps.size() - 1].text
+
+
+func _stamp_color(target: Node) -> Color:
+	var stamps := ScreenFx.stamps_on(target)
+	return Color.BLACK if stamps.is_empty() else stamps[stamps.size() - 1].get_theme_color("font_color")
 
 
 func _test_opening_state() -> void:

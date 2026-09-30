@@ -19,10 +19,12 @@ const SFX := {
 	"pen": "res://assets/audio/sfx/pen_scratch.ogg",
 	"step": "res://assets/audio/sfx/477357__nuff3__steps-tile_3a.ogg",
 	"hang_up": "res://assets/audio/sfx/575853__martian__intercom-bell-phone-hang-up.wav",
+	"stamp": "res://assets/audio/sfx/ui/stamp.ogg",
 }
 const SFX_VOLUME := {
 	"click": -14.0, "tab": -14.0, "door": -8.0, "confirm": -10.0, "objective": -6.0,
 	"error": -10.0, "page": -6.0, "pen": -8.0, "step": -20.0, "hang_up": -8.0,
+	"stamp": -4.0,
 }
 
 const MUSIC := {

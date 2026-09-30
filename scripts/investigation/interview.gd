@@ -15,6 +15,11 @@ const CHOICE_BUTTON_COUNT := 4
 # Text voices live in TextStyle so this screen and the office call floor can't
 # drift apart. Preloaded rather than used as a global class - see that file.
 const TextStyle := preload("res://scripts/systems/text_style.gd")
+const ScreenFx := preload("res://scripts/systems/screen_fx.gd")
+# How long a stamp stays on the portrait, and how long CONTRADICTION holds the
+# screen, before each fades and lets the line underneath be read.
+const STAMP_HOLD := 1.6
+const CONTRADICTION_HOLD := 1.1
 
 # Where an interview happens decides what is behind it. A case names its
 # `person.setting`; the photo for it lives at the path below, and a setting
@@ -722,8 +727,14 @@ func _failure_node_id() -> String:
 func _apply_cooperation(delta: int) -> void:
 	if delta == 0:
 		return
+	var before := cooperation
 	cooperation = clampi(cooperation + delta, 0, 100)
 	_refresh_cooperation_display()
+	var change := cooperation - before
+	if change != 0:
+		ScreenFx.float_delta(self, cooperation_bar, change,
+			Color.html(TextStyle.COLOR_CORRECT), Color.html(TextStyle.COLOR_WRONG))
+		ScreenFx.move_bar(cooperation_bar, float(before), float(cooperation))
 
 
 func _refresh_cooperation_display() -> void:
@@ -798,6 +809,10 @@ func _answer_quiz(option_index: int) -> void:
 		SessionState.record_tactic_learned(quiz_tactic_id, learned_where)
 	_apply_cooperation(int(option.get("cooperation", 0)))
 	_play_sting(correct)
+	if correct:
+		_stamp_marker(TextStyle.MARK_CORRECT, TextStyle.COLOR_CORRECT)
+	else:
+		_stamp_marker(TextStyle.MARK_WRONG, TextStyle.COLOR_WRONG)
 
 	var feedback := str(option.get("feedback", ""))
 	var lead_in := ""
@@ -972,6 +987,12 @@ func _present_evidence_index(index: int) -> void:
 		var cooperation_delta := 0 if repeated else int(entry.get("cooperation", 0))
 		_apply_cooperation(cooperation_delta)
 		_play_sting(not is_wrong and cooperation_delta >= 0)
+		if is_wrong:
+			_stamp_marker(TextStyle.MARK_WRONG, TextStyle.COLOR_WRONG)
+		elif bool(entry.get("contradicts", false)):
+			_slam_contradiction()
+		elif not tactic.is_empty():
+			_stamp_marker(TextStyle.MARK_TACTIC, TextStyle.COLOR_TACTIC)
 		if is_wrong and not repeated:
 			evidence_misses += 1
 		var next_node := str(entry.get("next", current_node_id))
@@ -1022,6 +1043,7 @@ func _handle_evidence_miss(item: Dictionary) -> void:
 		evidence_misses += 1
 		_apply_cooperation(int(current_node.get("evidence_miss_cooperation", EVIDENCE_MISS_COOPERATION)))
 	_play_sting(false)
+	_stamp_marker(TextStyle.MARK_WRONG, TextStyle.COLOR_WRONG)
 
 	var label := str(item.get("label", "That evidence"))
 	var tactic := str(item.get("tactic", ""))
@@ -1085,17 +1107,22 @@ func _play_sting(positive: bool) -> void:
 
 
 func _flinch(positive: bool) -> void:
-	if portrait_rect.texture == null:
-		return
-	portrait_rect.pivot_offset = portrait_rect.size / 2.0
-	var tint := Color(0.75, 1.0, 0.8) if positive else Color(1.0, 0.6, 0.55)
-	var tilt := 0.03 if positive else 0.06
-	var tween := create_tween()
-	tween.tween_property(portrait_rect, "modulate", tint, 0.08)
-	tween.parallel().tween_property(portrait_rect, "rotation", tilt, 0.06)
-	tween.tween_property(portrait_rect, "rotation", -tilt * 0.6, 0.08)
-	tween.tween_property(portrait_rect, "rotation", 0.0, 0.08)
-	tween.parallel().tween_property(portrait_rect, "modulate", Color(1, 1, 1), 0.2)
+	ScreenFx.flinch(portrait_rect, positive)
+
+
+# The marker the line underneath is about to print, stamped on the portrait
+# first - the same words, in the same color, readable from across a room.
+func _stamp_marker(marker: String, color: String) -> void:
+	ScreenFx.clear_stamps(portrait_rect)
+	ScreenFx.stamp(portrait_rect, marker, Color.html(color), 22, STAMP_HOLD)
+
+
+# Catching a lie is the one beat that takes the whole screen. The line under it
+# still says what broke; this makes sure nobody watching misses that it did.
+func _slam_contradiction() -> void:
+	ScreenFx.clear_stamps(self)
+	ScreenFx.stamp(self, TextStyle.MARK_CONTRADICTION, Color.html(TextStyle.COLOR_CORRECT), 56, CONTRADICTION_HOLD)
+	ScreenFx.shake(self, 10.0, 0.35)
 
 
 func _on_end_interview_pressed() -> void:

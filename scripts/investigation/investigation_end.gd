@@ -1,6 +1,7 @@
 extends Control
 
 const TextStyle := preload("res://scripts/systems/text_style.gd")
+const MenuStyle := preload("res://scripts/systems/menu_style.gd")
 const ScamCheckData := preload("res://scripts/scam_check/scam_check_data.gd")
 
 const SCAM_CHECK_SCENE := "res://scenes/scam_check/scam_check.tscn"
@@ -143,10 +144,14 @@ func _build_ui() -> void:
 	left_spacer.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	centring_row.add_child(left_spacer)
 
+	# The menus' window (MenuStyle). Only the button row wears the pixel font;
+	# the section headers and the reopen list are read, so they keep the body font.
 	var panel := PanelContainer.new()
 	panel.custom_minimum_size = Vector2(720, 0)
 	panel.size_flags_vertical = Control.SIZE_FILL
+	panel.theme = MenuStyle.theme(false)
 	centring_row.add_child(panel)
+	MenuStyle.dress_window(panel)
 
 	var right_spacer := Control.new()
 	right_spacer.size_flags_horizontal = Control.SIZE_EXPAND_FILL
@@ -162,12 +167,15 @@ func _build_ui() -> void:
 	margin.add_child(column)
 
 	title_label = Label.new()
-	title_label.add_theme_font_size_override("font_size", 26)
+	MenuStyle.style_title(title_label, 32)
 	title_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	column.add_child(title_label)
 
+	# In the button font, colored by how the case went (_outcome_tone).
 	outcome_label = Label.new()
-	outcome_label.add_theme_font_size_override("font_size", 18)
+	outcome_label.add_theme_font_override("font", MenuStyle.BUTTON_FONT)
+	outcome_label.add_theme_font_size_override("font_size", 24)
+	outcome_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	column.add_child(outcome_label)
 
 	var body_scroll := ScrollContainer.new()
@@ -272,6 +280,7 @@ func _build_ui() -> void:
 	reopen_back.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
 	reopen_back.pressed.connect(_show_button_row)
 	reopen_box.add_child(reopen_back)
+	_pixel_button(reopen_back)
 
 	button_row = HBoxContainer.new()
 	button_row.add_theme_constant_override("separation", 12)
@@ -304,6 +313,27 @@ func _build_ui() -> void:
 	main_menu_button.pressed.connect(_on_main_menu_pressed)
 	button_row.add_child(main_menu_button)
 
+	for button in button_row.get_children():
+		_pixel_button(button as Button)
+
+
+func _pixel_button(button: Button) -> void:
+	button.theme_type_variation = MenuStyle.PIXEL_BUTTON
+	MenuStyle.hover_selects(button)
+
+
+# How the case went, as the outcome line's color. Never gold across the board:
+# a trophy color on Compromised or The Owner Walks would celebrate the harm.
+static func _outcome_tone(outcome: String) -> String:
+	match outcome:
+		"full_takedown", "success", "whistleblower", "turned", "owner_named":
+			return TextStyle.COLOR_CORRECT
+		"building_stands", "partial_justice", "partial":
+			return TextStyle.COLOR_TACTIC
+		"bribed", "insufficient_evidence", "failure":
+			return TextStyle.COLOR_WRONG
+	return TextStyle.COLOR_SPEECH
+
 
 # The themed fill is red, which reads as failure at any value. Color it by
 # tier instead so a strong reading looks like one.
@@ -325,7 +355,7 @@ func _tint_awareness_bar() -> void:
 
 func _rule() -> Control:
 	var rule := ColorRect.new()
-	rule.color = Color(1, 1, 1, 0.12)
+	rule.color = Color(MenuStyle.GOLD_DIM, 0.45)
 	rule.custom_minimum_size = Vector2(0, 1)
 	return rule
 
@@ -383,6 +413,7 @@ func _refresh_view() -> void:
 		outcome_label.text = "Case Closed: %s" % SessionState.ending_title(outcome)
 	else:
 		outcome_label.text = OUTCOME_LABELS.get(outcome, "Interview Concluded")
+	outcome_label.add_theme_color_override("font_color", Color.html(_outcome_tone(outcome)))
 	continue_button.visible = not is_final
 	# A closing screen can send the player back to a suspect's door; a mid-case
 	# summary has the street for that.

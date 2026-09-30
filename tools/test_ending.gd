@@ -7,6 +7,7 @@ extends Node
 ## Exits 0 if every check passes, 1 otherwise. The ending had no coverage at
 ## all before the awareness verdict was folded into it.
 
+const TextStyle := preload("res://scripts/systems/text_style.gd")
 const END_SCENE := "res://scenes/investigation/investigation_end.tscn"
 # Every final ending this suite opens goes on the record, so the record it
 # writes is a scratch one, deleted at the end.
@@ -344,6 +345,18 @@ func _test_ending_record() -> void:
 			_check(view.AWARENESS_VERDICTS.get(id, {}).has(tier), "%s has a %s verdict" % [id, tier])
 	for id in view.AWARENESS_VERDICTS.keys():
 		_check(SessionState.is_final_outcome(str(id)), "every verdict belongs to an ending on the table (%s)" % id)
+	# The outcome line says how it went: every outcome has a color of its own,
+	# and the ones that went wrong are never the color of the ones that went right.
+	var outcomes: Array = view.OUTCOME_LABELS.keys()
+	for entry in SessionState.ENDINGS:
+		outcomes.append(str(entry.get("id", "")))
+	for id in outcomes:
+		_check(view._outcome_tone(str(id)) != TextStyle.COLOR_SPEECH, "%s has an outcome color" % id)
+	for id in ["bribed", "insufficient_evidence", "failure"]:
+		_check(view._outcome_tone(id) == TextStyle.COLOR_WRONG, "%s reads as gone wrong" % id)
+	_check(view._outcome_tone("full_takedown") == TextStyle.COLOR_CORRECT, "the full takedown reads as a win")
+	_check(view.outcome_label.get_theme_color("font_color") == Color.html(TextStyle.COLOR_CORRECT),
+		"a confirmed lead's line is drawn in that color")
 	_check(SessionState.is_final_outcome("bribed"), "a closing outcome is final")
 	_check(not SessionState.is_final_outcome("success"), "a mid-case outcome is not")
 	_check(SessionState.ending_title("building_stands") == "The Owner Walks", "the title reads off the table")

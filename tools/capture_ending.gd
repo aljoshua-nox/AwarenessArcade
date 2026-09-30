@@ -8,7 +8,7 @@ extends Node
 ##
 ## Writes ending_collapsed.png and ending_expanded.png under user://, both with
 ## a worst-case case file loaded; then ending_reopen.png with the checkpoint
-## chooser open over three doors, and menu_case_files.png - the main menu's
+## chooser open over three doors, ending_bribed.png (the same file, Compromised), and menu_case_files.png - the main menu's
 ## Case Files with two of five endings on record - and menu_credits.png.
 
 const END_SCENE := "res://scenes/investigation/investigation_end.tscn"
@@ -130,6 +130,17 @@ func _run() -> void:
 	view._on_reopen_pressed()
 	await _settle()
 	_save("ending_reopen")
+	remove_child(view)
+	view.queue_free()
+
+	# The same file closed the wrong way: the outcome line in red, not gold.
+	SessionState.investigation_outcome = "bribed"
+	# Elena's end_bribed prompt, as the interview would have left it.
+	SessionState.investigation_outcome_note = "You walk out with money in your account and a case that quietly goes nowhere. Marco's statement sits in a drawer, unopened. The forty headsets are back on by Monday, calling a list that now has more names on it, with notes in the margin. Somewhere, the witnesses who trusted you are still waiting for a call that is never coming."
+	view = load(END_SCENE).instantiate()
+	add_child(view)
+	await _settle()
+	_save("ending_bribed")
 	remove_child(view)
 	view.queue_free()
 

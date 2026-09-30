@@ -131,8 +131,12 @@ func _build_ui() -> void:
 		margin.add_theme_constant_override(side, 48)
 	panel_root.add_child(margin)
 
+	# The menus' window (MenuStyle): the tabs and Close are its buttons, the
+	# selected tab its pressed one. The pages inside keep the body font.
 	var panel := PanelContainer.new()
+	panel.theme = MenuStyle.theme()
 	margin.add_child(panel)
+	MenuStyle.dress_window(panel)
 
 	var inner := MarginContainer.new()
 	for side in ["margin_left", "margin_top", "margin_right", "margin_bottom"]:
@@ -145,7 +149,7 @@ func _build_ui() -> void:
 
 	var title := Label.new()
 	title.text = "Case Journal"
-	title.add_theme_font_size_override("font_size", 24)
+	MenuStyle.style_title(title, 32)
 	column.add_child(title)
 
 	var tab_row := HBoxContainer.new()

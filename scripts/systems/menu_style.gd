@@ -19,6 +19,10 @@ const GOLD := Color(0.96, 0.78, 0.38)
 const GOLD_DIM := Color(0.66, 0.5, 0.25)
 const CREAM := Color(0.93, 0.9, 0.82)
 const WINDOW_FILL := Color(0.06, 0.07, 0.1, 0.94)
+## The title's drop: the logo's red. PLAIN_DROP is for a title that must not
+## look like a prize (the prologue summary - the scammer's takings).
+const TITLE_DROP := Color(0.62, 0.09, 0.08)
+const PLAIN_DROP := Color(0.02, 0.02, 0.03)
 const BUTTON_FONT_SIZE := 24
 
 ## A Button variation that wears the pixel font, for a window whose other
@@ -97,14 +101,15 @@ static func plate(fill: Color, edge: Color) -> StyleBoxFlat:
 	return style
 
 
-## Gold pixel letters over a drop in the logo's red. size: a multiple of 8.
-static func style_title(label: Label, size: int) -> void:
+## Pixel letters over a drop: gold over the logo's red unless told otherwise.
+## size: a multiple of 8.
+static func style_title(label: Label, size: int, color: Color = GOLD, drop: Color = TITLE_DROP) -> void:
 	label.add_theme_font_override("font", TITLE_FONT)
 	label.add_theme_font_size_override("font_size", size)
-	label.add_theme_color_override("font_color", GOLD)
+	label.add_theme_color_override("font_color", color)
 	label.add_theme_color_override("font_outline_color", Color(0.08, 0.04, 0.03))
 	label.add_theme_constant_override("outline_size", size / 6)
-	label.add_theme_color_override("font_shadow_color", Color(0.62, 0.09, 0.08))
+	label.add_theme_color_override("font_shadow_color", drop)
 	label.add_theme_constant_override("shadow_offset_x", 0)
 	label.add_theme_constant_override("shadow_offset_y", size / 8)
 	label.add_theme_constant_override("shadow_outline_size", size / 6)

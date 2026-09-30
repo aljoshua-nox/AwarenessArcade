@@ -6,7 +6,8 @@ extends Node
 ##   godot --path . res://tools/capture_ui.tscn
 ##
 ## Writes prologue_preview.png, prologue_ending_preview.png,
-## prologue_summary_preview.png, evidence_preview.png and harm_preview.png under
+## prologue_summary_preview.png (and _end_preview, scrolled to its buttons),
+## evidence_preview.png and harm_preview.png under
 ## user://. The second is the densest a call gets: a
 ## paid ending, with the tactic-used line, the call-ended line, a report and the
 ## victim afterwards all in the box. The last is the densest an interview
@@ -113,6 +114,11 @@ func _capture_prologue_summary() -> void:
 	await get_tree().process_frame
 	await _settle()
 	_save("prologue_summary_preview")
+	# The whole page scrolls; its buttons are at the bottom.
+	var scroll: ScrollContainer = view.find_children("*", "ScrollContainer", true, false)[0]
+	scroll.scroll_vertical = int(scroll.get_v_scroll_bar().max_value)
+	await _settle()
+	_save("prologue_summary_end_preview")
 	remove_child(view)
 	view.queue_free()
 	await get_tree().process_frame

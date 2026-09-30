@@ -1,6 +1,7 @@
 extends Control
 
 const TextStyle := preload("res://scripts/systems/text_style.gd")
+const MenuStyle := preload("res://scripts/systems/menu_style.gd")
 
 const HARM_MESSAGES: Array[String] = [
 	"Fraud depends on pressure, false urgency, and abuse of trust. The damage is measured in savings lost, debts created, and people left afraid to answer the phone.",
@@ -58,9 +59,12 @@ func _build_ui() -> void:
 	center.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	root_scroll.add_child(center)
 
+	# The menus' window (MenuStyle), like the ending that closes the other half.
 	var panel := PanelContainer.new()
 	panel.custom_minimum_size = Vector2(760, 0)
+	panel.theme = MenuStyle.theme()
 	center.add_child(panel)
+	MenuStyle.dress_window(panel)
 
 	var margin := MarginContainer.new()
 	for side in ["margin_left", "margin_top", "margin_right", "margin_bottom"]:
@@ -71,8 +75,10 @@ func _build_ui() -> void:
 	column.add_theme_constant_override("separation", 10)
 	margin.add_child(column)
 
+	# Plain, never gold: this screen totals what the scammer took, and a gold
+	# title over it would read as a prize.
 	end_title = Label.new()
-	end_title.add_theme_font_size_override("font_size", 26)
+	MenuStyle.style_title(end_title, 32, MenuStyle.CREAM, MenuStyle.PLAIN_DROP)
 	column.add_child(end_title)
 
 	end_reason = Label.new()
@@ -110,6 +116,13 @@ func _build_ui() -> void:
 	note_value.custom_minimum_size = Vector2(0, 100)
 	column.add_child(note_value)
 
+	# The window's own plate rather than the game-wide grey box.
+	for box in [summary_value, call_log_value, milestones_value, note_value]:
+		var plate: StyleBoxFlat = MenuStyle.plate(Color(1, 1, 1, 0.04), Color(1, 1, 1, 0.1))
+		plate.content_margin_top = 10
+		plate.content_margin_bottom = 10
+		(box as RichTextLabel).add_theme_stylebox_override("normal", plate)
+
 	var button_row := HBoxContainer.new()
 	button_row.add_theme_constant_override("separation", 12)
 	button_row.alignment = BoxContainer.ALIGNMENT_CENTER
@@ -126,6 +139,9 @@ func _build_ui() -> void:
 	main_menu_button.custom_minimum_size = Vector2(160, 44)
 	main_menu_button.pressed.connect(_on_main_menu_pressed)
 	button_row.add_child(main_menu_button)
+
+	for button in button_row.get_children():
+		MenuStyle.hover_selects(button as Button)
 
 
 func _refresh_view() -> void:

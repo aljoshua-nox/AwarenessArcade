@@ -9,9 +9,10 @@ extends Node
 ## reported shift), objectives_preview.png (the case file mid-case: one
 ## objective closed, some done, some open), people_preview.png (every door,
 ## mid-case), evidence_preview.png (a file with three items in it),
-## journal_preview.png (the Tactics tab with one entry recorded) and
-## pause_preview.png (the pause menu on its confirm step, the one screen it
-## exists for) under user://.
+## journal_preview.png (the Tactics tab with one entry recorded),
+## pause_menu_preview.png (the pause menu as it opens) and pause_preview.png
+## (the pause menu on its confirm step, the one screen it exists for) under
+## user://.
 
 const URBAN_SCENE := "res://scenes/exploration/urban_exterior.tscn"
 
@@ -72,6 +73,8 @@ func _run() -> void:
 	CaseJournal.close()
 
 	CaseJournal.open_pause()
+	await _settle()
+	_save("pause_menu_preview")
 	CaseJournal._ask_to_abandon()
 	await _settle()
 	_save("pause_preview")

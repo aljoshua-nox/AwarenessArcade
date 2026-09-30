@@ -13,6 +13,7 @@ extends Control
 ## after intro. SessionState.scam_check_entry says which.
 
 const TextStyle := preload("res://scripts/systems/text_style.gd")
+const MenuStyle := preload("res://scripts/systems/menu_style.gd")
 const ScamCheckData := preload("res://scripts/scam_check/scam_check_data.gd")
 
 const MAIN_MENU_SCENE := "res://scenes/main_menu/main_menu.tscn"
@@ -127,9 +128,14 @@ func _build_ui() -> void:
 	left_spacer.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	centring_row.add_child(left_spacer)
 
+	# The menus' window. Only the page's own buttons wear the pixel font
+	# (_button); the answers and the list of past checks are read, so they
+	# keep the body font.
 	var panel := PanelContainer.new()
 	panel.custom_minimum_size = Vector2(1120, 0)
+	panel.theme = MenuStyle.theme(false)
 	centring_row.add_child(panel)
+	MenuStyle.dress_window(panel)
 
 	var right_spacer := Control.new()
 	right_spacer.size_flags_horizontal = Control.SIZE_EXPAND_FILL
@@ -148,7 +154,7 @@ func _build_ui() -> void:
 	column.add_child(header)
 
 	title_label = Label.new()
-	title_label.add_theme_font_size_override("font_size", 26)
+	MenuStyle.style_title(title_label, 32)
 	title_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	header.add_child(title_label)
 
@@ -156,6 +162,7 @@ func _build_ui() -> void:
 	# check is never one slip of the mouse.
 	stop_button = Button.new()
 	stop_button.text = "Stop"
+	stop_button.theme_type_variation = MenuStyle.PIXEL_BUTTON
 	stop_button.custom_minimum_size = Vector2(110, 36)
 	stop_button.focus_mode = Control.FOCUS_NONE
 	stop_button.tooltip_text = "Leave this check. Your answers so far won't be saved."
@@ -247,7 +254,9 @@ func _button(text: String, action: Callable, width: int = 220, parent: Control =
 	var button := Button.new()
 	button.text = text
 	button.custom_minimum_size = Vector2(width, 46)
+	button.theme_type_variation = MenuStyle.PIXEL_BUTTON
 	button.pressed.connect(action)
+	MenuStyle.hover_selects(button)
 	(footer if parent == null else parent).add_child(button)
 	return button
 
@@ -498,10 +507,12 @@ func show_message() -> void:
 	_choice_button("It's legit", _answer_call.bind(ScamCheckData.CALL_LEGIT), 260)
 
 
-# No keyboard focus on an answer: the theme draws focus like hover, and a
-# clicked slot would stay lit on the next message.
+# An answer is read, so it keeps the body font. No keyboard focus on one: the
+# theme draws focus like hover, and a clicked slot would stay lit on the next
+# message.
 func _choice_button(text: String, action: Callable, width: int, parent: Control = null) -> Button:
 	var button := _button(text, action, width, parent)
+	button.theme_type_variation = &""
 	button.focus_mode = Control.FOCUS_NONE
 	button.custom_minimum_size.y = 52
 	button.add_theme_font_size_override("font_size", 19)

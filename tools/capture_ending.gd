@@ -9,10 +9,11 @@ extends Node
 ## Writes ending_collapsed.png and ending_expanded.png under user://, both with
 ## a worst-case case file loaded; then ending_reopen.png with the checkpoint
 ## chooser open over three doors, and menu_case_files.png - the main menu's
-## Case Files with two of five endings on record.
+## Case Files with two of five endings on record - and menu_credits.png.
 
 const END_SCENE := "res://scenes/investigation/investigation_end.tscn"
 const MENU_SCENE := "res://scenes/main_menu/main_menu.tscn"
+const CREDITS_SCENE := "res://scenes/main_menu/credits.tscn"
 # The ending screen writes the record, so this run writes a scratch one.
 const SCRATCH_RECORD := "user://capture_endings.cfg"
 
@@ -144,6 +145,13 @@ func _run() -> void:
 	menu._ask_to_clear()
 	await _settle()
 	_save("menu_case_files_clear")
+	remove_child(menu)
+	menu.queue_free()
+
+	var credits: Node = load(CREDITS_SCENE).instantiate()
+	add_child(credits)
+	await _settle()
+	_save("menu_credits")
 
 	SessionState.clear_ending_record()
 	await AudioManager.settle()

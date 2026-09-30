@@ -20,6 +20,7 @@ extends Node
 
 ## Preloaded rather than referenced as a global class - see text_style.gd.
 const TextStyle := preload("res://scripts/systems/text_style.gd")
+const MenuStyle := preload("res://scripts/systems/menu_style.gd")
 
 const JOURNAL_ACTION := "toggle_journal"
 const NOTEBOOK_ACTION := "toggle_notebook"
@@ -77,11 +78,13 @@ var progress_label: Label
 var pause_root: Control
 var pause_buttons: VBoxContainer
 var sound_button: Button
+var resume_button: Button
 var journal_button: Button
 var notebook_button: Button
 var confirm_box: VBoxContainer
 var leave_warning: Label
 var leave_button: Button
+var stay_button: Button
 
 
 func _ready() -> void:
@@ -842,9 +845,12 @@ func _build_pause_menu() -> void:
 	center.set_anchors_preset(Control.PRESET_FULL_RECT)
 	pause_root.add_child(center)
 
+	# The main menu's window and buttons (MenuStyle), pointer included.
 	var panel := PanelContainer.new()
-	panel.custom_minimum_size = Vector2(380, 0)
+	panel.custom_minimum_size = Vector2(440, 0)
+	panel.theme = MenuStyle.theme()
 	center.add_child(panel)
+	MenuStyle.dress_window(panel)
 
 	var margin := MarginContainer.new()
 	for side in ["margin_left", "margin_top", "margin_right", "margin_bottom"]:
@@ -858,17 +864,19 @@ func _build_pause_menu() -> void:
 	var title := Label.new()
 	title.text = "Paused"
 	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	title.add_theme_font_size_override("font_size", 24)
+	MenuStyle.style_title(title, 32)
 	column.add_child(title)
+	column.add_child(MenuStyle.divider(100))
 
 	pause_buttons = VBoxContainer.new()
 	pause_buttons.add_theme_constant_override("separation", 10)
 	column.add_child(pause_buttons)
-	_add_pause_button("Resume", close_pause)
+	resume_button = _add_pause_button("Resume", close_pause)
 	journal_button = _add_pause_button("Case Journal", open.bind(""))
 	notebook_button = _add_pause_button("Tactic Notebook", open.bind(TAB_TACTICS))
 	sound_button = _add_pause_button(AudioManager.volume_label(), _cycle_volume)
 	_add_pause_button("Return to Main Menu", _ask_to_abandon)
+	MenuStyle.carry_pointer(MenuStyle.make_pointer(self), pause_buttons.get_children())
 
 	# Leaving resets the session. The one question this menu exists to ask.
 	confirm_box = VBoxContainer.new()
@@ -887,17 +895,22 @@ func _build_pause_menu() -> void:
 	leave_button.pressed.connect(_abandon_run)
 	confirm_box.add_child(leave_button)
 
-	var stay := Button.new()
-	stay.text = "Keep going"
-	stay.custom_minimum_size = Vector2(0, 40)
-	stay.pressed.connect(_show_pause_buttons)
-	confirm_box.add_child(stay)
+	stay_button = Button.new()
+	stay_button.text = "Keep going"
+	stay_button.custom_minimum_size = Vector2(0, 40)
+	stay_button.pressed.connect(_show_pause_buttons)
+	confirm_box.add_child(stay_button)
+
+	for button in panel.find_children("*", "Button", true, false):
+		MenuStyle.hover_selects(button as Button)
 
 
+# Narrower than the window and centered, so the pointer has room beside them.
 func _add_pause_button(text: String, on_pressed: Callable) -> Button:
 	var button := Button.new()
 	button.text = text
-	button.custom_minimum_size = Vector2(0, 40)
+	button.custom_minimum_size = Vector2(300, 40)
+	button.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
 	button.pressed.connect(on_pressed)
 	pause_buttons.add_child(button)
 	return button
@@ -925,6 +938,7 @@ func open_pause() -> void:
 	sound_button.text = AudioManager.volume_label()
 	_show_pause_buttons()
 	pause_root.visible = true
+	resume_button.grab_focus()
 	open_button.visible = false
 	get_tree().paused = true
 
@@ -950,11 +964,14 @@ func _cycle_volume() -> void:
 func _ask_to_abandon() -> void:
 	pause_buttons.visible = false
 	confirm_box.visible = true
+	stay_button.grab_focus()
 
 
 func _show_pause_buttons() -> void:
 	pause_buttons.visible = true
 	confirm_box.visible = false
+	if pause_root.visible:
+		resume_button.grab_focus()
 
 
 func _abandon_run() -> void:

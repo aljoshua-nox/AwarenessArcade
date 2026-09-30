@@ -17,6 +17,7 @@ extends Control
 const CREDITS_PATH := "res://resources/credits/credits.json"
 const MAIN_MENU_SCENE := "res://scenes/main_menu/main_menu.tscn"
 const TextStyle := preload("res://scripts/systems/text_style.gd")
+const MenuStyle := preload("res://scripts/systems/menu_style.gd")
 
 var credits: Dictionary = {}
 var lines_box: VBoxContainer
@@ -86,7 +87,9 @@ func _build_ui() -> void:
 
 	var panel := PanelContainer.new()
 	panel.custom_minimum_size = Vector2(880, 620)
+	panel.theme = MenuStyle.theme()
 	center.add_child(panel)
+	MenuStyle.dress_window(panel)
 
 	var margin := MarginContainer.new()
 	margin.add_theme_constant_override("margin_left", 28)
@@ -101,8 +104,10 @@ func _build_ui() -> void:
 
 	var title := Label.new()
 	title.text = "Credits"
-	title.add_theme_font_size_override("font_size", 26)
+	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	MenuStyle.style_title(title, 32)
 	column.add_child(title)
+	column.add_child(MenuStyle.divider())
 
 	var intro := Label.new()
 	intro.text = str(credits.get("intro", ""))
@@ -139,13 +144,17 @@ func _build_ui() -> void:
 	back.size_flags_horizontal = Control.SIZE_SHRINK_END
 	back.pressed.connect(_back)
 	column.add_child(back)
+	MenuStyle.carry_pointer(MenuStyle.make_pointer(self), [back])
+	back.grab_focus.call_deferred()
 
 
 func _add_section(section: Dictionary) -> void:
 	var heading := Label.new()
 	heading.text = str(section.get("title", "")).to_upper()
-	heading.add_theme_font_override("font", load(TextStyle.FONT_SYSTEM))
-	heading.add_theme_color_override("font_color", Color.html(TextStyle.COLOR_HINT))
+	heading.add_theme_font_override("font", MenuStyle.BUTTON_FONT)
+	heading.add_theme_font_size_override("font_size", 16)
+	heading.add_theme_color_override("font_color", MenuStyle.GOLD)
+	heading.add_theme_constant_override("outline_size", 0)
 	# A little air above every heading but the first.
 	if lines_box.get_child_count() > 0:
 		var spacer := Control.new()

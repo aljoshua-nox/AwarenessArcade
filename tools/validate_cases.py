@@ -1494,6 +1494,7 @@ REGISTER_SCRIPTS = [
     "scripts/autoload/session_state.gd",
     "scripts/ui/main_menu.gd",
     "scripts/scam_check/scam_check.gd",
+    "scripts/systems/chapter_card.gd",
 ]
 
 

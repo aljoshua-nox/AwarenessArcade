@@ -17,6 +17,7 @@ extends Node
 
 const TextStyle := preload("res://scripts/systems/text_style.gd")
 const ScreenFx := preload("res://scripts/systems/screen_fx.gd")
+const ChapterCard := preload("res://scripts/systems/chapter_card.gd")
 
 const PROLOGUE_SCENE := "res://scenes/prologue/prologue_call.tscn"
 const DRAIN_TIMEOUT_MS := 12000
@@ -115,6 +116,7 @@ func _run() -> void:
 	await _test_doubt_ceiling_hangs_up()
 	await _test_endings_record_what_they_declare()
 	await _test_a_closed_call_is_stamped()
+	await _test_chapter_card()
 	await _test_reports_pull_the_line()
 	await _test_clocks_wait_for_the_reveal()
 	await _test_patience_running_out_hangs_up()
@@ -463,6 +465,51 @@ func _test_a_closed_call_is_stamped() -> void:
 		"a payout is stamped with the amount, even when the ending is skipped to (%s)" % expected)
 	_check(ScreenFx.stamps_on(view.victim_portrait).size() == 1, "one stamp per card")
 	await _close(view)
+
+
+# The title card in front of each half. Driven with no scene to go to, so the
+# runner stays put; everything else is the card as the game shows it.
+func _test_chapter_card() -> void:
+	print("\n[the chapter card]")
+	var card: CanvasLayer = ChapterCard.new()
+	card.card_id = "caller"
+	card.hold = 0.4
+	get_tree().root.add_child(card)
+	await get_tree().process_frame
+	_check(get_tree().root.has_node(ChapterCard.NODE_NAME), "the card sits on the root, above any scene")
+	_check(card.title_label.text == "THE CALLER" and card.part_label.text == "PART ONE", "part one is the caller")
+	var key := InputEventKey.new()
+	key.keycode = KEY_ENTER
+	key.pressed = true
+	card._input(key)
+	_check(not card.leaving, "a key before the title is up is dropped, so it cannot be skipped unread")
+
+	var deadline := Time.get_ticks_msec() + 4000
+	while not card.can_skip and Time.get_ticks_msec() < deadline:
+		await get_tree().process_frame
+	_check(get_tree().paused, "the scene underneath is paused while the title is up")
+	card._input(key)
+	_check(card.leaving, "once it is up, a key moves it along")
+	_check(not get_tree().paused, "and the scene underneath runs again")
+	deadline = Time.get_ticks_msec() + 4000
+	while is_instance_valid(card) and Time.get_ticks_msec() < deadline:
+		await get_tree().process_frame
+	_check(not is_instance_valid(card), "the card clears itself away")
+
+	SessionState.go_to_scene_with_card("case", "")
+	SessionState.go_to_scene_with_card("case", "")
+	var cards := 0
+	for child in get_tree().root.get_children():
+		if child.get_script() == ChapterCard:
+			cards += 1
+	_check(cards == 1, "a second press while a card is up does not stack another")
+	var second: Node = get_tree().root.get_node(ChapterCard.NODE_NAME)
+	_check(second.title_label.text == "THE CASE" and second.part_label.text == "PART TWO", "part two is the case")
+	second._leave()
+	deadline = Time.get_ticks_msec() + 4000
+	while is_instance_valid(second) and Time.get_ticks_msec() < deadline:
+		await get_tree().process_frame
+	_check(not get_tree().paused, "nothing is left paused")
 
 
 func _deltas(view: Node) -> Array[String]:

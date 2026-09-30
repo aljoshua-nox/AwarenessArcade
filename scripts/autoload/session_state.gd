@@ -2,6 +2,8 @@ extends Node
 
 signal session_reset
 
+const ChapterCard := preload("res://scripts/systems/chapter_card.gd")
+
 # What actually happened on a call the player made in the prologue. These used
 # to collapse into "success", "partial" and an empty string that meant four
 # different things at once - hung up on you, ran out of time, got shut down, or
@@ -424,7 +426,7 @@ const PROLOGUE_CALL_SCENE := "res://scenes/prologue/prologue_call.tscn"
 func start_prologue() -> void:
 	reset_prologue()
 	prologue_played = true
-	go_to_scene(SHIFT_START_SCENE)
+	go_to_scene_with_card("caller", SHIFT_START_SCENE)
 
 
 # The skip-the-prologue branch: drop straight into the detective half with no
@@ -434,7 +436,7 @@ func start_prologue() -> void:
 func start_investigation_direct() -> void:
 	reset_prologue()
 	briefing_pending = true
-	go_to_scene(DESK_SCENE)
+	go_to_scene_with_card("case", DESK_SCENE)
 
 
 # Continue from the prologue summary into the detective half. The investigation
@@ -444,7 +446,7 @@ func start_investigation_direct() -> void:
 func start_investigation_from_prologue() -> void:
 	reset_investigation()
 	briefing_pending = true
-	go_to_scene(DESK_SCENE)
+	go_to_scene_with_card("case", DESK_SCENE)
 
 
 func record_tactic_used(tactic_id: String) -> void:
@@ -710,3 +712,15 @@ func go_to_scene(scene_path: String) -> void:
 	if scene_path.is_empty():
 		return
 	get_tree().change_scene_to_file(scene_path)
+
+
+## Into one half of the game behind its title card (ChapterCard.CARDS), which
+## changes the scene itself once the screen is black. A second press while a
+## card is already up does nothing.
+func go_to_scene_with_card(card_id: String, scene_path: String) -> void:
+	if get_tree().root.has_node(ChapterCard.NODE_NAME):
+		return
+	var card: CanvasLayer = ChapterCard.new()
+	card.card_id = card_id
+	card.scene_path = scene_path
+	get_tree().root.add_child(card)

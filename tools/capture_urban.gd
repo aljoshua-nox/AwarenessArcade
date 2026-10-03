@@ -1,9 +1,12 @@
 extends Node
 
 ## Renders both streets whole so the layout can be looked at, then the
-## noticeboard panel open. The cast grew from three doors to five, and neither
+## noticeboard panel open, then people talking: Aling Nena's first page and her
+## case note (talk_preview, talk_note_preview), Ricky's longest page
+## (talk_long_preview), and any speaker low enough on screen to move the box up
+## (talk_top_preview). The cast grew from three doors to five, and neither
 ## door spacing nor the density of the longest stop is something a headless
-## assertion can judge.
+## assertion can judge - and headless text measures taller than it draws.
 ##
 ##   godot --path . res://tools/capture_urban.tscn
 
@@ -40,8 +43,84 @@ func _run() -> void:
 	remove_child(view)
 	view.queue_free()
 	await get_tree().process_frame
+
+	await _capture_talk(URBAN_SCENE, "Talk to Aling Nena", "talk_preview", "talk_note_preview")
+	await _capture_talk(TERMINAL_SCENE, "Talk to Ricky", "talk_long_preview", "", 1)
+	await _capture_top_box()
 	await AudioManager.settle()
 	get_tree().quit()
+
+
+func _open_beside(scene_path: String, stop: Dictionary, view: Node) -> void:
+	view.player.global_position = stop["position"] + Vector2(56.0, 20.0)
+	(view.player.get_node("Camera2D") as Camera2D).reset_smoothing()
+	for i in range(6):
+		await get_tree().process_frame
+
+
+# A person mid-conversation: `page` pressed through to, typed in, then the case note.
+func _capture_talk(scene_path: String, prompt: String, page_name: String, note_name: String, page: int = 0) -> void:
+	SessionState.reset_session()
+	SessionState.briefing_pending = false
+	var view: Node = load(scene_path).instantiate()
+	add_child(view)
+	for i in range(8):
+		await get_tree().process_frame
+	for stop in view.street_stops:
+		if str(stop.get("prompt", "")) == prompt:
+			await _open_beside(scene_path, stop, view)
+			view._open_stop(stop)
+			for i in range(page):
+				view.talk_box._finish_typing()
+				view.talk_box.advance()
+			view.talk_box._finish_typing()
+			for i in range(6):
+				await get_tree().process_frame
+			await RenderingServer.frame_post_draw
+			_save(page_name)
+			if not note_name.is_empty():
+				view.talk_box.skip_to_note()
+				for i in range(6):
+					await get_tree().process_frame
+				await RenderingServer.frame_post_draw
+				_save(note_name)
+			break
+	remove_child(view)
+	view.queue_free()
+	await get_tree().process_frame
+
+
+# The box moves up when the person talking stands low on the screen. Render the
+# first person on either street who does that, if anyone does.
+func _capture_top_box() -> void:
+	for scene_path in [URBAN_SCENE, TERMINAL_SCENE]:
+		SessionState.reset_session()
+		SessionState.briefing_pending = false
+		var view: Node = load(scene_path).instantiate()
+		add_child(view)
+		for i in range(8):
+			await get_tree().process_frame
+		for stop in view.street_stops:
+			if not view.is_person_stop(stop):
+				continue
+			await _open_beside(scene_path, stop, view)
+			view._open_stop(stop)
+			if view.talk_box.at_top:
+				view.talk_box._finish_typing()
+				for i in range(6):
+					await get_tree().process_frame
+				await RenderingServer.frame_post_draw
+				_save("talk_top_preview")
+				print("TOP: %s" % str(stop.get("title", "")))
+				remove_child(view)
+				view.queue_free()
+				await get_tree().process_frame
+				return
+			view._close_stop()
+		remove_child(view)
+		view.queue_free()
+		await get_tree().process_frame
+	print("TOP: nobody stands low enough to move the box up")
 
 
 # The whole map at 1:1, from SKY_SHOWN above y 0 to the bottom, without the

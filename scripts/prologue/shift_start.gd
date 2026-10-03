@@ -322,6 +322,9 @@ func _style_as_speech(label: Label) -> void:
 	label.z_index = 55
 	label.add_theme_font_size_override("font_size", 13)
 	label.add_theme_color_override("font_color", CHATTER_INK)
+	# The game's outline helps light text over the map; on cream it only
+	# thickens dark letters.
+	label.add_theme_constant_override("outline_size", 0)
 	var box := StyleBoxFlat.new()
 	box.bg_color = CHATTER_FILL
 	box.set_corner_radius_all(8)

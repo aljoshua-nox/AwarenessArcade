@@ -68,6 +68,7 @@ func _run() -> void:
 		await _test_layout_collisions(district)
 		await _test_street_stops(district)
 		await _test_street_stops_record(district)
+		await _test_street_talk(district)
 	await _test_cases_unique()
 	await _test_transit()
 	await _test_credibility_economy()
@@ -632,6 +633,116 @@ func _test_street_stops(district: Dictionary) -> void:
 
 # Reading a stop has to leave the player with something: a milestone in the
 # summary, and the tactic in the notebook where it teaches one.
+# People talk one line at a time in the talk box; things are read in the
+# inspect box with the case note on a card. Esc jumps to the note rather than
+# closing, so skipping the talk never skips the lesson.
+func _test_street_talk(district: Dictionary) -> void:
+	print("\n[people talk a page at a time - %s]" % district["name"])
+	SessionState.reset_session()
+	var view := await _open(str(district["scene"]))
+	var enter := InputEventAction.new()
+	enter.action = "ui_accept"
+	enter.pressed = true
+	var esc := InputEventAction.new()
+	esc.action = "ui_cancel"
+	esc.pressed = true
+
+	var people: Array[Dictionary] = []
+	var things: Array[Dictionary] = []
+	for stop in view.street_stops:
+		if view.is_person_stop(stop):
+			people.append(stop)
+		else:
+			things.append(stop)
+	_check(not people.is_empty(), "the street has people to talk to (%d)" % people.size())
+
+	var short_pages := 0
+	var lone_directions := 0
+	var lost_lines := 0
+	for stop in people:
+		var pages: Array[String] = view.talk_box.pages_for(view._stop_text(stop))
+		var spoken := 0
+		for i in range(pages.size()):
+			if not pages[i].contains("\""):
+				# A stage direction with no line after it can only close a talk.
+				if i != pages.size() - 1:
+					lone_directions += 1
+			else:
+				spoken += 1
+		if pages.size() < 2:
+			short_pages += 1
+		# Every line of the stop ends up on some page.
+		for line in view._stop_text(stop).split("\n"):
+			var found := false
+			for page in pages:
+				if page.contains(line.strip_edges().substr(0, 20)):
+					found = true
+			if not found and not line.strip_edges().is_empty():
+				lost_lines += 1
+	_check(short_pages == 0, "every person says more than one page's worth (%d say less)" % short_pages)
+	_check(lone_directions == 0, "a stage direction rides with the line after it (%d stand alone)" % lone_directions)
+	_check(lost_lines == 0, "no line of a stop goes missing from its pages (%d lost)" % lost_lines)
+
+	var stop: Dictionary = people[0]
+	var pages_shown: Array[String] = view.talk_box.pages_for(view._stop_text(stop))
+	view._open_stop(stop)
+	_check(view.inspection_open and view.talk_box.is_open() and not view.inspect_panel.visible,
+		"talking opens the talk box, not the reading box")
+	_check(view.talk_box.tab_label.text == str(stop.get("title", "")), "with the speaker's name on its tab")
+	_check(view.talk_box.page_index == 0 and view.talk_box.is_typing(), "on the first page, typing in")
+	_check(not view.player.is_physics_processing(), "the player is held still while talking")
+	view._unhandled_input(enter)
+	_check(view.talk_box.page_index == 0 and not view.talk_box.is_typing(), "Enter while it types finishes the page")
+	_check(view.talk_box.arrow.visible, "and the arrow says there is more")
+	view._unhandled_input(enter)
+	_check(view.talk_box.page_index == 1, "Enter again turns the page")
+	view._unhandled_input(esc)
+	_check(view.talk_box.is_open() and view.talk_box.on_note, "Esc jumps to the case note instead of closing")
+	_check(view.talk_box.shown_text().contains(str(stop.get("note", "")).substr(0, 30)), "and the note is the stop's own")
+	_check(view.talk_box.footer.visible and not view.talk_box.arrow.visible, "the last page says how to step away")
+	view._unhandled_input(esc)
+	_check(not view.inspection_open and not view.talk_box.is_open(), "Esc on the note closes the box")
+	_check(view.player.is_physics_processing(), "and the player can move again")
+
+	# Enter all the way through: every page, then the note, then closed.
+	view._open_stop(stop)
+	var presses := 0
+	while view.talk_box.is_open() and presses < 40:
+		view._unhandled_input(enter)
+		presses += 1
+	_check(not view.inspection_open, "Enter walks through every page and the note, then closes")
+	_check(presses == (pages_shown.size() + 1) * 2, "one press to finish each page and one to turn it (%d presses for %d pages)" % [presses, pages_shown.size() + 1])
+
+	# The box never covers the person talking.
+	var covered: Array[String] = []
+	var screen := Vector2(1280.0, 720.0)
+	for person in people:
+		view.player.global_position = person["position"] + Vector2(0.0, 40.0)
+		(view.player.get_node("Camera2D") as Camera2D).reset_smoothing()
+		await get_tree().process_frame
+		await get_tree().process_frame
+		view._open_stop(person)
+		var head: Vector2 = view.get_viewport().get_canvas_transform() * Vector2(person["position"])
+		var band_top: float = view.talk_box.TOP_Y if view.talk_box.at_top else screen.y - view.talk_box.EDGE_GAP - view.talk_box.TALL_BOX
+		var band := Rect2(0.0, band_top, screen.x, view.talk_box.TALL_BOX)
+		if band.intersects(Rect2(head - Vector2(12.0, 24.0), Vector2(24.0, 48.0))):
+			covered.append(str(person.get("title", "")))
+		view._close_stop()
+	_check(covered.is_empty(), "the box never sits over the person talking (%s)" % ", ".join(covered))
+
+	# Things are still read, with the note on its own card.
+	if not things.is_empty():
+		var thing: Dictionary = things[0]
+		view._open_stop(thing)
+		_check(view.inspect_panel.visible and not view.talk_box.is_open(), "a %s is read, not talked to" % str(thing.get("title", "")).to_lower())
+		_check(view.inspect_panel.note_card.visible and not view.inspect_body.text.contains(str(thing.get("note", "")).substr(0, 30)),
+			"its case note sits on its own card")
+		view._unhandled_input(esc)
+		_check(not view.inspection_open, "and Esc still closes it")
+
+	await _close(view)
+
+
 func _test_street_stops_record(district: Dictionary) -> void:
 	print("\n[what the street leaves behind - %s]" % district["name"])
 	SessionState.reset_session()

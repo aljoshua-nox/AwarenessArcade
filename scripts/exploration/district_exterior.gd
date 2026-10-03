@@ -14,6 +14,7 @@ extends Node2D
 
 const TextStyle := preload("res://scripts/systems/text_style.gd")
 const InspectPanel := preload("res://scripts/systems/inspect_panel.gd")
+const TalkBox := preload("res://scripts/systems/talk_box.gd")
 const PromptBubble := preload("res://scripts/exploration/prompt_bubble.gd")
 
 @export var map_title: String = "District"
@@ -74,6 +75,8 @@ var active_stop: Dictionary = {}
 var inspect_panel: InspectPanel
 var inspect_title: Label
 var inspect_body: RichTextLabel
+# People talk through this; things are read in inspect_panel.
+var talk_box: TalkBox
 var inspection_open: bool = false
 
 const MAP_WIDTH := 1920.0
@@ -525,6 +528,20 @@ func _unhandled_input(event: InputEvent) -> void:
 	# A stop is a modal read, so it eats both keys before anything else can act
 	# on them - otherwise Escape would quit to the menu out from under it.
 	if inspection_open:
+		# Talking: Enter or a click turns the page, Esc jumps to the case note,
+		# and either one on the last page closes the box.
+		if talk_box.is_open():
+			var still_open := true
+			if event.is_action_pressed("ui_accept") or (event is InputEventMouseButton
+					and event.pressed and event.button_index == MOUSE_BUTTON_LEFT):
+				still_open = talk_box.advance()
+				get_viewport().set_input_as_handled()
+			elif event.is_action_pressed("ui_cancel"):
+				still_open = talk_box.skip_to_note()
+				get_viewport().set_input_as_handled()
+			if not still_open:
+				_close_stop()
+			return
 		if event.is_action_pressed("ui_accept") or event.is_action_pressed("ui_cancel"):
 			_close_stop()
 			get_viewport().set_input_as_handled()
@@ -993,6 +1010,8 @@ func _build_stop_ui() -> void:
 	hud.add_child(inspect_panel)
 	inspect_title = inspect_panel.title_label
 	inspect_body = inspect_panel.body
+	talk_box = TalkBox.new()
+	hud.add_child(talk_box)
 
 
 func _build_street_stops() -> void:
@@ -1069,8 +1088,14 @@ func _on_stop_exited(body: Node, entry: Dictionary) -> void:
 		prompt_bubble.hide_bubble()
 
 
-func _stop_body(stop: Dictionary) -> String:
-	var parts: Array[String] = []
+# A stop on a person talks; the noticeboard and the fixtures (a directory, a
+# billboard) are read.
+func is_person_stop(stop: Dictionary) -> bool:
+	return not bool(stop.get("is_noticeboard", false)) and not bool(stop.get("is_fixture", false))
+
+
+# The stop's own words, with the one string it cites filled in.
+func _stop_text(stop: Dictionary) -> String:
 	var body := str(stop.get("body", ""))
 	if bool(stop.get("cites_number", false)):
 		body = body % SessionState.OPERATION_NUMBER
@@ -1078,18 +1103,34 @@ func _stop_body(stop: Dictionary) -> String:
 		body = body % SessionState.COMPANY_NAME
 	elif bool(stop.get("cites_call_floor", false)):
 		body = body % SessionState.CALL_FLOOR_NAME.split(" ")[0]
-	parts.append(TextStyle.dialogue(body))
+	return body
+
+
+# The case file's line on it - or nothing.
+func _stop_note(stop: Dictionary) -> String:
 	var note := str(stop.get("note", ""))
-	if not note.is_empty():
-		var marker: String = str(stop.get("marker", TextStyle.MARK_SCENE))
-		var tone: String = str(stop.get("note_color", TextStyle.COLOR_HINT))
-		parts.append(TextStyle.system(marker, note, tone))
-	return "\n\n".join(parts)
+	if note.is_empty():
+		return ""
+	var marker: String = str(stop.get("marker", TextStyle.MARK_SCENE))
+	return TextStyle.system(marker, note, str(stop.get("note_color", TextStyle.COLOR_HINT)))
+
+
+# Everything a stop says, as one string.
+func _stop_body(stop: Dictionary) -> String:
+	var note := _stop_note(stop)
+	var text := TextStyle.dialogue(_stop_text(stop))
+	return text if note.is_empty() else "%s\n\n%s" % [text, note]
 
 
 func _open_stop(stop: Dictionary) -> void:
 	inspection_open = true
-	inspect_panel.open(str(stop.get("title", "")), _stop_body(stop))
+	var note_color := str(stop.get("note_color", TextStyle.COLOR_HINT))
+	if is_person_stop(stop):
+		var standing: Vector2 = stop.get("position", Vector2.ZERO)
+		talk_box.open(str(stop.get("title", "")), _stop_text(stop), _stop_note(stop), note_color,
+			get_viewport().get_canvas_transform() * standing)
+	else:
+		inspect_panel.open(str(stop.get("title", "")), TextStyle.dialogue(_stop_text(stop)), _stop_note(stop), note_color)
 	prompt_bubble.hide_bubble()
 	player.velocity = Vector2.ZERO
 	player.set_physics_process(false)
@@ -1117,6 +1158,7 @@ func _close_stop() -> void:
 	_refresh_objective_label()
 	inspection_open = false
 	inspect_panel.visible = false
+	talk_box.close()
 	player.set_physics_process(true)
 	if not active_stop.is_empty():
 		prompt_bubble.show_above(active_stop.get("position", Vector2.ZERO), str(active_stop.get("prompt", "")), STOP_LIFT)

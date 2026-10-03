@@ -320,7 +320,10 @@ func _test_inspection_panel() -> void:
 	_check(view.inspection_open, "panel opens")
 	_check(view.inspect_panel.visible, "panel is visible")
 	_check(not view.player.is_physics_processing(), "the player is frozen while reading")
-	_check(view.inspect_body.text.contains("business model"), "bonus board names the harm")
+	_check(view.inspect_panel.shown_text().contains("business model"), "bonus board names the harm")
+	_check(view.inspect_panel.note_card.visible and view.inspect_panel.note.text.contains("business model")
+		and not view.inspect_body.text.contains("business model"),
+		"the case note sits on its own card, under what was read")
 	view._close_inspection()
 	_check(not view.inspection_open, "panel closes")
 	_check(view.player.is_physics_processing(), "the player can move again")
@@ -636,6 +639,7 @@ func _test_shift_start() -> void:
 		"and how many reports pull the line")
 	_check(not board_text.contains(TextStyle.MARK_HINT) and not board_text.contains(TextStyle.MARK_SCENE),
 		"with no case note under it")
+	_check(not shift.inspect_panel.note_card.visible, "and no empty note card either")
 	_check(shift._say_something() == null, "nobody talks over a board while it is being read")
 	shift._close_inspection()
 	shift._open_inspection(_station(shift, "Bonus board"))

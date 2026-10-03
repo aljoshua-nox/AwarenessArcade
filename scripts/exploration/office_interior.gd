@@ -277,7 +277,8 @@ func _build_hud() -> void:
 
 func _open_inspection(station: Dictionary) -> void:
 	inspection_open = true
-	inspect_panel.open(str(station.get("title", "")), _station_body(station))
+	inspect_panel.open(str(station.get("title", "")), _station_text(station), _station_note(station),
+		str(station.get("note_color", TextStyle.COLOR_HINT)))
 	prompt_bubble.hide_bubble()
 	player.velocity = Vector2.ZERO
 	player.set_physics_process(false)
@@ -302,16 +303,30 @@ func _close_inspection() -> void:
 		_show_station_prompt(active_station)
 
 
-func _station_body(station: Dictionary) -> String:
+# What the station shows: what is there to read, and the ledger under the call list.
+func _station_text(station: Dictionary) -> String:
 	var parts: Array[String] = []
 	parts.append(TextStyle.dialogue(str(station.get("body", ""))))
 	if bool(station.get("is_ledger", false)):
 		parts.append(_build_call_log_text())
-	var marker := str(station.get("marker", TextStyle.MARK_SCENE))
-	var note := str(station.get("note", ""))
-	if not note.is_empty():
-		parts.append(TextStyle.system(marker, note, str(station.get("note_color", TextStyle.COLOR_HINT))))
 	return "\n\n".join(parts)
+
+
+# The case file's line on it, for the box's note card - or nothing.
+func _station_note(station: Dictionary) -> String:
+	var note := str(station.get("note", ""))
+	if note.is_empty():
+		return ""
+	var marker := str(station.get("marker", TextStyle.MARK_SCENE))
+	return TextStyle.system(marker, note, str(station.get("note_color", TextStyle.COLOR_HINT)))
+
+
+# Everything a station says, as one string.
+func _station_body(station: Dictionary) -> String:
+	var note := _station_note(station)
+	if note.is_empty():
+		return _station_text(station)
+	return "%s\n\n%s" % [_station_text(station), note]
 
 
 # The payoff: the operation's own ledger, listing the people the player called

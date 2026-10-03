@@ -39,7 +39,7 @@ const INTERVIEWEES := [
 	{"case": CASE_EVELYN, "label": "EVELYN", "prompt": "Speak with Evelyn Marsh", "row": "block", "slot": 0},
 	{"case": CASE_MARIA, "label": "MARIA", "prompt": "Speak with Maria Santos", "row": "block", "slot": 1},
 	{"case": CASE_KEVIN, "label": "KEVIN", "prompt": "Speak with Kevin Dizon", "row": "block", "slot": 2},
-	{"case": CASE_TEDDY, "label": "TEDDY", "prompt": "Speak with Teodoro Villanueva", "row": "block", "slot": 3},
+	{"case": CASE_TEDDY, "label": "TEODORO", "prompt": "Speak with Teodoro Villanueva", "row": "block", "slot": 3},
 	{"case": CASE_LINA, "label": "LINA", "prompt": "Speak with Lina Reyes", "row": "street", "slot": 1},
 	{"case": CASE_MARCO, "label": "MARCO", "prompt": "Interrogate Marco Navarro", "row": "street", "slot": 4},
 ]
@@ -125,7 +125,7 @@ const STREET_STOPS := [
 	},
 	{
 		"position": Vector2(1750.0, 950.0),
-		"title": "Aling Rosa, Teddy's neighbor",
+		"title": "Aling Rosa, Teodoro's neighbor",
 		"prompt": "Talk to Aling Rosa",
 		"body": "An older woman locking her gate, not looking up.\n\"I stopped answering months ago. They still call. Same number every time - %s. Four, five times a week, then nothing, then again.\"\nThe padlock clicks.\n\"I know what it is now. I just want it to stop. Teddy next door still answers. He's eighty-one - he thinks it's rude not to.\"",
 		"note": "A number that once answered stays on the list. Let unknown numbers ring out - a line that never picks up is what gets it taken off.",
